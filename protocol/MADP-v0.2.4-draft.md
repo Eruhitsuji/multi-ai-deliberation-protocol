@@ -46,6 +46,20 @@ The words **MUST**, **MUST NOT**, **SHOULD**, **SHOULD NOT**, and **MAY** are no
 - **Session State**: the sole logical source of truth for the current session.
 - **Derived View**: a presentation, prompt, roster, issue card, or handoff generated from Session State.
 
+### 3.1 Normative glossary
+
+[`GLOSSARY.md`](GLOSSARY.md) is normative for every term that it explicitly marks as normative. It exists to reduce interpretation drift across AI models, users, validators, and implementations.
+
+Interpretation precedence is:
+
+1. the machine-readable schema for machine-validatable structure, required fields, and enum spelling;
+2. mandatory rules in this protocol;
+3. normative definitions in `GLOSSARY.md`;
+4. README text and examples;
+5. translations and supplemental documents.
+
+A conflict between the protocol, glossary, and schema MUST be reported as a specification defect. It MUST NOT be silently resolved by redefining a canonical term. Canonical English terms, schema identifiers, and enum values retain their exact spelling in translations.
+
 ## 4. Core principles
 
 ### 4.1 User authority
@@ -457,7 +471,9 @@ Valid `PROMPT_ACTION` values:
 
 `ACTION_REQUIRED` is separately recorded as `YES` or `NO`.
 
-At the beginning of a user-facing response, the facilitator SHOULD display the action type and whether action is required. When a user decision is needed, the detailed decision packet SHOULD appear near the end as one contiguous block.
+At the beginning of a user-facing response, the facilitator SHOULD display the action type and whether action is required.
+
+Required protocol output MUST NOT be followed by unrelated platform notices, product promotions, account-setting guidance, advertisements, or links that are not necessary for the issue. When a hosting platform appends such material outside the participant's controllable output, it SHOULD be treated as non-protocol content and excluded from state integration. When a user decision is needed, the detailed decision packet SHOULD appear near the end as one contiguous block.
 
 A decision packet SHOULD contain:
 
@@ -488,27 +504,15 @@ The proposal is approved without modification or additional conditions.
 
 ### 18.2 Approve with conditions
 
-The proposal's basic direction is approved, but specified conditions must be preserved and satisfied according to their timing. Conditional approval MUST NOT be collapsed into unconditional approval.
+The proposal's basic direction is approved, but specified conditions must be preserved and satisfied according to their timing.
 
-A decision condition MUST separate **applicability** from **satisfaction**.
+Conditions may use these statuses:
 
-Condition applicability values are:
-
-- `ACTIVE`: the condition currently applies;
-- `INACTIVE`: the condition exists but does not currently apply;
-- `NOT_APPLICABLE`: the condition does not apply to this decision or lifecycle.
-
-Condition satisfaction values are:
-
-- `PENDING`: fulfillment has not started or cannot yet be evaluated;
-- `IN_PROGRESS`: fulfillment is currently being worked on or continuously maintained;
-- `SATISFIED`: fulfillment is complete;
-- `WAIVED_BY_USER`: the user explicitly waived the condition;
-- `FAILED`: the condition was violated or cannot be fulfilled.
-
-`ADOPTED` MUST NOT be used as a condition satisfaction value. Adoption is represented by the parent decision, approval provenance, or both.
-
-An `ONGOING` condition normally remains `applicability: ACTIVE` and `satisfaction: IN_PROGRESS` until its applicable lifecycle ends. A future guard condition that cannot yet be evaluated normally remains `satisfaction: PENDING`.
+- `PENDING`;
+- `SATISFIED`;
+- `WAIVED_BY_USER`;
+- `FAILED`;
+- `NOT_APPLICABLE`.
 
 Condition timing may be:
 
@@ -540,19 +544,7 @@ The proposal itself is modified. The modified proposal becomes the approved deci
 
 ### 19.1 Decision conditions
 
-Conditions without which a decision would be incomplete or invalid SHOULD be stored in `decision_conditions`. Each structured decision condition MUST include `applicability` and `satisfaction`.
-
-A completed decision process does not necessarily mean that all ongoing conditions are closed. When this distinction matters, the decision SHOULD record:
-
-```yaml
-lifecycle:
-  decision_process: "COMPLETED"
-  condition_monitoring: "ACTIVE"
-```
-
-`decision_process` values are `IN_PROGRESS` and `COMPLETED`. `condition_monitoring` values are `NOT_REQUIRED`, `ACTIVE`, `CLOSED`, and `BLOCKED`.
-
-Long procedures or evidence SHOULD be kept outside the current state and referenced through `evidence_refs` rather than copied into every state snapshot.
+Conditions without which a decision would be incomplete or invalid SHOULD be stored in `decision_conditions`.
 
 ### 19.2 Acceptance conditions
 
@@ -788,10 +780,18 @@ Canonical files MAY be distributed through GitHub, GitLab, Codeberg, internal Gi
 A URL or file reference does not prove the model read it. A loading confirmation SHOULD identify:
 
 - confirmed protocol version;
-- canonical file read;
+- canonical protocol and glossary files read;
 - major rules understood;
 - unread or unavailable sections;
 - template or schema used.
+
+Validation terminology MUST be precise:
+
+- `FORMAL_SCHEMA_VALIDATION`: the instance was evaluated with an actual JSON Schema validator against the identified schema version;
+- `STRUCTURAL_CHECK_ONLY`: a human or model inspected apparent keys, types, and structure without executing a validator;
+- `NOT_VERIFIED`: neither formal validation nor a sufficient structural check was completed.
+
+`PASSED` or equivalent validation-success wording MUST NOT be used for an LLM-only structural review.
 
 A running session SHOULD lock its protocol version. New repository versions MUST NOT auto-upgrade an active session without a change summary, impact analysis, user approval, and state migration where needed.
 
@@ -803,6 +803,7 @@ The minimum canonical release consists of:
 README.md
 LICENSE
 protocol/MADP-v0.2.4-draft.md
+protocol/GLOSSARY.md
 schemas/session-state.schema.yaml
 ```
 
@@ -819,6 +820,7 @@ At v0.2.4-draft, the following areas may require further testing:
 - coding-agent permission enforcement;
 - single-writer operation;
 - loading canonical files from a hosted repository;
+- cross-model consistency in applying normative glossary definitions;
 - beginning from Protocol Capsule alone;
 - large, multi-issue, multi-participant sessions.
 

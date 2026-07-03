@@ -1,5 +1,5 @@
 $schema: "https://json-schema.org/draft/2020-12/schema"
-$id: "https://example.org/madp/schemas/session-state.schema.yaml"
+$id: "https://raw.githubusercontent.com/Eruhitsuji/multi-ai-deliberation-protocol/main/schemas/session-state.schema.yaml"
 title: "MADP Session State"
 description: >-
   Machine-readable schema for the current logical source of truth used by
@@ -131,52 +131,28 @@ $defs:
         type: string
         minLength: 1
 
-  evidenceReference:
-    type: object
-    additionalProperties: false
-    required:
-      - id
-      - type
-      - location
-    properties:
-      id:
-        $ref: "#/$defs/identifier"
-      type:
-        type: string
-        minLength: 1
-      location:
-        type: string
-        minLength: 1
-      summary:
-        type: string
-        minLength: 1
-
   condition:
     type: object
     additionalProperties: false
     required:
       - id
       - statement
-      - applicability
-      - satisfaction
+      - status
     properties:
       id:
         $ref: "#/$defs/identifier"
       statement:
         type: string
         minLength: 1
-      applicability:
-        enum:
-          - ACTIVE
-          - INACTIVE
-          - NOT_APPLICABLE
-      satisfaction:
+      status:
         enum:
           - PENDING
-          - IN_PROGRESS
+          - ACTIVE
+          - ADOPTED
           - SATISFIED
           - WAIVED_BY_USER
           - FAILED
+          - NOT_APPLICABLE
       timing:
         enum:
           - BEFORE_START
@@ -187,28 +163,6 @@ $defs:
       source:
         type: string
         minLength: 1
-      evidence_refs:
-        type: array
-        items:
-          $ref: "#/$defs/evidenceReference"
-
-  decisionLifecycle:
-    type: object
-    additionalProperties: false
-    required:
-      - decision_process
-      - condition_monitoring
-    properties:
-      decision_process:
-        enum:
-          - IN_PROGRESS
-          - COMPLETED
-      condition_monitoring:
-        enum:
-          - NOT_REQUIRED
-          - ACTIVE
-          - CLOSED
-          - BLOCKED
 
   decision:
     type: object
@@ -247,8 +201,6 @@ $defs:
         items:
           type: string
           minLength: 1
-      lifecycle:
-        $ref: "#/$defs/decisionLifecycle"
       decision_conditions:
         type: array
         items:

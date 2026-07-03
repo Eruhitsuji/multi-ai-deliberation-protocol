@@ -10,9 +10,10 @@ The protocol helps participants use different model strengths without treating m
 
 This repository contains a draft specification. The canonical language is English. Future translations may be added under `docs/<language-code>/`; translations are informative unless explicitly marked otherwise.
 
-The canonical normative document is:
+The canonical normative documents are:
 
 - [`protocol/MADP-v0.2.4-draft.md`](protocol/MADP-v0.2.4-draft.md)
+- [`protocol/GLOSSARY.md`](protocol/GLOSSARY.md)
 
 The machine-readable session-state schema is:
 
@@ -72,8 +73,9 @@ Before using MADP:
    - facilitator-internal work must continue in the same response unless blocked;
    - interaction language and canonical artifact language are separate;
    - conditional approval must remain conditional in state.
-4. Use `schemas/session-state.schema.yaml` when machine validation is available.
-5. Do not infer the complete protocol from this README alone.
+4. Read `protocol/GLOSSARY.md` for canonical meanings of operational terms.
+5. Use `schemas/session-state.schema.yaml` when machine validation is available.
+6. Do not infer the complete protocol from this README alone.
 
 Suggested loading confirmation:
 
@@ -84,7 +86,7 @@ protocol_load_status:
   confirmed_version: "0.2.4-draft"
   confirmed_rules:
     - "user_is_final_decider"
-    - "majority_vote_disabled"
+    - "majority_vote_alone_is_insufficient"
     - "session_state_is_source_of_truth"
     - "turn_completion_rule_enabled"
     - "conditional_approval_preserved"
@@ -162,7 +164,7 @@ session_state:
       response_format: null
 ```
 
-Validate it against [`schemas/session-state.schema.yaml`](schemas/session-state.schema.yaml) when validation tooling is available.
+Validate it against [`schemas/session-state.schema.yaml`](schemas/session-state.schema.yaml) when a real JSON Schema validator is available. An LLM-only structural review must be reported as `STRUCTURAL_CHECK_ONLY`, not as formal validation.
 
 ## User decision forms
 
@@ -198,12 +200,13 @@ Clear spelling variants may be normalized when the intent is unambiguous. Ambigu
 ├── README.md
 ├── LICENSE
 ├── protocol/
-│   └── MADP-v0.2.4-draft.md
+│   ├── MADP-v0.2.4-draft.md
+│   └── GLOSSARY.md
 └── schemas/
     └── session-state.schema.yaml
 ```
 
-This four-file release is intentionally minimal. When the repository grows, detailed file listings should move to a dedicated index or manifest. The README should remain an entry point that identifies canonical and required files.
+This five-file release is intentionally minimal. The glossary is normative for the terms it explicitly defines. When the repository grows, detailed file listings should move to a dedicated index or manifest. The README should remain an entry point that identifies canonical and required files.
 
 ## Language policy
 
@@ -215,4 +218,4 @@ This four-file release is intentionally minimal. When the repository grows, deta
 
 ## License
 
-Licensed under the Apache License, Version 2.0. See [`LICENSE`](LICENSE).
+Licensed under the MIT License. See [`LICENSE`](LICENSE).
