@@ -488,15 +488,27 @@ The proposal is approved without modification or additional conditions.
 
 ### 18.2 Approve with conditions
 
-The proposal's basic direction is approved, but specified conditions must be preserved and satisfied according to their timing.
+The proposal's basic direction is approved, but specified conditions must be preserved and satisfied according to their timing. Conditional approval MUST NOT be collapsed into unconditional approval.
 
-Conditions may use these statuses:
+A decision condition MUST separate **applicability** from **satisfaction**.
 
-- `PENDING`;
-- `SATISFIED`;
-- `WAIVED_BY_USER`;
-- `FAILED`;
-- `NOT_APPLICABLE`.
+Condition applicability values are:
+
+- `ACTIVE`: the condition currently applies;
+- `INACTIVE`: the condition exists but does not currently apply;
+- `NOT_APPLICABLE`: the condition does not apply to this decision or lifecycle.
+
+Condition satisfaction values are:
+
+- `PENDING`: fulfillment has not started or cannot yet be evaluated;
+- `IN_PROGRESS`: fulfillment is currently being worked on or continuously maintained;
+- `SATISFIED`: fulfillment is complete;
+- `WAIVED_BY_USER`: the user explicitly waived the condition;
+- `FAILED`: the condition was violated or cannot be fulfilled.
+
+`ADOPTED` MUST NOT be used as a condition satisfaction value. Adoption is represented by the parent decision, approval provenance, or both.
+
+An `ONGOING` condition normally remains `applicability: ACTIVE` and `satisfaction: IN_PROGRESS` until its applicable lifecycle ends. A future guard condition that cannot yet be evaluated normally remains `satisfaction: PENDING`.
 
 Condition timing may be:
 
@@ -528,7 +540,19 @@ The proposal itself is modified. The modified proposal becomes the approved deci
 
 ### 19.1 Decision conditions
 
-Conditions without which a decision would be incomplete or invalid SHOULD be stored in `decision_conditions`.
+Conditions without which a decision would be incomplete or invalid SHOULD be stored in `decision_conditions`. Each structured decision condition MUST include `applicability` and `satisfaction`.
+
+A completed decision process does not necessarily mean that all ongoing conditions are closed. When this distinction matters, the decision SHOULD record:
+
+```yaml
+lifecycle:
+  decision_process: "COMPLETED"
+  condition_monitoring: "ACTIVE"
+```
+
+`decision_process` values are `IN_PROGRESS` and `COMPLETED`. `condition_monitoring` values are `NOT_REQUIRED`, `ACTIVE`, `CLOSED`, and `BLOCKED`.
+
+Long procedures or evidence SHOULD be kept outside the current state and referenced through `evidence_refs` rather than copied into every state snapshot.
 
 ### 19.2 Acceptance conditions
 

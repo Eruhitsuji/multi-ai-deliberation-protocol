@@ -30,6 +30,7 @@ The machine-readable session-state schema is:
 - Do not end a turn while non-blocked facilitator work remains.
 - User-facing language follows the resolved interaction language; canonical files and schema identifiers remain English.
 - Users may approve normally, approve with conditions, approve with changes, defer, or reject.
+- Decision conditions separate applicability (`ACTIVE`, `INACTIVE`, `NOT_APPLICABLE`) from satisfaction (`PENDING`, `IN_PROGRESS`, `SATISFIED`, `WAIVED_BY_USER`, `FAILED`).
 
 ## Quick start for humans
 
