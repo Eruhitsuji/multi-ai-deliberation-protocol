@@ -1,9 +1,11 @@
 name: Publish Bootstrap Prompts
 
 on:
-  push:
-    branches:
-      - main
+  workflow_run:
+    workflows:
+      - Validate
+    types:
+      - completed
   workflow_dispatch:
 
 permissions:
@@ -17,13 +19,23 @@ concurrency:
 
 jobs:
   publish-bootstrap:
+    if: >
+      github.event_name == 'workflow_dispatch' ||
+      (
+        github.event.workflow_run.conclusion == 'success' &&
+        github.event.workflow_run.head_branch == 'main'
+      )
     runs-on: ubuntu-latest
+    env:
+      SOURCE_SHA: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.sha }}
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Check out repository
         uses: actions/checkout@v6
+        with:
+          ref: ${{ env.SOURCE_SHA }}
 
       - name: Set up Python
         uses: actions/setup-python@v6
@@ -62,7 +74,7 @@ jobs:
       - name: Generate resolved bootstrap prompts
         env:
           MADP_SOURCE_REPOSITORY: ${{ github.repository }}
-          MADP_SOURCE_COMMIT: ${{ github.sha }}
+          MADP_SOURCE_COMMIT: ${{ env.SOURCE_SHA }}
           MADP_WORKFLOW_RUN_ID: ${{ github.run_id }}
         run: >-
           python scripts/generate_bootstrap_prompts.py
@@ -82,6 +94,9 @@ jobs:
         uses: actions/upload-pages-artifact@v5
         with:
           path: _site
+
+      - name: Wait for Pages backend readiness
+        run: sleep 20
 
       - name: Deploy Pages
         id: deployment
