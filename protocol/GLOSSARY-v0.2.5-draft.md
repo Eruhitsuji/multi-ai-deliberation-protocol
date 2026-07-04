@@ -45,7 +45,11 @@ This glossary defines canonical operational meanings used by the Multi-AI Delibe
 
 **Definition:** An actor assigned a bounded deliberation, review, validation, or execution purpose.
 
+**Canonical status values:** `PROPOSED`, `AUTHORIZED`, `JOINING`, `ACTIVE`, `PAUSED`, `LEAVING`, `LEFT`, `REMOVED`, `FAILED`, `COMPLETED`.
+
 **Required behavior:** A participant MUST NOT be added merely to increase agreement count or produce paraphrases.
+
+**Status note:** `COMPLETED` means the participant's assigned work is finished and no additional action is expected from that participant unless it is reassigned.
 
 ## Role Actor
 
@@ -253,7 +257,7 @@ This glossary defines canonical operational meanings used by the Multi-AI Delibe
 
 **Canonical values:** `ACTIVE`, `NOT_APPLICABLE`.
 
-**Required behavior:** Changing from `ACTIVE` to `NOT_APPLICABLE` relaxes a gate and requires a recorded basis.
+**Required behavior:** Changing from `ACTIVE` to `NOT_APPLICABLE` relaxes a gate and requires `applicability_basis`.
 
 ## Satisfaction
 
@@ -265,7 +269,7 @@ This glossary defines canonical operational meanings used by the Multi-AI Delibe
 
 **Canonical values:** `PENDING`, `IN_PROGRESS`, `SATISFIED`, `WAIVED_BY_USER`, `FAILED`.
 
-**Required behavior:** `SATISFIED` and `WAIVED_BY_USER` require a basis. `WAIVED_BY_USER` additionally requires user confirmation.
+**Required behavior:** `SATISFIED` requires `basis`. `WAIVED_BY_USER` requires both `basis` and `user_confirmation`.
 
 ## Deliberation Round
 
@@ -416,6 +420,8 @@ This glossary defines canonical operational meanings used by the Multi-AI Delibe
 
 **Definition:** The result of participant deliberation independently of whether the user approved it.
 
+**Canonical values:** `OPEN`, `CONSENSUS`, `CONDITIONAL_CONSENSUS`, `EXPERIMENT_CONSENSUS`, `USER_DECISION_REQUIRED`, `BLOCKED`, `REJECTED`.
+
 **Required behavior:** It MUST NOT by itself authorize execution.
 
 ## Approval Status
@@ -425,6 +431,18 @@ This glossary defines canonical operational meanings used by the Multi-AI Delibe
 **Normative:** Yes
 
 **Definition:** The user's disposition toward a specific decision revision.
+
+**Canonical values:** `PENDING`, `APPROVE`, `APPROVE_WITH_CONDITIONS`, `APPROVE_WITH_CHANGES`, `DEFER`, `REJECT`.
+
+## Current Issue Status
+
+**Canonical term:** `current_issue.status`
+**Category:** Issue
+**Normative:** Yes
+
+**Canonical values:** `OPEN`, `IN_PROGRESS`, `BLOCKED`, `COMPLETED`, `DEFERRED`.
+
+**Definition:** The workflow state of the current issue. It is separate from `decision.deliberation_outcome`.
 
 ## Decision Revision
 
@@ -444,6 +462,16 @@ This glossary defines canonical operational meanings used by the Multi-AI Delibe
 
 **Required behavior:** AI participants may originate only `UNVERIFIED_ASSERTION`. Unverified assertions do not authorize external, irreversible, privileged, or permission-escalated execution.
 
+## Assurance Origin
+
+**Canonical term:** `assurance_origin`
+**Category:** Authorization
+**Normative:** Yes
+
+**Canonical values:** `AI_RECORDED`, `USER_ACTION`, `VALIDATOR_VERIFIED`.
+
+**Required behavior:** `UNVERIFIED_ASSERTION` uses `AI_RECORDED`; `USER_CONFIRMED` uses `USER_ACTION`; `EXTERNALLY_VERIFIED` uses `VALIDATOR_VERIFIED` and requires a reference. Schema can require the reference field but cannot prove reference existence or authenticity.
+
 ## Operative Session State Snapshot
 
 **Canonical term:** `Operative Session State Snapshot`  
@@ -451,6 +479,10 @@ This glossary defines canonical operational meanings used by the Multi-AI Delibe
 **Normative:** Yes
 
 **Definition:** A bounded snapshot containing the current state required for the receiving turn, excluding full conversation history and obsolete detailed history.
+
+**Required contents:** `meta`, `session`, `language`, `usage_budget`, `participants`, `current_issue`, `decisions`, `conditions`, `permission_requests`, `permission_grants`, `unresolved_points`, `artifacts`, and `next_step`.
+
+**Required behavior:** The snapshot is the operative source of truth for the receiving turn unless the receiver already holds a newer official state.
 
 ## Relay Block
 
@@ -460,6 +492,8 @@ This glossary defines canonical operational meanings used by the Multi-AI Delibe
 
 **Definition:** The manual-profile transport envelope containing relay metadata and an Operative Session State Snapshot.
 
+**Required behavior:** `relay_block.session_id` must equal `operative_session_state_snapshot.meta.session_id`, and `relay_block.source_state_version` must equal `operative_session_state_snapshot.meta.state_version`.
+
 ## Permission Request
 
 **Canonical term:** `permission request`  
@@ -468,6 +502,10 @@ This glossary defines canonical operational meanings used by the Multi-AI Delibe
 
 **Definition:** A request naming an intended action and scope. Unknown action identifiers may be retained as requests but are denied by default.
 
+**Canonical status values:** `PENDING`, `DENIED`, `USER_ESCALATION_REQUIRED`, `RESOLVED`, `WITHDRAWN`.
+
+**Required behavior:** A permission request is not a permission grant. `GRANTED` is not a request status, and actual authorization is recorded only in `permission_grants`.
+
 ## Permission Grant
 
 **Canonical term:** `permission grant`  
@@ -475,6 +513,22 @@ This glossary defines canonical operational meanings used by the Multi-AI Delibe
 **Normative:** Yes
 
 **Definition:** Explicit authorization for a recognized action, non-empty scope, and defined duration.
+
+**Canonical action values:** `READ_EXTERNAL`, `SEND_EXTERNAL_DATA`, `WRITE_FILE`, `RUN_COMMAND`, `COMMIT`, `PUSH`, `CREATE_PR`, `SEND_MESSAGE`, `MODIFY_EXTERNAL_RESOURCE`.
+
+**Canonical duration values:** `ONE_SHOT`, `ISSUE`, `STANDING`.
+
+**Required behavior:** Unknown actions are not grantable by default. A serialized grant MUST include duration; when the user does not specify duration, the recorder writes `ISSUE`.
+
+## Usage Budget
+
+**Canonical term:** `usage_budget`
+**Category:** Budget
+**Normative:** Yes
+
+**Definition:** A structured limit or availability record for model usage, cost, and related operational budget.
+
+**Canonical status values:** `AVAILABLE`, `LIMITED`, `EXHAUSTED`, `UNKNOWN`.
 
 ## Semantic Validation
 

@@ -25,6 +25,28 @@ $defs:
     anyOf:
       - const: "UNKNOWN"
       - {type: string, format: date-time}
+  language:
+    type: object
+    additionalProperties: false
+    required: [interaction]
+    properties:
+      interaction: {type: string, minLength: 1}
+      output: {type: string, minLength: 1}
+  usageBudget:
+    type: object
+    additionalProperties: false
+    required: [status]
+    properties:
+      token_limit:
+        type: [integer, "null"]
+        minimum: 0
+      cost_limit:
+        type: [number, "null"]
+        minimum: 0
+      currency:
+        type: [string, "null"]
+        minLength: 1
+      status: {enum: [AVAILABLE, LIMITED, EXHAUSTED, UNKNOWN]}
 
   meta:
     type: object
@@ -53,6 +75,13 @@ $defs:
     properties:
       summary: {type: string, minLength: 1}
       reference: {type: string, minLength: 1}
+  userConfirmation:
+    type: object
+    additionalProperties: false
+    required: [assurance_level]
+    properties:
+      assurance_level: {const: USER_CONFIRMED}
+      reference: {type: string, minLength: 1}
 
   condition:
     type: object
@@ -68,6 +97,8 @@ $defs:
       timing:
         enum: [BEFORE_START, BEFORE_EXECUTION, BEFORE_EXTERNAL_ACTION, BEFORE_COMPLETION, ONGOING]
       basis: {$ref: "#/$defs/conditionBasis"}
+      applicability_basis: {$ref: "#/$defs/conditionBasis"}
+      user_confirmation: {$ref: "#/$defs/userConfirmation"}
       source: {type: string, minLength: 1}
       affected_execution_refs:
         type: array
@@ -75,27 +106,63 @@ $defs:
     allOf:
       - if:
           properties:
-            satisfaction:
-              enum: [SATISFIED, WAIVED_BY_USER]
+            satisfaction: {const: SATISFIED}
           required: [satisfaction]
         then:
           required: [basis]
+      - if:
+          properties:
+            satisfaction: {const: WAIVED_BY_USER}
+          required: [satisfaction]
+        then:
+          required: [basis, user_confirmation]
+      - if:
+          properties:
+            applicability: {const: NOT_APPLICABLE}
+          required: [applicability]
+        then:
+          required: [applicability_basis]
 
   approvalRecord:
     type: object
     additionalProperties: false
-    required: [decision_id, decision_revision, approver, assurance_level, occurred_at]
+    required: [decision_id, decision_revision, approver, assurance_level, assurance_origin, occurred_at]
     properties:
       decision_id: {$ref: "#/$defs/identifier"}
       decision_revision: {type: integer, minimum: 1}
       approver: {const: USER}
       assurance_level:
         enum: [UNVERIFIED_ASSERTION, USER_CONFIRMED, EXTERNALLY_VERIFIED]
+      assurance_origin:
+        enum: [AI_RECORDED, USER_ACTION, VALIDATOR_VERIFIED]
       occurred_at: {$ref: "#/$defs/timestamp"}
       recorded_at: {$ref: "#/$defs/timestamp"}
       basis: {type: string, minLength: 1}
       reference: {type: string, minLength: 1}
       recorded_by: {type: string, minLength: 1}
+    allOf:
+      - if:
+          properties:
+            assurance_level: {const: UNVERIFIED_ASSERTION}
+          required: [assurance_level]
+        then:
+          properties:
+            assurance_origin: {const: AI_RECORDED}
+      - if:
+          properties:
+            assurance_level: {const: USER_CONFIRMED}
+          required: [assurance_level]
+        then:
+          properties:
+            assurance_origin: {const: USER_ACTION}
+      - if:
+          properties:
+            assurance_level: {const: EXTERNALLY_VERIFIED}
+          required: [assurance_level]
+        then:
+          required: [reference]
+          properties:
+            assurance_origin: {const: VALIDATOR_VERIFIED}
 
   decision:
     type: object
@@ -105,7 +172,7 @@ $defs:
       id: {$ref: "#/$defs/identifier"}
       revision: {type: integer, minimum: 1}
       deliberation_outcome:
-        enum: [CONSENSUS, CONDITIONAL_CONSENSUS, EXPERIMENT_CONSENSUS, USER_DECISION_REQUIRED, OPEN, BLOCKED, REJECTED]
+        enum: [OPEN, CONSENSUS, CONDITIONAL_CONSENSUS, EXPERIMENT_CONSENSUS, USER_DECISION_REQUIRED, BLOCKED, REJECTED]
       approval_status:
         enum: [PENDING, APPROVE, APPROVE_WITH_CONDITIONS, APPROVE_WITH_CHANGES, DEFER, REJECT]
       summary: {type: string, minLength: 1}
@@ -140,7 +207,7 @@ $defs:
       scope: {$ref: "#/$defs/permissionScope"}
       rationale: {type: string, minLength: 1}
       status:
-        enum: [PENDING, GRANTED, DENIED, USER_ESCALATION_REQUIRED]
+        enum: [PENDING, DENIED, USER_ESCALATION_REQUIRED, RESOLVED, WITHDRAWN]
 
   permissionGrant:
     type: object
@@ -204,7 +271,7 @@ $defs:
     required: [id, status, question]
     properties:
       id: {$ref: "#/$defs/identifier"}
-      status: {enum: [IN_PROGRESS, USER_DECISION_REQUIRED, OPEN, BLOCKED, COMPLETED, DEFERRED, REJECTED]}
+      status: {enum: [OPEN, IN_PROGRESS, BLOCKED, COMPLETED, DEFERRED]}
       question: {type: string, minLength: 1}
       summary: {type: string, minLength: 1}
       acceptance_conditions:
@@ -294,7 +361,16 @@ $defs:
       response_format: {$ref: "#/$defs/nullableString"}
     allOf:
       - if: {properties: {action_required: {const: false}}, required: [action_required]}
-        then: {properties: {prompt_action: {const: NO_ACTION_REQUIRED}}}
+        then:
+          properties:
+            prompt_action: {const: NO_ACTION_REQUIRED}
+            task: {type: "null"}
+      - if: {properties: {action_required: {const: true}}, required: [action_required]}
+        then:
+          properties:
+            prompt_action:
+              not: {const: NO_ACTION_REQUIRED}
+            task: {type: string, minLength: 1}
 
   nextStep:
     type: object
@@ -336,6 +412,50 @@ $defs:
       location: {type: string, minLength: 1}
       summary: {type: string}
 
+  unresolvedPoint:
+    type: object
+    additionalProperties: false
+    required: [id, summary]
+    properties:
+      id: {$ref: "#/$defs/identifier"}
+      summary: {type: string, minLength: 1}
+      status: {enum: [OPEN, BLOCKED, DEFERRED]}
+      owner: {type: string, minLength: 1}
+
+  artifact:
+    type: object
+    additionalProperties: false
+    required: [id, type, summary]
+    properties:
+      id: {$ref: "#/$defs/identifier"}
+      type: {type: string, minLength: 1}
+      summary: {type: string, minLength: 1}
+      location: {type: string, minLength: 1}
+
+  snapshotSession:
+    type: object
+    additionalProperties: false
+    required: [goal]
+    properties:
+      goal: {type: string, minLength: 1}
+      fixed: {type: array, items: {$ref: "#/$defs/fixedItem"}}
+      open:
+        type: array
+        items:
+          type: object
+          additionalProperties: false
+          required: [id, summary]
+          properties:
+            id: {$ref: "#/$defs/identifier"}
+            summary: {type: string, minLength: 1}
+      critical_risks: {type: array, items: {$ref: "#/$defs/risk"}}
+      deferred_items: {type: array, items: {$ref: "#/$defs/deferredItem"}}
+      future_direction: {type: array, items: {$ref: "#/$defs/futureDirection"}}
+      out_of_scope: {type: array, items: {$ref: "#/$defs/outOfScopeItem"}}
+      user_decisions_pending: {type: array, items: {$ref: "#/$defs/userDecisionPending"}}
+      references: {type: array, items: {$ref: "#/$defs/reference"}}
+      review_profile: {$ref: "#/$defs/reviewProfile"}
+
   reviewProfile:
     type: object
     additionalProperties: false
@@ -351,7 +471,7 @@ $defs:
     required: [meta, goal, current_issue, participants, next_step]
     properties:
       meta: {$ref: "#/$defs/meta"}
-      language: {type: object}
+      language: {$ref: "#/$defs/language"}
       goal: {type: string, minLength: 1}
       fixed: {type: array, items: {$ref: "#/$defs/fixedItem"}}
       decisions: {type: array, items: {$ref: "#/$defs/decision"}}
@@ -365,7 +485,18 @@ $defs:
             id: {$ref: "#/$defs/identifier"}
             summary: {type: string, minLength: 1}
       current_issue: {$ref: "#/$defs/currentIssue"}
-      participants: {type: array, minItems: 1, items: {$ref: "#/$defs/participant"}}
+      participants:
+        type: array
+        minItems: 1
+        items: {$ref: "#/$defs/participant"}
+        contains:
+          type: object
+          required: [role, status]
+          properties:
+            role: {const: FACILITATOR}
+            status: {const: ACTIVE}
+        minContains: 0
+        maxContains: 1
       facilitator_transfer: {$ref: "#/$defs/facilitatorTransfer"}
       critical_risks: {type: array, items: {$ref: "#/$defs/risk"}}
       deferred_items: {type: array, items: {$ref: "#/$defs/deferredItem"}}
@@ -375,12 +506,53 @@ $defs:
       next_step: {$ref: "#/$defs/nextStep"}
       references: {type: array, items: {$ref: "#/$defs/reference"}}
       review_profile: {$ref: "#/$defs/reviewProfile"}
-      usage_budget: {type: object}
+      usage_budget: {$ref: "#/$defs/usageBudget"}
+
+  operativeSessionStateSnapshot:
+    type: object
+    additionalProperties: false
+    required: [meta, session, language, usage_budget, participants, current_issue, decisions, conditions, permission_requests, permission_grants, unresolved_points, artifacts, next_step]
+    properties:
+      meta: {$ref: "#/$defs/meta"}
+      session: {$ref: "#/$defs/snapshotSession"}
+      language: {$ref: "#/$defs/language"}
+      usage_budget: {$ref: "#/$defs/usageBudget"}
+      participants:
+        type: array
+        items: {$ref: "#/$defs/participant"}
+        contains:
+          type: object
+          required: [role, status]
+          properties:
+            role: {const: FACILITATOR}
+            status: {const: ACTIVE}
+        minContains: 0
+        maxContains: 1
+      current_issue: {$ref: "#/$defs/currentIssue"}
+      decisions:
+        type: array
+        items: {$ref: "#/$defs/decision"}
+      conditions:
+        type: array
+        items: {$ref: "#/$defs/condition"}
+      permission_requests:
+        type: array
+        items: {$ref: "#/$defs/permissionRequest"}
+      permission_grants:
+        type: array
+        items: {$ref: "#/$defs/permissionGrant"}
+      unresolved_points:
+        type: array
+        items: {$ref: "#/$defs/unresolvedPoint"}
+      artifacts:
+        type: array
+        items: {$ref: "#/$defs/artifact"}
+      next_step: {$ref: "#/$defs/nextStep"}
 
   relayBlock:
     type: object
     additionalProperties: false
-    required: [marker_begin, session_id, source_state_version, target_participant, purpose, expected_response, marker_end]
+    required: [marker_begin, session_id, source_state_version, target_participant, purpose, expected_response, operative_session_state_snapshot, marker_end]
     properties:
       marker_begin: {const: "BEGIN_MADP_RELAY_BLOCK"}
       session_id: {$ref: "#/$defs/identifier"}
@@ -388,4 +560,5 @@ $defs:
       target_participant: {type: string, minLength: 1}
       purpose: {type: string, minLength: 1}
       expected_response: {type: string, minLength: 1}
+      operative_session_state_snapshot: {$ref: "#/$defs/operativeSessionStateSnapshot"}
       marker_end: {const: "END_MADP_RELAY_BLOCK"}

@@ -332,7 +332,11 @@ A permission request MAY preserve any non-empty action identifier so an unknown 
 
 An unknown action MUST be denied and escalated to the user rather than mapped to a similar known action.
 
-A grant MUST include a non-empty scope with at least `context_id` and `target`. Missing or empty scope means `DENY`. A grant duration is `ONE_SHOT`, `ISSUE`, or `STANDING`; the default is `ISSUE`. `STANDING` requires explicit scope, a revocation method, and MUST NOT inherit across scopes.
+A permission request is not a permission grant. Actual authorization MUST be recorded only in `permission_grants`. Request status values are `PENDING`, `DENIED`, `USER_ESCALATION_REQUIRED`, `RESOLVED`, and `WITHDRAWN`; `GRANTED` is not a request status.
+
+An unknown action MAY remain recorded in a permission request, but any action outside the recognized grantable core action set MUST be denied for grant purposes. It MAY be reconsidered only through user escalation or a future protocol version that recognizes the action.
+
+A grant MUST include a non-empty scope with at least `context_id` and `target`. Missing or empty scope means `DENY`. A serialized grant MUST include duration. Grant duration is `ONE_SHOT`, `ISSUE`, or `STANDING`; if the user did not specify duration, the recorder MUST write `ISSUE`. `STANDING` requires explicit scope, a revocation method, and MUST NOT inherit across scopes.
 
 ## 12. External services and manual relay
 
@@ -350,7 +354,14 @@ In the manual-relay profile, every cross-chat or cross-service transfer MUST use
 - an Operative Session State Snapshot;
 - explicit begin and end markers.
 
-The snapshot contains current metadata, participants, current facilitator state, open issues, current decisions, unresolved or active conditions, unresolved conflicts, current permissions, pending user decisions, and next steps. It excludes full conversation history and obsolete detailed history.
+The snapshot contains current metadata, session summary, language, usage budget, participants, current issue, current decisions, unresolved or active conditions, permission requests, permission grants, unresolved points, artifacts, and next steps. It excludes full conversation history and obsolete detailed history. The snapshot is the operative source of truth for the receiving turn unless the receiver already holds a newer official state.
+
+Relay identity invariants:
+
+```text
+relay_block.session_id = relay_block.operative_session_state_snapshot.meta.session_id
+relay_block.source_state_version = relay_block.operative_session_state_snapshot.meta.state_version
+```
 
 The receiver MUST reject a relay whose state version is older than the currently held official state. A returned response type MUST match `expected_response`. Any action induced by a relay is evaluated using the originating actor's permission, not automatically using the facilitator's permission.
 
@@ -523,11 +534,11 @@ A decision MUST separate participant deliberation from user approval.
 
 `deliberation_outcome` values:
 
+- `OPEN`;
 - `CONSENSUS`;
 - `CONDITIONAL_CONSENSUS`;
 - `EXPERIMENT_CONSENSUS`;
 - `USER_DECISION_REQUIRED`;
-- `OPEN`;
 - `BLOCKED`;
 - `REJECTED`.
 
@@ -563,7 +574,15 @@ A revision mismatch invalidates the approval and requires renewed user decision.
 - `USER_CONFIRMED`;
 - `EXTERNALLY_VERIFIED`.
 
-An AI participant MAY originate only `UNVERIFIED_ASSERTION`. `USER_CONFIRMED` requires explicit user confirmation in the current operating context. `EXTERNALLY_VERIFIED` requires an independently verifiable record.
+`assurance_origin` values:
+
+- `AI_RECORDED`;
+- `USER_ACTION`;
+- `VALIDATOR_VERIFIED`.
+
+`UNVERIFIED_ASSERTION` uses `assurance_origin: AI_RECORDED`. `USER_CONFIRMED` uses `assurance_origin: USER_ACTION`. `EXTERNALLY_VERIFIED` uses `assurance_origin: VALIDATOR_VERIFIED` and requires a reference.
+
+An AI participant MAY originate only `UNVERIFIED_ASSERTION`. `USER_CONFIRMED` requires explicit user confirmation in the current operating context. `EXTERNALLY_VERIFIED` requires an independently verifiable record. A schema can require the reference field, but it cannot prove the reference exists or is authentic.
 
 `UNVERIFIED_ASSERTION` MUST NOT authorize external, irreversible, privileged, or permission-escalated execution. A basis or reference describes where the claim came from but does not itself establish assurance.
 
@@ -584,7 +603,7 @@ Satisfaction:
 - `WAIVED_BY_USER`;
 - `FAILED`.
 
-When applicability is not `ACTIVE`, satisfaction is retained for history but does not satisfy or fail the execution gate. A change from `ACTIVE` to `NOT_APPLICABLE` relaxes a gate and MUST include a basis. `SATISFIED` and `WAIVED_BY_USER` MUST include a basis. `WAIVED_BY_USER` additionally requires user confirmation.
+When applicability is not `ACTIVE`, satisfaction is retained for history but does not satisfy or fail the execution gate. A change from `ACTIVE` to `NOT_APPLICABLE` relaxes a gate and MUST include `applicability_basis`. `SATISFIED` MUST include `basis`. `WAIVED_BY_USER` MUST include both `basis` and `user_confirmation`. The minimum user confirmation records `assurance_level: USER_CONFIRMED` and MAY include a reference.
 
 Condition timing may be `BEFORE_START`, `BEFORE_EXECUTION`, `BEFORE_EXTERNAL_ACTION`, `BEFORE_COMPLETION`, or `ONGOING`.
 
@@ -613,7 +632,8 @@ Compact participant statuses:
 - `ACTIVE`;
 - `PAUSED`;
 - `LEFT`;
-- `FAILED`.
+- `FAILED`;
+- `COMPLETED`.
 
 Detailed statuses MAY additionally include:
 
@@ -622,6 +642,8 @@ Detailed statuses MAY additionally include:
 - `JOINING`;
 - `LEAVING`;
 - `REMOVED`.
+
+`COMPLETED` means the participant's assigned work is finished and no additional action is expected from that participant unless it is reassigned.
 
 Add a participant only when there is a defined purpose, such as a capability gap, new issue, unassessed critical objection, unavailable current actor, or user instruction.
 
@@ -653,7 +675,7 @@ Provide current decisions, critical objections, open items, and the exact differ
 
 ## 22. Leaving and facilitator transfer
 
-There MUST be at most one `ACTIVE` facilitator. Zero active facilitators are allowed during initialization, transfer, blocked recovery, or after completion; normal facilitator work MUST NOT proceed in that state.
+There MUST be at most one `ACTIVE` facilitator. Zero active facilitators are allowed during initialization, transfer, blocked recovery, or after completion; normal facilitator work MUST NOT proceed in that state. The schema expresses this with Draft 2020-12 `contains`, `minContains`, and `maxContains`, but older validators may ignore `maxContains`; the semantic invariant remains mandatory.
 
 A user appointment of a facilitator is a facilitator-independent recovery transition and MAY be processed while no facilitator is active.
 
@@ -729,6 +751,10 @@ A relay proposal from a `PROPOSE_ONLY` actor remains a proposal and MUST NOT be 
 
 A Usage Budget MAY include:
 
+- `token_limit`: a nonnegative integer or null;
+- `cost_limit`: a nonnegative number or null;
+- `currency`: a string or null;
+- `status`: `AVAILABLE`, `LIMITED`, `EXHAUSTED`, or `UNKNOWN`;
 - AI queries;
 - deliberation rounds;
 - response length;
@@ -759,15 +785,23 @@ Stop or move to user judgment when:
 - the budget or authorization expires;
 - the user stops the process.
 
-## 28. Consensus states
+## 28. Supported deliberation outcomes
 
-Supported issue states include:
+`current_issue.status` values are:
 
+- `OPEN`;
+- `IN_PROGRESS`;
+- `BLOCKED`;
+- `COMPLETED`;
+- `DEFERRED`.
+
+`decision.deliberation_outcome` values are:
+
+- `OPEN`;
 - `CONSENSUS`;
 - `CONDITIONAL_CONSENSUS`;
 - `EXPERIMENT_CONSENSUS`;
 - `USER_DECISION_REQUIRED`;
-- `OPEN`;
 - `BLOCKED`;
 - `REJECTED`.
 
@@ -813,8 +847,10 @@ At minimum, semantic validation checks:
 - duplicate stable identifiers;
 - active facilitator count greater than one;
 - invalid state lineage or stale relay version;
+- relay block session or state version mismatch with the enclosed Operative Session State Snapshot;
 - invalid decision-revision approval binding;
 - AI-originated assurance above `UNVERIFIED_ASSERTION`;
+- external approval reference existence or authenticity not independently verified;
 - unverified approval used for privileged or external execution;
 - missing or empty permission scope;
 - unknown action granted without user escalation;
@@ -826,9 +862,11 @@ Stable error codes include:
 - `DUPLICATE_IDENTIFIER`;
 - `MULTIPLE_ACTIVE_FACILITATORS`;
 - `STALE_STATE_VERSION`;
+- `RELAY_SNAPSHOT_MISMATCH`;
 - `INVALID_STATE_LINEAGE`;
 - `APPROVAL_REVISION_MISMATCH`;
 - `INVALID_ASSURANCE_ORIGIN`;
+- `EXTERNAL_REFERENCE_NOT_VERIFIED`;
 - `INSUFFICIENT_APPROVAL_ASSURANCE`;
 - `EMPTY_PERMISSION_SCOPE`;
 - `UNKNOWN_ACTION_DENIED`;
@@ -842,9 +880,11 @@ An implementation claiming semantic validation MUST agree with these vectors:
 1. two active facilitators: fail with `MULTIPLE_ACTIVE_FACILITATORS`;
 2. approval bound to revision 2 while decision is revision 3: fail with `APPROVAL_REVISION_MISMATCH`;
 3. AI-originated `USER_CONFIRMED`: fail with `INVALID_ASSURANCE_ORIGIN`;
-4. `ACTIVE` to `NOT_APPLICABLE` without basis: fail with `CONDITION_BASIS_REQUIRED`;
+4. `ACTIVE` to `NOT_APPLICABLE` without `applicability_basis`: fail with `CONDITION_BASIS_REQUIRED`;
 5. unknown permission action: retain the request but deny the grant with `UNKNOWN_ACTION_DENIED`;
-6. relay version lower than current official version: fail with `STALE_STATE_VERSION`.
+6. permission request using `GRANTED`: fail schema validation;
+7. relay block whose `session_id` or `source_state_version` differs from its snapshot metadata: fail with `RELAY_SNAPSHOT_MISMATCH`;
+8. relay version lower than current official version: fail with `STALE_STATE_VERSION`.
 
 A running session SHOULD lock protocol and schema versions. New repository versions MUST NOT auto-upgrade an active session without a change summary, impact analysis, user approval, and migration where needed.
 

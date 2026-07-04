@@ -122,7 +122,7 @@ satisfaction: "IN_PROGRESS"
 timing: "BEFORE_COMPLETION"
 ```
 
-`SATISFIED`, `WAIVED_BY_USER`, and `ACTIVE` to `NOT_APPLICABLE` changes require a basis.
+`SATISFIED` requires `basis`. `WAIVED_BY_USER` requires both `basis` and `user_confirmation`. `ACTIVE` to `NOT_APPLICABLE` changes require `applicability_basis`.
 
 ## Approval example
 
@@ -132,6 +132,7 @@ approval:
   decision_revision: 2
   approver: "USER"
   assurance_level: "USER_CONFIRMED"
+  assurance_origin: "USER_ACTION"
   occurred_at: "UNKNOWN"
   basis: "The user explicitly approved revision 2 in the current chat."
 ```
@@ -140,7 +141,14 @@ An AI may record only `UNVERIFIED_ASSERTION` on its own. Unverified assertions c
 
 ## Manual relay
 
-The manual profile requires a marked `RELAY_BLOCK` containing metadata and an Operative Session State Snapshot. It excludes full conversation history and obsolete detailed history.
+The manual profile requires a marked `RELAY_BLOCK` containing metadata and `operative_session_state_snapshot`. The snapshot excludes full conversation history and obsolete detailed history, and is the operative source of truth for the receiving turn unless the receiver already holds newer official state.
+
+Relay identity invariants:
+
+```text
+relay_block.session_id = relay_block.operative_session_state_snapshot.meta.session_id
+relay_block.source_state_version = relay_block.operative_session_state_snapshot.meta.state_version
+```
 
 ## Repository structure
 
