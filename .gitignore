@@ -6,6 +6,7 @@
 !.github/workflows/*.yaml
 out/
 tmp/
+_site/
 *.local
 .env
 __pycache__/
