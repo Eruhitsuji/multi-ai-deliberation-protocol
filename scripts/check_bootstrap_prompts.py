@@ -3,6 +3,7 @@ from __future__ import annotations
 import re
 import sys
 
+from madp_validation import load_yaml_text
 from madp_validation import ROOT, rel
 
 
@@ -21,6 +22,7 @@ REQUIRED_CANONICAL_PATHS = [
     "schemas/session-state-v0.2.5-draft.schema.yaml",
 ]
 PLACEHOLDER_RE = re.compile(r"\{\{[A-Z0-9_]+\}\}")
+YAML_FENCE_RE = re.compile(r"```yaml\n(.*?)\n```", re.DOTALL)
 
 
 def main() -> int:
@@ -61,6 +63,30 @@ def main() -> int:
         problems.append("load-protocol-from-github.md: missing PROTOCOL_LOAD_REPORT")
     if "all_required_files_read: true | false" not in load_text:
         problems.append("load-protocol-from-github.md: missing all_required_files_read output")
+
+    join_text = texts.get("join-as-participant.md", "")
+    required_join_markers = [
+        "exactly one YAML document",
+        "Do not emit prose before or after the YAML block",
+        "Do not create nested or multiple code fences",
+        "structural self-check",
+        "parseable as one YAML mapping",
+    ]
+    for marker in required_join_markers:
+        if marker not in join_text:
+            problems.append(f"join-as-participant.md: missing serialization instruction {marker!r}")
+
+    shape_match = re.search(r"## Required Response Shape\s+(.*?)(?:\n## |\Z)", join_text, re.DOTALL)
+    if not shape_match:
+        problems.append("join-as-participant.md: missing Required Response Shape section")
+    else:
+        fences = YAML_FENCE_RE.findall(shape_match.group(1))
+        if not fences:
+            problems.append("join-as-participant.md: Required Response Shape has no yaml code fence")
+        else:
+            data = load_yaml_text(fences[0], "bootstrap/join-as-participant.md Required Response Shape")
+            if not isinstance(data, dict) or list(data.keys()) != ["PARTICIPANT_RESPONSE"]:
+                problems.append("join-as-participant.md: Required Response Shape top-level key is not only PARTICIPANT_RESPONSE")
 
     readme_text = texts.get("README.md", "")
     placeholders = set()

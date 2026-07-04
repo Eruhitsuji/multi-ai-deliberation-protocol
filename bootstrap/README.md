@@ -42,6 +42,18 @@ A repository top URL is not proof that a model read the files. A branch URL such
 
 Some AI chats cannot fetch URLs, cannot access GitHub, fetch rendered pages instead of raw files, truncate long files, or summarize content without reading it. The receiving AI must report these limits in `PROTOCOL_LOAD_REPORT.limitations` and must not reconstruct unread protocol content from general knowledge.
 
+## Operational Limitations
+
+Chat UI rendering or model output formatting can break Markdown code fences or YAML indentation. Treat `PROTOCOL_LOAD_REPORT`, `FACILITATOR_START_REPORT`, and `PARTICIPANT_RESPONSE` as machine-readable only after parsing them with a YAML parser. If the YAML does not parse, do not treat the response as machine-valid even when a human can understand the intent.
+
+Record logical behavior and serialization separately. A participant dry run can preserve authority, state, and response type while still failing machine-readable serialization.
+
+```yaml
+dry_run_result:
+  behavioral_conformance: "PASS"
+  yaml_serialization: "PASS | FAIL | NOT_VERIFIED"
+```
+
 ## Placeholder List
 
 - `{{MADP_GITHUB_OWNER}}`: GitHub owner or organization.
@@ -90,4 +102,3 @@ Use bootstrap/join-as-participant.md with:
 {{EXPECTED_RESPONSE}} = review_findings
 {{RELAY_BLOCK}} = <paste full RELAY_BLOCK here>
 ```
-

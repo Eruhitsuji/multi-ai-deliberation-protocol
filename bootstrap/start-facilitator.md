@@ -49,6 +49,8 @@ If `{{INITIAL_SESSION_STATE}}` is `NONE` or unavailable, propose a minimal `SESS
 
 When ready, output:
 
+Return startup machine-readable output as exactly one YAML document. Enclose it in exactly one Markdown code fence marked `yaml`. Do not emit prose before or after the YAML block. Do not create nested or multiple code fences. Preserve valid YAML indentation. Before returning, perform a structural self-check that the output is parseable as one YAML mapping.
+
 ```yaml
 FACILITATOR_START_REPORT:
   participant_id: "{{PARTICIPANT_ID}}"
@@ -61,5 +63,4 @@ FACILITATOR_START_REPORT:
   limitations: []
 ```
 
-Then provide the current or proposed `SESSION_STATE` and the next user action.
-
+Then provide the current or proposed `SESSION_STATE` and the next user action inside the same YAML document when they are available.

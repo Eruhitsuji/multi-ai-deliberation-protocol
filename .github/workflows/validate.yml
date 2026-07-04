@@ -30,6 +30,9 @@ jobs:
       - name: Validate semantic fixtures
         run: python scripts/validate_semantics.py
 
+      - name: Validate participant response fixtures
+        run: python scripts/validate_participant_response.py
+
       - name: Check Markdown links
         run: python scripts/check_markdown_links.py
 

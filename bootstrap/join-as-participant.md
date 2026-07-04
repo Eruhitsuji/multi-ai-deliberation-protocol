@@ -43,6 +43,8 @@ Set evidence status for material claims as `NOT_VERIFIED`, `STRUCTURAL_CHECK_ONL
 
 ## Required Response Shape
 
+Return the response as exactly one YAML document. Enclose it in exactly one Markdown code fence marked `yaml`. Do not emit prose before or after the YAML block. Do not create nested or multiple code fences. Preserve valid YAML indentation. The top-level mapping must contain only `PARTICIPANT_RESPONSE`. Before returning, perform a structural self-check that the output is parseable as one YAML mapping.
+
 ```yaml
 PARTICIPANT_RESPONSE:
   participant_id: "{{PARTICIPANT_ID}}"
@@ -63,4 +65,3 @@ PARTICIPANT_RESPONSE:
 ```
 
 If the relay block is missing, malformed, stale relative to a newer official state you hold, or not readable, stop and report the limitation instead of guessing.
-

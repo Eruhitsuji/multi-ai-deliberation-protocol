@@ -171,6 +171,7 @@ python -m pip install -r requirements-dev.txt
 python scripts/validate_schema.py
 python scripts/validate_examples.py
 python scripts/validate_semantics.py
+python scripts/validate_participant_response.py
 python scripts/check_markdown_links.py
 python scripts/check_document_consistency.py
 python scripts/check_bootstrap_prompts.py
@@ -184,6 +185,7 @@ python -m venv .venv-validation
 .\.venv-validation\Scripts\python.exe scripts\validate_schema.py
 .\.venv-validation\Scripts\python.exe scripts\validate_examples.py
 .\.venv-validation\Scripts\python.exe scripts\validate_semantics.py
+.\.venv-validation\Scripts\python.exe scripts\validate_participant_response.py
 .\.venv-validation\Scripts\python.exe scripts\check_markdown_links.py
 .\.venv-validation\Scripts\python.exe scripts\check_document_consistency.py
 .\.venv-validation\Scripts\python.exe scripts\check_bootstrap_prompts.py
