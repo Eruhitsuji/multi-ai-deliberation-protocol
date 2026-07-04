@@ -162,6 +162,10 @@ Use the bootstrap prompts when starting an AI chat that has not already loaded M
 
 For release work, prefer direct file upload or commit-pinned Raw URLs. Do not rely on a movable branch URL as proof that the receiving AI read the protocol.
 
+The repository `bootstrap/` files are templates. Generated bootstrap prompt files resolve only repository-specific placeholders (`{{MADP_GITHUB_OWNER}}`, `{{MADP_GITHUB_REPOSITORY}}`, and `{{MADP_COMMIT_SHA}}`) and keep session-specific placeholders for the user to fill at use time.
+
+When GitHub Pages is enabled for Actions deployments, the publish workflow deploys generated prompts without committing them back to `main`. The Pages URL is a movable latest deployment URL; repository Pages URLs usually follow `https://<owner>.github.io/<repository>/`, and the exact deployment URL is reported by the workflow. The generated prompt contents pin canonical Raw URLs to the recorded source commit. For high-assurance use, check the generated `bootstrap/manifest.yaml` and source commit before use.
+
 ## Validation
 
 MADP v0.2.5-draft validation uses Python 3.11 or newer with `jsonschema` and `PyYAML`.
@@ -175,6 +179,8 @@ python scripts/validate_participant_response.py
 python scripts/check_markdown_links.py
 python scripts/check_document_consistency.py
 python scripts/check_bootstrap_prompts.py
+GITHUB_REPOSITORY=ExampleOwner/madp-fixture GITHUB_SHA=0123456789abcdef0123456789abcdef01234567 GITHUB_RUN_ID=LOCAL_FIXTURE_RUN python scripts/generate_bootstrap_prompts.py tmp/generated-bootstrap-validation
+python scripts/check_generated_bootstrap.py tmp/generated-bootstrap-validation --expect tests/generated-bootstrap/local-generation.yaml
 ```
 
 On Windows PowerShell, using a local virtual environment:
@@ -189,6 +195,11 @@ python -m venv .venv-validation
 .\.venv-validation\Scripts\python.exe scripts\check_markdown_links.py
 .\.venv-validation\Scripts\python.exe scripts\check_document_consistency.py
 .\.venv-validation\Scripts\python.exe scripts\check_bootstrap_prompts.py
+$env:GITHUB_REPOSITORY = "ExampleOwner/madp-fixture"
+$env:GITHUB_SHA = "0123456789abcdef0123456789abcdef01234567"
+$env:GITHUB_RUN_ID = "LOCAL_FIXTURE_RUN"
+.\.venv-validation\Scripts\python.exe scripts\generate_bootstrap_prompts.py tmp\generated-bootstrap-validation
+.\.venv-validation\Scripts\python.exe scripts\check_generated_bootstrap.py tmp\generated-bootstrap-validation --expect tests\generated-bootstrap\local-generation.yaml
 ```
 
 ## Repository structure

@@ -1,12 +1,26 @@
-name: Validate
+name: Publish Bootstrap Prompts
 
 on:
   push:
-  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
 
 jobs:
-  validate:
+  publish-bootstrap:
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Check out repository
         uses: actions/checkout@v6
@@ -42,12 +56,20 @@ jobs:
       - name: Check bootstrap prompts
         run: python scripts/check_bootstrap_prompts.py
 
-      - name: Generate bootstrap prompt fixture
-        env:
-          GITHUB_REPOSITORY: ExampleOwner/madp-fixture
-          GITHUB_SHA: 0123456789abcdef0123456789abcdef01234567
-          GITHUB_RUN_ID: LOCAL_FIXTURE_RUN
-        run: python scripts/generate_bootstrap_prompts.py tmp/generated-bootstrap-validation
+      - name: Generate resolved bootstrap prompts
+        run: python scripts/generate_bootstrap_prompts.py _site
 
-      - name: Check generated bootstrap prompt fixture
-        run: python scripts/check_generated_bootstrap.py tmp/generated-bootstrap-validation --expect tests/generated-bootstrap/local-generation.yaml
+      - name: Check generated bootstrap prompts
+        run: python scripts/check_generated_bootstrap.py _site
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v6
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: _site
+
+      - name: Deploy Pages
+        id: deployment
+        uses: actions/deploy-pages@v5

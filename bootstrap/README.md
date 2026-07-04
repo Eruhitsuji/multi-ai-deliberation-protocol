@@ -10,6 +10,14 @@ These prompts help start a new AI chat that does not already know MADP. They are
 
 Use these prompts to make the receiving AI load the pinned MADP files, report what it actually read, and avoid guessing when a required file is unread or only partially read.
 
+## Template and Generated Prompts
+
+In the source repository, the files in `bootstrap/` are source templates. They intentionally keep the repository-specific placeholders listed below.
+
+Generated prompt files are produced for GitHub Pages by resolving only those repository-specific placeholders. The generated canonical Raw URLs are pinned to the source commit recorded in `bootstrap/manifest.yaml`. The GitHub Pages latest URL is movable, but the generated file contents point at one specific commit.
+
+For high-assurance use, verify the generated `manifest.yaml`, the source repository, and the source commit before pasting a generated prompt into a new AI chat. Session-specific placeholders such as `{{PARTICIPANT_ID}}`, `{{SESSION_ID}}`, `{{TASK}}`, and `{{RELAY_BLOCK}}` still need to be filled in at use time.
+
 ## Bootstrap vs Protocol, Profiles, and Templates
 
 - Protocol: the normative behavior, authorization, state, relay, and conformance rules.
