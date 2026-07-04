@@ -36,23 +36,51 @@ def _fail(message: str) -> None:
     raise SystemExit(message)
 
 
+def _required_input(name: str, cli_value: str | None, env_value: str | None) -> str:
+    if cli_value is not None:
+        if not cli_value.strip():
+            _fail(f"{name} must not be empty")
+        return cli_value.strip()
+    if env_value is not None and env_value.strip():
+        return env_value.strip()
+    _fail(f"{name} is required")
+
+
+def _optional_input(name: str, cli_value: str | None, env_value: str | None, default: str) -> str:
+    if cli_value is not None:
+        if not cli_value.strip():
+            _fail(f"{name} must not be empty")
+        return cli_value.strip()
+    if env_value is not None and env_value.strip():
+        return env_value.strip()
+    return default
+
+
+def _generated_by(cli_value: str | None, actions_env: str) -> str:
+    if cli_value is not None:
+        if not cli_value.strip():
+            _fail("--generated-by must not be empty")
+        return cli_value.strip()
+    return "GitHub Actions" if actions_env.strip().lower() == "true" else "LOCAL"
+
+
 def _parse_repository(value: str) -> tuple[str, str]:
     if not value or "/" not in value:
-        _fail("GITHUB_REPOSITORY must be owner/repository")
+        _fail("repository must be owner/repository")
     parts = value.split("/")
     if len(parts) != 2 or not all(parts):
-        _fail("GITHUB_REPOSITORY must contain exactly one owner and one repository")
+        _fail("repository must contain exactly one owner and one repository")
     owner, repository = parts
     if not REPO_PART_RE.fullmatch(owner) or not REPO_PART_RE.fullmatch(repository):
-        _fail("GITHUB_REPOSITORY contains invalid characters")
+        _fail("repository contains invalid characters")
     return owner, repository
 
 
 def _source_sha(value: str) -> str:
     if not value:
-        _fail("GITHUB_SHA is required")
+        _fail("commit SHA is required")
     if not SHA_RE.fullmatch(value):
-        _fail("GITHUB_SHA must be a 40-character hexadecimal commit SHA")
+        _fail("commit SHA must be a 40-character hexadecimal commit SHA")
     return value.lower()
 
 
@@ -150,12 +178,10 @@ def _index_html(owner: str, repository: str, source_commit: str) -> str:
 """
 
 
-def generate(output_dir: Path, repository_env: str, sha_env: str, run_id_env: str, actions_env: str) -> None:
-    owner, repository = _parse_repository(repository_env.strip())
-    source_commit = _source_sha(sha_env.strip())
+def generate(output_dir: Path, source_repository: str, source_sha: str, workflow_run_id: str, generated_by: str) -> None:
+    owner, repository = _parse_repository(source_repository)
+    source_commit = _source_sha(source_sha)
     source_repository = f"{owner}/{repository}"
-    workflow_run_id = run_id_env.strip() or "LOCAL"
-    generated_by = "GitHub Actions" if actions_env.strip().lower() == "true" else "LOCAL"
 
     bootstrap_output = output_dir / "bootstrap"
     generated_files: list[dict[str, Any]] = []
@@ -196,14 +222,23 @@ def generate(output_dir: Path, repository_env: str, sha_env: str, run_id_env: st
 def main() -> int:
     parser = argparse.ArgumentParser(description="Generate repository-resolved MADP bootstrap prompts.")
     parser.add_argument("output_dir", help="Directory to receive generated Pages files.")
+    parser.add_argument("--repository", help="Source repository in owner/repository form.")
+    parser.add_argument("--commit-sha", help="Source commit SHA to pin generated Raw URLs to.")
+    parser.add_argument("--workflow-run-id", help="Workflow run identifier to record in manifest.")
+    parser.add_argument("--generated-by", help="Generator identity to record in manifest.")
     args = parser.parse_args()
+
+    source_repository = _required_input("--repository", args.repository, os.environ.get("GITHUB_REPOSITORY"))
+    source_sha = _required_input("--commit-sha", args.commit_sha, os.environ.get("GITHUB_SHA"))
+    workflow_run_id = _optional_input("--workflow-run-id", args.workflow_run_id, os.environ.get("GITHUB_RUN_ID"), "LOCAL")
+    generated_by = _generated_by(args.generated_by, os.environ.get("GITHUB_ACTIONS", ""))
 
     generate(
         Path(args.output_dir),
-        os.environ.get("GITHUB_REPOSITORY", ""),
-        os.environ.get("GITHUB_SHA", ""),
-        os.environ.get("GITHUB_RUN_ID", "LOCAL"),
-        os.environ.get("GITHUB_ACTIONS", ""),
+        source_repository,
+        source_sha,
+        workflow_run_id,
+        generated_by,
     )
     return 0
 

@@ -56,8 +56,21 @@ jobs:
       - name: Check bootstrap prompts
         run: python scripts/check_bootstrap_prompts.py
 
+      - name: Test bootstrap prompt generator
+        run: python scripts/test_generate_bootstrap_prompts.py
+
       - name: Generate resolved bootstrap prompts
-        run: python scripts/generate_bootstrap_prompts.py _site
+        env:
+          MADP_SOURCE_REPOSITORY: ${{ github.repository }}
+          MADP_SOURCE_COMMIT: ${{ github.sha }}
+          MADP_WORKFLOW_RUN_ID: ${{ github.run_id }}
+        run: >-
+          python scripts/generate_bootstrap_prompts.py
+          _site
+          --repository "$MADP_SOURCE_REPOSITORY"
+          --commit-sha "$MADP_SOURCE_COMMIT"
+          --workflow-run-id "$MADP_WORKFLOW_RUN_ID"
+          --generated-by "GitHub Actions"
 
       - name: Check generated bootstrap prompts
         run: python scripts/check_generated_bootstrap.py _site

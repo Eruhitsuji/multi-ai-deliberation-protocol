@@ -1,3 +1,4 @@
 github_repository: "ExampleOwner/madp-fixture"
 github_sha: "0123456789abcdef0123456789abcdef01234567"
 github_run_id: "LOCAL_FIXTURE_RUN"
+generated_by: "LOCAL"

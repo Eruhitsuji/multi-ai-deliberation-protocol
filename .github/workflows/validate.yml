@@ -42,12 +42,17 @@ jobs:
       - name: Check bootstrap prompts
         run: python scripts/check_bootstrap_prompts.py
 
+      - name: Test bootstrap prompt generator
+        run: python scripts/test_generate_bootstrap_prompts.py
+
       - name: Generate bootstrap prompt fixture
-        env:
-          GITHUB_REPOSITORY: ExampleOwner/madp-fixture
-          GITHUB_SHA: 0123456789abcdef0123456789abcdef01234567
-          GITHUB_RUN_ID: LOCAL_FIXTURE_RUN
-        run: python scripts/generate_bootstrap_prompts.py tmp/generated-bootstrap-validation
+        run: >-
+          python scripts/generate_bootstrap_prompts.py
+          tmp/generated-bootstrap-validation
+          --repository ExampleOwner/madp-fixture
+          --commit-sha 0123456789abcdef0123456789abcdef01234567
+          --workflow-run-id LOCAL_FIXTURE_RUN
+          --generated-by LOCAL
 
       - name: Check generated bootstrap prompt fixture
         run: python scripts/check_generated_bootstrap.py tmp/generated-bootstrap-validation --expect tests/generated-bootstrap/local-generation.yaml

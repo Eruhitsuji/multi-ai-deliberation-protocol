@@ -179,7 +179,8 @@ python scripts/validate_participant_response.py
 python scripts/check_markdown_links.py
 python scripts/check_document_consistency.py
 python scripts/check_bootstrap_prompts.py
-GITHUB_REPOSITORY=ExampleOwner/madp-fixture GITHUB_SHA=0123456789abcdef0123456789abcdef01234567 GITHUB_RUN_ID=LOCAL_FIXTURE_RUN python scripts/generate_bootstrap_prompts.py tmp/generated-bootstrap-validation
+python scripts/test_generate_bootstrap_prompts.py
+python scripts/generate_bootstrap_prompts.py tmp/generated-bootstrap-validation --repository ExampleOwner/madp-fixture --commit-sha 0123456789abcdef0123456789abcdef01234567 --workflow-run-id LOCAL_FIXTURE_RUN --generated-by LOCAL
 python scripts/check_generated_bootstrap.py tmp/generated-bootstrap-validation --expect tests/generated-bootstrap/local-generation.yaml
 ```
 
@@ -195,10 +196,8 @@ python -m venv .venv-validation
 .\.venv-validation\Scripts\python.exe scripts\check_markdown_links.py
 .\.venv-validation\Scripts\python.exe scripts\check_document_consistency.py
 .\.venv-validation\Scripts\python.exe scripts\check_bootstrap_prompts.py
-$env:GITHUB_REPOSITORY = "ExampleOwner/madp-fixture"
-$env:GITHUB_SHA = "0123456789abcdef0123456789abcdef01234567"
-$env:GITHUB_RUN_ID = "LOCAL_FIXTURE_RUN"
-.\.venv-validation\Scripts\python.exe scripts\generate_bootstrap_prompts.py tmp\generated-bootstrap-validation
+.\.venv-validation\Scripts\python.exe scripts\test_generate_bootstrap_prompts.py
+.\.venv-validation\Scripts\python.exe scripts\generate_bootstrap_prompts.py tmp\generated-bootstrap-validation --repository ExampleOwner/madp-fixture --commit-sha 0123456789abcdef0123456789abcdef01234567 --workflow-run-id LOCAL_FIXTURE_RUN --generated-by LOCAL
 .\.venv-validation\Scripts\python.exe scripts\check_generated_bootstrap.py tmp\generated-bootstrap-validation --expect tests\generated-bootstrap\local-generation.yaml
 ```
 
