@@ -1,6 +1,6 @@
 # Multi-AI Deliberation Protocol (MADP)
 
-> Current release candidate: **MADP-v0.2.5-rc.1**
+> Current release candidate: **MADP-v0.2.5-rc.2**
 
 MADP is a service-neutral protocol for structured deliberation with AI systems, role-separated instances, human validators, and execution agents. It supports research, design, review, software development, and everyday decisions while keeping the user as the sole final decision-maker.
 
@@ -9,17 +9,20 @@ MADP is a service-neutral protocol for structured deliberation with AI systems, 
 This is a release candidate, not a final or stable release. The user remains the only actor who can approve a final release.
 
 ```yaml
-current_release_candidate: "MADP-v0.2.5-rc.1"
+current_release_candidate: "MADP-v0.2.5-rc.2"
+previous_release_candidate: "MADP-v0.2.5-rc.1"
 previous_draft: "MADP-v0.2.5-draft"
 status: "release candidate, not final"
 ```
 
 Canonical repository documents are English.
 
-- [`protocol/MADP-v0.2.5-rc.1.md`](protocol/MADP-v0.2.5-rc.1.md) - behavior, procedures, transitions, authorization
-- [`protocol/GLOSSARY-v0.2.5-rc.1.md`](protocol/GLOSSARY-v0.2.5-rc.1.md) - normative term meanings and distinctions
-- [`schemas/session-state-v0.2.5-rc.1.schema.yaml`](schemas/session-state-v0.2.5-rc.1.schema.yaml) - fields, types, required properties, enum spelling
+- [`protocol/MADP-v0.2.5-rc.2.md`](protocol/MADP-v0.2.5-rc.2.md) - behavior, procedures, transitions, authorization
+- [`protocol/GLOSSARY-v0.2.5-rc.2.md`](protocol/GLOSSARY-v0.2.5-rc.2.md) - normative term meanings and distinctions
+- [`schemas/session-state-v0.2.5-rc.2.schema.yaml`](schemas/session-state-v0.2.5-rc.2.schema.yaml) - fields, types, required properties, enum spelling
 - [`LICENSE`](LICENSE) - MIT License
+
+`MADP-v0.2.5-rc.1` remains retained as the previous public release candidate. It is historical, not the current canonical target.
 
 Previous draft documents are retained for history:
 
@@ -37,7 +40,8 @@ Recorded validation status for this release candidate:
 - ChatGPT normal cross-chat relay PASS
 - ChatGPT YAML serialization PASS
 - ChatGPT malformed relay rejection PASS
-- other model interoperability remains pending
+- Gemini uploaded-bundle recovery PASS for rc.1 evidence
+- rc.2 runtime load smoke test remains pending
 
 README examples are informative. A conflict among authority domains is a specification defect and must be reported.
 
@@ -57,7 +61,7 @@ README examples are informative. A conflict among authority domains is a specifi
 ## Quick start
 
 ```text
-Use MADP v0.2.5-rc.1.
+Use MADP v0.2.5-rc.2.
 
 Issue: Decide the minimum release contents for a small open-source project.
 Fixed requirements:
@@ -78,13 +82,13 @@ Before use, an AI should report which canonical files it actually read. A reposi
 ```yaml
 protocol_load_status:
   requested: true
-  confirmed_version: "0.2.5-rc.1"
+  confirmed_version: "0.2.5-rc.2"
   files_actually_read:
-    - path: "protocol/MADP-v0.2.5-rc.1.md"
+    - path: "protocol/MADP-v0.2.5-rc.2.md"
       result: "READ"
-    - path: "protocol/GLOSSARY-v0.2.5-rc.1.md"
+    - path: "protocol/GLOSSARY-v0.2.5-rc.2.md"
       result: "READ"
-    - path: "schemas/session-state-v0.2.5-rc.1.schema.yaml"
+    - path: "schemas/session-state-v0.2.5-rc.2.schema.yaml"
       result: "READ"
   formal_schema_validation: false
   unread_or_unavailable_sections: []
@@ -96,8 +100,8 @@ protocol_load_status:
 session_state:
   meta:
     protocol: "MADP"
-    protocol_version: "0.2.5-rc.1"
-    schema_version: "0.2.5-rc.1"
+    protocol_version: "0.2.5-rc.2"
+    schema_version: "0.2.5-rc.2"
     session_id: "MADP-EXAMPLE-001"
     state_version: 1
     parent_version: 0
@@ -190,13 +194,13 @@ For release work, prefer direct file upload or commit-pinned Raw URLs. Do not re
 
 The repository `bootstrap/` files are templates. Generated bootstrap prompt files resolve only repository-specific placeholders (`{{MADP_GITHUB_OWNER}}`, `{{MADP_GITHUB_REPOSITORY}}`, and `{{MADP_COMMIT_SHA}}`) and keep session-specific placeholders for the user to fill at use time.
 
-When GitHub Pages is enabled for Actions deployments, the publish workflow deploys generated prompts without committing them back to `main`. The Pages URL is a movable latest deployment URL; repository Pages URLs usually follow `https://<owner>.github.io/<repository>/`, and the exact deployment URL is reported by the workflow. The generated prompt contents pin canonical Raw URLs to the recorded source commit. For high-assurance use, check the generated `bootstrap/manifest.yaml` and source commit before use.
+When GitHub Pages is enabled for Actions deployments, the publish workflow deploys generated prompts without committing them back to `main`. The Pages URL is a movable latest deployment URL; repository Pages URLs usually follow `https://<owner>.github.io/<repository>/`, and the exact deployment URL is reported by the workflow. The generated prompt contents pin canonical Raw URLs to the recorded source commit. For high-assurance use, check the generated `bootstrap/manifest.yaml`, the complete bundle manifest, and the source commit before use.
 
-For AI environments that cannot retrieve external URLs directly, the Pages artifact also includes a generated complete-protocol bundle at `https://<owner>.github.io/<repository>/bootstrap/complete-protocol-bundle.txt`. This is not a static file committed in the repository; it is generated during the Pages workflow from the canonical source files.
+For AI environments that cannot retrieve external URLs directly, the Pages artifact also includes a generated complete-protocol bundle at `https://<owner>.github.io/<repository>/bootstrap/complete-protocol-bundle.txt`. This is not a static file committed in the repository; it is generated during the Pages workflow from the canonical source files. The bundle begins with `BEGIN_MADP_BUNDLE_METADATA`; its `source_commit` is the provenance source for uploaded-file recovery. The companion manifest records the final bundle hash and per-source-file hashes. The bundle URL is movable, so save the bundle or upload it directly when URL retrieval is unavailable. Pasted text is also an accepted fallback.
 
 ## Validation
 
-MADP v0.2.5-rc.1 validation uses Python 3.11 or newer with `jsonschema` and `PyYAML`.
+MADP v0.2.5-rc.2 validation uses Python 3.11 or newer with `jsonschema` and `PyYAML`.
 
 ```bash
 python -m pip install -r requirements-dev.txt
@@ -208,7 +212,7 @@ python scripts/check_markdown_links.py
 python scripts/check_document_consistency.py
 python scripts/check_bootstrap_prompts.py
 python scripts/test_generate_bootstrap_prompts.py
-python scripts/generate_bootstrap_prompts.py tmp/generated-bootstrap-validation --repository ExampleOwner/madp-fixture --commit-sha 0123456789abcdef0123456789abcdef01234567 --workflow-run-id RC_BUNDLE_LOCAL_TEST --generated-by LOCAL
+python scripts/generate_bootstrap_prompts.py tmp/generated-bootstrap-validation --repository ExampleOwner/madp-fixture --commit-sha 0123456789abcdef0123456789abcdef01234567 --workflow-run-id RC2_LOCAL_TEST --generated-by LOCAL
 python scripts/check_generated_bootstrap.py tmp/generated-bootstrap-validation --expect tests/generated-bootstrap/local-generation.yaml
 ```
 
@@ -225,7 +229,7 @@ python -m venv .venv-validation
 .\.venv-validation\Scripts\python.exe scripts\check_document_consistency.py
 .\.venv-validation\Scripts\python.exe scripts\check_bootstrap_prompts.py
 .\.venv-validation\Scripts\python.exe scripts\test_generate_bootstrap_prompts.py
-.\.venv-validation\Scripts\python.exe scripts\generate_bootstrap_prompts.py tmp\generated-bootstrap-validation --repository ExampleOwner/madp-fixture --commit-sha 0123456789abcdef0123456789abcdef01234567 --workflow-run-id RC_BUNDLE_LOCAL_TEST --generated-by LOCAL
+.\.venv-validation\Scripts\python.exe scripts\generate_bootstrap_prompts.py tmp\generated-bootstrap-validation --repository ExampleOwner/madp-fixture --commit-sha 0123456789abcdef0123456789abcdef01234567 --workflow-run-id RC2_LOCAL_TEST --generated-by LOCAL
 .\.venv-validation\Scripts\python.exe scripts\check_generated_bootstrap.py tmp\generated-bootstrap-validation --expect tests\generated-bootstrap\local-generation.yaml
 ```
 
@@ -233,16 +237,15 @@ python -m venv .venv-validation
 
 ```text
 .
-├── README.md
-├── LICENSE
-├── protocol/
-│   ├── MADP-v0.2.5-rc.1.md
-│   ├── GLOSSARY-v0.2.5-rc.1.md
-│   ├── MADP-v0.2.5-draft.md
-│   └── GLOSSARY-v0.2.5-draft.md
-└── schemas/
-    ├── session-state-v0.2.5-rc.1.schema.yaml
-    └── session-state-v0.2.5-draft.schema.yaml
+|-- README.md
+|-- LICENSE
+|-- protocol/
+|   |-- MADP-v0.2.5-rc.2.md
+|   |-- GLOSSARY-v0.2.5-rc.2.md
+|   `-- historical versioned protocol and glossary files
+`-- schemas/
+    |-- session-state-v0.2.5-rc.2.schema.yaml
+    `-- historical versioned schema files
 ```
 
 Future `profiles/` define reusable domain rules. Future `templates/` are starter kits built on Core and Profiles, such as software review, literature research, and everyday decision support.

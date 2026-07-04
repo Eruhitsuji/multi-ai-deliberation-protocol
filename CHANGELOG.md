@@ -2,14 +2,28 @@
 
 ## Unreleased
 
+## MADP-v0.2.5-rc.2
+
+Status: Release candidate. Not final.
+
 ### Added
 
 - A generated complete-protocol text bundle for environments without external URL retrieval.
-- Manual-paste recovery instructions for protocol load failures.
+- Manual-paste and uploaded-file recovery instructions.
+- Explicit bundle provenance metadata.
+- A companion bundle manifest with hashes.
+- Operational evidence for Gemini uploaded-file recovery.
 
 ### Changed
 
-- Load-failure recovery now directs users to paste the complete generated bundle before normal MADP processing resumes.
+- Load-failure recovery now requires complete protocol loading before normal MADP processing resumes.
+- Repository commit provenance is taken only from bundle metadata.
+- Pages publishing now begins after validation succeeds.
+- Pages deployment waits briefly for backend readiness.
+
+### Fixed
+
+- Prevented fixture SHA values in canonical content from being mistaken for the bundle source commit.
 
 ## MADP-v0.2.5-rc.1
 

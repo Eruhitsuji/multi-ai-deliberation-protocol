@@ -1,8 +1,8 @@
 session_state:
   meta:
     protocol: "MADP"
-    protocol_version: "0.2.5-rc.1"
-    schema_version: "0.2.5-rc.1"
+    protocol_version: "0.2.5-rc.2"
+    schema_version: "0.2.5-rc.2"
     session_id: "MADP-VALID-005"
     state_version: 1
     parent_version: 0

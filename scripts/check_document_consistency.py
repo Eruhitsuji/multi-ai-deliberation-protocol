@@ -17,9 +17,14 @@ from madp_validation import (
 )
 
 
-RC_PROTOCOL_PATH = "protocol/MADP-v0.2.5-rc.1.md"
-RC_GLOSSARY_PATH = "protocol/GLOSSARY-v0.2.5-rc.1.md"
-RC_SCHEMA_PATH = "schemas/session-state-v0.2.5-rc.1.schema.yaml"
+RC_PROTOCOL_PATH = "protocol/MADP-v0.2.5-rc.2.md"
+RC_GLOSSARY_PATH = "protocol/GLOSSARY-v0.2.5-rc.2.md"
+RC_SCHEMA_PATH = "schemas/session-state-v0.2.5-rc.2.schema.yaml"
+HISTORICAL_RC1_CANONICAL_PATHS = [
+    "protocol/MADP-v0.2.5-rc.1.md",
+    "protocol/GLOSSARY-v0.2.5-rc.1.md",
+    "schemas/session-state-v0.2.5-rc.1.schema.yaml",
+]
 DRAFT_CANONICAL_PATHS = [
     "protocol/MADP-v0.2.5-draft.md",
     "protocol/GLOSSARY-v0.2.5-draft.md",
@@ -171,6 +176,9 @@ def main() -> int:
         for failure in failures:
             print(failure, file=sys.stderr)
         return 1
+    print("version consistency: current rc.2 references PASS")
+    print("normalized rc.1/rc.2 compare: protocol, glossary, schema PASS")
+    print("operational records: historical rc.1 and rc.2 readiness PASS")
     for name in checks:
         print(f"enum consistency: {name} PASS")
     return 0
@@ -178,24 +186,24 @@ def main() -> int:
 
 def _version_consistency_failures(schema: dict[str, Any], protocol: str, glossary: str, readme: str) -> list[str]:
     failures: list[str] = []
-    if PROTOCOL_VERSION != "MADP-v0.2.5-rc.1":
-        failures.append(f"current protocol target is {PROTOCOL_VERSION!r}, expected 'MADP-v0.2.5-rc.1'")
-    if SCHEMA_VERSION != "0.2.5-rc.1":
-        failures.append(f"current schema target is {SCHEMA_VERSION!r}, expected '0.2.5-rc.1'")
+    if PROTOCOL_VERSION != "MADP-v0.2.5-rc.2":
+        failures.append(f"current protocol target is {PROTOCOL_VERSION!r}, expected 'MADP-v0.2.5-rc.2'")
+    if SCHEMA_VERSION != "0.2.5-rc.2":
+        failures.append(f"current schema target is {SCHEMA_VERSION!r}, expected '0.2.5-rc.2'")
     meta = schema["$defs"]["meta"]["properties"]
     if meta["protocol_version"].get("const") != SCHEMA_VERSION:
         failures.append("schema meta.protocol_version const does not match current schema version")
     if meta["schema_version"].get("const") != SCHEMA_VERSION:
         failures.append("schema meta.schema_version const does not match current schema version")
-    if schema.get("$id") != "urn:madp:schema:session-state:0.2.5-rc.1":
+    if schema.get("$id") != "urn:madp:schema:session-state:0.2.5-rc.2":
         failures.append("schema $id does not match RC version")
-    if "Multi-AI Deliberation Protocol v0.2.5-rc.1" not in protocol:
+    if "Multi-AI Deliberation Protocol v0.2.5-rc.2" not in protocol:
         failures.append("protocol title does not identify RC version")
-    if "GLOSSARY-v0.2.5-rc.1.md" not in protocol:
+    if "GLOSSARY-v0.2.5-rc.2.md" not in protocol:
         failures.append("protocol does not reference RC glossary")
     if "GLOSSARY-v0.2.5-draft.md" in _section(protocol, "## 3. Normative terms"):
         failures.append("protocol normative terms section still references draft glossary")
-    if "MADP v0.2.5-rc.1" not in glossary:
+    if "MADP v0.2.5-rc.2" not in glossary:
         failures.append("glossary does not identify RC version")
 
     status_section = _section(readme, "## Status and canonical files")
@@ -206,12 +214,51 @@ def _version_consistency_failures(schema: dict[str, Any], protocol: str, glossar
     for draft_path in DRAFT_CANONICAL_PATHS:
         if draft_path in current_section:
             failures.append(f"README current canonical list mixes draft path {draft_path}")
-    if 'current_release_candidate: "MADP-v0.2.5-rc.1"' not in readme:
+    if 'current_release_candidate: "MADP-v0.2.5-rc.2"' not in readme:
         failures.append("README missing current_release_candidate RC marker")
+    if 'previous_release_candidate: "MADP-v0.2.5-rc.1"' not in readme:
+        failures.append("README missing previous_release_candidate RC marker")
     if 'previous_draft: "MADP-v0.2.5-draft"' not in readme:
         failures.append("README missing previous_draft marker")
+    for historical_path in HISTORICAL_RC1_CANONICAL_PATHS:
+        if not (ROOT / historical_path).exists():
+            failures.append(f"historical rc.1 canonical file missing: {historical_path}")
+    failures.extend(_normalized_version_compare_failures())
     failures.extend(_operational_record_failures())
     return failures
+
+
+def _normalized_version_compare_failures() -> list[str]:
+    pairs = [
+        ("protocol", "protocol/MADP-v0.2.5-rc.1.md", "protocol/MADP-v0.2.5-rc.2.md"),
+        ("glossary", "protocol/GLOSSARY-v0.2.5-rc.1.md", "protocol/GLOSSARY-v0.2.5-rc.2.md"),
+        (
+            "schema",
+            "schemas/session-state-v0.2.5-rc.1.schema.yaml",
+            "schemas/session-state-v0.2.5-rc.2.schema.yaml",
+        ),
+    ]
+    failures: list[str] = []
+    for label, left_path, right_path in pairs:
+        left = (ROOT / left_path).read_text(encoding="utf-8")
+        right = (ROOT / right_path).read_text(encoding="utf-8")
+        if _normalize_rc_version_refs(left) != _normalize_rc_version_refs(right):
+            failures.append(f"{label}: rc.1 and rc.2 differ beyond normalized version identifiers and paths")
+    return failures
+
+
+def _normalize_rc_version_refs(text: str) -> str:
+    replacements = {
+        "MADP-v0.2.5-rc.1": "MADP-v0.2.5-rc.X",
+        "MADP-v0.2.5-rc.2": "MADP-v0.2.5-rc.X",
+        "v0.2.5-rc.1": "v0.2.5-rc.X",
+        "v0.2.5-rc.2": "v0.2.5-rc.X",
+        "0.2.5-rc.1": "0.2.5-rc.X",
+        "0.2.5-rc.2": "0.2.5-rc.X",
+    }
+    for old, new in replacements.items():
+        text = text.replace(old, new)
+    return text
 
 
 def _operational_record_failures() -> list[str]:
@@ -227,11 +274,11 @@ def _operational_record_failures() -> list[str]:
         ),
         "tests/operational/gemini-manual-paste-load-001.yaml": (
             "GEMINI-MANUAL-PASTE-LOAD-001",
-            PROTOCOL_VERSION,
+            "MADP-v0.2.5-rc.1",
         ),
         "tests/operational/gemini-uploaded-bundle-smoke-001.yaml": (
             "GEMINI-UPLOADED-BUNDLE-SMOKE-001",
-            PROTOCOL_VERSION,
+            "MADP-v0.2.5-rc.1",
         ),
     }
     for relative, (expected_id, expected_version) in expected.items():
@@ -249,7 +296,7 @@ def _operational_record_failures() -> list[str]:
         if record.get("tested_protocol_version") != expected_version:
             failures.append(f"{rel(path)}: unexpected tested protocol version")
         if expected_version == "MADP-v0.2.5-draft":
-            if record.get("rc_context") != PROTOCOL_VERSION:
+            if record.get("rc_context") != "MADP-v0.2.5-rc.1":
                 failures.append(f"{rel(path)}: operational record missing RC context")
             if record.get("record_type") != "draft evidence for RC promotion":
                 failures.append(f"{rel(path)}: operational record does not distinguish draft evidence")
@@ -265,6 +312,23 @@ def _operational_record_failures() -> list[str]:
                 failures.append(f"{rel(path)}: Gemini uploaded bundle record should use UPLOADED_FILE")
             if record.get("deviation", {}).get("code") != "BUNDLE_SOURCE_COMMIT_MISIDENTIFIED":
                 failures.append(f"{rel(path)}: Gemini uploaded bundle record missing provenance deviation")
+    readiness_path = ROOT / "tests/operational/rc2-release-readiness.yaml"
+    if not readiness_path.exists():
+        failures.append("missing operational record tests/operational/rc2-release-readiness.yaml")
+    else:
+        data = load_yaml(readiness_path)
+        record = data.get("operational_test") if isinstance(data, dict) else None
+        if not isinstance(record, dict):
+            failures.append(f"{rel(readiness_path)}: missing operational_test mapping")
+        else:
+            if record.get("id") != "MADP-RC2-RELEASE-READINESS-001":
+                failures.append(f"{rel(readiness_path)}: unexpected operational test id")
+            if record.get("candidate_version") != PROTOCOL_VERSION:
+                failures.append(f"{rel(readiness_path)}: candidate_version does not match current protocol")
+            if record.get("status") != "PENDING_RUNTIME_SMOKE_TEST":
+                failures.append(f"{rel(readiness_path)}: readiness status should remain pending runtime smoke test")
+            if record.get("based_on", {}).get("previous_candidate") != "MADP-v0.2.5-rc.1":
+                failures.append(f"{rel(readiness_path)}: missing previous candidate")
     return failures
 
 

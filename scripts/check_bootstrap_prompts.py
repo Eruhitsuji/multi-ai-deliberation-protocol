@@ -17,14 +17,17 @@ BOOTSTRAP_FILES = [
 ]
 REQUIRED_CANONICAL_PATHS = [
     "README.md",
-    "protocol/MADP-v0.2.5-rc.1.md",
-    "protocol/GLOSSARY-v0.2.5-rc.1.md",
-    "schemas/session-state-v0.2.5-rc.1.schema.yaml",
+    "protocol/MADP-v0.2.5-rc.2.md",
+    "protocol/GLOSSARY-v0.2.5-rc.2.md",
+    "schemas/session-state-v0.2.5-rc.2.schema.yaml",
 ]
 DISALLOWED_CANONICAL_PATHS = [
     "protocol/MADP-v0.2.5-draft.md",
     "protocol/GLOSSARY-v0.2.5-draft.md",
     "schemas/session-state-v0.2.5-draft.schema.yaml",
+    "protocol/MADP-v0.2.5-rc.1.md",
+    "protocol/GLOSSARY-v0.2.5-rc.1.md",
+    "schemas/session-state-v0.2.5-rc.1.schema.yaml",
 ]
 PLACEHOLDER_RE = re.compile(r"\{\{[A-Z0-9_]+\}\}")
 YAML_FENCE_RE = re.compile(r"```yaml\n(.*?)\n```", re.DOTALL)
@@ -44,8 +47,8 @@ def main() -> int:
         texts[name] = text
         if "bootstrap_version: 0.1" not in text:
             problems.append(f"{rel(path)}: missing bootstrap_version: 0.1")
-        if "MADP-v0.2.5-rc.1" not in text:
-            problems.append(f"{rel(path)}: missing MADP-v0.2.5-rc.1")
+        if "MADP-v0.2.5-rc.2" not in text:
+            problems.append(f"{rel(path)}: missing MADP-v0.2.5-rc.2")
         if "informative implementation aid" not in text:
             problems.append(f"{rel(path)}: missing informative implementation aid statement")
 
@@ -57,7 +60,7 @@ def main() -> int:
             problems.append(f"load-protocol-from-github.md: missing {canonical_path}")
     for disallowed_path in DISALLOWED_CANONICAL_PATHS:
         if disallowed_path in load_text:
-            problems.append(f"load-protocol-from-github.md: disallowed draft canonical path {disallowed_path}")
+            problems.append(f"load-protocol-from-github.md: disallowed non-current canonical path {disallowed_path}")
 
     raw_urls = re.findall(r"https://raw\.githubusercontent\.com/[^\s)]+", load_text)
     if len(raw_urls) < len(REQUIRED_CANONICAL_PATHS):

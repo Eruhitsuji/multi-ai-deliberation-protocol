@@ -1,0 +1,33 @@
+operational_test:
+  id: "MADP-RC2-RELEASE-READINESS-001"
+  candidate_version: "MADP-v0.2.5-rc.2"
+  status: "PENDING_RUNTIME_SMOKE_TEST"
+  based_on:
+    previous_candidate: "MADP-v0.2.5-rc.1"
+    validated_source_commit: "2921f6f01239935bef9b7d2cfba8e12f44655cdb"
+  included_improvements:
+    - "Generated complete protocol bundle"
+    - "Manual-paste recovery"
+    - "Uploaded-file recovery"
+    - "Bundle provenance metadata envelope"
+    - "Companion bundle manifest"
+    - "Fixture SHA misidentification prevention"
+    - "Validate-before-Publish workflow sequencing"
+    - "Pages backend readiness delay"
+  prior_cross_model_evidence:
+    claude:
+      behavioral_conformance: "PASS"
+      strict_default_serialization: "FORMAT_DEVIATION"
+    gemini:
+      direct_url_retrieval: "UNAVAILABLE"
+      uploaded_bundle_recovery: "PASS"
+      uploaded_bundle_provenance: "PASS"
+      participant_smoke_behavior: "PASS"
+  required_before_tag:
+    - "All rc.2 static validations pass"
+    - "Pages publishes an rc.2 bundle"
+    - "Bundle metadata source_commit matches the rc.2 version-update commit"
+    - "At least one rc.2 runtime load smoke test passes"
+  limitations:
+    - "Formal cross-model universal interoperability is not claimed."
+    - "Final release approval remains a user decision."

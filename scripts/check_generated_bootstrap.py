@@ -10,7 +10,7 @@ from typing import Any
 from madp_validation import ROOT, load_yaml_text, rel
 
 
-PROTOCOL_VERSION = "MADP-v0.2.5-rc.1"
+PROTOCOL_VERSION = "MADP-v0.2.5-rc.2"
 BUNDLE_FORMAT = "MADP_COMPLETE_PROTOCOL_BUNDLE_V1"
 BOOTSTRAP_FILES = [
     "README.md",
@@ -23,14 +23,19 @@ BUNDLE_PATH = "bootstrap/complete-protocol-bundle.txt"
 BUNDLE_MANIFEST_PATH = "bootstrap/complete-protocol-bundle.manifest.yaml"
 REQUIRED_CANONICAL_PATHS = [
     "README.md",
-    "protocol/MADP-v0.2.5-rc.1.md",
-    "protocol/GLOSSARY-v0.2.5-rc.1.md",
-    "schemas/session-state-v0.2.5-rc.1.schema.yaml",
+    "protocol/MADP-v0.2.5-rc.2.md",
+    "protocol/GLOSSARY-v0.2.5-rc.2.md",
+    "schemas/session-state-v0.2.5-rc.2.schema.yaml",
 ]
 DISALLOWED_CANONICAL_PATHS = [
     "protocol/MADP-v0.2.5-draft.md",
     "protocol/GLOSSARY-v0.2.5-draft.md",
     "schemas/session-state-v0.2.5-draft.schema.yaml",
+]
+DISALLOWED_RC1_CANONICAL_PATHS = [
+    "protocol/MADP-v0.2.5-rc.1.md",
+    "protocol/GLOSSARY-v0.2.5-rc.1.md",
+    "schemas/session-state-v0.2.5-rc.1.schema.yaml",
 ]
 REPOSITORY_PLACEHOLDERS = {
     "{{MADP_GITHUB_OWNER}}",
@@ -255,6 +260,9 @@ def _check_raw_urls(texts: dict[str, str], manifest: dict[str, Any], problems: l
     for disallowed_path in DISALLOWED_CANONICAL_PATHS:
         if disallowed_path in raw_text:
             problems.append(f"generated load-protocol-from-github.md: draft canonical URL remains for {disallowed_path}")
+    for disallowed_path in DISALLOWED_RC1_CANONICAL_PATHS:
+        if disallowed_path in raw_text:
+            problems.append(f"generated load-protocol-from-github.md: rc.1 canonical URL remains for {disallowed_path}")
 
 
 def _check_recovery_prompt(texts: dict[str, str], manifest: dict[str, Any], problems: list[str]) -> None:
@@ -337,6 +345,9 @@ def _check_complete_bundle(
     for disallowed_path in DISALLOWED_CANONICAL_PATHS:
         if f"BEGIN_FILE: {disallowed_path}" in bundle or f"END_FILE: {disallowed_path}" in bundle:
             problems.append(f"{_display(bundle_path)}: draft file boundary included for {disallowed_path}")
+    for disallowed_path in DISALLOWED_RC1_CANONICAL_PATHS:
+        if disallowed_path in bundle:
+            problems.append(f"{_display(bundle_path)}: rc.1 canonical path included in current bundle: {disallowed_path}")
 
     if not isinstance(source_repository, str) or not isinstance(source_commit, str):
         return

@@ -14,7 +14,7 @@ import yaml
 from madp_validation import ROOT, rel
 
 
-PROTOCOL_VERSION = "MADP-v0.2.5-rc.1"
+PROTOCOL_VERSION = "MADP-v0.2.5-rc.2"
 BUNDLE_FORMAT = "MADP_COMPLETE_PROTOCOL_BUNDLE_V1"
 BOOTSTRAP_DIR = ROOT / "bootstrap"
 BOOTSTRAP_FILES = [
@@ -26,9 +26,9 @@ BOOTSTRAP_FILES = [
 ]
 CANONICAL_BUNDLE_FILES = [
     "README.md",
-    "protocol/MADP-v0.2.5-rc.1.md",
-    "protocol/GLOSSARY-v0.2.5-rc.1.md",
-    "schemas/session-state-v0.2.5-rc.1.schema.yaml",
+    "protocol/MADP-v0.2.5-rc.2.md",
+    "protocol/GLOSSARY-v0.2.5-rc.2.md",
+    "schemas/session-state-v0.2.5-rc.2.schema.yaml",
 ]
 BUNDLE_OUTPUT_PATH = "bootstrap/complete-protocol-bundle.txt"
 BUNDLE_MANIFEST_OUTPUT_PATH = "bootstrap/complete-protocol-bundle.manifest.yaml"

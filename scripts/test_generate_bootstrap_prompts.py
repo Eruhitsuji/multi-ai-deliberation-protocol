@@ -15,7 +15,7 @@ SCRIPT = ROOT / "scripts" / "generate_bootstrap_prompts.py"
 CHECK_SCRIPT = ROOT / "scripts" / "check_generated_bootstrap.py"
 FIXTURE_REPOSITORY = "ExampleOwner/madp-fixture"
 FIXTURE_SHA = "0123456789abcdef0123456789abcdef01234567"
-FIXTURE_RUN_ID = "RC_BUNDLE_LOCAL_TEST"
+FIXTURE_RUN_ID = "RC2_LOCAL_TEST"
 FIXTURE_BUNDLE_URL = "https://ExampleOwner.github.io/madp-fixture/bootstrap/complete-protocol-bundle.txt"
 ENV_REPOSITORY = "ActualOwner/actual-repository"
 ENV_SHA = "fedcba9876543210fedcba9876543210fedcba98"
@@ -108,6 +108,22 @@ def _assert_bundle_outputs(output_dir: Path) -> None:
     )
     if not bundle.startswith(expected_metadata):
         raise AssertionError("bundle metadata envelope does not contain expected fixture provenance")
+    required_boundaries = [
+        "BEGIN_FILE: protocol/MADP-v0.2.5-rc.2.md",
+        "BEGIN_FILE: protocol/GLOSSARY-v0.2.5-rc.2.md",
+        "BEGIN_FILE: schemas/session-state-v0.2.5-rc.2.schema.yaml",
+    ]
+    for boundary in required_boundaries:
+        if boundary not in bundle:
+            raise AssertionError(f"bundle missing rc.2 boundary {boundary!r}")
+    disallowed_rc1_paths = [
+        "protocol/MADP-v0.2.5-rc.1.md",
+        "protocol/GLOSSARY-v0.2.5-rc.1.md",
+        "schemas/session-state-v0.2.5-rc.1.schema.yaml",
+    ]
+    for disallowed_path in disallowed_rc1_paths:
+        if disallowed_path in bundle:
+            raise AssertionError(f"bundle contains rc.1 canonical path {disallowed_path!r}")
     index = (output_dir / "index.html").read_text(encoding="utf-8")
     if "bootstrap/complete-protocol-bundle.txt" not in index:
         raise AssertionError("index.html does not link to complete protocol bundle")

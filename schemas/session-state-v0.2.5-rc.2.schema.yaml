@@ -1,0 +1,564 @@
+$schema: "https://json-schema.org/draft/2020-12/schema"
+$id: "urn:madp:schema:session-state:0.2.5-rc.2"
+title: "MADP Session State v0.2.5-rc.2"
+description: "Machine-readable structure for MADP v0.2.5-rc.2. Semantic invariants are defined by the protocol."
+type: object
+additionalProperties: false
+required: [session_state]
+properties:
+  session_state:
+    $ref: "#/$defs/sessionState"
+  relay_block:
+    $ref: "#/$defs/relayBlock"
+
+$defs:
+  identifier:
+    type: string
+    minLength: 1
+    pattern: "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+  nullableString:
+    type: [string, "null"]
+  stringList:
+    type: array
+    items: {type: string, minLength: 1}
+  timestamp:
+    anyOf:
+      - const: "UNKNOWN"
+      - {type: string, format: date-time}
+  language:
+    type: object
+    additionalProperties: false
+    required: [interaction]
+    properties:
+      interaction: {type: string, minLength: 1}
+      output: {type: string, minLength: 1}
+  usageBudget:
+    type: object
+    additionalProperties: false
+    required: [status]
+    properties:
+      token_limit:
+        type: [integer, "null"]
+        minimum: 0
+      cost_limit:
+        type: [number, "null"]
+        minimum: 0
+      currency:
+        type: [string, "null"]
+        minLength: 1
+      status: {enum: [AVAILABLE, LIMITED, EXHAUSTED, UNKNOWN]}
+
+  meta:
+    type: object
+    additionalProperties: false
+    required: [protocol, protocol_version, schema_version, session_id, state_version, parent_version, updated_at, updated_by]
+    properties:
+      protocol: {const: "MADP"}
+      protocol_version: {const: "0.2.5-rc.2"}
+      schema_version: {const: "0.2.5-rc.2"}
+      session_id: {$ref: "#/$defs/identifier"}
+      state_version: {type: integer, minimum: 1}
+      parent_version: {type: integer, minimum: 0}
+      updated_at: {$ref: "#/$defs/timestamp"}
+      updated_by: {type: string, minLength: 1}
+      recorded_at: {$ref: "#/$defs/timestamp"}
+      storage_ref: {type: string, minLength: 1}
+      state_hash: {type: string, minLength: 1}
+      protocol_commit: {type: string, minLength: 7}
+      schema_commit: {type: string, minLength: 7}
+      glossary_commit: {type: string, minLength: 7}
+
+  conditionBasis:
+    type: object
+    additionalProperties: false
+    required: [summary]
+    properties:
+      summary: {type: string, minLength: 1}
+      reference: {type: string, minLength: 1}
+  userConfirmation:
+    type: object
+    additionalProperties: false
+    required: [assurance_level]
+    properties:
+      assurance_level: {const: USER_CONFIRMED}
+      reference: {type: string, minLength: 1}
+
+  condition:
+    type: object
+    additionalProperties: false
+    required: [id, statement, applicability, satisfaction]
+    properties:
+      id: {$ref: "#/$defs/identifier"}
+      statement: {type: string, minLength: 1}
+      applicability:
+        enum: [ACTIVE, NOT_APPLICABLE]
+      satisfaction:
+        enum: [PENDING, IN_PROGRESS, SATISFIED, WAIVED_BY_USER, FAILED]
+      timing:
+        enum: [BEFORE_START, BEFORE_EXECUTION, BEFORE_EXTERNAL_ACTION, BEFORE_COMPLETION, ONGOING]
+      basis: {$ref: "#/$defs/conditionBasis"}
+      applicability_basis: {$ref: "#/$defs/conditionBasis"}
+      user_confirmation: {$ref: "#/$defs/userConfirmation"}
+      source: {type: string, minLength: 1}
+      affected_execution_refs:
+        type: array
+        items: {$ref: "#/$defs/identifier"}
+    allOf:
+      - if:
+          properties:
+            satisfaction: {const: SATISFIED}
+          required: [satisfaction]
+        then:
+          required: [basis]
+      - if:
+          properties:
+            satisfaction: {const: WAIVED_BY_USER}
+          required: [satisfaction]
+        then:
+          required: [basis, user_confirmation]
+      - if:
+          properties:
+            applicability: {const: NOT_APPLICABLE}
+          required: [applicability]
+        then:
+          required: [applicability_basis]
+
+  approvalRecord:
+    type: object
+    additionalProperties: false
+    required: [decision_id, decision_revision, approver, assurance_level, assurance_origin, occurred_at]
+    properties:
+      decision_id: {$ref: "#/$defs/identifier"}
+      decision_revision: {type: integer, minimum: 1}
+      approver: {const: USER}
+      assurance_level:
+        enum: [UNVERIFIED_ASSERTION, USER_CONFIRMED, EXTERNALLY_VERIFIED]
+      assurance_origin:
+        enum: [AI_RECORDED, USER_ACTION, VALIDATOR_VERIFIED]
+      occurred_at: {$ref: "#/$defs/timestamp"}
+      recorded_at: {$ref: "#/$defs/timestamp"}
+      basis: {type: string, minLength: 1}
+      reference: {type: string, minLength: 1}
+      recorded_by: {type: string, minLength: 1}
+    allOf:
+      - if:
+          properties:
+            assurance_level: {const: UNVERIFIED_ASSERTION}
+          required: [assurance_level]
+        then:
+          properties:
+            assurance_origin: {const: AI_RECORDED}
+      - if:
+          properties:
+            assurance_level: {const: USER_CONFIRMED}
+          required: [assurance_level]
+        then:
+          properties:
+            assurance_origin: {const: USER_ACTION}
+      - if:
+          properties:
+            assurance_level: {const: EXTERNALLY_VERIFIED}
+          required: [assurance_level]
+        then:
+          required: [reference]
+          properties:
+            assurance_origin: {const: VALIDATOR_VERIFIED}
+
+  decision:
+    type: object
+    additionalProperties: false
+    required: [id, revision, deliberation_outcome, approval_status, summary]
+    properties:
+      id: {$ref: "#/$defs/identifier"}
+      revision: {type: integer, minimum: 1}
+      deliberation_outcome:
+        enum: [OPEN, CONSENSUS, CONDITIONAL_CONSENSUS, EXPERIMENT_CONSENSUS, USER_DECISION_REQUIRED, BLOCKED, REJECTED]
+      approval_status:
+        enum: [PENDING, APPROVE, APPROVE_WITH_CONDITIONS, APPROVE_WITH_CHANGES, DEFER, REJECT]
+      summary: {type: string, minLength: 1}
+      approval: {$ref: "#/$defs/approvalRecord"}
+      decision_conditions:
+        type: array
+        items: {$ref: "#/$defs/condition"}
+    allOf:
+      - if:
+          properties:
+            approval_status:
+              enum: [APPROVE, APPROVE_WITH_CONDITIONS, APPROVE_WITH_CHANGES, DEFER, REJECT]
+          required: [approval_status]
+        then:
+          required: [approval]
+
+  permissionScope:
+    type: object
+    additionalProperties: false
+    required: [context_id, target]
+    properties:
+      context_id: {$ref: "#/$defs/identifier"}
+      target: {type: string, minLength: 1}
+
+  permissionRequest:
+    type: object
+    additionalProperties: false
+    required: [id, action, scope]
+    properties:
+      id: {$ref: "#/$defs/identifier"}
+      action: {type: string, minLength: 1}
+      scope: {$ref: "#/$defs/permissionScope"}
+      rationale: {type: string, minLength: 1}
+      status:
+        enum: [PENDING, DENIED, USER_ESCALATION_REQUIRED, RESOLVED, WITHDRAWN]
+
+  permissionGrant:
+    type: object
+    additionalProperties: false
+    required: [id, action, scope, duration, assurance_level]
+    properties:
+      id: {$ref: "#/$defs/identifier"}
+      action:
+        enum: [READ_EXTERNAL, SEND_EXTERNAL_DATA, WRITE_FILE, RUN_COMMAND, COMMIT, PUSH, CREATE_PR, SEND_MESSAGE, MODIFY_EXTERNAL_RESOURCE]
+      scope: {$ref: "#/$defs/permissionScope"}
+      duration: {enum: [ONE_SHOT, ISSUE, STANDING]}
+      assurance_level: {enum: [USER_CONFIRMED, EXTERNALLY_VERIFIED]}
+      revocation: {type: string, minLength: 1}
+      granted_at: {$ref: "#/$defs/timestamp"}
+    allOf:
+      - if:
+          properties: {duration: {const: STANDING}}
+          required: [duration]
+        then:
+          required: [revocation]
+
+  participant:
+    type: object
+    additionalProperties: false
+    required: [actor_id, type, role, status]
+    properties:
+      actor_id: {$ref: "#/$defs/identifier"}
+      type: {enum: [FACILITATOR, AI_PARTICIPANT, ROLE_ACTOR, HUMAN_OR_EXTERNAL_VALIDATOR]}
+      role: {type: string, minLength: 1}
+      status: {enum: [PROPOSED, AUTHORIZED, JOINING, ACTIVE, PAUSED, LEAVING, LEFT, REMOVED, FAILED, COMPLETED]}
+      service: {type: string}
+      model: {type: string}
+      assigned_issues:
+        type: array
+        items: {$ref: "#/$defs/identifier"}
+      permission_requests:
+        type: array
+        items: {$ref: "#/$defs/permissionRequest"}
+      permission_grants:
+        type: array
+        items: {$ref: "#/$defs/permissionGrant"}
+
+  facilitatorTransfer:
+    type: object
+    additionalProperties: false
+    required: [status, from, to, source_state_version]
+    properties:
+      status: {enum: [PENDING, COMPLETED, ABORTED]}
+      from: {$ref: "#/$defs/identifier"}
+      to: {$ref: "#/$defs/identifier"}
+      source_state_version: {type: integer, minimum: 1}
+
+  acceptanceCondition:
+    oneOf:
+      - {type: string, minLength: 1}
+      - $ref: "#/$defs/condition"
+
+  currentIssue:
+    type: object
+    additionalProperties: false
+    required: [id, status, question]
+    properties:
+      id: {$ref: "#/$defs/identifier"}
+      status: {enum: [OPEN, IN_PROGRESS, BLOCKED, COMPLETED, DEFERRED]}
+      question: {type: string, minLength: 1}
+      summary: {type: string, minLength: 1}
+      acceptance_conditions:
+        type: array
+        items: {$ref: "#/$defs/acceptanceCondition"}
+      software: {$ref: "#/$defs/softwareIssue"}
+
+  fixedItem:
+    type: object
+    additionalProperties: false
+    required: [id, statement]
+    properties:
+      id: {$ref: "#/$defs/identifier"}
+      statement: {type: string, minLength: 1}
+      source: {type: string, minLength: 1}
+
+  risk:
+    type: object
+    additionalProperties: false
+    required: [id, summary]
+    properties:
+      id: {$ref: "#/$defs/identifier"}
+      summary: {type: string, minLength: 1}
+      severity: {enum: [CRITICAL, HIGH, MEDIUM, LOW]}
+      status: {enum: [OPEN, MITIGATED, ACCEPTED_BY_USER, CLOSED]}
+
+  deferredItem:
+    type: object
+    additionalProperties: false
+    required: [id, summary, reason]
+    properties:
+      id: {$ref: "#/$defs/identifier"}
+      summary: {type: string, minLength: 1}
+      reason: {type: string, minLength: 1}
+      reconsider_when:
+        oneOf:
+          - {type: "null"}
+          - {type: string, minLength: 1}
+          - {type: array, items: {type: string, minLength: 1}}
+      constraints: {$ref: "#/$defs/stringList"}
+
+  futureDirection:
+    type: object
+    additionalProperties: false
+    required: [id, summary, status]
+    properties:
+      id: {$ref: "#/$defs/identifier"}
+      summary: {type: string, minLength: 1}
+      status: {enum: [CONCEPT_ONLY, CONCEPT_APPROVED, PLANNED]}
+      migration_trigger: {$ref: "#/$defs/stringList"}
+
+  outOfScopeItem:
+    type: object
+    additionalProperties: false
+    required: [id, summary]
+    properties:
+      id: {$ref: "#/$defs/identifier"}
+      summary: {type: string, minLength: 1}
+      reason: {type: string, minLength: 1}
+
+  userDecisionPending:
+    type: object
+    additionalProperties: false
+    required: [id, question]
+    properties:
+      id: {$ref: "#/$defs/identifier"}
+      question: {type: string, minLength: 1}
+      response_format: {type: string, minLength: 1}
+
+  internalStep:
+    type: object
+    additionalProperties: false
+    required: [actor, task]
+    properties:
+      actor: {type: string, minLength: 1}
+      task: {type: string, minLength: 1}
+      blocking_input: {$ref: "#/$defs/nullableString"}
+
+  userStep:
+    type: object
+    additionalProperties: false
+    required: [action_required, prompt_action, task, response_format]
+    properties:
+      action_required: {type: boolean}
+      prompt_action: {enum: [REPLY_IN_CURRENT_CHAT, START_NEW_CHAT, CONTINUE_EXISTING_CHAT, JOIN_NEW_PARTICIPANT, RETURN_RESULT, TRANSFER_FACILITATOR, RESOLVE_STATE_CONFLICT, NO_ACTION_REQUIRED]}
+      task: {$ref: "#/$defs/nullableString"}
+      response_format: {$ref: "#/$defs/nullableString"}
+    allOf:
+      - if: {properties: {action_required: {const: false}}, required: [action_required]}
+        then:
+          properties:
+            prompt_action: {const: NO_ACTION_REQUIRED}
+            task: {type: "null"}
+      - if: {properties: {action_required: {const: true}}, required: [action_required]}
+        then:
+          properties:
+            prompt_action:
+              not: {const: NO_ACTION_REQUIRED}
+            task: {type: string, minLength: 1}
+
+  nextStep:
+    type: object
+    additionalProperties: false
+    required: [internal, user]
+    properties:
+      internal:
+        oneOf:
+          - {type: "null"}
+          - {$ref: "#/$defs/internalStep"}
+      user: {$ref: "#/$defs/userStep"}
+
+  softwareIssue:
+    type: object
+    additionalProperties: false
+    properties:
+      repository: {type: string}
+      branch: {type: string}
+      worktree: {type: string}
+      base_revision: {type: string}
+      target_files: {$ref: "#/$defs/stringList"}
+      related_files: {$ref: "#/$defs/stringList"}
+      acceptance_criteria: {$ref: "#/$defs/stringList"}
+      constraints: {$ref: "#/$defs/stringList"}
+      prohibited_changes: {$ref: "#/$defs/stringList"}
+      allowed_commands: {$ref: "#/$defs/stringList"}
+      required_tests: {$ref: "#/$defs/stringList"}
+      current_failures: {$ref: "#/$defs/stringList"}
+      rollback_method: {type: string}
+      write_policy: {enum: [PROPOSE_ONLY, SINGLE_WRITER, ISOLATED_MULTI_WRITER]}
+
+  reference:
+    type: object
+    additionalProperties: false
+    required: [id, type, location]
+    properties:
+      id: {$ref: "#/$defs/identifier"}
+      type: {type: string, minLength: 1}
+      location: {type: string, minLength: 1}
+      summary: {type: string}
+
+  unresolvedPoint:
+    type: object
+    additionalProperties: false
+    required: [id, summary]
+    properties:
+      id: {$ref: "#/$defs/identifier"}
+      summary: {type: string, minLength: 1}
+      status: {enum: [OPEN, BLOCKED, DEFERRED]}
+      owner: {type: string, minLength: 1}
+
+  artifact:
+    type: object
+    additionalProperties: false
+    required: [id, type, summary]
+    properties:
+      id: {$ref: "#/$defs/identifier"}
+      type: {type: string, minLength: 1}
+      summary: {type: string, minLength: 1}
+      location: {type: string, minLength: 1}
+
+  snapshotSession:
+    type: object
+    additionalProperties: false
+    required: [goal]
+    properties:
+      goal: {type: string, minLength: 1}
+      fixed: {type: array, items: {$ref: "#/$defs/fixedItem"}}
+      open:
+        type: array
+        items:
+          type: object
+          additionalProperties: false
+          required: [id, summary]
+          properties:
+            id: {$ref: "#/$defs/identifier"}
+            summary: {type: string, minLength: 1}
+      critical_risks: {type: array, items: {$ref: "#/$defs/risk"}}
+      deferred_items: {type: array, items: {$ref: "#/$defs/deferredItem"}}
+      future_direction: {type: array, items: {$ref: "#/$defs/futureDirection"}}
+      out_of_scope: {type: array, items: {$ref: "#/$defs/outOfScopeItem"}}
+      user_decisions_pending: {type: array, items: {$ref: "#/$defs/userDecisionPending"}}
+      references: {type: array, items: {$ref: "#/$defs/reference"}}
+      review_profile: {$ref: "#/$defs/reviewProfile"}
+
+  reviewProfile:
+    type: object
+    additionalProperties: false
+    properties:
+      review_independence: {enum: [I0, I1, I2, I3]}
+      evidence_level: {enum: [E0, E1, E2, E3]}
+      context_isolation: {enum: [C0, C1, C2, C3]}
+      convergence: {enum: [SAME_MODEL_CROSS_INSTANCE_CONVERGENCE, SAME_MODEL_CROSS_INSTANCE_DIVERGENCE, CROSS_MODEL_CONVERGENCE, CROSS_MODEL_DIVERGENCE]}
+
+  sessionState:
+    type: object
+    additionalProperties: false
+    required: [meta, goal, current_issue, participants, next_step]
+    properties:
+      meta: {$ref: "#/$defs/meta"}
+      language: {$ref: "#/$defs/language"}
+      goal: {type: string, minLength: 1}
+      fixed: {type: array, items: {$ref: "#/$defs/fixedItem"}}
+      decisions: {type: array, items: {$ref: "#/$defs/decision"}}
+      open:
+        type: array
+        items:
+          type: object
+          additionalProperties: false
+          required: [id, summary]
+          properties:
+            id: {$ref: "#/$defs/identifier"}
+            summary: {type: string, minLength: 1}
+      current_issue: {$ref: "#/$defs/currentIssue"}
+      participants:
+        type: array
+        minItems: 1
+        items: {$ref: "#/$defs/participant"}
+        contains:
+          type: object
+          required: [role, status]
+          properties:
+            role: {const: FACILITATOR}
+            status: {const: ACTIVE}
+        minContains: 0
+        maxContains: 1
+      facilitator_transfer: {$ref: "#/$defs/facilitatorTransfer"}
+      critical_risks: {type: array, items: {$ref: "#/$defs/risk"}}
+      deferred_items: {type: array, items: {$ref: "#/$defs/deferredItem"}}
+      future_direction: {type: array, items: {$ref: "#/$defs/futureDirection"}}
+      out_of_scope: {type: array, items: {$ref: "#/$defs/outOfScopeItem"}}
+      user_decisions_pending: {type: array, items: {$ref: "#/$defs/userDecisionPending"}}
+      next_step: {$ref: "#/$defs/nextStep"}
+      references: {type: array, items: {$ref: "#/$defs/reference"}}
+      review_profile: {$ref: "#/$defs/reviewProfile"}
+      usage_budget: {$ref: "#/$defs/usageBudget"}
+
+  operativeSessionStateSnapshot:
+    type: object
+    additionalProperties: false
+    required: [meta, session, language, usage_budget, participants, current_issue, decisions, conditions, permission_requests, permission_grants, unresolved_points, artifacts, next_step]
+    properties:
+      meta: {$ref: "#/$defs/meta"}
+      session: {$ref: "#/$defs/snapshotSession"}
+      language: {$ref: "#/$defs/language"}
+      usage_budget: {$ref: "#/$defs/usageBudget"}
+      participants:
+        type: array
+        items: {$ref: "#/$defs/participant"}
+        contains:
+          type: object
+          required: [role, status]
+          properties:
+            role: {const: FACILITATOR}
+            status: {const: ACTIVE}
+        minContains: 0
+        maxContains: 1
+      current_issue: {$ref: "#/$defs/currentIssue"}
+      decisions:
+        type: array
+        items: {$ref: "#/$defs/decision"}
+      conditions:
+        type: array
+        items: {$ref: "#/$defs/condition"}
+      permission_requests:
+        type: array
+        items: {$ref: "#/$defs/permissionRequest"}
+      permission_grants:
+        type: array
+        items: {$ref: "#/$defs/permissionGrant"}
+      unresolved_points:
+        type: array
+        items: {$ref: "#/$defs/unresolvedPoint"}
+      artifacts:
+        type: array
+        items: {$ref: "#/$defs/artifact"}
+      next_step: {$ref: "#/$defs/nextStep"}
+
+  relayBlock:
+    type: object
+    additionalProperties: false
+    required: [marker_begin, session_id, source_state_version, target_participant, purpose, expected_response, operative_session_state_snapshot, marker_end]
+    properties:
+      marker_begin: {const: "BEGIN_MADP_RELAY_BLOCK"}
+      session_id: {$ref: "#/$defs/identifier"}
+      source_state_version: {type: integer, minimum: 1}
+      target_participant: {type: string, minLength: 1}
+      purpose: {type: string, minLength: 1}
+      expected_response: {type: string, minLength: 1}
+      operative_session_state_snapshot: {$ref: "#/$defs/operativeSessionStateSnapshot"}
+      marker_end: {const: "END_MADP_RELAY_BLOCK"}

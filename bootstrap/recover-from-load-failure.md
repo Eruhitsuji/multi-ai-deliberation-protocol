@@ -1,12 +1,12 @@
 ---
 bootstrap_version: 0.1
-protocol_version: MADP-v0.2.5-rc.1
+protocol_version: MADP-v0.2.5-rc.2
 status: informative implementation aid
 ---
 
 # Recover From Protocol Load Failure
 
-Use this when a new AI chat could not read all required MADP v0.2.5-rc.1 files. This bootstrap prompt is an informative implementation aid and does not override the protocol, glossary, schema, user instructions, platform safety rules, or any higher-priority authority.
+Use this when a new AI chat could not read all required MADP v0.2.5-rc.2 files. This bootstrap prompt is an informative implementation aid and does not override the protocol, glossary, schema, user instructions, platform safety rules, or any higher-priority authority.
 
 Do not reconstruct protocol content from general knowledge. Do not proceed as fully MADP conformant until required files are read or provided.
 
@@ -40,7 +40,7 @@ partial_content_limitations: "{{PARTIAL_CONTENT_LIMITATIONS}}"
 
 ```yaml
 PROTOCOL_LOAD_RECOVERY_REQUEST:
-  protocol_version: "MADP-v0.2.5-rc.1"
+  protocol_version: "MADP-v0.2.5-rc.2"
   all_required_files_read: false
   failed_paths: "{{FAILED_PATHS}}"
   access_method: "{{ACCESS_METHOD}}"
@@ -65,19 +65,19 @@ After receiving recovery input, retry loading the exact missing files and emit a
 
 ```yaml
 PROTOCOL_LOAD_REPORT:
-  protocol_version: "MADP-v0.2.5-rc.1"
+  protocol_version: "MADP-v0.2.5-rc.2"
   repository_commit: "<BEGIN_MADP_BUNDLE_METADATA.source_commit, or UNKNOWN>"
   files:
     - path: "README.md"
       status: "READ"
       access_method: "PASTED_TEXT | UPLOADED_FILE"
-    - path: "protocol/MADP-v0.2.5-rc.1.md"
+    - path: "protocol/MADP-v0.2.5-rc.2.md"
       status: "READ"
       access_method: "PASTED_TEXT | UPLOADED_FILE"
-    - path: "protocol/GLOSSARY-v0.2.5-rc.1.md"
+    - path: "protocol/GLOSSARY-v0.2.5-rc.2.md"
       status: "READ"
       access_method: "PASTED_TEXT | UPLOADED_FILE"
-    - path: "schemas/session-state-v0.2.5-rc.1.schema.yaml"
+    - path: "schemas/session-state-v0.2.5-rc.2.schema.yaml"
       status: "READ"
       access_method: "PASTED_TEXT | UPLOADED_FILE"
   all_required_files_read: true

@@ -11,12 +11,12 @@ from jsonschema.exceptions import ValidationError
 
 
 ROOT = Path(__file__).resolve().parents[1]
-PROTOCOL_VERSION = "MADP-v0.2.5-rc.1"
-SCHEMA_VERSION = "0.2.5-rc.1"
-SCHEMA_PATH = ROOT / "schemas" / "session-state-v0.2.5-rc.1.schema.yaml"
+PROTOCOL_VERSION = "MADP-v0.2.5-rc.2"
+SCHEMA_VERSION = "0.2.5-rc.2"
+SCHEMA_PATH = ROOT / "schemas" / "session-state-v0.2.5-rc.2.schema.yaml"
 README_PATH = ROOT / "README.md"
-PROTOCOL_PATH = ROOT / "protocol" / "MADP-v0.2.5-rc.1.md"
-GLOSSARY_PATH = ROOT / "protocol" / "GLOSSARY-v0.2.5-rc.1.md"
+PROTOCOL_PATH = ROOT / "protocol" / "MADP-v0.2.5-rc.2.md"
+GLOSSARY_PATH = ROOT / "protocol" / "GLOSSARY-v0.2.5-rc.2.md"
 
 CORE_PERMISSION_ACTIONS = {
     "READ_EXTERNAL",
