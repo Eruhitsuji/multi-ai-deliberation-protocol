@@ -150,6 +150,18 @@ relay_block.session_id = relay_block.operative_session_state_snapshot.meta.sessi
 relay_block.source_state_version = relay_block.operative_session_state_snapshot.meta.state_version
 ```
 
+## Starting a new AI chat
+
+Use the bootstrap prompts when starting an AI chat that has not already loaded MADP:
+
+- [`bootstrap/README.md`](bootstrap/README.md) - overview, trust order, placeholders, and examples
+- [`bootstrap/load-protocol-from-github.md`](bootstrap/load-protocol-from-github.md) - load commit-pinned canonical files and emit `PROTOCOL_LOAD_REPORT`
+- [`bootstrap/start-facilitator.md`](bootstrap/start-facilitator.md) - initialize a facilitator safely
+- [`bootstrap/join-as-participant.md`](bootstrap/join-as-participant.md) - join from a supplied `RELAY_BLOCK`
+- [`bootstrap/recover-from-load-failure.md`](bootstrap/recover-from-load-failure.md) - recover when required files were not read
+
+For release work, prefer direct file upload or commit-pinned Raw URLs. Do not rely on a movable branch URL as proof that the receiving AI read the protocol.
+
 ## Validation
 
 MADP v0.2.5-draft validation uses Python 3.11 or newer with `jsonschema` and `PyYAML`.
@@ -161,6 +173,7 @@ python scripts/validate_examples.py
 python scripts/validate_semantics.py
 python scripts/check_markdown_links.py
 python scripts/check_document_consistency.py
+python scripts/check_bootstrap_prompts.py
 ```
 
 On Windows PowerShell, using a local virtual environment:
@@ -173,6 +186,7 @@ python -m venv .venv-validation
 .\.venv-validation\Scripts\python.exe scripts\validate_semantics.py
 .\.venv-validation\Scripts\python.exe scripts\check_markdown_links.py
 .\.venv-validation\Scripts\python.exe scripts\check_document_consistency.py
+.\.venv-validation\Scripts\python.exe scripts\check_bootstrap_prompts.py
 ```
 
 ## Repository structure

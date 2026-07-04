@@ -29,7 +29,10 @@ def _anchors(path: Path) -> set[str]:
 
 
 def main() -> int:
-    docs = [ROOT / "README.md", *sorted((ROOT / "protocol").glob("*.md"))]
+    docs = [ROOT / "README.md"]
+    for directory in (ROOT / "protocol", ROOT / "bootstrap"):
+        if directory.exists():
+            docs.extend(sorted(directory.glob("*.md")))
     problems: list[str] = []
     checked = 0
 
@@ -66,4 +69,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-
