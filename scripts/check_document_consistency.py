@@ -229,6 +229,10 @@ def _operational_record_failures() -> list[str]:
             "GEMINI-MANUAL-PASTE-LOAD-001",
             PROTOCOL_VERSION,
         ),
+        "tests/operational/gemini-uploaded-bundle-smoke-001.yaml": (
+            "GEMINI-UPLOADED-BUNDLE-SMOKE-001",
+            PROTOCOL_VERSION,
+        ),
     }
     for relative, (expected_id, expected_version) in expected.items():
         path = ROOT / relative
@@ -256,6 +260,11 @@ def _operational_record_failures() -> list[str]:
                 failures.append(f"{rel(path)}: Gemini record should start with all_required_files_read false")
             if record.get("observed", {}).get("all_required_files_read") is not True:
                 failures.append(f"{rel(path)}: Gemini record should end with all_required_files_read true")
+        if expected_id == "GEMINI-UPLOADED-BUNDLE-SMOKE-001":
+            if record.get("delivery_method") != "UPLOADED_FILE":
+                failures.append(f"{rel(path)}: Gemini uploaded bundle record should use UPLOADED_FILE")
+            if record.get("deviation", {}).get("code") != "BUNDLE_SOURCE_COMMIT_MISIDENTIFIED":
+                failures.append(f"{rel(path)}: Gemini uploaded bundle record missing provenance deviation")
     return failures
 
 

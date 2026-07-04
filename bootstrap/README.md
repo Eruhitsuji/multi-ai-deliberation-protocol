@@ -62,7 +62,7 @@ https://{{MADP_GITHUB_OWNER}}.github.io/{{MADP_GITHUB_REPOSITORY}}/bootstrap/com
 
 Copy the entire page, from the first `BEGIN_FILE` line through the final `END_FILE` line, and paste it into the same AI chat. Then request a new `PROTOCOL_LOAD_REPORT`. The receiving AI must identify the four files from the bundle boundaries, report `access_method: "PASTED_TEXT"`, and set `all_required_files_read: true` only when all four required files were completely received.
 
-The Pages URL is a movable deployment URL and intentionally does not contain `{{MADP_COMMIT_SHA}}`. The generated bundle content and manifest remain tied to the source commit.
+The Pages URL is a movable deployment URL and intentionally does not contain `{{MADP_COMMIT_SHA}}`. The generated bundle content and manifest remain tied to the source commit. The receiving AI must take `repository_commit` only from `BEGIN_MADP_BUNDLE_METADATA.source_commit`. Do not select a repository commit by searching the canonical file contents for a 40-character hexadecimal string. If metadata is missing, use `repository_commit: "UNKNOWN"` and do not guess. For uploaded bundle files, report `access_method: "UPLOADED_FILE"`; for pasted text, report `access_method: "PASTED_TEXT"`.
 
 ## Operational Limitations
 

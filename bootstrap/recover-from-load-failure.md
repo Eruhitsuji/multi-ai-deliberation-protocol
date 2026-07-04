@@ -20,13 +20,13 @@ When `all_required_files_read: false`, use this recovery path first:
 https://{{MADP_GITHUB_OWNER}}.github.io/{{MADP_GITHUB_REPOSITORY}}/bootstrap/complete-protocol-bundle.txt
 ```
 
-2. Ask the user to copy the entire page from the first `BEGIN_FILE` line through the final `END_FILE` line.
+2. Ask the user to copy the entire page from `BEGIN_MADP_BUNDLE_METADATA` through the final `END_FILE` line.
 3. Ask the user to paste the entire copied text into this same chat.
-4. Use the `BEGIN_FILE` and `END_FILE` boundaries to identify the four required files.
+4. Use `BEGIN_MADP_BUNDLE_METADATA` for provenance and the `BEGIN_FILE` and `END_FILE` boundaries to identify the four required files.
 5. Return a new `PROTOCOL_LOAD_REPORT`.
 6. Continue normal MADP processing only if all four files were completely read.
 
-Do not begin normal MADP deliberation until all four required files have been completely read. If `JOIN_INPUT`, `RELAY_BLOCK`, or other session material is provided before complete protocol loading, do not treat it as MADP-conformant processing. If only part of the bundle is pasted, keep `all_required_files_read: false`. Do not fill missing content from general knowledge or inference. Do not claim URL access unless the URL was actually retrieved. When the user pasted the bundle, report `access_method: "PASTED_TEXT"`. Do not claim formal JSON Schema validation unless an actual validator was executed.
+Do not begin normal MADP deliberation until all four required files have been completely read. If `JOIN_INPUT`, `RELAY_BLOCK`, or other session material is provided before complete protocol loading, do not treat it as MADP-conformant processing. If only part of the bundle is pasted, keep `all_required_files_read: false`. Do not fill missing content from general knowledge or inference. Do not claim URL access unless the URL was actually retrieved. Take `repository_commit` only from `BEGIN_MADP_BUNDLE_METADATA.source_commit`; if metadata is missing, use `repository_commit: "UNKNOWN"` and do not guess. Do not select a repository commit by searching the canonical file contents for a 40-character hexadecimal string. When the user pasted the bundle, report `access_method: "PASTED_TEXT"`. When the user uploaded the bundle file, report `access_method: "UPLOADED_FILE"`. Do not claim formal JSON Schema validation unless an actual validator was executed.
 
 ## Failure Inputs
 
@@ -51,7 +51,7 @@ PROTOCOL_LOAD_RECOVERY_REQUEST:
     bundle_url: "https://{{MADP_GITHUB_OWNER}}.github.io/{{MADP_GITHUB_REPOSITORY}}/bootstrap/complete-protocol-bundle.txt"
     user_instructions:
       - "Open the bundle URL in a browser."
-      - "Copy the entire page from the first BEGIN_FILE line through the final END_FILE line."
+      - "Copy the entire page from BEGIN_MADP_BUNDLE_METADATA through the final END_FILE line."
       - "Paste the entire copied text into this same chat."
   accepted_alternatives:
     - "uploaded complete bundle file"
@@ -61,25 +61,25 @@ PROTOCOL_LOAD_RECOVERY_REQUEST:
 
 ## Report After Pasted Bundle
 
-After receiving recovery input, retry loading the exact missing files and emit a new `PROTOCOL_LOAD_REPORT`. If any required file remains unread or partially read, keep `all_required_files_read: false` and do not continue by inference. If a bundle or user instruction does not establish the repository commit, use `UNKNOWN`; do not invent it.
+After receiving recovery input, retry loading the exact missing files and emit a new `PROTOCOL_LOAD_REPORT`. If any required file remains unread or partially read, keep `all_required_files_read: false` and do not continue by inference. Use `BEGIN_MADP_BUNDLE_METADATA.source_commit` as `repository_commit`. If metadata is absent or incomplete, use `UNKNOWN`; do not invent it.
 
 ```yaml
 PROTOCOL_LOAD_REPORT:
   protocol_version: "MADP-v0.2.5-rc.1"
-  repository_commit: "<bundle or user-provided commit, or UNKNOWN>"
+  repository_commit: "<BEGIN_MADP_BUNDLE_METADATA.source_commit, or UNKNOWN>"
   files:
     - path: "README.md"
       status: "READ"
-      access_method: "PASTED_TEXT"
+      access_method: "PASTED_TEXT | UPLOADED_FILE"
     - path: "protocol/MADP-v0.2.5-rc.1.md"
       status: "READ"
-      access_method: "PASTED_TEXT"
+      access_method: "PASTED_TEXT | UPLOADED_FILE"
     - path: "protocol/GLOSSARY-v0.2.5-rc.1.md"
       status: "READ"
-      access_method: "PASTED_TEXT"
+      access_method: "PASTED_TEXT | UPLOADED_FILE"
     - path: "schemas/session-state-v0.2.5-rc.1.schema.yaml"
       status: "READ"
-      access_method: "PASTED_TEXT"
+      access_method: "PASTED_TEXT | UPLOADED_FILE"
   all_required_files_read: true
   limitations:
     - "The canonical files were supplied as pasted text because external URL retrieval was unavailable."

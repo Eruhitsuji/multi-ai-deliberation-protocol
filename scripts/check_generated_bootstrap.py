@@ -11,6 +11,7 @@ from madp_validation import ROOT, load_yaml_text, rel
 
 
 PROTOCOL_VERSION = "MADP-v0.2.5-rc.1"
+BUNDLE_FORMAT = "MADP_COMPLETE_PROTOCOL_BUNDLE_V1"
 BOOTSTRAP_FILES = [
     "README.md",
     "load-protocol-from-github.md",
@@ -19,6 +20,7 @@ BOOTSTRAP_FILES = [
     "recover-from-load-failure.md",
 ]
 BUNDLE_PATH = "bootstrap/complete-protocol-bundle.txt"
+BUNDLE_MANIFEST_PATH = "bootstrap/complete-protocol-bundle.manifest.yaml"
 REQUIRED_CANONICAL_PATHS = [
     "README.md",
     "protocol/MADP-v0.2.5-rc.1.md",
@@ -73,6 +75,48 @@ def _expected_bundle(paths: list[str]) -> str:
     return "\n\n".join(blocks) + "\n"
 
 
+def _expected_bundle_with_metadata(paths: list[str], source_repository: str, source_commit: str) -> str:
+    metadata = "\n".join(
+        [
+            "BEGIN_MADP_BUNDLE_METADATA",
+            f"bundle_format: {BUNDLE_FORMAT}",
+            f"protocol_version: {PROTOCOL_VERSION}",
+            f"source_repository: {source_repository}",
+            f"source_commit: {source_commit}",
+            f"canonical_file_count: {len(paths)}",
+            "END_MADP_BUNDLE_METADATA",
+        ]
+    )
+    return metadata + "\n\n" + _expected_bundle(paths)
+
+
+def _bundle_metadata(bundle: str, problems: list[str]) -> dict[str, str]:
+    lines = bundle.splitlines()
+    if not lines or lines[0] != "BEGIN_MADP_BUNDLE_METADATA":
+        problems.append("bootstrap/complete-protocol-bundle.txt: metadata envelope must be at file start")
+        return {}
+    begin_count = sum(1 for line in lines if line == "BEGIN_MADP_BUNDLE_METADATA")
+    end_count = sum(1 for line in lines if line == "END_MADP_BUNDLE_METADATA")
+    if begin_count != 1:
+        problems.append(f"bootstrap/complete-protocol-bundle.txt: expected one metadata BEGIN, got {begin_count}")
+    if end_count != 1:
+        problems.append(f"bootstrap/complete-protocol-bundle.txt: expected one metadata END, got {end_count}")
+    try:
+        end_index = lines.index("END_MADP_BUNDLE_METADATA")
+    except ValueError:
+        return {}
+    metadata: dict[str, str] = {}
+    for line in lines[1:end_index]:
+        if ": " not in line:
+            problems.append(f"bootstrap/complete-protocol-bundle.txt: invalid metadata line {line!r}")
+            continue
+        key, value = line.split(": ", 1)
+        metadata[key] = value
+    if len(lines) <= end_index + 2 or lines[end_index + 1] != "" or not lines[end_index + 2].startswith("BEGIN_FILE: "):
+        problems.append("bootstrap/complete-protocol-bundle.txt: metadata must be followed by one blank line and BEGIN_FILE")
+    return metadata
+
+
 def _display(path: Path) -> str:
     try:
         return rel(path)
@@ -109,6 +153,17 @@ def _manifest(path: Path, problems: list[str]) -> dict[str, Any]:
     if not isinstance(files, list):
         problems.append(f"{_display(path)}: files must be a list")
     return manifest
+
+
+def _bundle_manifest(path: Path, problems: list[str]) -> dict[str, Any]:
+    if not path.exists():
+        problems.append(f"{_display(path)}: missing complete protocol bundle manifest")
+        return {}
+    data = _load_yaml_file(path)
+    if not isinstance(data, dict) or not isinstance(data.get("complete_protocol_bundle"), dict):
+        problems.append(f"{_display(path)}: expected complete_protocol_bundle mapping")
+        return {}
+    return data["complete_protocol_bundle"]
 
 
 def _check_expected_fixture(expect_path: Path | None, manifest: dict[str, Any], problems: list[str]) -> None:
@@ -215,17 +270,26 @@ def _check_recovery_prompt(texts: dict[str, str], manifest: dict[str, Any], prob
         problems.append("generated recover-from-load-failure.md: repository-specific placeholder remains")
     if "PASTED_TEXT" not in recovery_text:
         problems.append("generated recover-from-load-failure.md: missing PASTED_TEXT recovery instruction")
+    if "UPLOADED_FILE" not in recovery_text:
+        problems.append("generated recover-from-load-failure.md: missing UPLOADED_FILE recovery instruction")
     required_markers = [
         "Do not begin normal MADP deliberation until all four required files have been completely read.",
         "If only part of the bundle is pasted, keep `all_required_files_read: false`.",
         "Do not fill missing content from general knowledge or inference.",
+        "Take `repository_commit` only from `BEGIN_MADP_BUNDLE_METADATA.source_commit`",
+        "Do not select a repository commit by searching the canonical file contents for a 40-character hexadecimal string.",
     ]
     for marker in required_markers:
         if marker not in recovery_text:
             problems.append(f"generated recover-from-load-failure.md: missing fail-closed marker {marker!r}")
 
 
-def _check_complete_bundle(site_dir: Path, manifest: dict[str, Any], problems: list[str]) -> None:
+def _check_complete_bundle(
+    site_dir: Path,
+    manifest: dict[str, Any],
+    companion_manifest: dict[str, Any],
+    problems: list[str],
+) -> None:
     bundle_path = site_dir / BUNDLE_PATH
     if not bundle_path.exists():
         problems.append(f"{_display(bundle_path)}: missing complete protocol bundle")
@@ -233,6 +297,22 @@ def _check_complete_bundle(site_dir: Path, manifest: dict[str, Any], problems: l
     bundle = bundle_path.read_text(encoding="utf-8")
     if not bundle.endswith("\n"):
         problems.append(f"{_display(bundle_path)}: bundle must end with newline")
+    source_repository = manifest.get("source_repository")
+    source_commit = manifest.get("source_commit")
+    metadata = _bundle_metadata(bundle, problems)
+    if metadata.get("bundle_format") != BUNDLE_FORMAT:
+        problems.append(f"{_display(bundle_path)}: unexpected bundle_format {metadata.get('bundle_format')!r}")
+    if metadata.get("protocol_version") != PROTOCOL_VERSION:
+        problems.append(f"{_display(bundle_path)}: unexpected protocol_version {metadata.get('protocol_version')!r}")
+    if metadata.get("source_repository") != source_repository:
+        problems.append(f"{_display(bundle_path)}: metadata source_repository mismatch")
+    if metadata.get("source_commit") != source_commit:
+        problems.append(f"{_display(bundle_path)}: metadata source_commit mismatch")
+    if metadata.get("canonical_file_count") != str(len(REQUIRED_CANONICAL_PATHS)):
+        problems.append(f"{_display(bundle_path)}: metadata canonical_file_count mismatch")
+    if isinstance(source_commit, str) and "0123456789abcdef0123456789abcdef01234567" in bundle:
+        if source_commit != "0123456789abcdef0123456789abcdef01234567" and metadata.get("source_commit") == "0123456789abcdef0123456789abcdef01234567":
+            problems.append(f"{_display(bundle_path)}: fixture SHA used as metadata source_commit")
 
     positions: list[int] = []
     for canonical_path in REQUIRED_CANONICAL_PATHS:
@@ -258,7 +338,9 @@ def _check_complete_bundle(site_dir: Path, manifest: dict[str, Any], problems: l
         if f"BEGIN_FILE: {disallowed_path}" in bundle or f"END_FILE: {disallowed_path}" in bundle:
             problems.append(f"{_display(bundle_path)}: draft file boundary included for {disallowed_path}")
 
-    expected = _expected_bundle(REQUIRED_CANONICAL_PATHS)
+    if not isinstance(source_repository, str) or not isinstance(source_commit, str):
+        return
+    expected = _expected_bundle_with_metadata(REQUIRED_CANONICAL_PATHS, source_repository, source_commit)
     if bundle != expected:
         problems.append(f"{_display(bundle_path)}: bundle content differs from canonical source files")
 
@@ -276,6 +358,31 @@ def _check_complete_bundle(site_dir: Path, manifest: dict[str, Any], problems: l
     if entry.get("sha256") != _sha256(bundle):
         problems.append("manifest files: bundle sha256 does not match generated bundle")
 
+    if companion_manifest.get("bundle_format") != BUNDLE_FORMAT:
+        problems.append("bundle manifest: bundle_format mismatch")
+    if companion_manifest.get("protocol_version") != PROTOCOL_VERSION:
+        problems.append("bundle manifest: protocol_version mismatch")
+    if companion_manifest.get("source_repository") != source_repository:
+        problems.append("bundle manifest: source_repository mismatch")
+    if companion_manifest.get("source_commit") != source_commit:
+        problems.append("bundle manifest: source_commit mismatch")
+    if companion_manifest.get("bundle_path") != BUNDLE_PATH:
+        problems.append("bundle manifest: bundle_path mismatch")
+    if companion_manifest.get("bundle_sha256") != _sha256(bundle):
+        problems.append("bundle manifest: bundle_sha256 mismatch")
+    files = companion_manifest.get("files")
+    if not isinstance(files, list) or len(files) != len(REQUIRED_CANONICAL_PATHS):
+        problems.append("bundle manifest: files list length mismatch")
+        return
+    for expected_path, item in zip(REQUIRED_CANONICAL_PATHS, files):
+        if not isinstance(item, dict):
+            problems.append("bundle manifest: file entry is not a mapping")
+            continue
+        if item.get("path") != expected_path:
+            problems.append(f"bundle manifest: expected file path {expected_path}, got {item.get('path')!r}")
+        if item.get("sha256") != _sha256(_source_file_text(expected_path)):
+            problems.append(f"bundle manifest: sha256 mismatch for {expected_path}")
+
 
 def _check_manifest_files(site_dir: Path, manifest: dict[str, Any], problems: list[str]) -> None:
     files = manifest.get("files")
@@ -284,6 +391,7 @@ def _check_manifest_files(site_dir: Path, manifest: dict[str, Any], problems: li
         return
     expected_paths = {f"bootstrap/{name}" for name in BOOTSTRAP_FILES}
     expected_paths.add(BUNDLE_PATH)
+    expected_paths.add(BUNDLE_MANIFEST_PATH)
     actual_paths: set[str] = set()
     for entry in files:
         if not isinstance(entry, dict):
@@ -305,6 +413,8 @@ def _check_manifest_files(site_dir: Path, manifest: dict[str, Any], problems: li
             problems.append(f"manifest files: missing output file {path}")
         if path == BUNDLE_PATH and entry.get("source_files") != REQUIRED_CANONICAL_PATHS:
             problems.append("manifest files: bundle source_files mismatch")
+        if path == BUNDLE_MANIFEST_PATH and entry.get("source_files") != REQUIRED_CANONICAL_PATHS:
+            problems.append("manifest files: bundle manifest source_files mismatch")
     missing = expected_paths.difference(actual_paths)
     for path in sorted(missing):
         problems.append(f"manifest files: missing entry for {path}")
@@ -323,6 +433,7 @@ def _check_index(site_dir: Path, manifest: dict[str, Any], problems: list[str]) 
         "bootstrap/join-as-participant.md",
         "bootstrap/recover-from-load-failure.md",
         "bootstrap/complete-protocol-bundle.txt",
+        "bootstrap/complete-protocol-bundle.manifest.yaml",
         "bootstrap/manifest.yaml",
     ]
     for target in required:
@@ -345,11 +456,12 @@ def main() -> int:
     site_dir = Path(args.site_dir)
     problems: list[str] = []
     manifest = _manifest(site_dir / "bootstrap" / "manifest.yaml", problems)
+    companion_manifest = _bundle_manifest(site_dir / BUNDLE_MANIFEST_PATH, problems)
     _check_expected_fixture(Path(args.expect) if args.expect else None, manifest, problems)
     texts = _check_markdown_files(site_dir, manifest, problems)
     _check_raw_urls(texts, manifest, problems)
     _check_recovery_prompt(texts, manifest, problems)
-    _check_complete_bundle(site_dir, manifest, problems)
+    _check_complete_bundle(site_dir, manifest, companion_manifest, problems)
     _check_manifest_files(site_dir, manifest, problems)
     _check_index(site_dir, manifest, problems)
 

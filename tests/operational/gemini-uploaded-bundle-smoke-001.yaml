@@ -1,0 +1,20 @@
+operational_test:
+  id: "GEMINI-UPLOADED-BUNDLE-SMOKE-001"
+  model_family: "Gemini"
+  result: "PASS_WITH_PROVENANCE_DEVIATION"
+  tested_protocol_version: "MADP-v0.2.5-rc.1"
+  delivery_method: "UPLOADED_FILE"
+  observed:
+    all_required_files_read: true
+    all_four_canonical_files_read: true
+    participant_smoke_response_generated: true
+    authority_boundary_preserved: true
+    repository_commit_reported: "0123456789abcdef0123456789abcdef01234567"
+  deviation:
+    code: "BUNDLE_SOURCE_COMMIT_MISIDENTIFIED"
+    explanation: "The model selected a fixture SHA found in canonical content because the uploaded bundle lacked explicit source-commit metadata."
+  corrective_action:
+    - "Add explicit bundle metadata envelope."
+    - "Require repository_commit to come only from bundle metadata."
+  limitations:
+    - "No formal JSON Schema validator was executed."

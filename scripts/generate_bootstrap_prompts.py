@@ -15,6 +15,7 @@ from madp_validation import ROOT, rel
 
 
 PROTOCOL_VERSION = "MADP-v0.2.5-rc.1"
+BUNDLE_FORMAT = "MADP_COMPLETE_PROTOCOL_BUNDLE_V1"
 BOOTSTRAP_DIR = ROOT / "bootstrap"
 BOOTSTRAP_FILES = [
     "README.md",
@@ -30,6 +31,7 @@ CANONICAL_BUNDLE_FILES = [
     "schemas/session-state-v0.2.5-rc.1.schema.yaml",
 ]
 BUNDLE_OUTPUT_PATH = "bootstrap/complete-protocol-bundle.txt"
+BUNDLE_MANIFEST_OUTPUT_PATH = "bootstrap/complete-protocol-bundle.manifest.yaml"
 REPOSITORY_PLACEHOLDERS = {
     "{{MADP_GITHUB_OWNER}}",
     "{{MADP_GITHUB_REPOSITORY}}",
@@ -130,7 +132,18 @@ def _source_file_text(relative_path: str) -> str:
     return path.read_text(encoding="utf-8")
 
 
-def _complete_protocol_bundle(paths: list[str]) -> str:
+def _complete_protocol_bundle(paths: list[str], source_repository: str, source_commit: str) -> str:
+    metadata = "\n".join(
+        [
+            "BEGIN_MADP_BUNDLE_METADATA",
+            f"bundle_format: {BUNDLE_FORMAT}",
+            f"protocol_version: {PROTOCOL_VERSION}",
+            f"source_repository: {source_repository}",
+            f"source_commit: {source_commit}",
+            f"canonical_file_count: {len(paths)}",
+            "END_MADP_BUNDLE_METADATA",
+        ]
+    )
     blocks: list[str] = []
     for relative_path in paths:
         text = _source_file_text(relative_path)
@@ -139,7 +152,33 @@ def _complete_protocol_bundle(paths: list[str]) -> str:
         else:
             block = f"BEGIN_FILE: {relative_path}\n{text}\nEND_FILE: {relative_path}"
         blocks.append(block)
-    return "\n\n".join(blocks) + "\n"
+    return metadata + "\n\n" + "\n\n".join(blocks) + "\n"
+
+
+def _complete_protocol_bundle_manifest(
+    source_repository: str,
+    source_commit: str,
+    bundle: str,
+    paths: list[str],
+) -> str:
+    data = {
+        "complete_protocol_bundle": {
+            "bundle_format": BUNDLE_FORMAT,
+            "protocol_version": PROTOCOL_VERSION,
+            "source_repository": source_repository,
+            "source_commit": source_commit,
+            "bundle_path": BUNDLE_OUTPUT_PATH,
+            "bundle_sha256": _sha256(bundle),
+            "files": [
+                {
+                    "path": relative_path,
+                    "sha256": _sha256(_source_file_text(relative_path)),
+                }
+                for relative_path in paths
+            ],
+        }
+    }
+    return yaml.safe_dump(data, sort_keys=False, allow_unicode=False)
 
 
 def _write_text(path: Path, text: str) -> None:
@@ -178,6 +217,7 @@ def _index_html(owner: str, repository: str, source_commit: str) -> str:
         ("Join participant", "bootstrap/join-as-participant.md"),
         ("Recover from failure", "bootstrap/recover-from-load-failure.md"),
         ("Complete protocol bundle (manual paste fallback)", "bootstrap/complete-protocol-bundle.txt"),
+        ("Complete protocol bundle manifest", "bootstrap/complete-protocol-bundle.manifest.yaml"),
         ("Manifest", "bootstrap/manifest.yaml"),
         ("Source repository", repo_url),
         ("Source commit", commit_url),
@@ -233,14 +273,29 @@ def generate(output_dir: Path, source_repository: str, source_sha: str, workflow
             }
         )
 
-    bundle = _complete_protocol_bundle(CANONICAL_BUNDLE_FILES)
+    bundle = _complete_protocol_bundle(CANONICAL_BUNDLE_FILES, source_repository, source_commit)
     _write_text(bootstrap_output / "complete-protocol-bundle.txt", bundle)
+    bundle_manifest = _complete_protocol_bundle_manifest(
+        source_repository,
+        source_commit,
+        bundle,
+        CANONICAL_BUNDLE_FILES,
+    )
+    _write_text(bootstrap_output / "complete-protocol-bundle.manifest.yaml", bundle_manifest)
     generated_files.append(
         {
             "path": BUNDLE_OUTPUT_PATH,
             "source_files": CANONICAL_BUNDLE_FILES,
             "source_commit": source_commit,
             "sha256": _sha256(bundle),
+        }
+    )
+    generated_files.append(
+        {
+            "path": BUNDLE_MANIFEST_OUTPUT_PATH,
+            "source_files": CANONICAL_BUNDLE_FILES,
+            "source_commit": source_commit,
+            "sha256": _sha256(bundle_manifest),
         }
     )
 

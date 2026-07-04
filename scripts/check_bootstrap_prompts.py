@@ -87,14 +87,22 @@ def main() -> int:
         problems.append("recover-from-load-failure.md: missing all_required_files_read: false")
     if "PASTED_TEXT" not in recovery_text:
         problems.append("recover-from-load-failure.md: missing PASTED_TEXT access method")
+    if "UPLOADED_FILE" not in recovery_text:
+        problems.append("recover-from-load-failure.md: missing UPLOADED_FILE access method")
     required_recovery_markers = [
         "Do not begin normal MADP deliberation until all four required files have been completely read.",
         "If only part of the bundle is pasted, keep `all_required_files_read: false`.",
         "Do not fill missing content from general knowledge or inference.",
+        "Take `repository_commit` only from `BEGIN_MADP_BUNDLE_METADATA.source_commit`",
+        "Do not select a repository commit by searching the canonical file contents for a 40-character hexadecimal string.",
     ]
     for marker in required_recovery_markers:
         if marker not in recovery_text:
             problems.append(f"recover-from-load-failure.md: missing recovery fail-closed instruction {marker!r}")
+    if "BEGIN_MADP_BUNDLE_METADATA.source_commit" not in readme_text:
+        problems.append("bootstrap/README.md: missing bundle metadata source_commit guidance")
+    if "Do not select a repository commit by searching the canonical file contents for a 40-character hexadecimal string." not in readme_text:
+        problems.append("bootstrap/README.md: missing 40-character SHA search prohibition")
 
     join_text = texts.get("join-as-participant.md", "")
     required_join_markers = [
