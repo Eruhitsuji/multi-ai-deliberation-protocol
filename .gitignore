@@ -1,6 +1,12 @@
 .*
 !.gitignore
+!.github/
+!.github/workflows/
+!.github/workflows/*.yml
+!.github/workflows/*.yaml
 out/
 tmp/
 *.local
 .env
+__pycache__/
+*.py[cod]

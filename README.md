@@ -150,6 +150,31 @@ relay_block.session_id = relay_block.operative_session_state_snapshot.meta.sessi
 relay_block.source_state_version = relay_block.operative_session_state_snapshot.meta.state_version
 ```
 
+## Validation
+
+MADP v0.2.5-draft validation uses Python 3.11 or newer with `jsonschema` and `PyYAML`.
+
+```bash
+python -m pip install -r requirements-dev.txt
+python scripts/validate_schema.py
+python scripts/validate_examples.py
+python scripts/validate_semantics.py
+python scripts/check_markdown_links.py
+python scripts/check_document_consistency.py
+```
+
+On Windows PowerShell, using a local virtual environment:
+
+```powershell
+python -m venv .venv-validation
+.\.venv-validation\Scripts\python.exe -m pip install -r requirements-dev.txt
+.\.venv-validation\Scripts\python.exe scripts\validate_schema.py
+.\.venv-validation\Scripts\python.exe scripts\validate_examples.py
+.\.venv-validation\Scripts\python.exe scripts\validate_semantics.py
+.\.venv-validation\Scripts\python.exe scripts\check_markdown_links.py
+.\.venv-validation\Scripts\python.exe scripts\check_document_consistency.py
+```
+
 ## Repository structure
 
 ```text
