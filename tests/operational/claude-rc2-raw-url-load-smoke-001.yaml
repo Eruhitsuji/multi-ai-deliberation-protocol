@@ -1,0 +1,26 @@
+operational_test:
+  id: "CLAUDE-RC2-RAW-URL-LOAD-SMOKE-001"
+  model_family: "Claude"
+  tested_protocol_version: "MADP-v0.2.5-rc.2"
+  tested_source_commit: "15dad848da6fe3e09a19bcda11c6ba2c56e3fc09"
+  delivery_method: "BOOTSTRAP_PROMPT_THEN_RAW_URL"
+  result: "PASS"
+  observed:
+    protocol_version_preserved: true
+    repository_commit_preserved: true
+    all_four_canonical_files_read: true
+    all_required_files_read: true
+    access_method: "RAW_URL"
+  files:
+    - "README.md"
+    - "protocol/MADP-v0.2.5-rc.2.md"
+    - "protocol/GLOSSARY-v0.2.5-rc.2.md"
+    - "schemas/session-state-v0.2.5-rc.2.schema.yaml"
+  validation_scope:
+    protocol_load: "PASS"
+    formal_schema_validation: "NOT_EXECUTED"
+    semantic_validation: "NOT_EXECUTED"
+  limitations:
+    - "This is evidence for the tested Claude environment and delivery path, not universal interoperability."
+    - "No formal JSON Schema validator was executed."
+    - "No reference semantic validator was executed."

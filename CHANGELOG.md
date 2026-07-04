@@ -13,6 +13,8 @@ Status: Release candidate. Not final.
 - Explicit bundle provenance metadata.
 - A companion bundle manifest with hashes.
 - Operational evidence for Gemini uploaded-file recovery.
+- Runtime load smoke-test evidence for Claude using commit-pinned Raw URLs.
+- Runtime load smoke-test evidence for Gemini using the uploaded complete-protocol bundle.
 
 ### Changed
 
@@ -24,6 +26,13 @@ Status: Release candidate. Not final.
 ### Fixed
 
 - Prevented fixture SHA values in canonical content from being mistaken for the bundle source commit.
+
+### Validation
+
+- Claude loaded all four rc.2 canonical files through commit-pinned Raw URLs.
+- Gemini loaded all four rc.2 canonical files through the uploaded complete bundle.
+- Both reported the expected source commit.
+- Formal JSON Schema execution was outside the scope of these runtime load tests.
 
 ## MADP-v0.2.5-rc.1
 

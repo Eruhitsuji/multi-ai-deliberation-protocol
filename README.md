@@ -41,7 +41,9 @@ Recorded validation status for this release candidate:
 - ChatGPT YAML serialization PASS
 - ChatGPT malformed relay rejection PASS
 - Gemini uploaded-bundle recovery PASS for rc.1 evidence
-- rc.2 runtime load smoke test remains pending
+- Claude rc.2 commit-pinned Raw URL load smoke test PASS
+- Gemini rc.2 uploaded complete-bundle load smoke test PASS
+- formal universal interoperability remains unclaimed
 
 README examples are informative. A conflict among authority domains is a specification defect and must be reported.
 

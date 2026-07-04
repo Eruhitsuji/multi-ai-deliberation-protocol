@@ -20,6 +20,13 @@ from madp_validation import (
 RC_PROTOCOL_PATH = "protocol/MADP-v0.2.5-rc.2.md"
 RC_GLOSSARY_PATH = "protocol/GLOSSARY-v0.2.5-rc.2.md"
 RC_SCHEMA_PATH = "schemas/session-state-v0.2.5-rc.2.schema.yaml"
+RC2_TESTED_SOURCE_COMMIT = "15dad848da6fe3e09a19bcda11c6ba2c56e3fc09"
+RC2_CANONICAL_FILES = [
+    "README.md",
+    RC_PROTOCOL_PATH,
+    RC_GLOSSARY_PATH,
+    RC_SCHEMA_PATH,
+]
 HISTORICAL_RC1_CANONICAL_PATHS = [
     "protocol/MADP-v0.2.5-rc.1.md",
     "protocol/GLOSSARY-v0.2.5-rc.1.md",
@@ -178,7 +185,7 @@ def main() -> int:
         return 1
     print("version consistency: current rc.2 references PASS")
     print("normalized rc.1/rc.2 compare: protocol, glossary, schema PASS")
-    print("operational records: historical rc.1 and rc.2 readiness PASS")
+    print("operational records: historical rc.1, rc.2 smoke tests, and rc.2 readiness PASS")
     for name in checks:
         print(f"enum consistency: {name} PASS")
     return 0
@@ -312,6 +319,26 @@ def _operational_record_failures() -> list[str]:
                 failures.append(f"{rel(path)}: Gemini uploaded bundle record should use UPLOADED_FILE")
             if record.get("deviation", {}).get("code") != "BUNDLE_SOURCE_COMMIT_MISIDENTIFIED":
                 failures.append(f"{rel(path)}: Gemini uploaded bundle record missing provenance deviation")
+    failures.extend(
+        _rc2_load_smoke_record_failures(
+            "tests/operational/claude-rc2-raw-url-load-smoke-001.yaml",
+            "CLAUDE-RC2-RAW-URL-LOAD-SMOKE-001",
+            "Claude",
+            "BOOTSTRAP_PROMPT_THEN_RAW_URL",
+            "RAW_URL",
+            require_semantic_scope=True,
+        )
+    )
+    failures.extend(
+        _rc2_load_smoke_record_failures(
+            "tests/operational/gemini-rc2-uploaded-bundle-load-smoke-001.yaml",
+            "GEMINI-RC2-UPLOADED-BUNDLE-LOAD-SMOKE-001",
+            "Gemini",
+            "UPLOADED_COMPLETE_BUNDLE",
+            "UPLOADED_FILE",
+            require_semantic_scope=False,
+        )
+    )
     readiness_path = ROOT / "tests/operational/rc2-release-readiness.yaml"
     if not readiness_path.exists():
         failures.append("missing operational record tests/operational/rc2-release-readiness.yaml")
@@ -325,10 +352,100 @@ def _operational_record_failures() -> list[str]:
                 failures.append(f"{rel(readiness_path)}: unexpected operational test id")
             if record.get("candidate_version") != PROTOCOL_VERSION:
                 failures.append(f"{rel(readiness_path)}: candidate_version does not match current protocol")
-            if record.get("status") != "PENDING_RUNTIME_SMOKE_TEST":
-                failures.append(f"{rel(readiness_path)}: readiness status should remain pending runtime smoke test")
+            if record.get("version_update_commit") != RC2_TESTED_SOURCE_COMMIT:
+                failures.append(f"{rel(readiness_path)}: version_update_commit does not match tested source commit")
+            if record.get("status") != "READY_FOR_USER_RELEASE_DECISION":
+                failures.append(f"{rel(readiness_path)}: readiness status should be ready for user release decision")
             if record.get("based_on", {}).get("previous_candidate") != "MADP-v0.2.5-rc.1":
                 failures.append(f"{rel(readiness_path)}: missing previous candidate")
+            runtime = record.get("runtime_smoke_tests", {})
+            if runtime.get("claude_raw_url_load", {}).get("record") != "CLAUDE-RC2-RAW-URL-LOAD-SMOKE-001":
+                failures.append(f"{rel(readiness_path)}: missing Claude runtime smoke record")
+            if runtime.get("claude_raw_url_load", {}).get("result") != "PASS":
+                failures.append(f"{rel(readiness_path)}: Claude runtime smoke result should be PASS")
+            if runtime.get("gemini_uploaded_bundle_load", {}).get("record") != "GEMINI-RC2-UPLOADED-BUNDLE-LOAD-SMOKE-001":
+                failures.append(f"{rel(readiness_path)}: missing Gemini runtime smoke record")
+            if runtime.get("gemini_uploaded_bundle_load", {}).get("result") != "PASS":
+                failures.append(f"{rel(readiness_path)}: Gemini runtime smoke result should be PASS")
+            release_readiness = record.get("release_readiness", {})
+            expected_readiness = {
+                "static_validation": "PASS",
+                "pages_distribution": "PASS",
+                "bundle_provenance": "PASS",
+                "runtime_load_smoke": "PASS",
+                "final_release_approval": "PENDING_USER_DECISION",
+            }
+            for key, expected_value in expected_readiness.items():
+                if release_readiness.get(key) != expected_value:
+                    failures.append(f"{rel(readiness_path)}: release_readiness.{key} should be {expected_value}")
+            status = record.get("required_before_tag_status", {})
+            for key in [
+                "static_validations_pass",
+                "pages_published_rc2_bundle",
+                "bundle_metadata_source_commit_matches_version_update_commit",
+                "runtime_load_smoke_test_passes",
+            ]:
+                if status.get(key) is not True:
+                    failures.append(f"{rel(readiness_path)}: required_before_tag_status.{key} should be true")
+    return failures
+
+
+def _rc2_load_smoke_record_failures(
+    relative: str,
+    expected_id: str,
+    expected_model_family: str,
+    expected_delivery_method: str,
+    expected_access_method: str,
+    *,
+    require_semantic_scope: bool,
+) -> list[str]:
+    failures: list[str] = []
+    path = ROOT / relative
+    if not path.exists():
+        return [f"missing operational record {relative}"]
+    data = load_yaml(path)
+    record = data.get("operational_test") if isinstance(data, dict) else None
+    if not isinstance(record, dict):
+        return [f"{rel(path)}: missing operational_test mapping"]
+    if record.get("id") != expected_id:
+        failures.append(f"{rel(path)}: unexpected operational test id")
+    if record.get("model_family") != expected_model_family:
+        failures.append(f"{rel(path)}: unexpected model_family")
+    if record.get("tested_protocol_version") != PROTOCOL_VERSION:
+        failures.append(f"{rel(path)}: tested_protocol_version should be {PROTOCOL_VERSION}")
+    if record.get("tested_source_commit") != RC2_TESTED_SOURCE_COMMIT:
+        failures.append(f"{rel(path)}: tested_source_commit should be {RC2_TESTED_SOURCE_COMMIT}")
+    if record.get("delivery_method") != expected_delivery_method:
+        failures.append(f"{rel(path)}: delivery_method should be {expected_delivery_method}")
+    if record.get("result") != "PASS":
+        failures.append(f"{rel(path)}: result should be PASS")
+    observed = record.get("observed", {})
+    expected_observed_true = [
+        "protocol_version_preserved",
+        "repository_commit_preserved",
+        "all_four_canonical_files_read",
+        "all_required_files_read",
+    ]
+    for key in expected_observed_true:
+        if observed.get(key) is not True:
+            failures.append(f"{rel(path)}: observed.{key} should be true")
+    if observed.get("access_method") != expected_access_method:
+        failures.append(f"{rel(path)}: observed.access_method should be {expected_access_method}")
+    if record.get("files") != RC2_CANONICAL_FILES:
+        failures.append(f"{rel(path)}: files should list the four rc.2 canonical files")
+    validation_scope = record.get("validation_scope", {})
+    if validation_scope.get("protocol_load") != "PASS":
+        failures.append(f"{rel(path)}: validation_scope.protocol_load should be PASS")
+    if validation_scope.get("formal_schema_validation") != "NOT_EXECUTED":
+        failures.append(f"{rel(path)}: formal schema validation should be NOT_EXECUTED")
+    if require_semantic_scope and validation_scope.get("semantic_validation") != "NOT_EXECUTED":
+        failures.append(f"{rel(path)}: semantic validation should be NOT_EXECUTED")
+    if expected_access_method == "UPLOADED_FILE":
+        provenance = record.get("provenance", {})
+        if provenance.get("source") != "BEGIN_MADP_BUNDLE_METADATA.source_commit":
+            failures.append(f"{rel(path)}: provenance source should be bundle metadata")
+        if provenance.get("fixture_sha_misidentification") is not False:
+            failures.append(f"{rel(path)}: fixture SHA misidentification should be false")
     return failures
 
 

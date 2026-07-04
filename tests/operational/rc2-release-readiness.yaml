@@ -1,10 +1,11 @@
 operational_test:
   id: "MADP-RC2-RELEASE-READINESS-001"
   candidate_version: "MADP-v0.2.5-rc.2"
-  status: "PENDING_RUNTIME_SMOKE_TEST"
+  version_update_commit: "15dad848da6fe3e09a19bcda11c6ba2c56e3fc09"
+  status: "READY_FOR_USER_RELEASE_DECISION"
   based_on:
     previous_candidate: "MADP-v0.2.5-rc.1"
-    validated_source_commit: "2921f6f01239935bef9b7d2cfba8e12f44655cdb"
+    previous_validated_source_commit: "2921f6f01239935bef9b7d2cfba8e12f44655cdb"
   included_improvements:
     - "Generated complete protocol bundle"
     - "Manual-paste recovery"
@@ -23,11 +24,29 @@ operational_test:
       uploaded_bundle_recovery: "PASS"
       uploaded_bundle_provenance: "PASS"
       participant_smoke_behavior: "PASS"
+  runtime_smoke_tests:
+    claude_raw_url_load:
+      record: "CLAUDE-RC2-RAW-URL-LOAD-SMOKE-001"
+      result: "PASS"
+    gemini_uploaded_bundle_load:
+      record: "GEMINI-RC2-UPLOADED-BUNDLE-LOAD-SMOKE-001"
+      result: "PASS"
+  release_readiness:
+    static_validation: "PASS"
+    pages_distribution: "PASS"
+    bundle_provenance: "PASS"
+    runtime_load_smoke: "PASS"
+    final_release_approval: "PENDING_USER_DECISION"
   required_before_tag:
     - "All rc.2 static validations pass"
     - "Pages publishes an rc.2 bundle"
     - "Bundle metadata source_commit matches the rc.2 version-update commit"
     - "At least one rc.2 runtime load smoke test passes"
+  required_before_tag_status:
+    static_validations_pass: true
+    pages_published_rc2_bundle: true
+    bundle_metadata_source_commit_matches_version_update_commit: true
+    runtime_load_smoke_test_passes: true
   limitations:
     - "Formal cross-model universal interoperability is not claimed."
     - "Final release approval remains a user decision."
