@@ -23,6 +23,13 @@ BOOTSTRAP_FILES = [
     "join-as-participant.md",
     "recover-from-load-failure.md",
 ]
+CANONICAL_BUNDLE_FILES = [
+    "README.md",
+    "protocol/MADP-v0.2.5-rc.1.md",
+    "protocol/GLOSSARY-v0.2.5-rc.1.md",
+    "schemas/session-state-v0.2.5-rc.1.schema.yaml",
+]
+BUNDLE_OUTPUT_PATH = "bootstrap/complete-protocol-bundle.txt"
 REPOSITORY_PLACEHOLDERS = {
     "{{MADP_GITHUB_OWNER}}",
     "{{MADP_GITHUB_REPOSITORY}}",
@@ -114,6 +121,27 @@ def _sha256(text: str) -> str:
     return hashlib.sha256(text.encode("utf-8")).hexdigest()
 
 
+def _source_file_text(relative_path: str) -> str:
+    path = ROOT / relative_path
+    if not path.exists():
+        _fail(f"missing canonical bundle source file: {relative_path}")
+    if not path.is_file():
+        _fail(f"canonical bundle source is not a file: {relative_path}")
+    return path.read_text(encoding="utf-8")
+
+
+def _complete_protocol_bundle(paths: list[str]) -> str:
+    blocks: list[str] = []
+    for relative_path in paths:
+        text = _source_file_text(relative_path)
+        if text.endswith("\n"):
+            block = f"BEGIN_FILE: {relative_path}\n{text}END_FILE: {relative_path}"
+        else:
+            block = f"BEGIN_FILE: {relative_path}\n{text}\nEND_FILE: {relative_path}"
+        blocks.append(block)
+    return "\n\n".join(blocks) + "\n"
+
+
 def _write_text(path: Path, text: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(text, encoding="utf-8", newline="\n")
@@ -149,6 +177,7 @@ def _index_html(owner: str, repository: str, source_commit: str) -> str:
         ("Start facilitator", "bootstrap/start-facilitator.md"),
         ("Join participant", "bootstrap/join-as-participant.md"),
         ("Recover from failure", "bootstrap/recover-from-load-failure.md"),
+        ("Complete protocol bundle (manual paste fallback)", "bootstrap/complete-protocol-bundle.txt"),
         ("Manifest", "bootstrap/manifest.yaml"),
         ("Source repository", repo_url),
         ("Source commit", commit_url),
@@ -203,6 +232,17 @@ def generate(output_dir: Path, source_repository: str, source_sha: str, workflow
                 "sha256": _sha256(generated),
             }
         )
+
+    bundle = _complete_protocol_bundle(CANONICAL_BUNDLE_FILES)
+    _write_text(bootstrap_output / "complete-protocol-bundle.txt", bundle)
+    generated_files.append(
+        {
+            "path": BUNDLE_OUTPUT_PATH,
+            "source_files": CANONICAL_BUNDLE_FILES,
+            "source_commit": source_commit,
+            "sha256": _sha256(bundle),
+        }
+    )
 
     manifest = _manifest(
         source_repository,

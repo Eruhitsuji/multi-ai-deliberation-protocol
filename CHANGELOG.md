@@ -1,5 +1,16 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- A generated complete-protocol text bundle for environments without external URL retrieval.
+- Manual-paste recovery instructions for protocol load failures.
+
+### Changed
+
+- Load-failure recovery now directs users to paste the complete generated bundle before normal MADP processing resumes.
+
 ## MADP-v0.2.5-rc.1
 
 Status: Release candidate. Not final.

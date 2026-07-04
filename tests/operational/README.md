@@ -8,5 +8,6 @@ Current records:
 
 - `chatgpt-bootstrap-normal-001.yaml`: normal ChatGPT bootstrap and cross-chat relay dry run.
 - `chatgpt-relay-mismatch-001.yaml`: fail-closed rejection of a relay source-state/snapshot mismatch.
+- `gemini-manual-paste-load-001.yaml`: Gemini protocol load recovery by pasted canonical text when external URL retrieval was unavailable.
 
 Additional model families, malformed relay categories, stale-state cases, facilitator recovery paths, and concurrent-state cases remain pending.

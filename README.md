@@ -192,6 +192,8 @@ The repository `bootstrap/` files are templates. Generated bootstrap prompt file
 
 When GitHub Pages is enabled for Actions deployments, the publish workflow deploys generated prompts without committing them back to `main`. The Pages URL is a movable latest deployment URL; repository Pages URLs usually follow `https://<owner>.github.io/<repository>/`, and the exact deployment URL is reported by the workflow. The generated prompt contents pin canonical Raw URLs to the recorded source commit. For high-assurance use, check the generated `bootstrap/manifest.yaml` and source commit before use.
 
+For AI environments that cannot retrieve external URLs directly, the Pages artifact also includes a generated complete-protocol bundle at `https://<owner>.github.io/<repository>/bootstrap/complete-protocol-bundle.txt`. This is not a static file committed in the repository; it is generated during the Pages workflow from the canonical source files.
+
 ## Validation
 
 MADP v0.2.5-rc.1 validation uses Python 3.11 or newer with `jsonschema` and `PyYAML`.
@@ -206,7 +208,7 @@ python scripts/check_markdown_links.py
 python scripts/check_document_consistency.py
 python scripts/check_bootstrap_prompts.py
 python scripts/test_generate_bootstrap_prompts.py
-python scripts/generate_bootstrap_prompts.py tmp/generated-bootstrap-validation --repository ExampleOwner/madp-fixture --commit-sha 0123456789abcdef0123456789abcdef01234567 --workflow-run-id LOCAL_FIXTURE_RUN --generated-by LOCAL
+python scripts/generate_bootstrap_prompts.py tmp/generated-bootstrap-validation --repository ExampleOwner/madp-fixture --commit-sha 0123456789abcdef0123456789abcdef01234567 --workflow-run-id RC_BUNDLE_LOCAL_TEST --generated-by LOCAL
 python scripts/check_generated_bootstrap.py tmp/generated-bootstrap-validation --expect tests/generated-bootstrap/local-generation.yaml
 ```
 
@@ -223,7 +225,7 @@ python -m venv .venv-validation
 .\.venv-validation\Scripts\python.exe scripts\check_document_consistency.py
 .\.venv-validation\Scripts\python.exe scripts\check_bootstrap_prompts.py
 .\.venv-validation\Scripts\python.exe scripts\test_generate_bootstrap_prompts.py
-.\.venv-validation\Scripts\python.exe scripts\generate_bootstrap_prompts.py tmp\generated-bootstrap-validation --repository ExampleOwner/madp-fixture --commit-sha 0123456789abcdef0123456789abcdef01234567 --workflow-run-id LOCAL_FIXTURE_RUN --generated-by LOCAL
+.\.venv-validation\Scripts\python.exe scripts\generate_bootstrap_prompts.py tmp\generated-bootstrap-validation --repository ExampleOwner/madp-fixture --commit-sha 0123456789abcdef0123456789abcdef01234567 --workflow-run-id RC_BUNDLE_LOCAL_TEST --generated-by LOCAL
 .\.venv-validation\Scripts\python.exe scripts\check_generated_bootstrap.py tmp\generated-bootstrap-validation --expect tests\generated-bootstrap\local-generation.yaml
 ```
 

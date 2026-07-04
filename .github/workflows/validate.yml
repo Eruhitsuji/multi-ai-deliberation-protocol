@@ -51,7 +51,7 @@ jobs:
           tmp/generated-bootstrap-validation
           --repository ExampleOwner/madp-fixture
           --commit-sha 0123456789abcdef0123456789abcdef01234567
-          --workflow-run-id LOCAL_FIXTURE_RUN
+          --workflow-run-id RC_BUNDLE_LOCAL_TEST
           --generated-by LOCAL
 
       - name: Check generated bootstrap prompt fixture

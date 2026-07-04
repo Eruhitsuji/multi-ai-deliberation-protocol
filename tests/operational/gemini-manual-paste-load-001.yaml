@@ -1,0 +1,25 @@
+operational_test:
+  id: "GEMINI-MANUAL-PASTE-LOAD-001"
+  model_family: "Gemini"
+  result: "PASS"
+  tested_protocol_version: "MADP-v0.2.5-rc.1"
+  source_commit: "e8daa963ca1047db89704f6e5f2691478371c656"
+  initial_access:
+    external_url_retrieval: "UNAVAILABLE"
+    all_required_files_read: false
+  recovery:
+    method: "PASTED_TEXT"
+    files_supplied:
+      - "README.md"
+      - "protocol/MADP-v0.2.5-rc.1.md"
+      - "protocol/GLOSSARY-v0.2.5-rc.1.md"
+      - "schemas/session-state-v0.2.5-rc.1.schema.yaml"
+  observed:
+    all_required_files_read: true
+    protocol_version_preserved: true
+    repository_commit_preserved: true
+    access_method: "PASTED_TEXT"
+  limitations:
+    - "The model environment could not retrieve external URLs directly."
+    - "No formal JSON Schema validator was executed."
+    - "This test validates manual-paste protocol loading, not full participant conformance."

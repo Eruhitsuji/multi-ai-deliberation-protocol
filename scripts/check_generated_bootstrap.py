@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 from pathlib import Path
 import re
 import sys
@@ -17,6 +18,7 @@ BOOTSTRAP_FILES = [
     "join-as-participant.md",
     "recover-from-load-failure.md",
 ]
+BUNDLE_PATH = "bootstrap/complete-protocol-bundle.txt"
 REQUIRED_CANONICAL_PATHS = [
     "README.md",
     "protocol/MADP-v0.2.5-rc.1.md",
@@ -49,6 +51,26 @@ PRESERVED_PLACEHOLDERS = {
 SHA_RE = re.compile(r"^[0-9a-f]{40}$")
 REPO_RE = re.compile(r"^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$")
 RAW_URL_RE = re.compile(r"https://raw\.githubusercontent\.com/([^/\s)]+)/([^/\s)]+)/([^/\s)]+)/([^\s)]+)")
+
+
+def _sha256(text: str) -> str:
+    return hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+
+def _source_file_text(relative_path: str) -> str:
+    return (ROOT / relative_path).read_text(encoding="utf-8")
+
+
+def _expected_bundle(paths: list[str]) -> str:
+    blocks: list[str] = []
+    for relative_path in paths:
+        text = _source_file_text(relative_path)
+        if text.endswith("\n"):
+            block = f"BEGIN_FILE: {relative_path}\n{text}END_FILE: {relative_path}"
+        else:
+            block = f"BEGIN_FILE: {relative_path}\n{text}\nEND_FILE: {relative_path}"
+        blocks.append(block)
+    return "\n\n".join(blocks) + "\n"
 
 
 def _display(path: Path) -> str:
@@ -180,12 +202,88 @@ def _check_raw_urls(texts: dict[str, str], manifest: dict[str, Any], problems: l
             problems.append(f"generated load-protocol-from-github.md: draft canonical URL remains for {disallowed_path}")
 
 
+def _check_recovery_prompt(texts: dict[str, str], manifest: dict[str, Any], problems: list[str]) -> None:
+    source_repository = manifest.get("source_repository")
+    if not isinstance(source_repository, str) or "/" not in source_repository:
+        return
+    owner, repository = source_repository.split("/", 1)
+    expected_url = f"https://{owner}.github.io/{repository}/bootstrap/complete-protocol-bundle.txt"
+    recovery_text = texts.get("recover-from-load-failure.md", "")
+    if expected_url not in recovery_text:
+        problems.append("generated recover-from-load-failure.md: missing resolved complete bundle Pages URL")
+    if any(placeholder in recovery_text for placeholder in REPOSITORY_PLACEHOLDERS):
+        problems.append("generated recover-from-load-failure.md: repository-specific placeholder remains")
+    if "PASTED_TEXT" not in recovery_text:
+        problems.append("generated recover-from-load-failure.md: missing PASTED_TEXT recovery instruction")
+    required_markers = [
+        "Do not begin normal MADP deliberation until all four required files have been completely read.",
+        "If only part of the bundle is pasted, keep `all_required_files_read: false`.",
+        "Do not fill missing content from general knowledge or inference.",
+    ]
+    for marker in required_markers:
+        if marker not in recovery_text:
+            problems.append(f"generated recover-from-load-failure.md: missing fail-closed marker {marker!r}")
+
+
+def _check_complete_bundle(site_dir: Path, manifest: dict[str, Any], problems: list[str]) -> None:
+    bundle_path = site_dir / BUNDLE_PATH
+    if not bundle_path.exists():
+        problems.append(f"{_display(bundle_path)}: missing complete protocol bundle")
+        return
+    bundle = bundle_path.read_text(encoding="utf-8")
+    if not bundle.endswith("\n"):
+        problems.append(f"{_display(bundle_path)}: bundle must end with newline")
+
+    positions: list[int] = []
+    for canonical_path in REQUIRED_CANONICAL_PATHS:
+        begin = f"BEGIN_FILE: {canonical_path}"
+        end = f"END_FILE: {canonical_path}"
+        begin_count = sum(1 for line in bundle.splitlines() if line == begin)
+        end_count = sum(1 for line in bundle.splitlines() if line == end)
+        if begin_count != 1:
+            problems.append(f"{_display(bundle_path)}: expected one {begin!r}, got {begin_count}")
+        if end_count != 1:
+            problems.append(f"{_display(bundle_path)}: expected one {end!r}, got {end_count}")
+        begin_pos = bundle.find(begin + "\n")
+        end_pos = bundle.find("\n" + end)
+        if begin_pos == -1 or end_pos == -1:
+            continue
+        if begin_pos > end_pos:
+            problems.append(f"{_display(bundle_path)}: {begin!r} appears after its END marker")
+        positions.append(begin_pos)
+
+    if positions != sorted(positions):
+        problems.append(f"{_display(bundle_path)}: bundle file order does not match canonical order")
+    for disallowed_path in DISALLOWED_CANONICAL_PATHS:
+        if f"BEGIN_FILE: {disallowed_path}" in bundle or f"END_FILE: {disallowed_path}" in bundle:
+            problems.append(f"{_display(bundle_path)}: draft file boundary included for {disallowed_path}")
+
+    expected = _expected_bundle(REQUIRED_CANONICAL_PATHS)
+    if bundle != expected:
+        problems.append(f"{_display(bundle_path)}: bundle content differs from canonical source files")
+
+    bundle_entries = [
+        entry
+        for entry in manifest.get("files", [])
+        if isinstance(entry, dict) and entry.get("path") == BUNDLE_PATH
+    ]
+    if len(bundle_entries) != 1:
+        problems.append(f"manifest files: expected one bundle entry, got {len(bundle_entries)}")
+        return
+    entry = bundle_entries[0]
+    if entry.get("source_files") != REQUIRED_CANONICAL_PATHS:
+        problems.append("manifest files: bundle source_files do not match canonical list")
+    if entry.get("sha256") != _sha256(bundle):
+        problems.append("manifest files: bundle sha256 does not match generated bundle")
+
+
 def _check_manifest_files(site_dir: Path, manifest: dict[str, Any], problems: list[str]) -> None:
     files = manifest.get("files")
     source_commit = manifest.get("source_commit")
     if not isinstance(files, list):
         return
     expected_paths = {f"bootstrap/{name}" for name in BOOTSTRAP_FILES}
+    expected_paths.add(BUNDLE_PATH)
     actual_paths: set[str] = set()
     for entry in files:
         if not isinstance(entry, dict):
@@ -205,6 +303,8 @@ def _check_manifest_files(site_dir: Path, manifest: dict[str, Any], problems: li
             problems.append(f"manifest files: invalid sha256 for {path}")
         if not (site_dir / path).exists():
             problems.append(f"manifest files: missing output file {path}")
+        if path == BUNDLE_PATH and entry.get("source_files") != REQUIRED_CANONICAL_PATHS:
+            problems.append("manifest files: bundle source_files mismatch")
     missing = expected_paths.difference(actual_paths)
     for path in sorted(missing):
         problems.append(f"manifest files: missing entry for {path}")
@@ -222,6 +322,7 @@ def _check_index(site_dir: Path, manifest: dict[str, Any], problems: list[str]) 
         "bootstrap/start-facilitator.md",
         "bootstrap/join-as-participant.md",
         "bootstrap/recover-from-load-failure.md",
+        "bootstrap/complete-protocol-bundle.txt",
         "bootstrap/manifest.yaml",
     ]
     for target in required:
@@ -247,6 +348,8 @@ def main() -> int:
     _check_expected_fixture(Path(args.expect) if args.expect else None, manifest, problems)
     texts = _check_markdown_files(site_dir, manifest, problems)
     _check_raw_urls(texts, manifest, problems)
+    _check_recovery_prompt(texts, manifest, problems)
+    _check_complete_bundle(site_dir, manifest, problems)
     _check_manifest_files(site_dir, manifest, problems)
     _check_index(site_dir, manifest, problems)
 

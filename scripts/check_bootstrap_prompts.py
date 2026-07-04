@@ -28,6 +28,7 @@ DISALLOWED_CANONICAL_PATHS = [
 ]
 PLACEHOLDER_RE = re.compile(r"\{\{[A-Z0-9_]+\}\}")
 YAML_FENCE_RE = re.compile(r"```yaml\n(.*?)\n```", re.DOTALL)
+BUNDLE_URL_TEMPLATE = "https://{{MADP_GITHUB_OWNER}}.github.io/{{MADP_GITHUB_REPOSITORY}}/bootstrap/complete-protocol-bundle.txt"
 
 
 def main() -> int:
@@ -72,6 +73,29 @@ def main() -> int:
     if "all_required_files_read: true | false" not in load_text:
         problems.append("load-protocol-from-github.md: missing all_required_files_read output")
 
+    readme_text = texts.get("README.md", "")
+    recovery_text = texts.get("recover-from-load-failure.md", "")
+    if BUNDLE_URL_TEMPLATE not in readme_text:
+        problems.append("bootstrap/README.md: missing complete bundle URL template")
+    if BUNDLE_URL_TEMPLATE not in recovery_text:
+        problems.append("recover-from-load-failure.md: missing complete bundle URL template")
+    for name, text in {"README.md": readme_text, "recover-from-load-failure.md": recovery_text}.items():
+        for line in text.splitlines():
+            if "complete-protocol-bundle.txt" in line and "{{MADP_COMMIT_SHA}}" in line:
+                problems.append(f"{name}: Pages bundle URL must not use MADP_COMMIT_SHA")
+    if "all_required_files_read: false" not in recovery_text:
+        problems.append("recover-from-load-failure.md: missing all_required_files_read: false")
+    if "PASTED_TEXT" not in recovery_text:
+        problems.append("recover-from-load-failure.md: missing PASTED_TEXT access method")
+    required_recovery_markers = [
+        "Do not begin normal MADP deliberation until all four required files have been completely read.",
+        "If only part of the bundle is pasted, keep `all_required_files_read: false`.",
+        "Do not fill missing content from general knowledge or inference.",
+    ]
+    for marker in required_recovery_markers:
+        if marker not in recovery_text:
+            problems.append(f"recover-from-load-failure.md: missing recovery fail-closed instruction {marker!r}")
+
     join_text = texts.get("join-as-participant.md", "")
     required_join_markers = [
         "exactly one YAML document",
@@ -96,7 +120,6 @@ def main() -> int:
             if not isinstance(data, dict) or list(data.keys()) != ["PARTICIPANT_RESPONSE"]:
                 problems.append("join-as-participant.md: Required Response Shape top-level key is not only PARTICIPANT_RESPONSE")
 
-    readme_text = texts.get("README.md", "")
     placeholders = set()
     for name, text in texts.items():
         if name == "README.md":

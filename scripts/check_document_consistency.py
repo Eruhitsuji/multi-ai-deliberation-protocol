@@ -217,10 +217,20 @@ def _version_consistency_failures(schema: dict[str, Any], protocol: str, glossar
 def _operational_record_failures() -> list[str]:
     failures: list[str] = []
     expected = {
-        "tests/operational/chatgpt-bootstrap-normal-001.yaml": "CHATGPT-BOOTSTRAP-NORMAL-001",
-        "tests/operational/chatgpt-relay-mismatch-001.yaml": "CHATGPT-RELAY-MISMATCH-001",
+        "tests/operational/chatgpt-bootstrap-normal-001.yaml": (
+            "CHATGPT-BOOTSTRAP-NORMAL-001",
+            "MADP-v0.2.5-draft",
+        ),
+        "tests/operational/chatgpt-relay-mismatch-001.yaml": (
+            "CHATGPT-RELAY-MISMATCH-001",
+            "MADP-v0.2.5-draft",
+        ),
+        "tests/operational/gemini-manual-paste-load-001.yaml": (
+            "GEMINI-MANUAL-PASTE-LOAD-001",
+            PROTOCOL_VERSION,
+        ),
     }
-    for relative, expected_id in expected.items():
+    for relative, (expected_id, expected_version) in expected.items():
         path = ROOT / relative
         if not path.exists():
             failures.append(f"missing operational record {relative}")
@@ -232,12 +242,20 @@ def _operational_record_failures() -> list[str]:
             continue
         if record.get("id") != expected_id:
             failures.append(f"{rel(path)}: unexpected operational test id")
-        if record.get("tested_protocol_version") != "MADP-v0.2.5-draft":
-            failures.append(f"{rel(path)}: operational record should identify draft tested version")
-        if record.get("rc_context") != PROTOCOL_VERSION:
-            failures.append(f"{rel(path)}: operational record missing RC context")
-        if record.get("record_type") != "draft evidence for RC promotion":
-            failures.append(f"{rel(path)}: operational record does not distinguish draft evidence")
+        if record.get("tested_protocol_version") != expected_version:
+            failures.append(f"{rel(path)}: unexpected tested protocol version")
+        if expected_version == "MADP-v0.2.5-draft":
+            if record.get("rc_context") != PROTOCOL_VERSION:
+                failures.append(f"{rel(path)}: operational record missing RC context")
+            if record.get("record_type") != "draft evidence for RC promotion":
+                failures.append(f"{rel(path)}: operational record does not distinguish draft evidence")
+        if expected_id == "GEMINI-MANUAL-PASTE-LOAD-001":
+            if record.get("recovery", {}).get("method") != "PASTED_TEXT":
+                failures.append(f"{rel(path)}: Gemini recovery method should be PASTED_TEXT")
+            if record.get("initial_access", {}).get("all_required_files_read") is not False:
+                failures.append(f"{rel(path)}: Gemini record should start with all_required_files_read false")
+            if record.get("observed", {}).get("all_required_files_read") is not True:
+                failures.append(f"{rel(path)}: Gemini record should end with all_required_files_read true")
     return failures
 
 
