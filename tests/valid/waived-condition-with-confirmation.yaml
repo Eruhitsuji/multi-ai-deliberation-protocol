@@ -1,0 +1,52 @@
+session_state:
+  meta:
+    protocol: "MADP"
+    protocol_version: "0.2.5-draft"
+    schema_version: "0.2.5-draft"
+    session_id: "MADP-VALID-003"
+    state_version: 2
+    parent_version: 1
+    updated_at: "UNKNOWN"
+    updated_by: "facilitator"
+  goal: "Validate a waived condition"
+  current_issue:
+    id: "ISSUE-001"
+    status: "IN_PROGRESS"
+    question: "Can a condition be waived?"
+  participants:
+    - actor_id: "facilitator"
+      type: "FACILITATOR"
+      role: "FACILITATOR"
+      status: "ACTIVE"
+  decisions:
+    - id: "DEC-001"
+      revision: 1
+      deliberation_outcome: "CONDITIONAL_CONSENSUS"
+      approval_status: "APPROVE_WITH_CONDITIONS"
+      summary: "The user approved with a condition that was later waived."
+      approval:
+        decision_id: "DEC-001"
+        decision_revision: 1
+        approver: "USER"
+        assurance_level: "USER_CONFIRMED"
+        assurance_origin: "USER_ACTION"
+        occurred_at: "UNKNOWN"
+      decision_conditions:
+        - id: "COND-001"
+          statement: "Run optional smoke tests"
+          applicability: "ACTIVE"
+          satisfaction: "WAIVED_BY_USER"
+          basis:
+            summary: "The user waived the optional smoke test condition."
+          user_confirmation:
+            assurance_level: "USER_CONFIRMED"
+  next_step:
+    internal:
+      actor: "FACILITATOR"
+      task: "Record waiver"
+      blocking_input: null
+    user:
+      action_required: false
+      prompt_action: "NO_ACTION_REQUIRED"
+      task: null
+      response_format: null

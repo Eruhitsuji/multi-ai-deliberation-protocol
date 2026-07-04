@@ -1,0 +1,31 @@
+session_state:
+  meta:
+    protocol: "MADP"
+    protocol_version: "0.2.5-draft"
+    schema_version: "0.2.5-draft"
+    session_id: "MADP-INVALID-003"
+    state_version: 1
+    parent_version: 0
+    updated_at: "UNKNOWN"
+    updated_by: "facilitator-1"
+  goal: "Reject multiple active facilitators"
+  current_issue:
+    id: "ISSUE-001"
+    status: "IN_PROGRESS"
+    question: "How many facilitators may be active?"
+  participants:
+    - actor_id: "facilitator-1"
+      type: "FACILITATOR"
+      role: "FACILITATOR"
+      status: "ACTIVE"
+    - actor_id: "facilitator-2"
+      type: "FACILITATOR"
+      role: "FACILITATOR"
+      status: "ACTIVE"
+  next_step:
+    internal: null
+    user:
+      action_required: false
+      prompt_action: "NO_ACTION_REQUIRED"
+      task: null
+      response_format: null

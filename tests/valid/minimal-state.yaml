@@ -1,0 +1,36 @@
+session_state:
+  meta:
+    protocol: "MADP"
+    protocol_version: "0.2.5-draft"
+    schema_version: "0.2.5-draft"
+    session_id: "MADP-VALID-001"
+    state_version: 1
+    parent_version: 0
+    updated_at: "UNKNOWN"
+    updated_by: "facilitator"
+  goal: "Validate a minimal session state"
+  current_issue:
+    id: "ISSUE-001"
+    status: "IN_PROGRESS"
+    question: "Is the minimal state valid?"
+  participants:
+    - actor_id: "facilitator"
+      type: "FACILITATOR"
+      role: "FACILITATOR"
+      status: "ACTIVE"
+  decisions:
+    - id: "DEC-001"
+      revision: 1
+      deliberation_outcome: "USER_DECISION_REQUIRED"
+      approval_status: "PENDING"
+      summary: "No user decision has been recorded."
+  next_step:
+    internal:
+      actor: "FACILITATOR"
+      task: "Continue validation"
+      blocking_input: null
+    user:
+      action_required: false
+      prompt_action: "NO_ACTION_REQUIRED"
+      task: null
+      response_format: null

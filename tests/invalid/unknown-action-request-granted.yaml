@@ -1,0 +1,34 @@
+session_state:
+  meta:
+    protocol: "MADP"
+    protocol_version: "0.2.5-draft"
+    schema_version: "0.2.5-draft"
+    session_id: "MADP-INVALID-002"
+    state_version: 1
+    parent_version: 0
+    updated_at: "UNKNOWN"
+    updated_by: "facilitator"
+  goal: "Reject granted permission request"
+  current_issue:
+    id: "ISSUE-001"
+    status: "IN_PROGRESS"
+    question: "Can a request be granted?"
+  participants:
+    - actor_id: "facilitator"
+      type: "FACILITATOR"
+      role: "FACILITATOR"
+      status: "ACTIVE"
+      permission_requests:
+        - id: "REQ-001"
+          action: "UNKNOWN_NEW_ACTION"
+          scope:
+            context_id: "ISSUE-001"
+            target: "workspace"
+          status: "GRANTED"
+  next_step:
+    internal: null
+    user:
+      action_required: false
+      prompt_action: "NO_ACTION_REQUIRED"
+      task: null
+      response_format: null

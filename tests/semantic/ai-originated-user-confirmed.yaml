@@ -1,0 +1,45 @@
+session_state:
+  meta:
+    protocol: "MADP"
+    protocol_version: "0.2.5-draft"
+    schema_version: "0.2.5-draft"
+    session_id: "MADP-SEMANTIC-003"
+    state_version: 2
+    parent_version: 1
+    updated_at: "UNKNOWN"
+    updated_by: "facilitator"
+  goal: "Detect AI-originated high assurance"
+  current_issue:
+    id: "ISSUE-001"
+    status: "COMPLETED"
+    question: "Can an AI participant record user confirmation?"
+  participants:
+    - actor_id: "facilitator"
+      type: "FACILITATOR"
+      role: "FACILITATOR"
+      status: "ACTIVE"
+    - actor_id: "ai-reviewer"
+      type: "AI_PARTICIPANT"
+      role: "REVIEWER"
+      status: "ACTIVE"
+  decisions:
+    - id: "DEC-001"
+      revision: 1
+      deliberation_outcome: "CONSENSUS"
+      approval_status: "APPROVE"
+      summary: "AI participant recorded high assurance."
+      approval:
+        decision_id: "DEC-001"
+        decision_revision: 1
+        approver: "USER"
+        assurance_level: "USER_CONFIRMED"
+        assurance_origin: "USER_ACTION"
+        occurred_at: "UNKNOWN"
+        recorded_by: "ai-reviewer"
+  next_step:
+    internal: null
+    user:
+      action_required: false
+      prompt_action: "NO_ACTION_REQUIRED"
+      task: null
+      response_format: null

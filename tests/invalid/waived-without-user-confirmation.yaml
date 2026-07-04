@@ -1,0 +1,40 @@
+session_state:
+  meta:
+    protocol: "MADP"
+    protocol_version: "0.2.5-draft"
+    schema_version: "0.2.5-draft"
+    session_id: "MADP-INVALID-005"
+    state_version: 1
+    parent_version: 0
+    updated_at: "UNKNOWN"
+    updated_by: "facilitator"
+  goal: "Reject waived condition without user confirmation"
+  current_issue:
+    id: "ISSUE-001"
+    status: "IN_PROGRESS"
+    question: "Can waiver confirmation be omitted?"
+  participants:
+    - actor_id: "facilitator"
+      type: "FACILITATOR"
+      role: "FACILITATOR"
+      status: "ACTIVE"
+  decisions:
+    - id: "DEC-001"
+      revision: 1
+      deliberation_outcome: "CONDITIONAL_CONSENSUS"
+      approval_status: "PENDING"
+      summary: "Decision has a waived condition."
+      decision_conditions:
+        - id: "COND-001"
+          statement: "Optional tests pass"
+          applicability: "ACTIVE"
+          satisfaction: "WAIVED_BY_USER"
+          basis:
+            summary: "The user waived this condition."
+  next_step:
+    internal: null
+    user:
+      action_required: false
+      prompt_action: "NO_ACTION_REQUIRED"
+      task: null
+      response_format: null

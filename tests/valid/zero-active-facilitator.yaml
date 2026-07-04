@@ -1,0 +1,27 @@
+session_state:
+  meta:
+    protocol: "MADP"
+    protocol_version: "0.2.5-draft"
+    schema_version: "0.2.5-draft"
+    session_id: "MADP-VALID-005"
+    state_version: 1
+    parent_version: 0
+    updated_at: "UNKNOWN"
+    updated_by: "system"
+  goal: "Validate initialization without an active facilitator"
+  current_issue:
+    id: "ISSUE-001"
+    status: "OPEN"
+    question: "Can initialization have zero active facilitators?"
+  participants:
+    - actor_id: "facilitator"
+      type: "FACILITATOR"
+      role: "FACILITATOR"
+      status: "PAUSED"
+  next_step:
+    internal: null
+    user:
+      action_required: true
+      prompt_action: "REPLY_IN_CURRENT_CHAT"
+      task: "Appoint an active facilitator."
+      response_format: "actor_id"

@@ -1,0 +1,110 @@
+session_state:
+  meta:
+    protocol: "MADP"
+    protocol_version: "0.2.5-draft"
+    schema_version: "0.2.5-draft"
+    session_id: "MADP-VALID-004"
+    state_version: 3
+    parent_version: 2
+    updated_at: "UNKNOWN"
+    updated_by: "facilitator"
+  language:
+    interaction: "en"
+  usage_budget:
+    token_limit: null
+    cost_limit: null
+    currency: null
+    status: "UNKNOWN"
+  goal: "Validate relay transfer"
+  current_issue:
+    id: "ISSUE-001"
+    status: "IN_PROGRESS"
+    question: "Can the relay be reviewed?"
+  participants:
+    - actor_id: "facilitator"
+      type: "FACILITATOR"
+      role: "FACILITATOR"
+      status: "ACTIVE"
+    - actor_id: "reviewer"
+      type: "AI_PARTICIPANT"
+      role: "REVIEWER"
+      status: "AUTHORIZED"
+  decisions:
+    - id: "DEC-001"
+      revision: 1
+      deliberation_outcome: "OPEN"
+      approval_status: "PENDING"
+      summary: "Relay review is pending."
+  next_step:
+    internal: null
+    user:
+      action_required: true
+      prompt_action: "RETURN_RESULT"
+      task: "Return the reviewer result."
+      response_format: "review_findings"
+relay_block:
+  marker_begin: "BEGIN_MADP_RELAY_BLOCK"
+  session_id: "MADP-VALID-004"
+  source_state_version: 3
+  target_participant: "reviewer"
+  purpose: "Review the current issue"
+  expected_response: "review_findings"
+  operative_session_state_snapshot:
+    meta:
+      protocol: "MADP"
+      protocol_version: "0.2.5-draft"
+      schema_version: "0.2.5-draft"
+      session_id: "MADP-VALID-004"
+      state_version: 3
+      parent_version: 2
+      updated_at: "UNKNOWN"
+      updated_by: "facilitator"
+    session:
+      goal: "Validate relay transfer"
+      fixed: []
+      open: []
+      critical_risks: []
+      deferred_items: []
+      future_direction: []
+      out_of_scope: []
+      user_decisions_pending: []
+      references: []
+    language:
+      interaction: "en"
+    usage_budget:
+      token_limit: null
+      cost_limit: null
+      currency: null
+      status: "UNKNOWN"
+    participants:
+      - actor_id: "facilitator"
+        type: "FACILITATOR"
+        role: "FACILITATOR"
+        status: "ACTIVE"
+      - actor_id: "reviewer"
+        type: "AI_PARTICIPANT"
+        role: "REVIEWER"
+        status: "AUTHORIZED"
+    current_issue:
+      id: "ISSUE-001"
+      status: "IN_PROGRESS"
+      question: "Can the relay be reviewed?"
+    decisions:
+      - id: "DEC-001"
+        revision: 1
+        deliberation_outcome: "OPEN"
+        approval_status: "PENDING"
+        summary: "Relay review is pending."
+    conditions: []
+    permission_requests: []
+    permission_grants: []
+    unresolved_points: []
+    artifacts: []
+    next_step:
+      internal: null
+      user:
+        action_required: true
+        prompt_action: "RETURN_RESULT"
+        task: "Return the reviewer result."
+        response_format: "review_findings"
+  marker_end: "END_MADP_RELAY_BLOCK"

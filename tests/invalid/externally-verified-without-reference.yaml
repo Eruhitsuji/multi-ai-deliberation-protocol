@@ -1,0 +1,40 @@
+session_state:
+  meta:
+    protocol: "MADP"
+    protocol_version: "0.2.5-draft"
+    schema_version: "0.2.5-draft"
+    session_id: "MADP-INVALID-007"
+    state_version: 1
+    parent_version: 0
+    updated_at: "UNKNOWN"
+    updated_by: "facilitator"
+  goal: "Reject external approval without reference"
+  current_issue:
+    id: "ISSUE-001"
+    status: "COMPLETED"
+    question: "Can external approval omit reference?"
+  participants:
+    - actor_id: "facilitator"
+      type: "FACILITATOR"
+      role: "FACILITATOR"
+      status: "ACTIVE"
+  decisions:
+    - id: "DEC-001"
+      revision: 1
+      deliberation_outcome: "CONSENSUS"
+      approval_status: "APPROVE"
+      summary: "External approval lacks reference."
+      approval:
+        decision_id: "DEC-001"
+        decision_revision: 1
+        approver: "USER"
+        assurance_level: "EXTERNALLY_VERIFIED"
+        assurance_origin: "VALIDATOR_VERIFIED"
+        occurred_at: "UNKNOWN"
+  next_step:
+    internal: null
+    user:
+      action_required: false
+      prompt_action: "NO_ACTION_REQUIRED"
+      task: null
+      response_format: null

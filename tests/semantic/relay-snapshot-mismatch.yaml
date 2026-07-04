@@ -1,0 +1,76 @@
+session_state:
+  meta:
+    protocol: "MADP"
+    protocol_version: "0.2.5-draft"
+    schema_version: "0.2.5-draft"
+    session_id: "MADP-SEMANTIC-002"
+    state_version: 4
+    parent_version: 3
+    updated_at: "UNKNOWN"
+    updated_by: "facilitator"
+  goal: "Detect relay snapshot mismatch"
+  current_issue:
+    id: "ISSUE-001"
+    status: "IN_PROGRESS"
+    question: "Does relay metadata match snapshot metadata?"
+  participants:
+    - actor_id: "facilitator"
+      type: "FACILITATOR"
+      role: "FACILITATOR"
+      status: "ACTIVE"
+  next_step:
+    internal: null
+    user:
+      action_required: false
+      prompt_action: "NO_ACTION_REQUIRED"
+      task: null
+      response_format: null
+relay_block:
+  marker_begin: "BEGIN_MADP_RELAY_BLOCK"
+  session_id: "MADP-SEMANTIC-002"
+  source_state_version: 4
+  target_participant: "reviewer"
+  purpose: "Review"
+  expected_response: "review_findings"
+  operative_session_state_snapshot:
+    meta:
+      protocol: "MADP"
+      protocol_version: "0.2.5-draft"
+      schema_version: "0.2.5-draft"
+      session_id: "MADP-SEMANTIC-002"
+      state_version: 3
+      parent_version: 2
+      updated_at: "UNKNOWN"
+      updated_by: "facilitator"
+    session:
+      goal: "Detect relay snapshot mismatch"
+    language:
+      interaction: "en"
+    usage_budget:
+      token_limit: null
+      cost_limit: null
+      currency: null
+      status: "UNKNOWN"
+    participants:
+      - actor_id: "facilitator"
+        type: "FACILITATOR"
+        role: "FACILITATOR"
+        status: "ACTIVE"
+    current_issue:
+      id: "ISSUE-001"
+      status: "IN_PROGRESS"
+      question: "Does relay metadata match snapshot metadata?"
+    decisions: []
+    conditions: []
+    permission_requests: []
+    permission_grants: []
+    unresolved_points: []
+    artifacts: []
+    next_step:
+      internal: null
+      user:
+        action_required: false
+        prompt_action: "NO_ACTION_REQUIRED"
+        task: null
+        response_format: null
+  marker_end: "END_MADP_RELAY_BLOCK"
