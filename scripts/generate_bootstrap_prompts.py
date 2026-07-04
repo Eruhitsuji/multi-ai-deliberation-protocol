@@ -14,7 +14,7 @@ import yaml
 from madp_validation import ROOT, rel
 
 
-PROTOCOL_VERSION = "MADP-v0.2.5-draft"
+PROTOCOL_VERSION = "MADP-v0.2.5-rc.1"
 BOOTSTRAP_DIR = ROOT / "bootstrap"
 BOOTSTRAP_FILES = [
     "README.md",

@@ -1,6 +1,6 @@
 ---
 bootstrap_version: 0.1
-protocol_version: MADP-v0.2.5-draft
+protocol_version: MADP-v0.2.5-rc.1
 status: informative implementation aid
 ---
 
@@ -14,7 +14,7 @@ Use these prompts to make the receiving AI load the pinned MADP files, report wh
 
 In the source repository, the files in `bootstrap/` are source templates. They intentionally keep the repository-specific placeholders listed below.
 
-Generated prompt files are produced for GitHub Pages by resolving only those repository-specific placeholders. The generated canonical Raw URLs are pinned to the source commit recorded in `bootstrap/manifest.yaml`. The GitHub Pages latest URL is movable, but the generated file contents point at one specific commit.
+Generated prompt files are produced for GitHub Pages by resolving only those repository-specific placeholders. The generated canonical Raw URLs for `MADP-v0.2.5-rc.1` are pinned to the source commit recorded in `bootstrap/manifest.yaml`. The GitHub Pages latest URL is movable, but the generated file contents point at one specific commit.
 
 For high-assurance use, verify the generated `manifest.yaml`, the source repository, and the source commit before pasting a generated prompt into a new AI chat. Session-specific placeholders such as `{{PARTICIPANT_ID}}`, `{{SESSION_ID}}`, `{{TASK}}`, and `{{RELAY_BLOCK}}` still need to be filled in at use time.
 

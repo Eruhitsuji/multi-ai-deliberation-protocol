@@ -4,7 +4,27 @@ import re
 import sys
 from typing import Any
 
-from madp_validation import GLOSSARY_PATH, PROTOCOL_PATH, load_schema
+from madp_validation import (
+    GLOSSARY_PATH,
+    PROTOCOL_PATH,
+    README_PATH,
+    ROOT,
+    PROTOCOL_VERSION,
+    SCHEMA_VERSION,
+    load_schema,
+    load_yaml,
+    rel,
+)
+
+
+RC_PROTOCOL_PATH = "protocol/MADP-v0.2.5-rc.1.md"
+RC_GLOSSARY_PATH = "protocol/GLOSSARY-v0.2.5-rc.1.md"
+RC_SCHEMA_PATH = "schemas/session-state-v0.2.5-rc.1.schema.yaml"
+DRAFT_CANONICAL_PATHS = [
+    "protocol/MADP-v0.2.5-draft.md",
+    "protocol/GLOSSARY-v0.2.5-draft.md",
+    "schemas/session-state-v0.2.5-draft.schema.yaml",
+]
 
 
 def _schema_enum(schema: dict[str, Any], path: list[str]) -> list[str]:
@@ -67,6 +87,7 @@ def main() -> int:
     schema = load_schema()
     protocol = PROTOCOL_PATH.read_text(encoding="utf-8")
     glossary = GLOSSARY_PATH.read_text(encoding="utf-8")
+    readme = README_PATH.read_text(encoding="utf-8")
 
     checks = {
         "condition.applicability": (
@@ -137,6 +158,7 @@ def main() -> int:
     }
 
     failures: list[str] = []
+    failures.extend(_version_consistency_failures(schema, protocol, glossary, readme))
     for name, (schema_values, protocol_values, glossary_values) in checks.items():
         missing_protocol = [value for value in schema_values if value not in protocol_values]
         missing_glossary = [value for value in schema_values if value not in glossary_values]
@@ -152,6 +174,71 @@ def main() -> int:
     for name in checks:
         print(f"enum consistency: {name} PASS")
     return 0
+
+
+def _version_consistency_failures(schema: dict[str, Any], protocol: str, glossary: str, readme: str) -> list[str]:
+    failures: list[str] = []
+    if PROTOCOL_VERSION != "MADP-v0.2.5-rc.1":
+        failures.append(f"current protocol target is {PROTOCOL_VERSION!r}, expected 'MADP-v0.2.5-rc.1'")
+    if SCHEMA_VERSION != "0.2.5-rc.1":
+        failures.append(f"current schema target is {SCHEMA_VERSION!r}, expected '0.2.5-rc.1'")
+    meta = schema["$defs"]["meta"]["properties"]
+    if meta["protocol_version"].get("const") != SCHEMA_VERSION:
+        failures.append("schema meta.protocol_version const does not match current schema version")
+    if meta["schema_version"].get("const") != SCHEMA_VERSION:
+        failures.append("schema meta.schema_version const does not match current schema version")
+    if schema.get("$id") != "urn:madp:schema:session-state:0.2.5-rc.1":
+        failures.append("schema $id does not match RC version")
+    if "Multi-AI Deliberation Protocol v0.2.5-rc.1" not in protocol:
+        failures.append("protocol title does not identify RC version")
+    if "GLOSSARY-v0.2.5-rc.1.md" not in protocol:
+        failures.append("protocol does not reference RC glossary")
+    if "GLOSSARY-v0.2.5-draft.md" in _section(protocol, "## 3. Normative terms"):
+        failures.append("protocol normative terms section still references draft glossary")
+    if "MADP v0.2.5-rc.1" not in glossary:
+        failures.append("glossary does not identify RC version")
+
+    status_section = _section(readme, "## Status and canonical files")
+    current_section, _, _historical = status_section.partition("Previous draft documents are retained for history:")
+    for required in [RC_PROTOCOL_PATH, RC_GLOSSARY_PATH, RC_SCHEMA_PATH]:
+        if required not in current_section:
+            failures.append(f"README current canonical list missing {required}")
+    for draft_path in DRAFT_CANONICAL_PATHS:
+        if draft_path in current_section:
+            failures.append(f"README current canonical list mixes draft path {draft_path}")
+    if 'current_release_candidate: "MADP-v0.2.5-rc.1"' not in readme:
+        failures.append("README missing current_release_candidate RC marker")
+    if 'previous_draft: "MADP-v0.2.5-draft"' not in readme:
+        failures.append("README missing previous_draft marker")
+    failures.extend(_operational_record_failures())
+    return failures
+
+
+def _operational_record_failures() -> list[str]:
+    failures: list[str] = []
+    expected = {
+        "tests/operational/chatgpt-bootstrap-normal-001.yaml": "CHATGPT-BOOTSTRAP-NORMAL-001",
+        "tests/operational/chatgpt-relay-mismatch-001.yaml": "CHATGPT-RELAY-MISMATCH-001",
+    }
+    for relative, expected_id in expected.items():
+        path = ROOT / relative
+        if not path.exists():
+            failures.append(f"missing operational record {relative}")
+            continue
+        data = load_yaml(path)
+        record = data.get("operational_test") if isinstance(data, dict) else None
+        if not isinstance(record, dict):
+            failures.append(f"{rel(path)}: missing operational_test mapping")
+            continue
+        if record.get("id") != expected_id:
+            failures.append(f"{rel(path)}: unexpected operational test id")
+        if record.get("tested_protocol_version") != "MADP-v0.2.5-draft":
+            failures.append(f"{rel(path)}: operational record should identify draft tested version")
+        if record.get("rc_context") != PROTOCOL_VERSION:
+            failures.append(f"{rel(path)}: operational record missing RC context")
+        if record.get("record_type") != "draft evidence for RC promotion":
+            failures.append(f"{rel(path)}: operational record does not distinguish draft evidence")
+    return failures
 
 
 def _section_values(protocol: str, compact_marker: str, detailed_marker: str) -> list[str]:

@@ -1,0 +1,22 @@
+operational_test:
+  id: "CHATGPT-RELAY-MISMATCH-001"
+  record_type: "draft evidence for RC promotion"
+  rc_context: "MADP-v0.2.5-rc.1"
+  model_family: "ChatGPT"
+  result: "PASS"
+  tested_protocol_version: "MADP-v0.2.5-draft"
+  source_commit: "9bd41933cee720821bf35effdb0145b346ad806c"
+  injected_fault:
+    relay_source_state_version: 2
+    snapshot_state_version: 1
+  expected_behavior:
+    error: "RELAY_SNAPSHOT_MISMATCH"
+    fail_closed: true
+  observed_behavior:
+    error: "RELAY_SNAPSHOT_MISMATCH"
+    normal_deliberation_stopped: true
+    repair_attempted: false
+    authoritative_version_guessed: false
+  limitations:
+    - "only one mismatch category was tested"
+    - "other model families were not tested"

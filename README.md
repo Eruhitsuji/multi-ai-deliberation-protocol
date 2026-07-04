@@ -1,17 +1,43 @@
 # Multi-AI Deliberation Protocol (MADP)
 
-> Draft version: **v0.2.5-draft**
+> Current release candidate: **MADP-v0.2.5-rc.1**
 
 MADP is a service-neutral protocol for structured deliberation with AI systems, role-separated instances, human validators, and execution agents. It supports research, design, review, software development, and everyday decisions while keeping the user as the sole final decision-maker.
 
 ## Status and canonical files
 
-This is a draft specification. Canonical repository documents are English.
+This is a release candidate, not a final or stable release. The user remains the only actor who can approve a final release.
 
-- [`protocol/MADP-v0.2.5-draft.md`](protocol/MADP-v0.2.5-draft.md) — behavior, procedures, transitions, authorization
-- [`protocol/GLOSSARY-v0.2.5-draft.md`](protocol/GLOSSARY-v0.2.5-draft.md) — normative term meanings and distinctions
-- [`schemas/session-state-v0.2.5-draft.schema.yaml`](schemas/session-state-v0.2.5-draft.schema.yaml) — fields, types, required properties, enum spelling
-- [`LICENSE`](LICENSE) — MIT License
+```yaml
+current_release_candidate: "MADP-v0.2.5-rc.1"
+previous_draft: "MADP-v0.2.5-draft"
+status: "release candidate, not final"
+```
+
+Canonical repository documents are English.
+
+- [`protocol/MADP-v0.2.5-rc.1.md`](protocol/MADP-v0.2.5-rc.1.md) - behavior, procedures, transitions, authorization
+- [`protocol/GLOSSARY-v0.2.5-rc.1.md`](protocol/GLOSSARY-v0.2.5-rc.1.md) - normative term meanings and distinctions
+- [`schemas/session-state-v0.2.5-rc.1.schema.yaml`](schemas/session-state-v0.2.5-rc.1.schema.yaml) - fields, types, required properties, enum spelling
+- [`LICENSE`](LICENSE) - MIT License
+
+Previous draft documents are retained for history:
+
+- [`protocol/MADP-v0.2.5-draft.md`](protocol/MADP-v0.2.5-draft.md)
+- [`protocol/GLOSSARY-v0.2.5-draft.md`](protocol/GLOSSARY-v0.2.5-draft.md)
+- [`schemas/session-state-v0.2.5-draft.schema.yaml`](schemas/session-state-v0.2.5-draft.schema.yaml)
+
+Recorded validation status for this release candidate:
+
+- schema validation PASS
+- semantic fixture validation PASS
+- document consistency PASS
+- bootstrap generation PASS
+- GitHub Pages deployment PASS
+- ChatGPT normal cross-chat relay PASS
+- ChatGPT YAML serialization PASS
+- ChatGPT malformed relay rejection PASS
+- other model interoperability remains pending
 
 README examples are informative. A conflict among authority domains is a specification defect and must be reported.
 
@@ -31,7 +57,7 @@ README examples are informative. A conflict among authority domains is a specifi
 ## Quick start
 
 ```text
-Use MADP v0.2.5-draft.
+Use MADP v0.2.5-rc.1.
 
 Issue: Decide the minimum release contents for a small open-source project.
 Fixed requirements:
@@ -52,13 +78,13 @@ Before use, an AI should report which canonical files it actually read. A reposi
 ```yaml
 protocol_load_status:
   requested: true
-  confirmed_version: "0.2.5-draft"
+  confirmed_version: "0.2.5-rc.1"
   files_actually_read:
-    - path: "protocol/MADP-v0.2.5-draft.md"
+    - path: "protocol/MADP-v0.2.5-rc.1.md"
       result: "READ"
-    - path: "protocol/GLOSSARY-v0.2.5-draft.md"
+    - path: "protocol/GLOSSARY-v0.2.5-rc.1.md"
       result: "READ"
-    - path: "schemas/session-state-v0.2.5-draft.schema.yaml"
+    - path: "schemas/session-state-v0.2.5-rc.1.schema.yaml"
       result: "READ"
   formal_schema_validation: false
   unread_or_unavailable_sections: []
@@ -70,8 +96,8 @@ protocol_load_status:
 session_state:
   meta:
     protocol: "MADP"
-    protocol_version: "0.2.5-draft"
-    schema_version: "0.2.5-draft"
+    protocol_version: "0.2.5-rc.1"
+    schema_version: "0.2.5-rc.1"
     session_id: "MADP-EXAMPLE-001"
     state_version: 1
     parent_version: 0
@@ -168,7 +194,7 @@ When GitHub Pages is enabled for Actions deployments, the publish workflow deplo
 
 ## Validation
 
-MADP v0.2.5-draft validation uses Python 3.11 or newer with `jsonschema` and `PyYAML`.
+MADP v0.2.5-rc.1 validation uses Python 3.11 or newer with `jsonschema` and `PyYAML`.
 
 ```bash
 python -m pip install -r requirements-dev.txt
@@ -208,9 +234,12 @@ python -m venv .venv-validation
 ├── README.md
 ├── LICENSE
 ├── protocol/
+│   ├── MADP-v0.2.5-rc.1.md
+│   ├── GLOSSARY-v0.2.5-rc.1.md
 │   ├── MADP-v0.2.5-draft.md
 │   └── GLOSSARY-v0.2.5-draft.md
 └── schemas/
+    ├── session-state-v0.2.5-rc.1.schema.yaml
     └── session-state-v0.2.5-draft.schema.yaml
 ```
 

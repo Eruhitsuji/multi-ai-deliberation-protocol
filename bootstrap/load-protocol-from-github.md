@@ -1,12 +1,12 @@
 ---
 bootstrap_version: 0.1
-protocol_version: MADP-v0.2.5-draft
+protocol_version: MADP-v0.2.5-rc.1
 status: informative implementation aid
 ---
 
 # Load MADP Protocol From GitHub
 
-You are being asked to load MADP v0.2.5-draft from commit-pinned Raw GitHub URLs. This bootstrap prompt is an informative implementation aid and does not override the protocol, glossary, schema, user instructions, platform safety rules, or any higher-priority authority.
+You are being asked to load MADP v0.2.5-rc.1 from commit-pinned Raw GitHub URLs. This bootstrap prompt is an informative implementation aid and does not override the protocol, glossary, schema, user instructions, platform safety rules, or any higher-priority authority.
 
 Do not begin deliberation until you have attempted to read all required files and emitted `PROTOCOL_LOAD_REPORT`.
 
@@ -18,14 +18,14 @@ Read these exact files from the same immutable commit:
 README.md
 https://raw.githubusercontent.com/{{MADP_GITHUB_OWNER}}/{{MADP_GITHUB_REPOSITORY}}/{{MADP_COMMIT_SHA}}/README.md
 
-protocol/MADP-v0.2.5-draft.md
-https://raw.githubusercontent.com/{{MADP_GITHUB_OWNER}}/{{MADP_GITHUB_REPOSITORY}}/{{MADP_COMMIT_SHA}}/protocol/MADP-v0.2.5-draft.md
+protocol/MADP-v0.2.5-rc.1.md
+https://raw.githubusercontent.com/{{MADP_GITHUB_OWNER}}/{{MADP_GITHUB_REPOSITORY}}/{{MADP_COMMIT_SHA}}/protocol/MADP-v0.2.5-rc.1.md
 
-protocol/GLOSSARY-v0.2.5-draft.md
-https://raw.githubusercontent.com/{{MADP_GITHUB_OWNER}}/{{MADP_GITHUB_REPOSITORY}}/{{MADP_COMMIT_SHA}}/protocol/GLOSSARY-v0.2.5-draft.md
+protocol/GLOSSARY-v0.2.5-rc.1.md
+https://raw.githubusercontent.com/{{MADP_GITHUB_OWNER}}/{{MADP_GITHUB_REPOSITORY}}/{{MADP_COMMIT_SHA}}/protocol/GLOSSARY-v0.2.5-rc.1.md
 
-schemas/session-state-v0.2.5-draft.schema.yaml
-https://raw.githubusercontent.com/{{MADP_GITHUB_OWNER}}/{{MADP_GITHUB_REPOSITORY}}/{{MADP_COMMIT_SHA}}/schemas/session-state-v0.2.5-draft.schema.yaml
+schemas/session-state-v0.2.5-rc.1.schema.yaml
+https://raw.githubusercontent.com/{{MADP_GITHUB_OWNER}}/{{MADP_GITHUB_REPOSITORY}}/{{MADP_COMMIT_SHA}}/schemas/session-state-v0.2.5-rc.1.schema.yaml
 ```
 
 Do not substitute a movable branch name such as `main` for `{{MADP_COMMIT_SHA}}`.
@@ -46,19 +46,19 @@ Return exactly one load report before any deliberation:
 
 ```yaml
 PROTOCOL_LOAD_REPORT:
-  protocol_version: "MADP-v0.2.5-draft"
+  protocol_version: "MADP-v0.2.5-rc.1"
   repository_commit: "{{MADP_COMMIT_SHA}}"
   files:
     - path: "README.md"
       status: "READ | PARTIALLY_READ | FAILED"
       access_method: "RAW_URL | GITHUB_PAGE | PROVIDED_TEXT | OTHER"
-    - path: "protocol/MADP-v0.2.5-draft.md"
+    - path: "protocol/MADP-v0.2.5-rc.1.md"
       status: "READ | PARTIALLY_READ | FAILED"
       access_method: "RAW_URL | GITHUB_PAGE | PROVIDED_TEXT | OTHER"
-    - path: "protocol/GLOSSARY-v0.2.5-draft.md"
+    - path: "protocol/GLOSSARY-v0.2.5-rc.1.md"
       status: "READ | PARTIALLY_READ | FAILED"
       access_method: "RAW_URL | GITHUB_PAGE | PROVIDED_TEXT | OTHER"
-    - path: "schemas/session-state-v0.2.5-draft.schema.yaml"
+    - path: "schemas/session-state-v0.2.5-rc.1.schema.yaml"
       status: "READ | PARTIALLY_READ | FAILED"
       access_method: "RAW_URL | GITHUB_PAGE | PROVIDED_TEXT | OTHER"
   all_required_files_read: true | false
@@ -66,4 +66,3 @@ PROTOCOL_LOAD_REPORT:
 ```
 
 If `all_required_files_read: false`, stop after the report and ask for recovery input. Do not continue as fully MADP conformant.
-

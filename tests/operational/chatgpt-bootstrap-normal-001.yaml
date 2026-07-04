@@ -1,0 +1,17 @@
+operational_test:
+  id: "CHATGPT-BOOTSTRAP-NORMAL-001"
+  record_type: "draft evidence for RC promotion"
+  rc_context: "MADP-v0.2.5-rc.1"
+  model_family: "ChatGPT"
+  result: "PASS"
+  tested_protocol_version: "MADP-v0.2.5-draft"
+  source_commit: "a8715b65e16998056ce935de6c121a62bc0350a4"
+  coverage:
+    - "protocol load"
+    - "cross-chat participant relay"
+    - "source state version preservation"
+    - "PROPOSE_ONLY authority"
+    - "single YAML serialization"
+  limitations:
+    - "formal schema validation of the returned response was not independently recorded"
+    - "other model families were not tested"

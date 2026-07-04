@@ -9,7 +9,7 @@ from typing import Any
 from madp_validation import ROOT, load_yaml_text, rel
 
 
-PROTOCOL_VERSION = "MADP-v0.2.5-draft"
+PROTOCOL_VERSION = "MADP-v0.2.5-rc.1"
 BOOTSTRAP_FILES = [
     "README.md",
     "load-protocol-from-github.md",
@@ -19,6 +19,11 @@ BOOTSTRAP_FILES = [
 ]
 REQUIRED_CANONICAL_PATHS = [
     "README.md",
+    "protocol/MADP-v0.2.5-rc.1.md",
+    "protocol/GLOSSARY-v0.2.5-rc.1.md",
+    "schemas/session-state-v0.2.5-rc.1.schema.yaml",
+]
+DISALLOWED_CANONICAL_PATHS = [
     "protocol/MADP-v0.2.5-draft.md",
     "protocol/GLOSSARY-v0.2.5-draft.md",
     "schemas/session-state-v0.2.5-draft.schema.yaml",
@@ -118,6 +123,10 @@ def _check_markdown_files(site_dir: Path, manifest: dict[str, Any], problems: li
             continue
         text = generated_path.read_text(encoding="utf-8")
         texts[name] = text
+        if PROTOCOL_VERSION not in text:
+            problems.append(f"{_display(generated_path)}: missing {PROTOCOL_VERSION}")
+        if "MADP-v0.2.5-draft" in text or "0.2.5-draft" in text:
+            problems.append(f"{_display(generated_path)}: draft version text remains")
         if any(placeholder in text for placeholder in REPOSITORY_PLACEHOLDERS):
             problems.append(f"{_display(generated_path)}: repository-specific placeholder remains")
         if source_repository and source_commit:
@@ -166,6 +175,9 @@ def _check_raw_urls(texts: dict[str, str], manifest: dict[str, Any], problems: l
         expected = f"https://raw.githubusercontent.com/{owner}/{repository}/{source_commit}/{canonical_path}"
         if expected not in raw_text:
             problems.append(f"generated load-protocol-from-github.md: missing canonical URL {expected}")
+    for disallowed_path in DISALLOWED_CANONICAL_PATHS:
+        if disallowed_path in raw_text:
+            problems.append(f"generated load-protocol-from-github.md: draft canonical URL remains for {disallowed_path}")
 
 
 def _check_manifest_files(site_dir: Path, manifest: dict[str, Any], problems: list[str]) -> None:

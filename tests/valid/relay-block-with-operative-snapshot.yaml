@@ -1,8 +1,8 @@
 session_state:
   meta:
     protocol: "MADP"
-    protocol_version: "0.2.5-draft"
-    schema_version: "0.2.5-draft"
+    protocol_version: "0.2.5-rc.1"
+    schema_version: "0.2.5-rc.1"
     session_id: "MADP-VALID-004"
     state_version: 3
     parent_version: 2
@@ -52,8 +52,8 @@ relay_block:
   operative_session_state_snapshot:
     meta:
       protocol: "MADP"
-      protocol_version: "0.2.5-draft"
-      schema_version: "0.2.5-draft"
+      protocol_version: "0.2.5-rc.1"
+      schema_version: "0.2.5-rc.1"
       session_id: "MADP-VALID-004"
       state_version: 3
       parent_version: 2
