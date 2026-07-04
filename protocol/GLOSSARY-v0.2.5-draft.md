@@ -1,6 +1,6 @@
 # MADP Normative Glossary
 
-> Applies to: **MADP v0.2.4-draft**
+> Applies to: **MADP v0.2.5-draft**
 
 This glossary defines canonical operational meanings used by the Multi-AI Deliberation Protocol. Its purpose is to reduce interpretation drift across AI models, users, validators, and implementations.
 
@@ -251,7 +251,9 @@ This glossary defines canonical operational meanings used by the Multi-AI Delibe
 
 **Definition:** Whether a decision condition currently applies.
 
-**Canonical values:** `ACTIVE`, `INACTIVE`, `NOT_APPLICABLE`.
+**Canonical values:** `ACTIVE`, `NOT_APPLICABLE`.
+
+**Required behavior:** Changing from `ACTIVE` to `NOT_APPLICABLE` relaxes a gate and requires a recorded basis.
 
 ## Satisfaction
 
@@ -262,6 +264,8 @@ This glossary defines canonical operational meanings used by the Multi-AI Delibe
 **Definition:** The fulfillment state of a decision condition.
 
 **Canonical values:** `PENDING`, `IN_PROGRESS`, `SATISFIED`, `WAIVED_BY_USER`, `FAILED`.
+
+**Required behavior:** `SATISFIED` and `WAIVED_BY_USER` require a basis. `WAIVED_BY_USER` additionally requires user confirmation.
 
 ## Deliberation Round
 
@@ -402,3 +406,80 @@ This glossary defines canonical operational meanings used by the Multi-AI Delibe
 **Definition:** A proposal cannot be accepted solely because more participants support it. Material minority objections must still be addressed.
 
 **Avoid:** `majority_vote_disabled`, because it may be misread as a complete prohibition of voting.
+
+
+## Deliberation Outcome
+
+**Canonical term:** `deliberation_outcome`  
+**Category:** Decision  
+**Normative:** Yes
+
+**Definition:** The result of participant deliberation independently of whether the user approved it.
+
+**Required behavior:** It MUST NOT by itself authorize execution.
+
+## Approval Status
+
+**Canonical term:** `approval_status`  
+**Category:** Decision  
+**Normative:** Yes
+
+**Definition:** The user's disposition toward a specific decision revision.
+
+## Decision Revision
+
+**Canonical term:** `decision revision`  
+**Category:** Decision  
+**Normative:** Yes
+
+**Definition:** A positive, monotonic identifier for canonical decision content. Any canonical content change creates a new revision.
+
+## Approval Assurance
+
+**Canonical term:** `assurance_level`  
+**Category:** Authorization  
+**Normative:** Yes
+
+**Canonical values:** `UNVERIFIED_ASSERTION`, `USER_CONFIRMED`, `EXTERNALLY_VERIFIED`.
+
+**Required behavior:** AI participants may originate only `UNVERIFIED_ASSERTION`. Unverified assertions do not authorize external, irreversible, privileged, or permission-escalated execution.
+
+## Operative Session State Snapshot
+
+**Canonical term:** `Operative Session State Snapshot`  
+**Category:** Relay  
+**Normative:** Yes
+
+**Definition:** A bounded snapshot containing the current state required for the receiving turn, excluding full conversation history and obsolete detailed history.
+
+## Relay Block
+
+**Canonical term:** `RELAY_BLOCK`  
+**Category:** Relay  
+**Normative:** Yes
+
+**Definition:** The manual-profile transport envelope containing relay metadata and an Operative Session State Snapshot.
+
+## Permission Request
+
+**Canonical term:** `permission request`  
+**Category:** Authorization  
+**Normative:** Yes
+
+**Definition:** A request naming an intended action and scope. Unknown action identifiers may be retained as requests but are denied by default.
+
+## Permission Grant
+
+**Canonical term:** `permission grant`  
+**Category:** Authorization  
+**Normative:** Yes
+
+**Definition:** Explicit authorization for a recognized action, non-empty scope, and defined duration.
+
+## Semantic Validation
+
+**Canonical term:** `SEMANTIC_VALIDATION`  
+**Category:** Validation  
+**Normative:** Yes
+
+**Definition:** Evaluation of normative cross-object, authority, lineage, and historical invariants that JSON Schema alone does not establish.

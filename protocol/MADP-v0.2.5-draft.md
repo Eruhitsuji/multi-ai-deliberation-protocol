@@ -1,4 +1,4 @@
-# Multi-AI Deliberation Protocol v0.2.4-draft
+# Multi-AI Deliberation Protocol v0.2.5-draft
 
 ## 1. Purpose
 
@@ -44,21 +44,22 @@ The words **MUST**, **MUST NOT**, **SHOULD**, **SHOULD NOT**, and **MAY** are no
 - **Human or External Validator**: a human expert, official source, primary source, test, calculation, experiment, or audit mechanism.
 - **Issue**: a bounded question being deliberated.
 - **Session State**: the sole logical source of truth for the current session.
+- **Operative Session State Snapshot**: the bounded current-state subset transferred for a receiving turn in the manual-relay profile.
 - **Derived View**: a presentation, prompt, roster, issue card, or handoff generated from Session State.
 
-### 3.1 Normative glossary
+### 3.1 Authority domains
 
-[`GLOSSARY.md`](GLOSSARY.md) is normative for every term that it explicitly marks as normative. It exists to reduce interpretation drift across AI models, users, validators, and implementations.
+[`GLOSSARY-v0.2.5-draft.md`](GLOSSARY-v0.2.5-draft.md) is normative for every term explicitly marked normative.
 
-Interpretation precedence is:
+Authority is divided by domain:
 
-1. the machine-readable schema for machine-validatable structure, required fields, and enum spelling;
-2. mandatory rules in this protocol;
-3. normative definitions in `GLOSSARY.md`;
-4. README text and examples;
-5. translations and supplemental documents.
+1. the machine-readable schema controls field names, types, required properties, and enum spelling;
+2. this protocol controls behavior, procedures, transitions, authorization, and conformance rules;
+3. the glossary controls canonical term meanings and distinctions;
+4. README text and examples are informative entry points;
+5. translations and supplemental documents are informative unless explicitly marked otherwise.
 
-A conflict between the protocol, glossary, and schema MUST be reported as a specification defect. It MUST NOT be silently resolved by redefining a canonical term. Canonical English terms, schema identifiers, and enum values retain their exact spelling in translations.
+A conflict among authority domains MUST be reported as a specification defect. It MUST NOT be silently resolved. Canonical English terms, schema identifiers, and enum values retain their exact spelling in translations.
 
 ## 4. Core principles
 
@@ -209,13 +210,20 @@ They MUST NOT be described as proof.
 
 `SESSION_STATE` is the single logical source of truth.
 
-A change made in a derived view MUST be written back to Session State before it is treated as an official state change.
+A change made in a derived view MUST be written back to Session State before it is treated as official. In the manual-relay profile, the enclosed Operative Session State Snapshot is authoritative for the receiving turn unless the receiver already holds a newer official state.
 
 Derived views MUST NOT retain independent persistent fields that have no corresponding state location. Temporary presentation fields SHOULD be marked `TRANSIENT` when ambiguity is possible.
 
 ### 9.2 Exchange format
 
-Human-facing explanation SHOULD use Markdown. Machine-transferable current state SHOULD use YAML conforming to `schemas/session-state.schema.yaml` when possible.
+Human-facing explanation SHOULD use Markdown. Machine-transferable state MUST use UTF-8 YAML 1.2 restricted to the JSON-compatible subset when YAML is used.
+
+- duplicate mapping keys MUST be rejected;
+- tab indentation MUST NOT be used;
+- enum values MUST be explicit strings;
+- implementations MUST NOT rely on YAML 1.1 implicit booleans such as `YES`, `NO`, `ON`, or `OFF`;
+- unsafe-size integer identifiers SHOULD be represented as strings;
+- invisible control characters MUST be rejected or reported.
 
 ### 9.3 State versioning
 
@@ -235,7 +243,7 @@ new.state_version = old.state_version + 1
 
 If the received `parent_version` does not match the current local `state_version`, the state is `DIVERGED`. Automatic overwrite is prohibited.
 
-If multiple successor states share the same parent, treat the session as split-brain. Conflicting decisions MUST NOT be promoted to final state before resolution.
+If multiple successor states share the same parent, treat the session as split-brain. Conflicting decisions MUST NOT be promoted before explicit resolution.
 
 Conflict options:
 
@@ -244,17 +252,13 @@ Conflict options:
 - `MERGE`;
 - `ABORT_UPDATE`.
 
+A lower `state_version` received through relay MUST be rejected as stale. Timestamps MUST NOT determine state authority, version ordering, or a conflict winner.
+
 ### 9.4 Time fields
 
-When an exact clock value is available, `updated_at` MUST use RFC 3339.
+When an exact clock value is available, time values MUST use RFC 3339. When unavailable, use `UNKNOWN`; do not invent a pseudo-timestamp.
 
-When exact time is unavailable, use:
-
-```yaml
-updated_at: "UNKNOWN"
-```
-
-Do not invent a partial pseudo-timestamp. Optional date or timezone context MAY be stored separately and MUST NOT be used for version ordering.
+`occurred_at` MAY be `UNKNOWN`. A tool MAY separately record a known `recorded_at` value. Timestamps are audit metadata only and MUST NOT determine approval validity, state authority, version ordering, or conflict resolution.
 
 ## 10. Language policy
 
@@ -305,44 +309,59 @@ Defaults:
 DEFAULT_START_POLICY: DO_NOT_START
 SILENCE_IS_APPROVAL: FALSE
 TOPIC_CONTINUATION_IS_APPROVAL: FALSE
+DEFAULT_EXECUTION_PERMISSION: PROPOSE_ONLY
 ```
 
-When the user directly requests deliberation, no additional start approval is required, but the facilitator MUST still respect limits on external services, cost, sensitive data, and execution permissions.
+When the user directly requests deliberation, no additional start approval is required, but limits on external services, cost, sensitive data, and execution permissions remain in force.
 
-A facilitator-proposed deliberation MUST disclose:
+A facilitator-proposed deliberation MUST disclose reason, target issue, expected benefit, participants, external services, transferred information, cost, user-operation impact, and proposed budget. It MUST NOT begin before explicit approval unless standing authorization covers it.
 
-- reason;
-- target issue;
-- expected benefit;
-- participants or roles;
-- external services;
-- information to send;
-- cost or usage impact;
-- user-operation impact;
-- proposed budget.
+### 11.1 Permission requests and grants
 
-It MUST NOT begin before explicit approval unless valid standing authorization covers it.
+A permission request MAY preserve any non-empty action identifier so an unknown operation can be represented without misclassification. Only core actions recognized by the identified protocol version are grantable by default:
 
-## 12. External services and relay
+- `READ_EXTERNAL`;
+- `SEND_EXTERNAL_DATA`;
+- `WRITE_FILE`;
+- `RUN_COMMAND`;
+- `COMMIT`;
+- `PUSH`;
+- `CREATE_PR`;
+- `SEND_MESSAGE`;
+- `MODIFY_EXTERNAL_RESOURCE`.
 
-Before using an external service, disclose:
+An unknown action MUST be denied and escalated to the user rather than mapped to a similar known action.
 
-- service or model;
-- information and files to be sent;
-- cost or quota impact;
-- possible storage or training use when known;
-- required user operation.
+A grant MUST include a non-empty scope with at least `context_id` and `target`. Missing or empty scope means `DENY`. A grant duration is `ONE_SHOT`, `ISSUE`, or `STANDING`; the default is `ISSUE`. `STANDING` requires explicit scope, a revocation method, and MUST NOT inherit across scopes.
 
-In `USER_RELAY`, the user manually sending the prepared content may serve as approval for that specific transfer.
+## 12. External services and manual relay
+
+Before using an external service, disclose service or model, information and files to be sent, cost or quota impact, possible storage or training use when known, and required user operation.
+
+The user manually sending prepared content authorizes only that specific transfer. It does not approve the proposal inside the transferred content and does not grant execution permission.
+
+In the manual-relay profile, every cross-chat or cross-service transfer MUST use a `RELAY_BLOCK` containing:
+
+- `session_id`;
+- `source_state_version`;
+- `target_participant`;
+- `purpose`;
+- `expected_response`;
+- an Operative Session State Snapshot;
+- explicit begin and end markers.
+
+The snapshot contains current metadata, participants, current facilitator state, open issues, current decisions, unresolved or active conditions, unresolved conflicts, current permissions, pending user decisions, and next steps. It excludes full conversation history and obsolete detailed history.
+
+The receiver MUST reject a relay whose state version is older than the currently held official state. A returned response type MUST match `expected_response`. Any action induced by a relay is evaluated using the originating actor's permission, not automatically using the facilitator's permission.
 
 A user-relay cycle SHOULD be:
 
-1. facilitator generates a purpose-specific prompt;
+1. facilitator emits a purpose-specific `RELAY_BLOCK`;
 2. user sends it to the specified destination;
-3. participant responds;
+3. participant responds in the expected form;
 4. user returns the response;
-5. facilitator verifies state version and integrates the result;
-6. facilitator generates another prompt only if needed.
+5. facilitator verifies target, response type, and state version;
+6. facilitator integrates only valid results.
 
 ## 13. Deliberation modes
 
@@ -496,73 +515,94 @@ Supported normalized decisions:
 - `DEFER`;
 - `REJECT`.
 
-Clear spelling variants MAY be normalized when the intent is unambiguous. Ambiguous decisions MUST NOT be guessed.
+Clear spelling variants MAY be normalized when intent is unambiguous. Ambiguous decisions MUST NOT be guessed.
 
-### 18.1 Approve
+### 18.1 Deliberation outcome and approval status
 
-The proposal is approved without modification or additional conditions.
+A decision MUST separate participant deliberation from user approval.
 
-### 18.2 Approve with conditions
+`deliberation_outcome` values:
 
-The proposal's basic direction is approved, but specified conditions must be preserved and satisfied according to their timing.
+- `CONSENSUS`;
+- `CONDITIONAL_CONSENSUS`;
+- `EXPERIMENT_CONSENSUS`;
+- `USER_DECISION_REQUIRED`;
+- `OPEN`;
+- `BLOCKED`;
+- `REJECTED`.
 
-Conditions may use these statuses:
+`approval_status` values:
 
 - `PENDING`;
-- `SATISFIED`;
-- `WAIVED_BY_USER`;
-- `FAILED`;
+- `APPROVE`;
+- `APPROVE_WITH_CONDITIONS`;
+- `APPROVE_WITH_CHANGES`;
+- `DEFER`;
+- `REJECT`.
+
+A consensus outcome MUST NOT authorize execution. Execution gates read user approval and permission, never deliberation outcome alone.
+
+### 18.2 Decision revision and approval binding
+
+Every decision has a positive integer `revision`. Any change to canonical decision content MUST increment the revision. Revisions are monotonic and MUST NOT be reused.
+
+An approval record MUST be bound to both `decision_id` and `decision_revision`. It is valid only when:
+
+```text
+approval.decision_id = decision.id
+approval.decision_revision = decision.revision
+```
+
+A revision mismatch invalidates the approval and requires renewed user decision. A content digest MAY strengthen this rule where tooling exists but is not required in this draft.
+
+### 18.3 Approval assurance
+
+`assurance_level` values:
+
+- `UNVERIFIED_ASSERTION`;
+- `USER_CONFIRMED`;
+- `EXTERNALLY_VERIFIED`.
+
+An AI participant MAY originate only `UNVERIFIED_ASSERTION`. `USER_CONFIRMED` requires explicit user confirmation in the current operating context. `EXTERNALLY_VERIFIED` requires an independently verifiable record.
+
+`UNVERIFIED_ASSERTION` MUST NOT authorize external, irreversible, privileged, or permission-escalated execution. A basis or reference describes where the claim came from but does not itself establish assurance.
+
+### 18.4 Decision conditions
+
+A decision condition uses separate applicability and satisfaction fields.
+
+Applicability:
+
+- `ACTIVE`;
 - `NOT_APPLICABLE`.
 
-Condition timing may be:
+Satisfaction:
 
-- `BEFORE_START`;
-- `BEFORE_EXECUTION`;
-- `BEFORE_EXTERNAL_ACTION`;
-- `BEFORE_COMPLETION`;
-- `ONGOING`.
+- `PENDING`;
+- `IN_PROGRESS`;
+- `SATISFIED`;
+- `WAIVED_BY_USER`;
+- `FAILED`.
 
-An approval condition is **compatible** when it:
+When applicability is not `ACTIVE`, satisfaction is retained for history but does not satisfy or fail the execution gate. A change from `ACTIVE` to `NOT_APPLICABLE` relaxes a gate and MUST include a basis. `SATISFIED` and `WAIVED_BY_USER` MUST include a basis. `WAIVED_BY_USER` additionally requires user confirmation.
 
-- does not contradict the selected proposal;
-- does not materially change comparison with rejected options;
-- does not introduce a new critical risk;
-- does not expand cost, authority, or data sharing beyond authorization;
-- can be represented as a decision, acceptance, deferred, or future condition.
+Condition timing may be `BEFORE_START`, `BEFORE_EXECUTION`, `BEFORE_EXTERNAL_ACTION`, `BEFORE_COMPLETION`, or `ONGOING`.
 
-Compatible conditions MAY be integrated in the same facilitator turn without another user confirmation.
+If an `ONGOING` condition becomes `FAILED`, affected execution MUST block and the matter MUST return to user review. The facilitator MUST NOT automatically rewrite the user's decision as rejected.
 
-A condition is **decision-changing** when it materially alters the proposal, option comparison, cost, authority, external data sharing, or critical risk. Decision-changing conditions require impact analysis and user reconfirmation.
+### 18.5 Approval forms
 
-Ambiguous or unsatisfiable conditions MUST NOT be silently converted into unconditional approval.
+`APPROVE` accepts the current decision revision without added conditions.
 
-### 18.3 Approve with changes
+`APPROVE_WITH_CONDITIONS` accepts the direction while preserving conditions. It MUST NOT be collapsed into unconditional approval.
 
-The proposal itself is modified. The modified proposal becomes the approved decision only after the requested changes are interpreted and, where material ambiguity exists, reconfirmed.
+`APPROVE_WITH_CHANGES` modifies canonical decision content, increments its revision, and requires approval of the resulting revision.
 
 ## 19. Decisions, completion, and future scope
 
-### 19.1 Decision conditions
+Decision conditions belong in `decision_conditions`. Issue or artifact completion criteria belong in `acceptance_conditions`. Deferred items, future directions, and out-of-scope items MUST remain distinct.
 
-Conditions without which a decision would be incomplete or invalid SHOULD be stored in `decision_conditions`.
-
-### 19.2 Acceptance conditions
-
-Issue or artifact completion criteria SHOULD be stored in `acceptance_conditions`.
-
-### 19.3 Deferred items
-
-A deferred item has been considered but intentionally postponed. It SHOULD include a reason and, where possible, `reconsider_when` triggers.
-
-### 19.4 Future direction
-
-A future direction is a possible future path that is not yet an implementation commitment.
-
-### 19.5 Out of scope
-
-An out-of-scope item is not decided by the current issue.
-
-Current decisions, deferred items, future directions, and out-of-scope items MUST NOT be conflated.
+A decision is executable only when all applicable gate conditions for the requested action are satisfied or validly waived, approval assurance meets the action's threshold, and a matching permission grant exists.
 
 ## 20. Dynamic participation
 
@@ -613,22 +653,13 @@ Provide current decisions, critical objections, open items, and the exact differ
 
 ## 22. Leaving and facilitator transfer
 
-A separate leave packet is optional. Use one only when unresolved work, unintegrated evidence, material objections, or handoff warnings remain.
+There MUST be at most one `ACTIVE` facilitator. Zero active facilitators are allowed during initialization, transfer, blocked recovery, or after completion; normal facilitator work MUST NOT proceed in that state.
 
-A facilitator transfer MUST use the latest Session State. The incoming facilitator SHOULD confirm:
+A user appointment of a facilitator is a facilitator-independent recovery transition and MAY be processed while no facilitator is active.
 
-- protocol version;
-- state version;
-- fixed requirements;
-- decisions and conditions;
-- open issues;
-- participant status;
-- authorization;
-- missing information;
-- detected conflicts;
-- next action.
+A transfer MUST use the latest Session State and a `PENDING` transfer record identifying `from`, `to`, and the source state version. Concurrent official state updates are prohibited during transfer. A transfer that would create two active facilitators MUST be rejected. If transfer fails and leaves zero facilitators, user appointment is required.
 
-A state mismatch MUST be resolved before normal work continues.
+The incoming facilitator SHOULD confirm protocol and state versions, fixed requirements, decisions and conditions, open issues, participant status, authorization, missing information, conflicts, and next action. A state mismatch MUST be resolved before normal work continues.
 
 ## 23. Handoff policy
 
@@ -668,20 +699,7 @@ Observed performance SHOULD be preferred over unsupported self-description.
 
 ## 25. Software-development profile
 
-A software issue SHOULD record, when relevant:
-
-- repository;
-- branch or worktree;
-- base revision;
-- target and related files;
-- acceptance criteria;
-- constraints;
-- prohibited changes;
-- allowed commands;
-- required tests;
-- current failures;
-- rollback method;
-- write policy.
+A software issue SHOULD record repository, branch or worktree, base revision, target and related files, acceptance criteria, constraints, prohibited changes, allowed commands, required tests, current failures, rollback method, and write policy.
 
 Generating code alone does not complete an issue. Completion SHOULD consider tests, build, static analysis, security, rollback, and user approval.
 
@@ -697,13 +715,15 @@ Multiple writers are permitted only when work is safely isolated by separate bra
 
 ### 25.2 Permission escalation
 
-Execution permission MUST be granted per issue and scope. File writing, command execution, commits, pushes, pull requests, and external resource modification SHOULD be separately authorized.
+Execution permission MUST be granted per action, issue or session context, target, and duration. File writing, command execution, commits, pushes, pull requests, external communication, and external resource modification MUST NOT be inferred from general approval.
 
 Default boundary:
 
 ```text
 approval_boundary: PROPOSE_ONLY
 ```
+
+A relay proposal from a `PROPOSE_ONLY` actor remains a proposal and MUST NOT be laundered into facilitator execution authority.
 
 ## 26. Usage budget and escalation
 
@@ -773,27 +793,60 @@ Before sending a compressed participant prompt, check that it contains, as relev
 
 If decision-critical information is missing, use `ASK_USER`, `BLOCKED`, or `EVIDENCE_REQUIRED` rather than guessing.
 
-## 30. Protocol distribution and loading
+## 30. Protocol distribution, loading, and validation
 
-Canonical files MAY be distributed through GitHub, GitLab, Codeberg, internal Git, or another version-controlled store.
+Canonical files MAY be distributed through a version-controlled store. A URL or file reference does not prove the model read it. A loading confirmation SHOULD identify confirmed protocol version, files actually read, access method, unread sections, and formal validation status.
 
-A URL or file reference does not prove the model read it. A loading confirmation SHOULD identify:
+Validation terminology:
 
-- confirmed protocol version;
-- canonical protocol and glossary files read;
-- major rules understood;
-- unread or unavailable sections;
-- template or schema used.
+- `FORMAL_SCHEMA_VALIDATION`: executed with an identified JSON Schema validator and schema version;
+- `SEMANTIC_VALIDATION`: normative cross-object and historical invariants were evaluated;
+- `STRUCTURAL_CHECK_ONLY`: apparent keys, types, and structure were inspected without formal execution;
+- `NOT_VERIFIED`: neither sufficient structural nor formal validation occurred.
 
-Validation terminology MUST be precise:
+A manual profile without semantic validation MUST NOT claim full semantic conformance unless an equivalent human checklist was executed and recorded.
 
-- `FORMAL_SCHEMA_VALIDATION`: the instance was evaluated with an actual JSON Schema validator against the identified schema version;
-- `STRUCTURAL_CHECK_ONLY`: a human or model inspected apparent keys, types, and structure without executing a validator;
-- `NOT_VERIFIED`: neither formal validation nor a sufficient structural check was completed.
+### 30.1 Normative semantic invariants
 
-`PASSED` or equivalent validation-success wording MUST NOT be used for an LLM-only structural review.
+At minimum, semantic validation checks:
 
-A running session SHOULD lock its protocol version. New repository versions MUST NOT auto-upgrade an active session without a change summary, impact analysis, user approval, and state migration where needed.
+- duplicate stable identifiers;
+- active facilitator count greater than one;
+- invalid state lineage or stale relay version;
+- invalid decision-revision approval binding;
+- AI-originated assurance above `UNVERIFIED_ASSERTION`;
+- unverified approval used for privileged or external execution;
+- missing or empty permission scope;
+- unknown action granted without user escalation;
+- invalid condition transitions or missing required basis;
+- returned relay response type differing from `expected_response`.
+
+Stable error codes include:
+
+- `DUPLICATE_IDENTIFIER`;
+- `MULTIPLE_ACTIVE_FACILITATORS`;
+- `STALE_STATE_VERSION`;
+- `INVALID_STATE_LINEAGE`;
+- `APPROVAL_REVISION_MISMATCH`;
+- `INVALID_ASSURANCE_ORIGIN`;
+- `INSUFFICIENT_APPROVAL_ASSURANCE`;
+- `EMPTY_PERMISSION_SCOPE`;
+- `UNKNOWN_ACTION_DENIED`;
+- `CONDITION_BASIS_REQUIRED`;
+- `RELAY_RESPONSE_TYPE_MISMATCH`.
+
+### 30.2 Minimum conformance vectors
+
+An implementation claiming semantic validation MUST agree with these vectors:
+
+1. two active facilitators: fail with `MULTIPLE_ACTIVE_FACILITATORS`;
+2. approval bound to revision 2 while decision is revision 3: fail with `APPROVAL_REVISION_MISMATCH`;
+3. AI-originated `USER_CONFIRMED`: fail with `INVALID_ASSURANCE_ORIGIN`;
+4. `ACTIVE` to `NOT_APPLICABLE` without basis: fail with `CONDITION_BASIS_REQUIRED`;
+5. unknown permission action: retain the request but deny the grant with `UNKNOWN_ACTION_DENIED`;
+6. relay version lower than current official version: fail with `STALE_STATE_VERSION`.
+
+A running session SHOULD lock protocol and schema versions. New repository versions MUST NOT auto-upgrade an active session without a change summary, impact analysis, user approval, and migration where needed.
 
 ## 31. Initial canonical repository
 
@@ -802,27 +855,18 @@ The minimum canonical release consists of:
 ```text
 README.md
 LICENSE
-protocol/MADP-v0.2.4-draft.md
-protocol/GLOSSARY.md
-schemas/session-state.schema.yaml
+protocol/MADP-v0.2.5-draft.md
+protocol/GLOSSARY-v0.2.5-draft.md
+schemas/session-state-v0.2.5-draft.schema.yaml
 ```
 
-The README remains an entry point. If the repository grows, detailed file listings SHOULD move to an index or manifest that distinguishes required, optional, current, historical, and deprecated files.
+The README is an entry point. Protocol, schema, and glossary versions SHOULD be pinned together for a release. Immutable review references SHOULD use a commit SHA or content-addressed reference rather than a mutable branch or movable tag.
 
 ## 32. Known validation limits
 
-At v0.2.4-draft, the following areas may require further testing:
+This draft still requires operational testing for cross-model transfer, relay truncation, concurrent successor states, live facilitator recovery, permission enforcement, large sessions, approval assurance across products, and consistency of semantic validators.
 
-- cross-model Session State transfer;
-- YAML damage or omission tolerance;
-- concurrent successor states and conflict resolution;
-- live facilitator transfer;
-- coding-agent permission enforcement;
-- single-writer operation;
-- loading canonical files from a hosted repository;
-- cross-model consistency in applying normative glossary definitions;
-- beginning from Protocol Capsule alone;
-- large, multi-issue, multi-participant sessions.
+Deferred to v0.3 include mandatory canonical serialization and content digests, cryptographic approval signatures, mandatory immutable external approval anchors, namespaced permission registries, split-brain candidate references, formal Handoff Capsule schema, active-writer lock state, PEP deployment profiles, reference validator implementation, multi-approver quorum, and automatic migration.
 
 ## 33. Governing summary
 
@@ -834,6 +878,11 @@ At v0.2.4-draft, the following areas may require further testing:
 - Continue non-blocked facilitator work in the same response.
 - Separate internal work from user action.
 - Preserve conditional approval as conditional.
+- Separate deliberation outcome from user approval.
+- Bind approval to the exact decision revision.
+- Never permit AI-originated high assurance.
+- Treat unknown actions and empty scopes as denied.
+- Permit at most one active facilitator.
 - Separate canonical artifact language from interaction language.
 - Use handoff only for transfer, compression, recovery, or explicit request.
 - Add participants only for a defined purpose.
