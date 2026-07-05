@@ -9,6 +9,7 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
 VERSION = "MADP-v0.3.0-alpha.1"
+RELEASE_TAG = "MADP-v0.3.0-alpha.1"
 
 REQUIRED_FILES = [
     "README-v0.3.0-alpha.1.md",
@@ -109,44 +110,47 @@ def main() -> int:
         errors.append("JCS vector coverage is below alpha.1 minimum")
 
     alpha_readme = (ROOT / "README-v0.3.0-alpha.1.md").read_text(encoding="utf-8")
-    authority_phrases = [
-        "does not authorize",
-        "merging to `main`",
-        "creating or moving a tag",
-        "publishing a GitHub Release",
+    alpha_release_phrases = [
+        "Published prerelease tag: `MADP-v0.3.0-alpha.1`",
+        "published alpha prerelease",
+        "The tag must remain immutable",
+        "does not claim production readiness",
     ]
-    authority_passed = all(phrase in alpha_readme for phrase in authority_phrases)
-    checks.append({"check": "authority_boundaries", "passed": authority_passed})
-    if not authority_passed:
-        errors.append("alpha README authority boundaries are incomplete")
+    alpha_release_passed = all(phrase in alpha_readme for phrase in alpha_release_phrases)
+    checks.append({"check": "alpha_release_documentation", "passed": alpha_release_passed})
+    if not alpha_release_passed:
+        errors.append("alpha README published-prerelease documentation is incomplete")
 
     main_readme = (ROOT / "README.md").read_text(encoding="utf-8")
-    main_readme_passed = "Current release candidate: **MADP-v0.2.5-rc.2**" in main_readme
-    checks.append({"check": "main_readme_rc2_preserved", "passed": main_readme_passed})
+    main_readme_passed = (
+        "Current published prerelease: **MADP-v0.3.0-alpha.1**" in main_readme
+        and "MADP-v0.2.5-rc.2" in main_readme
+    )
+    checks.append({"check": "main_readme_prerelease_promotion", "passed": main_readme_passed})
     if not main_readme_passed:
-        errors.append("main README no longer identifies rc.2 as current release candidate")
+        errors.append("main README does not identify alpha.1 as the current published prerelease while retaining rc.2 history")
 
     bootstrap_index = (ROOT / "bootstrap" / "complete-protocol-bundle.txt").read_text(encoding="utf-8")
     bootstrap_passed = (
-        "status: GENERATED_DISTRIBUTION_DRAFT_INDEX_ONLY" in bootstrap_index
-        and "It is not released or tagged." in bootstrap_index
+        "status: GENERATED_DISTRIBUTION_PRERELEASE_INDEX_ONLY" in bootstrap_index
+        and f"release_tag: {RELEASE_TAG}" in bootstrap_index
+        and "source_branch: main" in bootstrap_index
     )
-    checks.append({"check": "bootstrap_alpha_label", "passed": bootstrap_passed})
+    checks.append({"check": "bootstrap_prerelease_label", "passed": bootstrap_passed})
     if not bootstrap_passed:
-        errors.append("bootstrap index alpha/unreleased labeling is incomplete")
+        errors.append("bootstrap index published-prerelease labeling is incomplete")
 
     report = {
-        "report_version": "1",
+        "report_version": "2",
         "protocol_version": VERSION,
-        "readiness": "READY_FOR_USER_REVIEW" if not errors else "BLOCKED",
-        "merge_authorized": False,
-        "tag_authorized": False,
-        "release_authorized": False,
+        "release_tag": RELEASE_TAG,
+        "repository_state": "PUBLISHED_PRERELEASE" if not errors else "INCONSISTENT",
+        "published_prerelease_documented": not errors,
         "checks": checks,
         "errors": errors,
         "limitations": [
-            "This audit checks repository state, not external interoperability.",
-            "A passing audit does not grant merge, tag, or release authority.",
+            "This audit checks repository content and does not query the GitHub Releases API.",
+            "A passing audit does not claim production stability or universal interoperability.",
         ],
     }
     print(json.dumps(report, ensure_ascii=False, indent=2))
