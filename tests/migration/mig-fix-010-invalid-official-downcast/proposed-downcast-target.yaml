@@ -1,0 +1,27 @@
+session_state:
+  meta:
+    protocol: "MADP"
+    protocol_version: "0.2.5-rc.2"
+    schema_version: "0.2.5-rc.2"
+    session_id: "MIG-SESSION-010"
+    state_version: 5
+    parent_version: 4
+    updated_at: "UNKNOWN"
+    updated_by: "downcast-tool"
+  goal: "Prevent unsafe official downcast"
+  current_issue:
+    id: "MIG-010"
+    status: "IN_PROGRESS"
+    question: "May v0.3 state be written officially as rc.2?"
+  participants:
+    - actor_id: "facilitator"
+      type: "FACILITATOR"
+      role: "FACILITATOR"
+      status: "ACTIVE"
+  next_step:
+    internal: null
+    user:
+      action_required: true
+      prompt_action: "REPLY_IN_CURRENT_CHAT"
+      task: "Reject official downcast"
+      response_format: "ACK"
