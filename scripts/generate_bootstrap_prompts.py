@@ -140,18 +140,11 @@ def _complete_protocol_bundle(paths: list[str], source_repository: str, source_c
     for relative_path in paths:
         text = _source_file_text(relative_path)
         suffix = "" if text.endswith("\n") else "\n"
-        blocks.append(
-            f"BEGIN_FILE: {relative_path}\n{text}{suffix}END_FILE: {relative_path}"
-        )
+        blocks.append(f"BEGIN_FILE: {relative_path}\n{text}{suffix}END_FILE: {relative_path}")
     return metadata + "\n\n" + "\n\n".join(blocks) + "\n"
 
 
-def _complete_protocol_bundle_manifest(
-    source_repository: str,
-    source_commit: str,
-    bundle: str,
-    paths: list[str],
-) -> str:
+def _complete_protocol_bundle_manifest(source_repository: str, source_commit: str, bundle: str, paths: list[str]) -> str:
     data = {
         "complete_protocol_bundle": {
             "bundle_format": BUNDLE_FORMAT,
@@ -174,13 +167,7 @@ def _write_text(path: Path, text: str) -> None:
     path.write_text(text, encoding="utf-8", newline="\n")
 
 
-def _manifest(
-    source_repository: str,
-    source_commit: str,
-    generated_by: str,
-    workflow_run_id: str,
-    files: list[dict[str, Any]],
-) -> str:
+def _manifest(source_repository: str, source_commit: str, generated_by: str, workflow_run_id: str, files: list[dict[str, Any]]) -> str:
     return yaml.safe_dump(
         {
             "generated_bootstrap": {
@@ -221,11 +208,12 @@ def _index_html(owner: str, repository: str, source_commit: str) -> str:
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>MADP v0.3.0-alpha.1 Bootstrap Prompts</title>
+    <title>{PROTOCOL_VERSION} Bootstrap Prompts</title>
   </head>
   <body>
     <main>
-      <h1>MADP v0.3.0-alpha.1 Bootstrap Prompts</h1>
+      <h1>{PROTOCOL_VERSION} Bootstrap Prompts</h1>
+      <p>Protocol version: <code>{PROTOCOL_VERSION}</code></p>
       <p>Generated from {escape(source_repository)} at commit <code>{escape(source_commit)}</code>.</p>
       <p>The Pages URL may move, but generated prompt content pins canonical Raw URLs to this source commit.</p>
       <ul>
@@ -265,9 +253,7 @@ def generate(output_dir: Path, source_repository: str, source_sha: str, workflow
 
     bundle = _complete_protocol_bundle(CANONICAL_BUNDLE_FILES, source_repository, source_commit)
     _write_text(bootstrap_output / "complete-protocol-bundle.txt", bundle)
-    bundle_manifest = _complete_protocol_bundle_manifest(
-        source_repository, source_commit, bundle, CANONICAL_BUNDLE_FILES
-    )
+    bundle_manifest = _complete_protocol_bundle_manifest(source_repository, source_commit, bundle, CANONICAL_BUNDLE_FILES)
     _write_text(bootstrap_output / "complete-protocol-bundle.manifest.yaml", bundle_manifest)
     generated_files.extend(
         [
