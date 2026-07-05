@@ -1,3 +1,0 @@
-# rc.2 source fixture requirements
-
-Migration `source.yaml` files that claim rc.2 conformance must use the complete `session_state` root and include rc.2-required `meta`, `goal`, `current_issue`, `participants`, and `next_step` fields. Permission grants remain nested under the participant that holds them. This note is temporary implementation guidance and may be removed after all fixtures are validated.
