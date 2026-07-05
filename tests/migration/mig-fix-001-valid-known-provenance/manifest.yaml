@@ -1,8 +1,11 @@
 fixture_id: "MIG-FIX-001"
 purpose: "Preserve a user-confirmed grant only with independent provenance."
-semantic_status: "DEFERRED"
+semantic_status: "IMPLEMENTED"
 required_files: ["source.yaml", "evidence.yaml", "expected-target.yaml", "expected-audit.yaml"]
 checks:
+  - file: "source.yaml"
+    schema: "rc2_session_state"
+    expect: "PASS"
   - file: "evidence.yaml"
     schema: "migration_evidence"
     expect: "PASS"
@@ -12,3 +15,4 @@ checks:
   - file: "expected-audit.yaml"
     schema: "migration_audit"
     expect: "PASS"
+expected_semantic_errors: []
