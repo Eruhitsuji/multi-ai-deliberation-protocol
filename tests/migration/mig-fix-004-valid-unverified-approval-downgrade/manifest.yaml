@@ -1,4 +1,14 @@
-fixture_id: MIG-FIX-004
-purpose: Downgrade affirmative unverified approval to PENDING.
-expected: PASS
-semantic_status: DEFERRED
+fixture_id: "MIG-FIX-004"
+purpose: "Downgrade affirmative unverified approval to PENDING."
+semantic_status: "DEFERRED"
+required_files: ["source.yaml", "evidence.yaml", "expected-target.yaml", "expected-audit.yaml"]
+checks:
+  - file: "evidence.yaml"
+    schema: "migration_evidence"
+    expect: "PASS"
+  - file: "expected-target.yaml"
+    schema: "session_state"
+    expect: "PASS"
+  - file: "expected-audit.yaml"
+    schema: "migration_audit"
+    expect: "PASS"
