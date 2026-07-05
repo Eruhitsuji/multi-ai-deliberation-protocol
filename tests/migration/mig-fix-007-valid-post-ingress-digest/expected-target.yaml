@@ -1,0 +1,26 @@
+relay_block:
+  protocol_version: "MADP-v0.3.0-alpha.1"
+  session_id: "MIG-SESSION-007"
+  source_state_version: 2
+  snapshot_digest:
+    canonicalization: "MADP_JCS_V1"
+    algorithm: "SHA-256"
+    value: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    provenance: "POST_INGRESS_BASELINE"
+  operative_session_state_snapshot:
+    meta:
+      protocol: "MADP"
+      protocol_version: "0.3.0-alpha.1"
+      schema_version: "0.3.0-alpha.1"
+      session_id: "MIG-SESSION-007"
+      state_version: 2
+      parent_version: 1
+    goal: "Establish a local post-ingress digest baseline"
+    current_issue: {id: "MIG-007", status: "IN_PROGRESS"}
+    participants:
+      - actor_id: "facilitator"
+        type: "FACILITATOR"
+        role: "Migration facilitator"
+        status: "ACTIVE"
+    decisions: []
+    next_step: {user: {action_required: false, prompt_action: "NO_ACTION_REQUIRED", task: null, response_format: null}}
