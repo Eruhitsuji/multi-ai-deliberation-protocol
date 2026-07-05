@@ -1,5 +1,6 @@
 MADP-v0.3.0-alpha.1 migration fixture index
-status: GENERATED_DISTRIBUTION_DRAFT_INDEX_ONLY
+status: GENERATED_DISTRIBUTION_PRERELEASE_INDEX_ONLY
+release_tag: MADP-v0.3.0-alpha.1
 generator: scripts/generate_text_bundles.py
 
 MIG-FIX-001: Preserve a user-confirmed grant only with independent provenance.
