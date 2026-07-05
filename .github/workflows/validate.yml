@@ -21,13 +21,13 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -r requirements-dev.txt
 
-      - name: Validate schema and schema fixtures
+      - name: Validate rc.2 schema and schema fixtures
         run: python scripts/validate_schema.py
 
       - name: Validate README examples
         run: python scripts/validate_examples.py
 
-      - name: Validate semantic fixtures
+      - name: Validate rc.2 semantic fixtures
         run: python scripts/validate_semantics.py
 
       - name: Validate participant response fixtures
@@ -56,3 +56,16 @@ jobs:
 
       - name: Check generated bootstrap prompt fixture
         run: python scripts/check_generated_bootstrap.py tmp/generated-bootstrap-validation --expect tests/generated-bootstrap/local-generation.yaml
+
+      - name: Check v0.3 alpha traceability matrix
+        run: python scripts/check_traceability_v030.py
+
+      - name: Discover v0.3 alpha migration fixtures
+        run: python scripts/run_schema_fixture_checks.py all --json
+
+      - name: Protect generated artifacts from accidental edits
+        run: |
+          test -f schemas/generated/session-state-v0.3.0-alpha.1.bundle.schema.yaml
+          test -f schemas/generated/relay-block-v0.3.0-alpha.1.bundle.schema.yaml
+          test -f bootstrap/complete-protocol-bundle.txt
+          test -f bootstrap/migration-fixtures-bundle.txt
