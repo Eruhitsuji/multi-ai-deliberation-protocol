@@ -13,6 +13,9 @@ MADP is a service-neutral protocol for structured deliberation with AI systems, 
 ```yaml
 current_published_prerelease: "MADP-v0.3.0-alpha.1"
 historical_compatibility_release_candidate: "MADP-v0.2.5-rc.2"
+current_release_candidate: "MADP-v0.2.5-rc.2"
+previous_release_candidate: "MADP-v0.2.5-rc.1"
+previous_draft: "MADP-v0.2.5-draft"
 status: "published alpha prerelease, not stable"
 release_merge_commit: "c3c80a9fa48a5f93b46f742f08d6617100a1eb60"
 ```
@@ -33,6 +36,12 @@ Self-contained generated schema distributions:
 
 - [`schemas/generated/session-state-v0.3.0-alpha.1.bundle.schema.yaml`](schemas/generated/session-state-v0.3.0-alpha.1.bundle.schema.yaml)
 - [`schemas/generated/relay-block-v0.3.0-alpha.1.bundle.schema.yaml`](schemas/generated/relay-block-v0.3.0-alpha.1.bundle.schema.yaml)
+
+Historical rc.2 canonical files retained for compatibility testing:
+
+- [`protocol/MADP-v0.2.5-rc.2.md`](protocol/MADP-v0.2.5-rc.2.md)
+- [`protocol/GLOSSARY-v0.2.5-rc.2.md`](protocol/GLOSSARY-v0.2.5-rc.2.md)
+- [`schemas/session-state-v0.2.5-rc.2.schema.yaml`](schemas/session-state-v0.2.5-rc.2.schema.yaml)
 
 The `MADP-v0.2.5-rc.2` protocol, glossary, schema, examples, and bootstrap workflow remain retained for compatibility and historical testing. Published historical tags are immutable.
 
