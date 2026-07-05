@@ -75,6 +75,9 @@ jobs:
       - name: Verify MADP_JCS_V1 vectors
         run: python scripts/verify_jcs_vectors.py all --json
 
+      - name: Audit v0.3 alpha release readiness
+        run: python scripts/check_release_readiness_v030.py
+
       - name: Generate self-contained v0.3 alpha upload bundle
         run: >-
           python scripts/generate_text_bundles.py
