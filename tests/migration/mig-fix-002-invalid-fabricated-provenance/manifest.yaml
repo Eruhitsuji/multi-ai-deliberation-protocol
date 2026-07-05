@@ -1,4 +1,15 @@
-fixture_id: MIG-FIX-002
-purpose: Reject fabricated USER_ACTION provenance.
-expected: SCHEMA_PASS_SEMANTIC_DEFERRED
-semantic_error: MIG_FABRICATED_PROVENANCE
+fixture_id: "MIG-FIX-002"
+purpose: "Reject fabricated USER_ACTION provenance."
+semantic_status: "DEFERRED"
+semantic_error: "MIG_FABRICATED_PROVENANCE"
+required_files: ["source.yaml", "evidence.yaml", "proposed-invalid-target.yaml", "expected-audit.yaml"]
+checks:
+  - file: "evidence.yaml"
+    schema: "migration_evidence"
+    expect: "PASS"
+  - file: "proposed-invalid-target.yaml"
+    schema: "session_state"
+    expect: "PASS"
+  - file: "expected-audit.yaml"
+    schema: "migration_audit"
+    expect: "PASS"
