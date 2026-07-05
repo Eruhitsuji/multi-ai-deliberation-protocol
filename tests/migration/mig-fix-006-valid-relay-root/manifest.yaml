@@ -1,3 +1,15 @@
-fixture_id: MIG-FIX-006
-purpose: Validate relay-only document with relay root and reject it with session root.
-expected: PASS
+fixture_id: "MIG-FIX-006"
+purpose: "Validate relay-only document with relay root and reject it with session root."
+semantic_status: "DEFERRED"
+required_files: ["source.yaml", "expected-target.yaml"]
+checks:
+  - file: "source.yaml"
+    schema: "rc2_session_state"
+    expect: "PASS"
+  - file: "expected-target.yaml"
+    schema: "relay_block"
+    expect: "PASS"
+  - file: "expected-target.yaml"
+    schema: "session_state"
+    expect: "FAIL"
+expected_semantic_errors: []
