@@ -1,0 +1,9 @@
+legacy_state:
+  protocol_version: "MADP-v0.2.5-rc.2"
+  session_id: "MIG-SESSION-002"
+  state_version: 4
+  permission_grants:
+    - id: "G2"
+      action: "RUN_COMMAND"
+      scope: ["python scripts/check.py"]
+      assurance_level: "USER_CONFIRMED"
