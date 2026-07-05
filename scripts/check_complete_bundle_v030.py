@@ -2,6 +2,8 @@
 from __future__ import annotations
 
 import argparse
+import base64
+import binascii
 import hashlib
 from pathlib import Path
 import re
@@ -9,7 +11,9 @@ from typing import Any
 
 import yaml
 
-SOURCE_START = re.compile(r"^BEGIN_MADP_SOURCE path=(.+) sha256=([0-9a-f]{64})$")
+SOURCE_START = re.compile(
+    r"^BEGIN_MADP_SOURCE path=(.+) encoding=base64 bytes=([0-9]+) sha256=([0-9a-f]{64})$"
+)
 SOURCE_END = re.compile(r"^END_MADP_SOURCE path=(.+)$")
 
 
@@ -27,11 +31,12 @@ def parse_bundle(path: Path) -> tuple[dict[str, bytes], list[str]]:
         if not match:
             index += 1
             continue
-        source_path, expected_hash = match.groups()
+        source_path, expected_length_text, expected_hash = match.groups()
+        expected_length = int(expected_length_text)
         index += 1
-        content_lines: list[str] = []
+        encoded_lines: list[str] = []
         while index < len(lines) and not SOURCE_END.match(lines[index]):
-            content_lines.append(lines[index])
+            encoded_lines.append(lines[index].strip())
             index += 1
         if index >= len(lines):
             errors.append(f"unterminated source section: {source_path}")
@@ -39,9 +44,14 @@ def parse_bundle(path: Path) -> tuple[dict[str, bytes], list[str]]:
         end_match = SOURCE_END.match(lines[index])
         if end_match is None or end_match.group(1) != source_path:
             errors.append(f"mismatched source end marker: {source_path}")
-        content = ("\n".join(content_lines) + "\n").encode("utf-8")
-        actual_hash = sha256(content)
-        if actual_hash != expected_hash:
+        try:
+            content = base64.b64decode("".join(encoded_lines), validate=True)
+        except (binascii.Error, ValueError) as exc:
+            errors.append(f"invalid Base64 source section: {source_path}: {exc}")
+            content = b""
+        if len(content) != expected_length:
+            errors.append(f"source byte length mismatch: {source_path}")
+        if sha256(content) != expected_hash:
             errors.append(f"source hash mismatch: {source_path}")
         if source_path in sources:
             errors.append(f"duplicate source section: {source_path}")
@@ -59,6 +69,8 @@ def main() -> int:
     manifest: dict[str, Any] = yaml.safe_load(args.manifest.read_text(encoding="utf-8"))
     bundle_bytes = args.bundle.read_bytes()
     errors: list[str] = []
+    if manifest.get("source_encoding") != "BASE64_RFC4648":
+        errors.append("unexpected or missing source_encoding")
     if manifest.get("bundle_sha256") != sha256(bundle_bytes):
         errors.append("bundle SHA-256 mismatch")
     if manifest.get("bundle_byte_length") != len(bundle_bytes):
