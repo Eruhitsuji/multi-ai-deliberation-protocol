@@ -1,12 +1,12 @@
 ---
-bootstrap_version: 0.1
-protocol_version: MADP-v0.2.5-rc.2
+bootstrap_version: 0.2
+protocol_version: MADP-v0.3.0-alpha.1
 status: informative implementation aid
 ---
 
 # Join as MADP Participant
 
-You are joining a MADP v0.2.5-rc.2 session as a participant. This bootstrap prompt is an informative implementation aid and does not override the protocol, glossary, schema, user instructions, platform safety rules, or any higher-priority authority.
+You are joining a MADP v0.3.0-alpha.1 session as a participant. This bootstrap prompt is an informative implementation aid and does not override the protocol, glossary, schemas, user instructions, platform safety rules, or any higher-priority authority.
 
 Use this only after `PROTOCOL_LOAD_REPORT.all_required_files_read` is true. If it is false or missing, do not proceed as fully MADP conformant; request recovery input.
 
@@ -49,7 +49,7 @@ Return the response as exactly one YAML document. Enclose it in exactly one Mark
 PARTICIPANT_RESPONSE:
   participant_id: "{{PARTICIPANT_ID}}"
   role: "{{ROLE}}"
-  protocol_version: "MADP-v0.2.5-rc.2"
+  protocol_version: "MADP-v0.3.0-alpha.1"
   source_state_version: <copy relay_block.source_state_version>
   response_type: "{{EXPECTED_RESPONSE}}"
   authority_boundary: "PROPOSE_ONLY"
