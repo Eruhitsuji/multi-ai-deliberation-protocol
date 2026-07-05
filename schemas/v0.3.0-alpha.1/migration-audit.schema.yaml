@@ -1,0 +1,57 @@
+$schema: "https://json-schema.org/draft/2020-12/schema"
+$id: "urn:madp:schema:migration-audit:0.3.0-alpha.1"
+title: "MADP Migration Audit v0.3.0-alpha.1"
+type: object
+additionalProperties: false
+required: [migration_id, from_version, to_version, result, official_source_modified]
+properties:
+  migration_id: {type: string, minLength: 1}
+  from_version: {const: MADP-v0.2.5-rc.2}
+  to_version: {const: MADP-v0.3.0-alpha.1}
+  source_state_version: {type: integer, minimum: 1}
+  result_state_version: {type: integer, minimum: 1}
+  started_at: {type: string}
+  completed_at: {type: string}
+  result: {enum: [COMPLETED, REJECTED, ABORTED]}
+  official_source_modified: {type: boolean}
+  candidate_discarded: {type: boolean}
+  source_digest: {type: string, pattern: '^[0-9a-f]{64}$'}
+  target_digest: {type: string, pattern: '^[0-9a-f]{64}$'}
+  evidence_artifact_ref: {type: string}
+  actions:
+    type: array
+    items:
+      type: object
+      additionalProperties: true
+      required: [rule_id, target_object, action_type]
+      properties:
+        rule_id: {type: string}
+        target_object: {type: string}
+        action_type: {type: string}
+        automatic: {type: boolean}
+  quarantined_items:
+    type: array
+    items:
+      type: object
+      additionalProperties: false
+      required: [source_object, reason_code]
+      properties:
+        source_object: {type: string}
+        target_object: {type: string}
+        reason_code: {type: string}
+  errors:
+    type: array
+    items: {type: string, pattern: '^MIG_[A-Z0-9_]+$'}
+allOf:
+  - if:
+      properties: {result: {const: ABORTED}}
+      required: [result]
+    then:
+      properties:
+        official_source_modified: {const: false}
+  - if:
+      properties: {result: {const: REJECTED}}
+      required: [result]
+    then:
+      properties:
+        official_source_modified: {const: false}
