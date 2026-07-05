@@ -1,3 +1,18 @@
-fixture_id: MIG-FIX-007
-purpose: Accept POST_INGRESS_BASELINE as a local forward-integrity baseline.
-expected: PASS
+fixture_id: "MIG-FIX-007"
+purpose: "Accept POST_INGRESS_BASELINE as a local forward-integrity baseline."
+semantic_status: "IMPLEMENTED"
+required_files: ["source.yaml", "evidence.yaml", "expected-target.yaml", "expected-audit.yaml"]
+checks:
+  - file: "source.yaml"
+    schema: "rc2_session_state"
+    expect: "PASS"
+  - file: "evidence.yaml"
+    schema: "migration_evidence"
+    expect: "PASS"
+  - file: "expected-target.yaml"
+    schema: "relay_block"
+    expect: "PASS"
+  - file: "expected-audit.yaml"
+    schema: "migration_audit"
+    expect: "PASS"
+expected_semantic_errors: []
