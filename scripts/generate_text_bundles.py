@@ -2,10 +2,12 @@
 from __future__ import annotations
 
 import argparse
+import base64
 import difflib
 import hashlib
 import os
 from pathlib import Path
+import textwrap
 from typing import Any
 
 import yaml
@@ -95,14 +97,13 @@ def committed_outputs() -> dict[Path, str]:
 def source_records() -> list[dict[str, Any]]:
     records = []
     for relative in SELF_CONTAINED_SOURCES:
-        path = ROOT / relative
-        data = path.read_bytes()
+        data = (ROOT / relative).read_bytes()
         records.append(
             {
                 "path": relative,
                 "byte_length": len(data),
                 "sha256": sha256(data),
-                "content": data.decode("utf-8"),
+                "data": data,
             }
         )
     return records
@@ -113,7 +114,7 @@ def self_contained_bundle(records: list[dict[str, Any]], source_commit: str) -> 
     for record in records:
         payload_hash.update(record["path"].encode("utf-8"))
         payload_hash.update(b"\0")
-        payload_hash.update(record["content"].encode("utf-8"))
+        payload_hash.update(record["data"])
         payload_hash.update(b"\0")
 
     lines = [
@@ -123,6 +124,7 @@ def self_contained_bundle(records: list[dict[str, Any]], source_commit: str) -> 
         f"source_branch: {SOURCE_BRANCH}",
         f"source_commit: {source_commit}",
         "generator: scripts/generate_text_bundles.py",
+        "source_encoding: BASE64_RFC4648",
         f"payload_sha256: {payload_hash.hexdigest()}",
         f"source_file_count: {len(records)}",
         "limitations:",
@@ -137,14 +139,15 @@ def self_contained_bundle(records: list[dict[str, Any]], source_commit: str) -> 
     lines.extend(["END_MADP_BUNDLE_METADATA", ""])
 
     for record in records:
-        lines.extend(
-            [
-                f"BEGIN_MADP_SOURCE path={record['path']} sha256={record['sha256']}",
-                record["content"].rstrip("\n"),
-                f"END_MADP_SOURCE path={record['path']}",
-                "",
-            ]
+        encoded = base64.b64encode(record["data"]).decode("ascii")
+        lines.append(
+            "BEGIN_MADP_SOURCE "
+            f"path={record['path']} encoding=base64 "
+            f"bytes={record['byte_length']} sha256={record['sha256']}"
         )
+        lines.extend(textwrap.wrap(encoded, width=76))
+        lines.append(f"END_MADP_SOURCE path={record['path']}")
+        lines.append("")
     return "\n".join(lines)
 
 
@@ -152,16 +155,18 @@ def write_self_contained(output_dir: Path, source_commit: str) -> None:
     output_dir.mkdir(parents=True, exist_ok=True)
     records = source_records()
     bundle = self_contained_bundle(records, source_commit)
+    bundle_bytes = bundle.encode("utf-8")
     bundle_path = output_dir / "complete-protocol-bundle.full.txt"
-    bundle_path.write_text(bundle, encoding="utf-8", newline="")
+    bundle_path.write_bytes(bundle_bytes)
     manifest = {
         "protocol_version": VERSION,
         "status": "GENERATED_SELF_CONTAINED_ALPHA_ARTIFACT",
         "source_branch": SOURCE_BRANCH,
         "source_commit": source_commit,
+        "source_encoding": "BASE64_RFC4648",
         "bundle_file": bundle_path.name,
-        "bundle_byte_length": len(bundle.encode("utf-8")),
-        "bundle_sha256": sha256(bundle.encode("utf-8")),
+        "bundle_byte_length": len(bundle_bytes),
+        "bundle_sha256": sha256(bundle_bytes),
         "sources": [
             {key: record[key] for key in ("path", "byte_length", "sha256")}
             for record in records
