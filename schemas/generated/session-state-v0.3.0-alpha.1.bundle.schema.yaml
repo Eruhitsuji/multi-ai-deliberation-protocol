@@ -1,0 +1,92 @@
+$schema: "https://json-schema.org/draft/2020-12/schema"
+$id: "urn:madp:schema:bundle:session-state:0.3.0-alpha.1"
+title: "MADP v0.3.0-alpha.1 Session State Bundle"
+x-madp-generated-from:
+  - "urn:madp:schema:session-state:0.3.0-alpha.1"
+  - "urn:madp:schema:definitions:0.3.0-alpha.1"
+type: object
+additionalProperties: false
+required: [session_state]
+properties:
+  session_state: {$ref: "#/$defs/sessionState"}
+$defs:
+  participant:
+    type: object
+    additionalProperties: false
+    required: [actor_id, type, role, status]
+    properties:
+      actor_id: {type: string, minLength: 1}
+      type: {enum: [USER, FACILITATOR, AI_PARTICIPANT, ROLE_ACTOR, HUMAN_VALIDATOR, EXTERNAL_VALIDATOR, EXECUTION_AGENT]}
+      role: {type: string, minLength: 1}
+      status: {enum: [ACTIVE, PAUSED, REMOVED]}
+  permissionGrant:
+    type: object
+    additionalProperties: false
+    required: [id, action, scope, assurance_level, assurance_origin]
+    properties:
+      id: {type: string, minLength: 1}
+      action: {enum: [READ_EXTERNAL, SEND_EXTERNAL_DATA, WRITE_FILE, RUN_COMMAND, COMMIT, PUSH, CREATE_PR, SEND_MESSAGE, MODIFY_EXTERNAL_RESOURCE]}
+      scope: {type: array, minItems: 1, items: {type: string, minLength: 1}}
+      assurance_level: {enum: [USER_CONFIRMED, EXTERNALLY_VERIFIED]}
+      assurance_origin: {enum: [USER_ACTION, EXTERNAL_VALIDATION]}
+      reference: {type: [string, 'null']}
+    allOf:
+      - if: {properties: {assurance_level: {const: USER_CONFIRMED}}, required: [assurance_level]}
+        then: {properties: {assurance_origin: {const: USER_ACTION}}}
+      - if: {properties: {assurance_level: {const: EXTERNALLY_VERIFIED}}, required: [assurance_level]}
+        then:
+          required: [reference]
+          properties:
+            assurance_origin: {const: EXTERNAL_VALIDATION}
+            reference: {type: string, minLength: 1}
+  approval:
+    type: object
+    additionalProperties: false
+    required: [decision_id, decision_revision, approver, status, assurance_level]
+    properties:
+      decision_id: {type: string, minLength: 1}
+      decision_revision: {type: integer, minimum: 1}
+      approver: {type: string, minLength: 1}
+      status: {enum: [PENDING, APPROVE, APPROVE_WITH_CONDITIONS, APPROVE_WITH_CHANGES, DEFER, REJECT]}
+      assurance_level: {enum: [UNVERIFIED_ASSERTION, USER_CONFIRMED, EXTERNALLY_VERIFIED]}
+      assurance_origin: {enum: [USER_ACTION, EXTERNAL_VALIDATION]}
+      reference: {type: string, minLength: 1}
+    allOf:
+      - if: {properties: {status: {enum: [APPROVE, APPROVE_WITH_CONDITIONS, APPROVE_WITH_CHANGES]}}, required: [status]}
+        then:
+          required: [assurance_origin]
+          properties: {assurance_level: {enum: [USER_CONFIRMED, EXTERNALLY_VERIFIED]}}
+  decision:
+    type: object
+    additionalProperties: true
+    required: [id, revision, deliberation_outcome, approval_status, summary]
+    properties:
+      id: {type: string, minLength: 1}
+      revision: {type: integer, minimum: 1}
+      deliberation_outcome: {type: string, minLength: 1}
+      approval_status: {enum: [PENDING, APPROVE, APPROVE_WITH_CONDITIONS, APPROVE_WITH_CHANGES, DEFER, REJECT]}
+      summary: {type: string}
+      approval: {$ref: "#/$defs/approval"}
+  meta:
+    type: object
+    additionalProperties: true
+    required: [protocol, protocol_version, schema_version, session_id, state_version, parent_version]
+    properties:
+      protocol: {const: MADP}
+      protocol_version: {const: 0.3.0-alpha.1}
+      schema_version: {const: 0.3.0-alpha.1}
+      session_id: {type: string, minLength: 1}
+      state_version: {type: integer, minimum: 1}
+      parent_version: {type: integer, minimum: 0}
+  sessionState:
+    type: object
+    additionalProperties: true
+    required: [meta, goal, current_issue, participants, decisions, next_step]
+    properties:
+      meta: {$ref: "#/$defs/meta"}
+      goal: {type: string}
+      current_issue: {type: object}
+      participants: {type: array, items: {$ref: "#/$defs/participant"}}
+      decisions: {type: array, items: {$ref: "#/$defs/decision"}}
+      permission_grants: {type: array, items: {$ref: "#/$defs/permissionGrant"}}
+      next_step: {type: object}
