@@ -1,0 +1,28 @@
+session_state:
+  meta:
+    protocol: "MADP"
+    protocol_version: "0.3.0-alpha.1"
+    schema_version: "0.3.0-alpha.1"
+    session_id: "MIG-SESSION-002"
+    state_version: 5
+    parent_version: 4
+  goal: "Reject fabricated grant provenance"
+  current_issue: {id: "MIG-002", status: "IN_PROGRESS"}
+  participants:
+    - actor_id: "facilitator"
+      type: "FACILITATOR"
+      role: "Migration facilitator"
+      status: "ACTIVE"
+  decisions:
+    - id: "DEC-MIG-002"
+      revision: 1
+      deliberation_outcome: "MIGRATION_CANDIDATE"
+      approval_status: "PENDING"
+      summary: "Candidate incorrectly fabricates user provenance."
+  permission_grants:
+    - id: "G2"
+      action: "RUN_COMMAND"
+      scope: ["python scripts/check.py"]
+      assurance_level: "USER_CONFIRMED"
+      assurance_origin: "USER_ACTION"
+  next_step: {user: {action_required: true, prompt_action: "REVIEW_MIGRATION"}}
