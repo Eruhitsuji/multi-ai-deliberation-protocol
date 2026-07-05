@@ -1,0 +1,27 @@
+session_state:
+  meta:
+    protocol: "MADP"
+    protocol_version: "0.2.5-rc.2"
+    schema_version: "0.2.5-rc.2"
+    session_id: "MIG-SESSION-007"
+    state_version: 1
+    parent_version: 0
+    updated_at: "UNKNOWN"
+    updated_by: "fixture"
+  goal: "Establish a local post-ingress digest baseline"
+  current_issue:
+    id: "MIG-007"
+    status: "IN_PROGRESS"
+    question: "How should a digest computed after ingress be labeled?"
+  participants:
+    - actor_id: "facilitator"
+      type: "FACILITATOR"
+      role: "FACILITATOR"
+      status: "ACTIVE"
+  next_step:
+    internal: null
+    user:
+      action_required: false
+      prompt_action: "NO_ACTION_REQUIRED"
+      task: null
+      response_format: null
