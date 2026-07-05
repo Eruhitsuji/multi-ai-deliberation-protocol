@@ -24,14 +24,14 @@ Canonical multi-file validation uses the schemas' absolute URN identifiers and a
 
 ## Generated distributions
 
-The following files are generated and must not be edited directly:
+The following committed files are generated and must not be edited directly:
 
 - `schemas/generated/session-state-v0.3.0-alpha.1.bundle.schema.yaml`
 - `schemas/generated/relay-block-v0.3.0-alpha.1.bundle.schema.yaml`
 - `bootstrap/complete-protocol-bundle.txt`
 - `bootstrap/migration-fixtures-bundle.txt`
 
-Regenerate all committed generated artifacts:
+Regenerate committed generated artifacts:
 
 ```bash
 python scripts/generate_artifacts.py
@@ -43,7 +43,30 @@ Check byte-for-byte drift:
 python scripts/generate_artifacts.py --check
 ```
 
-The schema bundles are self-contained. The committed text bundles are currently reproducible source indexes marked `GENERATED_DISTRIBUTION_DRAFT_INDEX_ONLY`; they are not yet complete upload bundles containing every source file body.
+The committed schema bundles are self-contained. The committed text files are reproducible source indexes marked `GENERATED_DISTRIBUTION_DRAFT_INDEX_ONLY`.
+
+Generate a self-contained upload bundle containing the protocol, glossary, self-contained root schemas, migration evidence schema, and migration audit schema:
+
+```bash
+python scripts/generate_text_bundles.py \
+  --output-dir tmp/generated-v030 \
+  --source-commit UNCOMMITTED
+```
+
+This creates:
+
+- `tmp/generated-v030/complete-protocol-bundle.full.txt`
+- `tmp/generated-v030/complete-protocol-bundle.manifest.yaml`
+
+Validate the generated bundle and every embedded source hash:
+
+```bash
+python scripts/check_complete_bundle_v030.py \
+  tmp/generated-v030/complete-protocol-bundle.full.txt \
+  tmp/generated-v030/complete-protocol-bundle.manifest.yaml
+```
+
+GitHub Actions generates the same files with the exact workflow commit SHA and uploads them as artifact `madp-v0.3.0-alpha.1-complete-bundle`.
 
 ## Validation
 
@@ -62,6 +85,8 @@ python scripts/check_migration_invariants_v030.py
 python scripts/generate_artifacts.py --check
 python scripts/check_schema_bundle_equivalence.py
 python scripts/verify_jcs_vectors.py all --json
+python scripts/generate_text_bundles.py --check --output-dir tmp/generated-v030
+python scripts/check_complete_bundle_v030.py tmp/generated-v030/complete-protocol-bundle.full.txt tmp/generated-v030/complete-protocol-bundle.manifest.yaml
 ```
 
 The existing rc.2 checks remain part of CI and must continue to pass.
@@ -113,7 +138,6 @@ Published historical tags remain immutable.
 ## Known remaining work
 
 - Observe and repair actual GitHub Actions results.
-- Produce a truly self-contained text upload bundle, not only a generated source index.
 - Add broader adversarial vectors and complete semantic validation.
 - Add cross-language JCS verification.
 - Complete final protocol/schema/fixture traceability review.
