@@ -1,0 +1,17 @@
+session_state:
+  meta:
+    protocol: "MADP"
+    protocol_version: "0.2.5-rc.2"
+    schema_version: "0.2.5-rc.2"
+    session_id: "MIG-SESSION-009"
+    state_version: 6
+    parent_version: 5
+  goal: "Require target-version writeback"
+  current_issue: {id: "MIG-009", status: "IN_PROGRESS"}
+  participants:
+    - actor_id: "facilitator"
+      type: "FACILITATOR"
+      role: "Migration facilitator"
+      status: "ACTIVE"
+  decisions: []
+  next_step: {user: {action_required: true, prompt_action: "REVIEW_MIGRATION", task: "Reject old-version writeback", response_format: "ACK"}}
