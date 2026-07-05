@@ -1,0 +1,23 @@
+meta:
+  protocol: "MADP"
+  protocol_version: "0.3.0-alpha.1"
+  schema_version: "0.3.0-alpha.1"
+  session_id: "JCS-CV-001"
+  state_version: 1
+  parent_version: 0
+goal: "JCS vector: 日本語 and emoji ✅"
+current_issue:
+  id: "JCS-CV-001"
+  status: "IN_PROGRESS"
+participants:
+  - actor_id: "facilitator"
+    type: "FACILITATOR"
+    role: "Migration facilitator"
+    status: "ACTIVE"
+decisions: []
+next_step:
+  user:
+    action_required: false
+    prompt_action: "NO_ACTION_REQUIRED"
+    task: null
+    response_format: null
