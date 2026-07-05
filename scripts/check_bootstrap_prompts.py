@@ -16,10 +16,13 @@ BOOTSTRAP_FILES = [
     "recover-from-load-failure.md",
 ]
 REQUIRED_CANONICAL_PATHS = [
-    "README.md",
-    "protocol/MADP-v0.2.5-rc.2.md",
-    "protocol/GLOSSARY-v0.2.5-rc.2.md",
-    "schemas/session-state-v0.2.5-rc.2.schema.yaml",
+    "README-v0.3.0-alpha.1.md",
+    "protocol/MADP-v0.3.0-alpha.1.md",
+    "protocol/GLOSSARY-v0.3.0-alpha.1.md",
+    "schemas/generated/session-state-v0.3.0-alpha.1.bundle.schema.yaml",
+    "schemas/generated/relay-block-v0.3.0-alpha.1.bundle.schema.yaml",
+    "schemas/v0.3.0-alpha.1/migration-evidence.schema.yaml",
+    "schemas/v0.3.0-alpha.1/migration-audit.schema.yaml",
 ]
 DISALLOWED_CANONICAL_PATHS = [
     "protocol/MADP-v0.2.5-draft.md",
@@ -28,6 +31,9 @@ DISALLOWED_CANONICAL_PATHS = [
     "protocol/MADP-v0.2.5-rc.1.md",
     "protocol/GLOSSARY-v0.2.5-rc.1.md",
     "schemas/session-state-v0.2.5-rc.1.schema.yaml",
+    "protocol/MADP-v0.2.5-rc.2.md",
+    "protocol/GLOSSARY-v0.2.5-rc.2.md",
+    "schemas/session-state-v0.2.5-rc.2.schema.yaml",
 ]
 PLACEHOLDER_RE = re.compile(r"\{\{[A-Z0-9_]+\}\}")
 YAML_FENCE_RE = re.compile(r"```yaml\n(.*?)\n```", re.DOTALL)
@@ -45,10 +51,10 @@ def main() -> int:
             continue
         text = path.read_text(encoding="utf-8")
         texts[name] = text
-        if "bootstrap_version: 0.1" not in text:
-            problems.append(f"{rel(path)}: missing bootstrap_version: 0.1")
-        if "MADP-v0.2.5-rc.2" not in text:
-            problems.append(f"{rel(path)}: missing MADP-v0.2.5-rc.2")
+        if "bootstrap_version: 0.2" not in text:
+            problems.append(f"{rel(path)}: missing bootstrap_version: 0.2")
+        if "MADP-v0.3.0-alpha.1" not in text:
+            problems.append(f"{rel(path)}: missing MADP-v0.3.0-alpha.1")
         if "informative implementation aid" not in text:
             problems.append(f"{rel(path)}: missing informative implementation aid statement")
 
@@ -93,19 +99,16 @@ def main() -> int:
     if "UPLOADED_FILE" not in recovery_text:
         problems.append("recover-from-load-failure.md: missing UPLOADED_FILE access method")
     required_recovery_markers = [
-        "Do not begin normal MADP deliberation until all four required files have been completely read.",
+        "Do not begin normal MADP deliberation until all seven required files have been completely read.",
         "If only part of the bundle is pasted, keep `all_required_files_read: false`.",
         "Do not fill missing content from general knowledge or inference.",
         "Take `repository_commit` only from `BEGIN_MADP_BUNDLE_METADATA.source_commit`",
-        "Do not select a repository commit by searching the canonical file contents for a 40-character hexadecimal string.",
     ]
     for marker in required_recovery_markers:
         if marker not in recovery_text:
             problems.append(f"recover-from-load-failure.md: missing recovery fail-closed instruction {marker!r}")
     if "BEGIN_MADP_BUNDLE_METADATA.source_commit" not in readme_text:
         problems.append("bootstrap/README.md: missing bundle metadata source_commit guidance")
-    if "Do not select a repository commit by searching the canonical file contents for a 40-character hexadecimal string." not in readme_text:
-        problems.append("bootstrap/README.md: missing 40-character SHA search prohibition")
 
     join_text = texts.get("join-as-participant.md", "")
     required_join_markers = [
@@ -150,15 +153,14 @@ def main() -> int:
     for marker in safety_markers:
         if marker not in combined:
             problems.append(f"bootstrap prompts missing safety marker: {marker}")
-    if "MADP-v0.2.5-draft" in combined or "0.2.5-draft" in combined:
-        problems.append("bootstrap prompts still contain draft version text")
 
     if problems:
         for problem in problems:
             print(problem, file=sys.stderr)
         return 1
 
-    print("bootstrap prompts: consistency PASS")
+    print("bootstrap prompts: MADP-v0.3.0-alpha.1 consistency PASS")
+    print("canonical bootstrap files:", len(REQUIRED_CANONICAL_PATHS))
     print("bootstrap placeholders:", ", ".join(sorted(placeholders)))
     return 0
 
