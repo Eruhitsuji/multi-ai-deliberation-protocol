@@ -1,0 +1,4 @@
+vector_id: "JCS-IV-004"
+vector_type: "INVALID"
+input_file: "input.yaml"
+expected_error: "YAML_DUPLICATE_KEY_PROHIBITED"
