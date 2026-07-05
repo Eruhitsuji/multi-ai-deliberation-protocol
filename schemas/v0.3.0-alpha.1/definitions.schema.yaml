@@ -78,6 +78,20 @@ $defs:
           required: [assurance_origin]
           properties:
             assurance_level: {enum: [USER_CONFIRMED, EXTERNALLY_VERIFIED]}
+      - if:
+          properties: {assurance_level: {const: USER_CONFIRMED}}
+          required: [assurance_level]
+        then:
+          required: [assurance_origin]
+          properties: {assurance_origin: {const: USER_ACTION}}
+      - if:
+          properties: {assurance_level: {const: EXTERNALLY_VERIFIED}}
+          required: [assurance_level]
+        then:
+          required: [assurance_origin, reference]
+          properties:
+            assurance_origin: {const: EXTERNAL_VALIDATION}
+            reference: {type: string, minLength: 1}
   decision:
     type: object
     additionalProperties: true
