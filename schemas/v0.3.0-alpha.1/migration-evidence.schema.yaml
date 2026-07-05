@@ -1,0 +1,52 @@
+$schema: "https://json-schema.org/draft/2020-12/schema"
+$id: "urn:madp:schema:migration-evidence:0.3.0-alpha.1"
+title: "MADP Migration Evidence v0.3.0-alpha.1"
+type: object
+additionalProperties: false
+required: [artifact_id, evidence_version, migration_id, entries]
+properties:
+  artifact_id: {type: string, minLength: 1}
+  evidence_version: {const: 0.3.0-alpha.1}
+  migration_id: {type: string, minLength: 1}
+  session_id: {type: string}
+  generated_at: {type: string}
+  generated_by: {type: string}
+  validator_version: {type: string}
+  entries:
+    type: array
+    items:
+      type: object
+      additionalProperties: false
+      required: [target_object, item_id, item_type, evidence_type, provenance_status]
+      properties:
+        target_object: {type: string, minLength: 1}
+        item_id: {type: string, minLength: 1}
+        item_type: {enum: [PERMISSION_GRANT, APPROVAL, DIGEST, OTHER]}
+        evidence_type: {enum: [GRANT_PROVENANCE, APPROVAL_PROVENANCE, DIGEST_PROVENANCE, OTHER]}
+        provenance_status: {enum: [KNOWN, UNKNOWN]}
+        determined_origin: {enum: [USER_ACTION, EXTERNAL_VALIDATION]}
+        basis_type: {enum: [BOUND_USER_CONFIRMATION, TRUSTED_LOCAL_ACTION_LEDGER, EXTERNAL_VALIDATION_REFERENCE]}
+        reference: {type: string, minLength: 1}
+        actor_id: {type: string}
+        action: {type: string}
+        scope: {type: array, items: {type: string}}
+        ledger_entry_id: {type: string}
+        ledger_digest: {type: string, pattern: '^[0-9a-f]{64}$'}
+        validator_id: {type: string}
+        resolution_status: {enum: [PROMOTED_TO_ACTIVE, QUARANTINED, USER_ESCALATION_REQUIRED, REJECTED]}
+      allOf:
+        - if:
+            properties: {provenance_status: {const: KNOWN}}
+            required: [provenance_status]
+          then:
+            required: [basis_type]
+        - if:
+            properties: {basis_type: {enum: [BOUND_USER_CONFIRMATION, EXTERNAL_VALIDATION_REFERENCE]}}
+            required: [basis_type]
+          then:
+            required: [reference]
+        - if:
+            properties: {basis_type: {const: TRUSTED_LOCAL_ACTION_LEDGER}}
+            required: [basis_type]
+          then:
+            required: [ledger_entry_id, ledger_digest]
