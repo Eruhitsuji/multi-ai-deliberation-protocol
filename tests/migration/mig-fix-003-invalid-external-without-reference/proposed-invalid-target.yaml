@@ -1,0 +1,28 @@
+session_state:
+  meta:
+    protocol: "MADP"
+    protocol_version: "0.3.0-alpha.1"
+    schema_version: "0.3.0-alpha.1"
+    session_id: "MIG-SESSION-003"
+    state_version: 3
+    parent_version: 2
+  goal: "Reject external verification without reference"
+  current_issue: {id: "MIG-003", status: "IN_PROGRESS"}
+  participants:
+    - actor_id: "facilitator"
+      type: "FACILITATOR"
+      role: "Migration facilitator"
+      status: "ACTIVE"
+  decisions:
+    - id: "DEC-MIG-003"
+      revision: 1
+      deliberation_outcome: "MIGRATION_CANDIDATE"
+      approval_status: "PENDING"
+      summary: "Candidate lacks the required external reference."
+  permission_grants:
+    - id: "G3"
+      action: "READ_EXTERNAL"
+      scope: ["https://example.invalid/resource"]
+      assurance_level: "EXTERNALLY_VERIFIED"
+      assurance_origin: "EXTERNAL_VALIDATION"
+  next_step: {user: {action_required: true, prompt_action: "REVIEW_MIGRATION"}}
