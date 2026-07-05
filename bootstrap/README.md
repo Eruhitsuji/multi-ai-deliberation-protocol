@@ -1,12 +1,12 @@
 ---
-bootstrap_version: 0.1
-protocol_version: MADP-v0.2.5-rc.2
+bootstrap_version: 0.2
+protocol_version: MADP-v0.3.0-alpha.1
 status: informative implementation aid
 ---
 
 # MADP Bootstrap Prompts
 
-These prompts help start a new AI chat that does not already know MADP. They are informative implementation aids. They do not override the protocol, glossary, schema, user instructions, platform safety rules, or any higher-priority authority.
+These prompts help start a new AI chat that does not already know MADP. They are informative implementation aids. They do not override the protocol, glossary, schemas, user instructions, platform safety rules, or any higher-priority authority.
 
 Use these prompts to make the receiving AI load the pinned MADP files, report what it actually read, and avoid guessing when a required file is unread or only partially read.
 
@@ -14,7 +14,7 @@ Use these prompts to make the receiving AI load the pinned MADP files, report wh
 
 In the source repository, the files in `bootstrap/` are source templates. They intentionally keep the repository-specific placeholders listed below.
 
-Generated prompt files are produced for GitHub Pages by resolving only those repository-specific placeholders. The generated canonical Raw URLs for `MADP-v0.2.5-rc.2` are pinned to the source commit recorded in `bootstrap/manifest.yaml`. The GitHub Pages latest URL is movable, but the generated file contents point at one specific commit.
+Generated prompt files are produced for GitHub Pages by resolving only those repository-specific placeholders. The generated canonical Raw URLs for `MADP-v0.3.0-alpha.1` are pinned to the source commit recorded in `bootstrap/manifest.yaml`. The GitHub Pages latest URL is movable, but the generated file contents point at one specific commit.
 
 For high-assurance use, verify the generated `manifest.yaml`, the source repository, and the source commit before pasting a generated prompt into a new AI chat. Session-specific placeholders such as `{{PARTICIPANT_ID}}`, `{{SESSION_ID}}`, `{{TASK}}`, and `{{RELAY_BLOCK}}` still need to be filled in at use time.
 
@@ -22,12 +22,12 @@ For high-assurance use, verify the generated `manifest.yaml`, the source reposit
 
 - Protocol: the normative behavior, authorization, state, relay, and conformance rules.
 - Glossary: normative meanings for explicitly marked terms.
-- Schema: machine-readable field names, required fields, types, and enum spellings.
+- Schemas: machine-readable field names, required fields, types, enum spellings, and root-document separation.
 - Profile: a future reusable domain rule set built on the protocol.
 - Template: a future starter kit for a recurring workflow.
 - Bootstrap prompt: an informative startup aid for a new chat.
 
-If this bootstrap text conflicts with the protocol, glossary, or schema, treat the conflict as a defect and follow the authority order in the protocol.
+If this bootstrap text conflicts with the protocol, glossary, or schemas, treat the conflict as a defect and follow the authority order in the protocol.
 
 ## Recommended Order
 
@@ -46,13 +46,25 @@ If this bootstrap text conflicts with the protocol, glossary, or schema, treat t
 
 A repository top URL is not proof that a model read the files. A branch URL such as `main` can move and should not be the standard bootstrap source for release work.
 
+## Required Alpha.1 Files
+
+The alpha.1 bootstrap load set contains seven files:
+
+1. `README-v0.3.0-alpha.1.md`
+2. `protocol/MADP-v0.3.0-alpha.1.md`
+3. `protocol/GLOSSARY-v0.3.0-alpha.1.md`
+4. `schemas/generated/session-state-v0.3.0-alpha.1.bundle.schema.yaml`
+5. `schemas/generated/relay-block-v0.3.0-alpha.1.bundle.schema.yaml`
+6. `schemas/v0.3.0-alpha.1/migration-evidence.schema.yaml`
+7. `schemas/v0.3.0-alpha.1/migration-audit.schema.yaml`
+
+The generated root-schema bundles are used so the receiving environment does not need to resolve external `$ref` resources.
+
 ## Public GitHub Repository Limits
 
 Some AI chats cannot fetch URLs, cannot access GitHub, fetch rendered pages instead of raw files, truncate long files, or summarize content without reading it. The receiving AI must report these limits in `PROTOCOL_LOAD_REPORT.limitations` and must not reconstruct unread protocol content from general knowledge.
 
 ## Manual Paste Fallback
-
-Some AI environments cannot directly retrieve GitHub, Raw URLs, or GitHub Pages. This is an external retrieval limitation, not necessarily a failure to understand MADP once the required text is supplied.
 
 If `all_required_files_read: false`, open the generated complete bundle in a browser:
 
@@ -60,9 +72,9 @@ If `all_required_files_read: false`, open the generated complete bundle in a bro
 https://{{MADP_GITHUB_OWNER}}.github.io/{{MADP_GITHUB_REPOSITORY}}/bootstrap/complete-protocol-bundle.txt
 ```
 
-Copy the entire page, from `BEGIN_MADP_BUNDLE_METADATA` through the final `END_FILE` line, and paste it into the same AI chat. Then request a new `PROTOCOL_LOAD_REPORT`. The receiving AI must identify the four files from the bundle boundaries, report `access_method: "PASTED_TEXT"`, and set `all_required_files_read: true` only when all four required files were completely received.
+Copy the entire page, from `BEGIN_MADP_BUNDLE_METADATA` through the final `END_FILE` line, and paste it into the same AI chat. Then request a new `PROTOCOL_LOAD_REPORT`. The receiving AI must identify all seven files from the bundle boundaries, report `access_method: "PASTED_TEXT"`, and set `all_required_files_read: true` only when all seven required files were completely received.
 
-The Pages URL is a movable deployment URL and intentionally does not contain `{{MADP_COMMIT_SHA}}`. The generated bundle content and manifest remain tied to the source commit. The receiving AI must take `repository_commit` only from `BEGIN_MADP_BUNDLE_METADATA.source_commit`. Do not select a repository commit by searching the canonical file contents for a 40-character hexadecimal string. If metadata is missing, use `repository_commit: "UNKNOWN"` and do not guess. For uploaded bundle files, report `access_method: "UPLOADED_FILE"`; for pasted text, report `access_method: "PASTED_TEXT"`.
+The Pages URL is a movable deployment URL and intentionally does not contain `{{MADP_COMMIT_SHA}}`. The generated bundle content and manifest remain tied to the source commit. The receiving AI must take `repository_commit` only from `BEGIN_MADP_BUNDLE_METADATA.source_commit`. If metadata is missing, use `repository_commit: "UNKNOWN"` and do not guess. For uploaded bundle files, report `access_method: "UPLOADED_FILE"`; for pasted text, report `access_method: "PASTED_TEXT"`.
 
 ## Operational Limitations
 
