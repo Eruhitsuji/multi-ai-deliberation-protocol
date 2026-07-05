@@ -66,8 +66,11 @@ jobs:
       - name: Validate v0.3 alpha migration invariants
         run: python scripts/check_migration_invariants_v030.py
 
-      - name: Check generated v0.3 alpha artifacts
+      - name: Check generated v0.3 alpha artifacts byte-for-byte
         run: python scripts/generate_artifacts.py --check
+
+      - name: Check canonical and generated schema equivalence
+        run: python scripts/check_schema_bundle_equivalence.py
 
       - name: Verify MADP_JCS_V1 vectors
         run: python scripts/verify_jcs_vectors.py all --json
