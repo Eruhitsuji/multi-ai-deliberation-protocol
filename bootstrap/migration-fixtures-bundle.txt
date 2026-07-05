@@ -1,14 +1,38 @@
-MADP v0.3.0-alpha.1 migration fixture index
+MADP-v0.3.0-alpha.1 migration fixture index
+status: GENERATED_DISTRIBUTION_DRAFT_INDEX_ONLY
+generator: scripts/generate_text_bundles.py
 
-MIG-FIX-001 known provenance
-MIG-FIX-002 fabricated provenance
-MIG-FIX-003 external verification without reference
-MIG-FIX-004 unverified affirmative approval downgrade
-MIG-FIX-005 multiple active facilitator resolution
-MIG-FIX-006 relay-only root
-MIG-FIX-007 post-ingress baseline
-MIG-FIX-008 false pre-ingress claim
-MIG-FIX-009 old-version writeback
-MIG-FIX-010 official lossy downcast
+MIG-FIX-001: Preserve a user-confirmed grant only with independent provenance.
+  semantic_status: IMPLEMENTED
+  required_files: source.yaml, evidence.yaml, expected-target.yaml, expected-audit.yaml
+MIG-FIX-002: Reject fabricated USER_ACTION provenance.
+  semantic_status: IMPLEMENTED
+  required_files: source.yaml, evidence.yaml, proposed-invalid-target.yaml, expected-audit.yaml
+MIG-FIX-003: Reject EXTERNALLY_VERIFIED authority without a reference.
+  semantic_status: IMPLEMENTED
+  required_files: source.yaml, evidence.yaml, proposed-invalid-target.yaml
+MIG-FIX-004: Downgrade affirmative unverified approval to PENDING.
+  semantic_status: IMPLEMENTED
+  required_files: source.yaml, evidence.yaml, expected-target.yaml, expected-audit.yaml
+MIG-FIX-005: Abort instead of automatically selecting among multiple active facilitators.
+  semantic_status: IMPLEMENTED
+  required_files: source.yaml, evidence.yaml, proposed-invalid-target.yaml, expected-audit.yaml
+MIG-FIX-006: Validate relay-only document with relay root and reject it with session root.
+  semantic_status: DEFERRED
+  required_files: source.yaml, expected-target.yaml
+MIG-FIX-007: Accept POST_INGRESS_BASELINE as a local forward-integrity baseline.
+  semantic_status: IMPLEMENTED
+  required_files: source.yaml, evidence.yaml, expected-target.yaml, expected-audit.yaml
+MIG-FIX-008: Reject a claim that a post-ingress digest proves pre-ingress transport integrity.
+  semantic_status: IMPLEMENTED
+  required_files: source.yaml, evidence.yaml, proposed-invalid-target.yaml, expected-audit.yaml
+MIG-FIX-009: Reject successful migration output retaining the rc.2 version.
+  semantic_status: IMPLEMENTED
+  required_files: source.yaml, evidence.yaml, proposed-invalid-target.yaml, expected-audit.yaml
+MIG-FIX-010: Reject official lossy downcast to rc.2.
+  semantic_status: IMPLEMENTED
+  required_files: source.yaml, evidence.yaml, proposed-downcast-target.yaml, expected-audit.yaml
 
-The alpha.1 runner performs schema-layer discovery only. Semantic migration validation is deferred.
+Validation commands:
+python scripts/run_schema_fixture_checks.py all --json
+python scripts/check_migration_invariants_v030.py
