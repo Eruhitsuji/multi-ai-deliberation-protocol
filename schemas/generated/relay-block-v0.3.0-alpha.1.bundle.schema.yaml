@@ -1,0 +1,45 @@
+$schema: "https://json-schema.org/draft/2020-12/schema"
+$id: "urn:madp:schema:bundle:relay-block:0.3.0-alpha.1"
+title: "MADP v0.3.0-alpha.1 Relay Block Bundle"
+type: object
+additionalProperties: false
+required: [relay_block]
+properties:
+  relay_block:
+    type: object
+    additionalProperties: true
+    required: [protocol_version, session_id, source_state_version, operative_session_state_snapshot]
+    properties:
+      protocol_version: {const: MADP-v0.3.0-alpha.1}
+      session_id: {type: string, minLength: 1}
+      source_state_version: {type: integer, minimum: 1}
+      snapshot_digest:
+        type: object
+        additionalProperties: false
+        required: [canonicalization, algorithm, value, provenance]
+        properties:
+          canonicalization: {const: MADP_JCS_V1}
+          algorithm: {const: SHA-256}
+          value: {type: string, pattern: '^[0-9a-f]{64}$'}
+          provenance: {enum: [SENDER_COMPUTED, TRANSPORT_VERIFIED, POST_INGRESS_BASELINE]}
+          reference: {type: string, minLength: 1}
+      operative_session_state_snapshot:
+        type: object
+        additionalProperties: true
+        required: [meta, goal, current_issue, participants, decisions, next_step]
+        properties:
+          meta:
+            type: object
+            required: [protocol, protocol_version, schema_version, session_id, state_version, parent_version]
+            properties:
+              protocol: {const: MADP}
+              protocol_version: {const: 0.3.0-alpha.1}
+              schema_version: {const: 0.3.0-alpha.1}
+              session_id: {type: string, minLength: 1}
+              state_version: {type: integer, minimum: 1}
+              parent_version: {type: integer, minimum: 0}
+          goal: {type: string}
+          current_issue: {type: object}
+          participants: {type: array}
+          decisions: {type: array}
+          next_step: {type: object}
