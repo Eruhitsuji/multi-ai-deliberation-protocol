@@ -1,12 +1,12 @@
 ---
-bootstrap_version: 0.1
-protocol_version: MADP-v0.2.5-rc.2
+bootstrap_version: 0.2
+protocol_version: MADP-v0.3.0-alpha.1
 status: informative implementation aid
 ---
 
 # Load MADP Protocol From GitHub
 
-You are being asked to load MADP v0.2.5-rc.2 from commit-pinned Raw GitHub URLs. This bootstrap prompt is an informative implementation aid and does not override the protocol, glossary, schema, user instructions, platform safety rules, or any higher-priority authority.
+You are being asked to load MADP v0.3.0-alpha.1 from commit-pinned Raw GitHub URLs. This bootstrap prompt is an informative implementation aid and does not override the protocol, glossary, schemas, user instructions, platform safety rules, or any higher-priority authority.
 
 Do not begin deliberation until you have attempted to read all required files and emitted `PROTOCOL_LOAD_REPORT`.
 
@@ -15,17 +15,26 @@ Do not begin deliberation until you have attempted to read all required files an
 Read these exact files from the same immutable commit:
 
 ```text
-README.md
-https://raw.githubusercontent.com/{{MADP_GITHUB_OWNER}}/{{MADP_GITHUB_REPOSITORY}}/{{MADP_COMMIT_SHA}}/README.md
+README-v0.3.0-alpha.1.md
+https://raw.githubusercontent.com/{{MADP_GITHUB_OWNER}}/{{MADP_GITHUB_REPOSITORY}}/{{MADP_COMMIT_SHA}}/README-v0.3.0-alpha.1.md
 
-protocol/MADP-v0.2.5-rc.2.md
-https://raw.githubusercontent.com/{{MADP_GITHUB_OWNER}}/{{MADP_GITHUB_REPOSITORY}}/{{MADP_COMMIT_SHA}}/protocol/MADP-v0.2.5-rc.2.md
+protocol/MADP-v0.3.0-alpha.1.md
+https://raw.githubusercontent.com/{{MADP_GITHUB_OWNER}}/{{MADP_GITHUB_REPOSITORY}}/{{MADP_COMMIT_SHA}}/protocol/MADP-v0.3.0-alpha.1.md
 
-protocol/GLOSSARY-v0.2.5-rc.2.md
-https://raw.githubusercontent.com/{{MADP_GITHUB_OWNER}}/{{MADP_GITHUB_REPOSITORY}}/{{MADP_COMMIT_SHA}}/protocol/GLOSSARY-v0.2.5-rc.2.md
+protocol/GLOSSARY-v0.3.0-alpha.1.md
+https://raw.githubusercontent.com/{{MADP_GITHUB_OWNER}}/{{MADP_GITHUB_REPOSITORY}}/{{MADP_COMMIT_SHA}}/protocol/GLOSSARY-v0.3.0-alpha.1.md
 
-schemas/session-state-v0.2.5-rc.2.schema.yaml
-https://raw.githubusercontent.com/{{MADP_GITHUB_OWNER}}/{{MADP_GITHUB_REPOSITORY}}/{{MADP_COMMIT_SHA}}/schemas/session-state-v0.2.5-rc.2.schema.yaml
+schemas/generated/session-state-v0.3.0-alpha.1.bundle.schema.yaml
+https://raw.githubusercontent.com/{{MADP_GITHUB_OWNER}}/{{MADP_GITHUB_REPOSITORY}}/{{MADP_COMMIT_SHA}}/schemas/generated/session-state-v0.3.0-alpha.1.bundle.schema.yaml
+
+schemas/generated/relay-block-v0.3.0-alpha.1.bundle.schema.yaml
+https://raw.githubusercontent.com/{{MADP_GITHUB_OWNER}}/{{MADP_GITHUB_REPOSITORY}}/{{MADP_COMMIT_SHA}}/schemas/generated/relay-block-v0.3.0-alpha.1.bundle.schema.yaml
+
+schemas/v0.3.0-alpha.1/migration-evidence.schema.yaml
+https://raw.githubusercontent.com/{{MADP_GITHUB_OWNER}}/{{MADP_GITHUB_REPOSITORY}}/{{MADP_COMMIT_SHA}}/schemas/v0.3.0-alpha.1/migration-evidence.schema.yaml
+
+schemas/v0.3.0-alpha.1/migration-audit.schema.yaml
+https://raw.githubusercontent.com/{{MADP_GITHUB_OWNER}}/{{MADP_GITHUB_REPOSITORY}}/{{MADP_COMMIT_SHA}}/schemas/v0.3.0-alpha.1/migration-audit.schema.yaml
 ```
 
 Do not substitute a movable branch name such as `main` for `{{MADP_COMMIT_SHA}}`.
@@ -38,7 +47,7 @@ Do not substitute a movable branch name such as `main` for `{{MADP_COMMIT_SHA}}`
 - Do not treat model agreement as evidence.
 - Do not claim, generate, or infer user approval.
 - Treat default execution authority as `PROPOSE_ONLY` unless a valid permission grant is supplied.
-- If the schema cannot be formally validated, say so in `limitations`.
+- If the schemas cannot be formally validated, say so in `limitations`.
 
 ## Required Output
 
@@ -46,19 +55,28 @@ Return exactly one load report before any deliberation:
 
 ```yaml
 PROTOCOL_LOAD_REPORT:
-  protocol_version: "MADP-v0.2.5-rc.2"
+  protocol_version: "MADP-v0.3.0-alpha.1"
   repository_commit: "{{MADP_COMMIT_SHA}}"
   files:
-    - path: "README.md"
+    - path: "README-v0.3.0-alpha.1.md"
       status: "READ | PARTIALLY_READ | FAILED"
       access_method: "RAW_URL | GITHUB_PAGE | PROVIDED_TEXT | OTHER"
-    - path: "protocol/MADP-v0.2.5-rc.2.md"
+    - path: "protocol/MADP-v0.3.0-alpha.1.md"
       status: "READ | PARTIALLY_READ | FAILED"
       access_method: "RAW_URL | GITHUB_PAGE | PROVIDED_TEXT | OTHER"
-    - path: "protocol/GLOSSARY-v0.2.5-rc.2.md"
+    - path: "protocol/GLOSSARY-v0.3.0-alpha.1.md"
       status: "READ | PARTIALLY_READ | FAILED"
       access_method: "RAW_URL | GITHUB_PAGE | PROVIDED_TEXT | OTHER"
-    - path: "schemas/session-state-v0.2.5-rc.2.schema.yaml"
+    - path: "schemas/generated/session-state-v0.3.0-alpha.1.bundle.schema.yaml"
+      status: "READ | PARTIALLY_READ | FAILED"
+      access_method: "RAW_URL | GITHUB_PAGE | PROVIDED_TEXT | OTHER"
+    - path: "schemas/generated/relay-block-v0.3.0-alpha.1.bundle.schema.yaml"
+      status: "READ | PARTIALLY_READ | FAILED"
+      access_method: "RAW_URL | GITHUB_PAGE | PROVIDED_TEXT | OTHER"
+    - path: "schemas/v0.3.0-alpha.1/migration-evidence.schema.yaml"
+      status: "READ | PARTIALLY_READ | FAILED"
+      access_method: "RAW_URL | GITHUB_PAGE | PROVIDED_TEXT | OTHER"
+    - path: "schemas/v0.3.0-alpha.1/migration-audit.schema.yaml"
       status: "READ | PARTIALLY_READ | FAILED"
       access_method: "RAW_URL | GITHUB_PAGE | PROVIDED_TEXT | OTHER"
   all_required_files_read: true | false
