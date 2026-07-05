@@ -21,6 +21,7 @@ ROOT = Path(__file__).resolve().parents[1]
 FIXTURES = ROOT / "tests" / "migration"
 SCHEMA_DIR = ROOT / "schemas" / "v0.3.0-alpha.1"
 SCHEMA_PATHS = {
+    "rc2_session_state": ROOT / "schemas" / "session-state-v0.2.5-rc.2.schema.yaml",
     "session_state": SCHEMA_DIR / "session-state.schema.yaml",
     "relay_block": SCHEMA_DIR / "relay-block.schema.yaml",
     "migration_evidence": SCHEMA_DIR / "migration-evidence.schema.yaml",
@@ -86,7 +87,7 @@ def run_fixture(directory: Path, validators: dict[str, Draft202012Validator]) ->
                 validators[schema_name].iter_errors(instance),
                 key=lambda item: (list(item.absolute_path), list(item.absolute_schema_path)),
             )
-        except Exception as exc:  # parsing or resolver failure
+        except Exception as exc:
             errors.append(f"{filename}: {type(exc).__name__}: {exc}")
             continue
         actual = "FAIL" if validation_errors else "PASS"
@@ -157,8 +158,8 @@ def main() -> int:
         },
         "fixtures": results,
         "limitations": [
-            "Legacy source.yaml is preserved as migration input but is not yet validated against the rc.2 root schema.",
-            "AMI semantic invariants and migration transformation remain deferred.",
+            "Schema checks do not prove migration transformation correctness.",
+            "AMI semantic invariants are evaluated by validate_migration_semantics_v030.py.",
         ],
     }
 
