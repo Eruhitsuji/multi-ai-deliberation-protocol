@@ -1,0 +1,11 @@
+migration_id: "MIGRUN-009"
+from_version: "MADP-v0.2.5-rc.2"
+to_version: "MADP-v0.3.0-alpha.1"
+source_state_version: 5
+result: "REJECTED"
+official_source_modified: false
+candidate_discarded: true
+evidence_artifact_ref: "EVID-MIG-009"
+quarantined_items: []
+errors:
+  - "MIG_VERSION_NOT_UPDATED"
