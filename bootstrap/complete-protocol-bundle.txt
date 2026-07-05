@@ -1,15 +1,22 @@
 BEGIN_MADP_BUNDLE_METADATA
 protocol_version: MADP-v0.3.0-alpha.1
-status: GENERATED_DISTRIBUTION_DRAFT
+status: GENERATED_DISTRIBUTION_DRAFT_INDEX_ONLY
 source_branch: feature/v0.3.0-alpha.1
+generator: scripts/generate_text_bundles.py
 limitations:
-- This draft bundle is not a released or tagged artifact.
-- Regeneration and byte-drift validation are required before release.
-END_MADP_BUNDLE_METADATA
-
-Canonical source files:
+- This committed alpha artifact is a reproducible source index, not yet a self-contained upload bundle.
+- It is not released or tagged.
+included_sources:
 - protocol/MADP-v0.3.0-alpha.1.md
 - protocol/GLOSSARY-v0.3.0-alpha.1.md
 - schemas/generated/session-state-v0.3.0-alpha.1.bundle.schema.yaml
 - schemas/generated/relay-block-v0.3.0-alpha.1.bundle.schema.yaml
 - schemas/v0.3.0-alpha.1/migration-evidence.schema.yaml
+- schemas/v0.3.0-alpha.1/migration-audit.schema.yaml
+END_MADP_BUNDLE_METADATA
+
+Regenerate with:
+python scripts/generate_text_bundles.py
+
+Check committed output with:
+python scripts/generate_text_bundles.py --check
