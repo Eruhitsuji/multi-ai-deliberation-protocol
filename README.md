@@ -1,49 +1,57 @@
 # Multi-AI Deliberation Protocol (MADP)
 
-> Current release candidate: **MADP-v0.2.5-rc.2**
+> Current published prerelease: **MADP-v0.3.0-alpha.1**
+>
+> Historical compatibility release candidate: **MADP-v0.2.5-rc.2**
 
 MADP is a service-neutral protocol for structured deliberation with AI systems, role-separated instances, human validators, and execution agents. It supports research, design, review, software development, and everyday decisions while keeping the user as the sole final decision-maker.
 
 ## Status and canonical files
 
-This is a release candidate, not a final or stable release. The user remains the only actor who can approve a final release.
+`MADP-v0.3.0-alpha.1` is a published alpha prerelease. It is not a final or stable release and may change incompatibly in later prereleases.
 
 ```yaml
-current_release_candidate: "MADP-v0.2.5-rc.2"
-previous_release_candidate: "MADP-v0.2.5-rc.1"
-previous_draft: "MADP-v0.2.5-draft"
-status: "release candidate, not final"
+current_published_prerelease: "MADP-v0.3.0-alpha.1"
+historical_compatibility_release_candidate: "MADP-v0.2.5-rc.2"
+status: "published alpha prerelease, not stable"
+release_merge_commit: "c3c80a9fa48a5f93b46f742f08d6617100a1eb60"
 ```
 
-Canonical repository documents are English.
+Canonical alpha.1 repository documents are English:
 
-- [`protocol/MADP-v0.2.5-rc.2.md`](protocol/MADP-v0.2.5-rc.2.md) - behavior, procedures, transitions, authorization
-- [`protocol/GLOSSARY-v0.2.5-rc.2.md`](protocol/GLOSSARY-v0.2.5-rc.2.md) - normative term meanings and distinctions
-- [`schemas/session-state-v0.2.5-rc.2.schema.yaml`](schemas/session-state-v0.2.5-rc.2.schema.yaml) - fields, types, required properties, enum spelling
+- [`README-v0.3.0-alpha.1.md`](README-v0.3.0-alpha.1.md) - prerelease overview, validation, artifacts, and limitations
+- [`protocol/MADP-v0.3.0-alpha.1.md`](protocol/MADP-v0.3.0-alpha.1.md) - behavior, procedures, transitions, authorization, and migration
+- [`protocol/GLOSSARY-v0.3.0-alpha.1.md`](protocol/GLOSSARY-v0.3.0-alpha.1.md) - normative term meanings and distinctions
+- [`schemas/v0.3.0-alpha.1/session-state.schema.yaml`](schemas/v0.3.0-alpha.1/session-state.schema.yaml) - Session State root
+- [`schemas/v0.3.0-alpha.1/relay-block.schema.yaml`](schemas/v0.3.0-alpha.1/relay-block.schema.yaml) - Relay Block root
+- [`schemas/v0.3.0-alpha.1/definitions.schema.yaml`](schemas/v0.3.0-alpha.1/definitions.schema.yaml) - shared definitions
+- [`schemas/v0.3.0-alpha.1/migration-evidence.schema.yaml`](schemas/v0.3.0-alpha.1/migration-evidence.schema.yaml) - migration evidence
+- [`schemas/v0.3.0-alpha.1/migration-audit.schema.yaml`](schemas/v0.3.0-alpha.1/migration-audit.schema.yaml) - migration audit
 - [`LICENSE`](LICENSE) - MIT License
 
-`MADP-v0.2.5-rc.1` remains retained as the previous public release candidate. It is historical, not the current canonical target.
+Self-contained generated schema distributions:
 
-Previous draft documents are retained for history:
+- [`schemas/generated/session-state-v0.3.0-alpha.1.bundle.schema.yaml`](schemas/generated/session-state-v0.3.0-alpha.1.bundle.schema.yaml)
+- [`schemas/generated/relay-block-v0.3.0-alpha.1.bundle.schema.yaml`](schemas/generated/relay-block-v0.3.0-alpha.1.bundle.schema.yaml)
 
-- [`protocol/MADP-v0.2.5-draft.md`](protocol/MADP-v0.2.5-draft.md)
-- [`protocol/GLOSSARY-v0.2.5-draft.md`](protocol/GLOSSARY-v0.2.5-draft.md)
-- [`schemas/session-state-v0.2.5-draft.schema.yaml`](schemas/session-state-v0.2.5-draft.schema.yaml)
+The `MADP-v0.2.5-rc.2` protocol, glossary, schema, examples, and bootstrap workflow remain retained for compatibility and historical testing. Published historical tags are immutable.
 
-Recorded validation status for this release candidate:
+Recorded alpha.1 validation status:
 
 - schema validation PASS
-- semantic fixture validation PASS
-- document consistency PASS
-- bootstrap generation PASS
-- GitHub Pages deployment PASS
-- ChatGPT normal cross-chat relay PASS
-- ChatGPT YAML serialization PASS
-- ChatGPT malformed relay rejection PASS
-- Gemini uploaded-bundle recovery PASS for rc.1 evidence
-- Claude rc.2 commit-pinned Raw URL load smoke test PASS
-- Gemini rc.2 uploaded complete-bundle load smoke test PASS
+- migration fixture validation PASS
+- migration semantic invariant validation PASS
+- generated artifact drift validation PASS
+- canonical/generated schema equivalence PASS
+- `MADP_JCS_V1` positive and adversarial vector validation PASS
+- self-contained upload bundle integrity validation PASS
+- release-readiness repository audit PASS
+- merge-commit validation workflow PASS (`28734219309`)
 - formal universal interoperability remains unclaimed
+
+The GitHub Pages bootstrap deployment is operationally separate from protocol conformance. A Pages deployment failure does not invalidate successful schema, migration, JCS, or bundle checks.
+
+README examples below are retained primarily as rc.2 compatibility examples. For alpha.1 implementation and migration work, use the versioned alpha.1 protocol, glossary, schemas, fixtures, and prerelease README listed above.
 
 README examples are informative. A conflict among authority domains is a specification defect and must be reported.
 
@@ -60,7 +68,7 @@ README examples are informative. A conflict among authority domains is a specifi
 - Unknown actions, empty scopes, and stale relay states fail closed.
 - At most one facilitator may be active.
 
-## Quick start
+## Legacy rc.2 quick start
 
 ```text
 Use MADP v0.2.5-rc.2.
@@ -202,10 +210,26 @@ For AI environments that cannot retrieve external URLs directly, the Pages artif
 
 ## Validation
 
-MADP v0.2.5-rc.2 validation uses Python 3.11 or newer with `jsonschema` and `PyYAML`.
+### Alpha.1 checks
 
 ```bash
 python -m pip install -r requirements-dev.txt
+python scripts/check_traceability_v030.py
+python scripts/run_schema_fixture_checks.py all --json
+python scripts/check_migration_invariants_v030.py
+python scripts/generate_artifacts.py --check
+python scripts/check_schema_bundle_equivalence.py
+python scripts/verify_jcs_vectors.py all --json
+python scripts/check_release_readiness_v030.py
+python scripts/generate_text_bundles.py --check --output-dir tmp/generated-v030
+python scripts/check_complete_bundle_v030.py tmp/generated-v030/complete-protocol-bundle.full.txt tmp/generated-v030/complete-protocol-bundle.manifest.yaml
+```
+
+### Legacy rc.2 checks
+
+MADP v0.2.5-rc.2 validation uses Python 3.11 or newer with `jsonschema` and `PyYAML`.
+
+```bash
 python scripts/validate_schema.py
 python scripts/validate_examples.py
 python scripts/validate_semantics.py
@@ -240,27 +264,30 @@ python -m venv .venv-validation
 ```text
 .
 |-- README.md
+|-- README-v0.3.0-alpha.1.md
 |-- LICENSE
 |-- protocol/
+|   |-- MADP-v0.3.0-alpha.1.md
+|   |-- GLOSSARY-v0.3.0-alpha.1.md
 |   |-- MADP-v0.2.5-rc.2.md
-|   |-- GLOSSARY-v0.2.5-rc.2.md
 |   `-- historical versioned protocol and glossary files
-`-- schemas/
-    |-- session-state-v0.2.5-rc.2.schema.yaml
-    `-- historical versioned schema files
+|-- schemas/
+|   |-- v0.3.0-alpha.1/
+|   |-- generated/
+|   |-- session-state-v0.2.5-rc.2.schema.yaml
+|   `-- historical versioned schema files
+|-- tests/
+|   |-- migration/
+|   |-- canonicalization/
+|   `-- traceability/
+`-- reviews/
 ```
 
 Future `profiles/` define reusable domain rules. Future `templates/` are starter kits built on Core and Profiles, such as software review, literature research, and everyday decision support.
 
-## Migration from v0.2.4-draft
+## Migration from v0.2.5-rc.2
 
-This release contains breaking schema changes. Import old state explicitly:
-
-- map old decision `status` to `deliberation_outcome`;
-- initialize `approval_status` to `PENDING` unless a valid current approval is re-established;
-- initialize `revision` to `1`;
-- map old condition status to `satisfaction` and set `applicability: ACTIVE`, except old `NOT_APPLICABLE` maps to `applicability: NOT_APPLICABLE` and `satisfaction: PENDING`;
-- treat old free-form permissions as ungranted requests requiring review.
+Migration to alpha.1 is explicit and fail-closed. Use the migration fixtures and versioned migration evidence/audit schemas. Do not preserve authority merely because a legacy document asserted it.
 
 Active sessions must not auto-upgrade.
 
