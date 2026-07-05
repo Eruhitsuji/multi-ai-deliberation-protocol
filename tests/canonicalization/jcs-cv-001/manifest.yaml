@@ -1,7 +1,12 @@
-vector_id: JCS-CV-001
-canonicalization: MADP_JCS_V1
-algorithm: SHA-256
-canonical_byte_file: canonical.jcs
-expected_sha256: 33f88340f493c80f1f87b3ec9658a8de19dbce7ce5ddc91e14860dc8f0ac6d64
-expected_byte_length: 713
-status: REQUIRES_REPRODUCTION
+vector_id: "JCS-CV-001"
+canonicalization: "MADP_JCS_V1"
+algorithm: "SHA-256"
+input_file: "input-snapshot.yaml"
+parsed_json_file: "parsed-data.json"
+canonical_byte_file: "canonical.jcs"
+expected_sha256: "f10c125bf6891d04d60caaf7f4f197f9f14f85655ef829dc9762f2d41d76bde1"
+expected_byte_length: 511
+status: "REPRODUCIBLE_SINGLE_IMPLEMENTATION"
+notes:
+  - "canonical.jcs is the exact hashed byte stream and intentionally has no trailing newline."
+  - "parsed-data.json is review-only and is not the digest input."
