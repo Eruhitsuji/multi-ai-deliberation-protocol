@@ -75,6 +75,26 @@ jobs:
       - name: Verify MADP_JCS_V1 vectors
         run: python scripts/verify_jcs_vectors.py all --json
 
+      - name: Generate self-contained v0.3 alpha upload bundle
+        run: >-
+          python scripts/generate_text_bundles.py
+          --check
+          --output-dir tmp/generated-v030
+          --source-commit "${{ github.sha }}"
+
+      - name: Validate self-contained v0.3 alpha upload bundle
+        run: >-
+          python scripts/check_complete_bundle_v030.py
+          tmp/generated-v030/complete-protocol-bundle.full.txt
+          tmp/generated-v030/complete-protocol-bundle.manifest.yaml
+
+      - name: Upload self-contained v0.3 alpha bundle artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: madp-v0.3.0-alpha.1-complete-bundle
+          path: tmp/generated-v030/
+          if-no-files-found: error
+
       - name: Protect generated artifacts from accidental edits
         run: |
           test -f schemas/generated/session-state-v0.3.0-alpha.1.bundle.schema.yaml
