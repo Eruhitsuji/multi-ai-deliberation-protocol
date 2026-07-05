@@ -1,9 +1,35 @@
-legacy_state:
-  protocol_version: "MADP-v0.2.5-rc.2"
-  session_id: "MIG-SESSION-003"
-  state_version: 2
-  permission_grants:
-    - id: "G3"
-      action: "READ_EXTERNAL"
-      scope: ["https://example.invalid/resource"]
-      assurance_level: "EXTERNALLY_VERIFIED"
+session_state:
+  meta:
+    protocol: "MADP"
+    protocol_version: "0.2.5-rc.2"
+    schema_version: "0.2.5-rc.2"
+    session_id: "MIG-SESSION-003"
+    state_version: 2
+    parent_version: 1
+    updated_at: "UNKNOWN"
+    updated_by: "fixture"
+  goal: "Reject external verification without a reference"
+  current_issue:
+    id: "MIG-003"
+    status: "IN_PROGRESS"
+    question: "Can EXTERNALLY_VERIFIED authority survive without a reference?"
+  participants:
+    - actor_id: "facilitator"
+      type: "FACILITATOR"
+      role: "FACILITATOR"
+      status: "ACTIVE"
+      permission_grants:
+        - id: "G3"
+          action: "READ_EXTERNAL"
+          scope:
+            context_id: "MIG-SESSION-003"
+            target: "https://example.invalid/resource"
+          duration: "ONE_SHOT"
+          assurance_level: "EXTERNALLY_VERIFIED"
+  next_step:
+    internal: null
+    user:
+      action_required: false
+      prompt_action: "NO_ACTION_REQUIRED"
+      task: null
+      response_format: null
