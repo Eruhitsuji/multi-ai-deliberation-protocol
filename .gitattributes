@@ -1,0 +1,3 @@
+tests/canonicalization/**/canonical.jcs -text
+schemas/generated/** linguist-generated=true
+bootstrap/*bundle*.txt linguist-generated=true

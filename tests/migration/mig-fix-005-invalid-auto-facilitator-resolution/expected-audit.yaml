@@ -1,0 +1,13 @@
+migration_id: "MIGRUN-005"
+from_version: "MADP-v0.2.5-rc.2"
+to_version: "MADP-v0.3.0-alpha.1"
+source_state_version: 3
+result: "ABORTED"
+official_source_modified: false
+candidate_discarded: true
+evidence_artifact_ref: "EVID-MIG-005"
+actions: []
+quarantined_items: []
+errors:
+  - "MIG_MULTIPLE_ACTIVE_FACILITATORS"
+  - "MIG_AUTOMATIC_FACILITATOR_RESOLUTION"

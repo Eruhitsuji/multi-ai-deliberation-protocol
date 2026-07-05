@@ -1,0 +1,9 @@
+$schema: "https://json-schema.org/draft/2020-12/schema"
+$id: "urn:madp:schema:relay-block:0.3.0-alpha.1"
+title: "MADP v0.3.0-alpha.1 Relay Block Root"
+type: object
+additionalProperties: false
+required: [relay_block]
+properties:
+  relay_block:
+    $ref: "urn:madp:schema:definitions:0.3.0-alpha.1#/$defs/relayBlock"

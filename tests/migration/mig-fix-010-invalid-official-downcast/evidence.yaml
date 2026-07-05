@@ -1,0 +1,11 @@
+artifact_id: "EVID-MIG-010"
+evidence_version: "0.3.0-alpha.1"
+migration_id: "MIGRUN-010"
+session_id: "MIG-SESSION-010"
+entries:
+  - target_object: "session_state.meta.protocol_version"
+    item_id: "DOWNCAST-010"
+    item_type: "OTHER"
+    evidence_type: "OTHER"
+    provenance_status: "UNKNOWN"
+    resolution_status: "REJECTED"

@@ -1,0 +1,18 @@
+fixture_id: "MIG-FIX-008"
+purpose: "Reject a claim that a post-ingress digest proves pre-ingress transport integrity."
+semantic_status: "IMPLEMENTED"
+required_files: ["source.yaml", "evidence.yaml", "proposed-invalid-target.yaml", "expected-audit.yaml"]
+checks:
+  - file: "source.yaml"
+    schema: "rc2_session_state"
+    expect: "PASS"
+  - file: "evidence.yaml"
+    schema: "migration_evidence"
+    expect: "PASS"
+  - file: "proposed-invalid-target.yaml"
+    schema: "relay_block"
+    expect: "PASS"
+  - file: "expected-audit.yaml"
+    schema: "migration_audit"
+    expect: "PASS"
+expected_semantic_errors: ["MIG_FALSE_DIGEST_PROVENANCE"]

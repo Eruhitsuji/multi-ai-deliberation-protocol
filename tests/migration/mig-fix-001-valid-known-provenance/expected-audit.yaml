@@ -1,0 +1,16 @@
+migration_id: "MIGRUN-001"
+from_version: "MADP-v0.2.5-rc.2"
+to_version: "MADP-v0.3.0-alpha.1"
+source_state_version: 7
+result_state_version: 8
+result: "COMPLETED"
+official_source_modified: false
+candidate_discarded: false
+evidence_artifact_ref: "EVID-MIG-001"
+actions:
+  - rule_id: "MIG-001"
+    target_object: "session_state.permission_grants[G1]"
+    action_type: "PRESERVE_WITH_PROVENANCE"
+    automatic: false
+quarantined_items: []
+errors: []

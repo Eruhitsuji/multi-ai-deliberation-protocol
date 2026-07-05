@@ -1,0 +1,18 @@
+fixture_id: "MIG-FIX-005"
+purpose: "Abort instead of automatically selecting among multiple active facilitators."
+semantic_status: "IMPLEMENTED"
+required_files: ["source.yaml", "evidence.yaml", "proposed-invalid-target.yaml", "expected-audit.yaml"]
+checks:
+  - file: "source.yaml"
+    schema: "rc2_session_state"
+    expect: "PASS"
+  - file: "evidence.yaml"
+    schema: "migration_evidence"
+    expect: "PASS"
+  - file: "proposed-invalid-target.yaml"
+    schema: "session_state"
+    expect: "PASS"
+  - file: "expected-audit.yaml"
+    schema: "migration_audit"
+    expect: "PASS"
+expected_semantic_errors: ["MIG_AUTOMATIC_FACILITATOR_RESOLUTION"]

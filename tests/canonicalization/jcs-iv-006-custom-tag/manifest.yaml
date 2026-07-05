@@ -1,0 +1,4 @@
+vector_id: "JCS-IV-006"
+vector_type: "INVALID"
+input_file: "input.yaml"
+expected_error: "YAML_CUSTOM_TAG_PROHIBITED"

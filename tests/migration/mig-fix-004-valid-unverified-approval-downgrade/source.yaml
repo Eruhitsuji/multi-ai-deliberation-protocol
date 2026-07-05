@@ -1,0 +1,40 @@
+session_state:
+  meta:
+    protocol: "MADP"
+    protocol_version: "0.2.5-rc.2"
+    schema_version: "0.2.5-rc.2"
+    session_id: "MIG-SESSION-004"
+    state_version: 9
+    parent_version: 8
+    updated_at: "UNKNOWN"
+    updated_by: "fixture"
+  goal: "Downgrade an unverified affirmative approval"
+  current_issue:
+    id: "MIG-004"
+    status: "IN_PROGRESS"
+    question: "How should an unverified affirmative approval migrate?"
+  participants:
+    - actor_id: "facilitator"
+      type: "FACILITATOR"
+      role: "FACILITATOR"
+      status: "ACTIVE"
+  decisions:
+    - id: "DEC4"
+      revision: 1
+      deliberation_outcome: "CONSENSUS"
+      approval_status: "APPROVE"
+      summary: "Legacy AI-recorded approval assertion."
+      approval:
+        decision_id: "DEC4"
+        decision_revision: 1
+        approver: "USER"
+        assurance_level: "UNVERIFIED_ASSERTION"
+        assurance_origin: "AI_RECORDED"
+        occurred_at: "UNKNOWN"
+  next_step:
+    internal: null
+    user:
+      action_required: false
+      prompt_action: "NO_ACTION_REQUIRED"
+      task: null
+      response_format: null

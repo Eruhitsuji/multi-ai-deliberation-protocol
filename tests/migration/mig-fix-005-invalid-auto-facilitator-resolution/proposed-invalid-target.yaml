@@ -1,0 +1,26 @@
+session_state:
+  meta:
+    protocol: "MADP"
+    protocol_version: "0.3.0-alpha.1"
+    schema_version: "0.3.0-alpha.1"
+    session_id: "MIG-SESSION-005"
+    state_version: 4
+    parent_version: 3
+  goal: "Do not auto-resolve facilitator conflict"
+  current_issue: {id: "MIG-005", status: "BLOCKED"}
+  participants:
+    - actor_id: "fac-a"
+      type: "FACILITATOR"
+      role: "First facilitator"
+      status: "ACTIVE"
+    - actor_id: "fac-b"
+      type: "FACILITATOR"
+      role: "Second facilitator"
+      status: "PAUSED"
+  decisions:
+    - id: "DEC-MIG-005"
+      revision: 1
+      deliberation_outcome: "AUTOMATIC_FACILITATOR_SELECTION"
+      approval_status: "PENDING"
+      summary: "Invalid candidate automatically selected one facilitator."
+  next_step: {user: {action_required: true, prompt_action: "SELECT_FACILITATOR"}}

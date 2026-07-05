@@ -1,0 +1,63 @@
+traceability_version: "1"
+protocol_version: "MADP-v0.3.0-alpha.1"
+coverage_scope:
+  - "All MUST_ALPHA_1 changes"
+  - "All changed normative clauses"
+  - "AMI-001 through AMI-005"
+  - "All MIG_ error codes"
+entries:
+  - requirement_id: "TRC-SEC-001"
+    origin: ["ISSUE-001"]
+    protocol_clause: "4 Actors"
+    schema_target: "schemas/v0.3.0-alpha.1/definitions.schema.yaml#/$defs/sessionState"
+    fixtures: ["tests/migration/mig-fix-005-invalid-auto-facilitator-resolution"]
+    error_codes: ["MIG_MULTIPLE_ACTIVE_FACILITATORS", "MIG_AUTOMATIC_FACILITATOR_RESOLUTION"]
+    release_gates: ["A-RG-06"]
+  - requirement_id: "TRC-SEC-002"
+    origin: ["ISSUE-002", "ISSUE-006"]
+    protocol_clause: "6 Permission requests and grants"
+    schema_target: "schemas/v0.3.0-alpha.1/definitions.schema.yaml#/$defs/permissionGrant"
+    fixtures: ["tests/migration/mig-fix-001-valid-known-provenance", "tests/migration/mig-fix-002-invalid-fabricated-provenance", "tests/migration/mig-fix-003-invalid-external-without-reference"]
+    error_codes: ["MIG_UNKNOWN_GRANT_PROVENANCE", "MIG_FABRICATED_PROVENANCE", "MIG_AUTHORITY_CATEGORY_RECLASSIFICATION"]
+    release_gates: ["A-RG-07", "A-RG-08"]
+  - requirement_id: "TRC-SEC-003"
+    origin: ["ISSUE-005"]
+    protocol_clause: "7 Decisions and approvals"
+    schema_target: "schemas/v0.3.0-alpha.1/definitions.schema.yaml#/$defs/approval"
+    fixtures: ["tests/migration/mig-fix-004-valid-unverified-approval-downgrade"]
+    error_codes: []
+    release_gates: ["A-RG-09"]
+  - requirement_id: "TRC-SCHEMA-001"
+    origin: ["ISSUE-015"]
+    protocol_clause: "5 State and roots"
+    schema_target: "schemas/v0.3.0-alpha.1/session-state.schema.yaml"
+    fixtures: ["tests/migration/mig-fix-006-valid-relay-root"]
+    error_codes: []
+    release_gates: ["A-RG-10"]
+  - requirement_id: "TRC-DIGEST-001"
+    origin: ["ISSUE-017", "ISSUE-022", "ISSUE-040"]
+    protocol_clause: "9 Relay blocks and digest"
+    schema_target: "schemas/v0.3.0-alpha.1/definitions.schema.yaml#/$defs/snapshotDigest"
+    fixtures: ["tests/canonicalization/jcs-cv-001", "tests/migration/mig-fix-007-valid-post-ingress-digest", "tests/migration/mig-fix-008-invalid-pre-ingress-claim"]
+    error_codes: ["MIG_FALSE_DIGEST_PROVENANCE"]
+    release_gates: ["A-RG-15"]
+  - requirement_id: "TRC-MIG-001"
+    origin: ["AMI-001", "AMI-002", "AMI-003", "AMI-004", "AMI-005"]
+    protocol_clause: "12 Migration from v0.2.5-rc.2"
+    schema_target: "schemas/v0.3.0-alpha.1/migration-evidence.schema.yaml"
+    fixtures: ["tests/migration"]
+    error_codes:
+      - "MIG_LEXICAL_SOURCE_INVALID"
+      - "MIG_SOURCE_SCHEMA_INVALID"
+      - "MIG_MULTIPLE_ACTIVE_FACILITATORS"
+      - "MIG_UNKNOWN_GRANT_PROVENANCE"
+      - "MIG_FABRICATED_PROVENANCE"
+      - "MIG_AUTHORITY_CATEGORY_RECLASSIFICATION"
+      - "MIG_AUTOMATIC_FACILITATOR_RESOLUTION"
+      - "MIG_FALSE_DIGEST_PROVENANCE"
+      - "MIG_VERSION_NOT_UPDATED"
+      - "MIG_UNSAFE_OFFICIAL_DOWNCAST"
+      - "MIG_TARGET_SCHEMA_INVALID"
+      - "MIG_TARGET_SEMANTIC_INVALID"
+      - "MIG_AUDIT_INCOMPLETE"
+    release_gates: ["A-RG-11", "A-RG-12", "A-RG-14"]

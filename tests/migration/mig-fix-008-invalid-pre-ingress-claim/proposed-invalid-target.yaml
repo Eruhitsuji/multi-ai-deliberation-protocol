@@ -1,0 +1,27 @@
+relay_block:
+  protocol_version: "MADP-v0.3.0-alpha.1"
+  session_id: "MIG-SESSION-008"
+  source_state_version: 2
+  integrity_claim: "PRE_INGRESS_TRANSPORT_VERIFIED"
+  snapshot_digest:
+    canonicalization: "MADP_JCS_V1"
+    algorithm: "SHA-256"
+    value: "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    provenance: "POST_INGRESS_BASELINE"
+  operative_session_state_snapshot:
+    meta:
+      protocol: "MADP"
+      protocol_version: "0.3.0-alpha.1"
+      schema_version: "0.3.0-alpha.1"
+      session_id: "MIG-SESSION-008"
+      state_version: 2
+      parent_version: 1
+    goal: "Reject false pre-ingress integrity claims"
+    current_issue: {id: "MIG-008", status: "IN_PROGRESS"}
+    participants:
+      - actor_id: "facilitator"
+        type: "FACILITATOR"
+        role: "Migration facilitator"
+        status: "ACTIVE"
+    decisions: []
+    next_step: {user: {action_required: true, prompt_action: "REVIEW_MIGRATION", task: "Reject false digest provenance", response_format: "ACK"}}

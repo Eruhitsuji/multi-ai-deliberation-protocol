@@ -1,0 +1,27 @@
+session_state:
+  meta:
+    protocol: "MADP"
+    protocol_version: "0.2.5-rc.2"
+    schema_version: "0.2.5-rc.2"
+    session_id: "MIG-SESSION-008"
+    state_version: 1
+    parent_version: 0
+    updated_at: "UNKNOWN"
+    updated_by: "fixture"
+  goal: "Reject false pre-ingress integrity claims"
+  current_issue:
+    id: "MIG-008"
+    status: "IN_PROGRESS"
+    question: "Can a digest computed after ingress prove transport integrity?"
+  participants:
+    - actor_id: "facilitator"
+      type: "FACILITATOR"
+      role: "FACILITATOR"
+      status: "ACTIVE"
+  next_step:
+    internal: null
+    user:
+      action_required: false
+      prompt_action: "NO_ACTION_REQUIRED"
+      task: null
+      response_format: null

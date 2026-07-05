@@ -1,0 +1,17 @@
+session_state:
+  meta:
+    protocol: "MADP"
+    protocol_version: "0.3.0-alpha.1"
+    schema_version: "0.3.0-alpha.1"
+    session_id: "MIG-SESSION-010"
+    state_version: 4
+    parent_version: 3
+  goal: "Prevent unsafe official downcast"
+  current_issue: {id: "MIG-010", status: "IN_PROGRESS"}
+  participants:
+    - actor_id: "facilitator"
+      type: "FACILITATOR"
+      role: "Migration facilitator"
+      status: "ACTIVE"
+  decisions: []
+  next_step: {user: {action_required: true, prompt_action: "REVIEW_DOWNCAST", task: "Reject official downcast", response_format: "ACK"}}

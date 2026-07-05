@@ -1,0 +1,11 @@
+artifact_id: "EVID-MIG-002"
+evidence_version: "0.3.0-alpha.1"
+migration_id: "MIGRUN-002"
+session_id: "MIG-SESSION-002"
+entries:
+  - target_object: "session_state.permission_grants[G2]"
+    item_id: "G2"
+    item_type: "PERMISSION_GRANT"
+    evidence_type: "GRANT_PROVENANCE"
+    provenance_status: "UNKNOWN"
+    resolution_status: "USER_ESCALATION_REQUIRED"

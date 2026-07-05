@@ -1,0 +1,31 @@
+session_state:
+  meta:
+    protocol: "MADP"
+    protocol_version: "0.2.5-rc.2"
+    schema_version: "0.2.5-rc.2"
+    session_id: "MIG-SESSION-005"
+    state_version: 3
+    parent_version: 2
+    updated_at: "UNKNOWN"
+    updated_by: "fixture"
+  goal: "Require user resolution for multiple active facilitators"
+  current_issue:
+    id: "MIG-005"
+    status: "BLOCKED"
+    question: "Which active facilitator should remain?"
+  participants:
+    - actor_id: "fac-a"
+      type: "FACILITATOR"
+      role: "Migration facilitator A"
+      status: "ACTIVE"
+    - actor_id: "fac-b"
+      type: "FACILITATOR"
+      role: "Migration facilitator B"
+      status: "ACTIVE"
+  next_step:
+    internal: null
+    user:
+      action_required: true
+      prompt_action: "RESOLVE_STATE_CONFLICT"
+      task: "Select the active facilitator"
+      response_format: "actor_id"

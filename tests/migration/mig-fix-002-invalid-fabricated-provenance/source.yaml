@@ -1,0 +1,35 @@
+session_state:
+  meta:
+    protocol: "MADP"
+    protocol_version: "0.2.5-rc.2"
+    schema_version: "0.2.5-rc.2"
+    session_id: "MIG-SESSION-002"
+    state_version: 4
+    parent_version: 3
+    updated_at: "UNKNOWN"
+    updated_by: "fixture"
+  goal: "Reject fabricated grant provenance"
+  current_issue:
+    id: "MIG-002"
+    status: "IN_PROGRESS"
+    question: "May unknown provenance be rewritten as USER_ACTION?"
+  participants:
+    - actor_id: "facilitator"
+      type: "FACILITATOR"
+      role: "FACILITATOR"
+      status: "ACTIVE"
+      permission_grants:
+        - id: "G2"
+          action: "RUN_COMMAND"
+          scope:
+            context_id: "MIG-SESSION-002"
+            target: "python scripts/check.py"
+          duration: "ONE_SHOT"
+          assurance_level: "USER_CONFIRMED"
+  next_step:
+    internal: null
+    user:
+      action_required: false
+      prompt_action: "NO_ACTION_REQUIRED"
+      task: null
+      response_format: null

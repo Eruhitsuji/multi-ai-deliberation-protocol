@@ -1,0 +1,93 @@
+#!/usr/bin/env python3
+from __future__ import annotations
+
+import argparse
+import difflib
+import json
+from pathlib import Path
+from typing import Any
+
+import yaml
+
+ROOT = Path(__file__).resolve().parents[1]
+SRC = ROOT / "schemas" / "v0.3.0-alpha.1"
+OUT = ROOT / "schemas" / "generated"
+
+
+def load_yaml(path: Path) -> Any:
+    return yaml.safe_load(path.read_text(encoding="utf-8"))
+
+
+def render_json(data: Any) -> str:
+    return json.dumps(data, ensure_ascii=False, sort_keys=True, separators=(",", ":")) + "\n"
+
+
+def make_bundle(
+    root_name: str,
+    root_schema_file: str,
+    defs_root: str,
+    bundle_id: str,
+) -> str:
+    definitions = load_yaml(SRC / "definitions.schema.yaml")
+    root = load_yaml(SRC / root_schema_file)
+    bundle = {
+        "$schema": root["$schema"],
+        "$id": bundle_id,
+        "title": root.get("title", "MADP bundle"),
+        "x-madp-generated-from": [root["$id"], definitions["$id"]],
+        "type": root.get("type", "object"),
+        "additionalProperties": root.get("additionalProperties", False),
+        "required": root.get("required", [root_name]),
+        "properties": {root_name: {"$ref": f"#/$defs/{defs_root}"}},
+        "$defs": definitions["$defs"],
+    }
+    return render_json(bundle)
+
+
+def outputs() -> dict[Path, str]:
+    return {
+        OUT / "session-state-v0.3.0-alpha.1.bundle.schema.yaml": make_bundle(
+            "session_state",
+            "session-state.schema.yaml",
+            "sessionState",
+            "urn:madp:schema:bundle:session-state:0.3.0-alpha.1",
+        ),
+        OUT / "relay-block-v0.3.0-alpha.1.bundle.schema.yaml": make_bundle(
+            "relay_block",
+            "relay-block.schema.yaml",
+            "relayBlock",
+            "urn:madp:schema:bundle:relay-block:0.3.0-alpha.1",
+        ),
+    }
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--check", action="store_true")
+    args = parser.parse_args()
+    failed = False
+    for path, generated in outputs().items():
+        if args.check:
+            current = path.read_text(encoding="utf-8") if path.exists() else ""
+            if current != generated:
+                failed = True
+                print(f"DRIFT: {path.relative_to(ROOT)}")
+                for line in difflib.unified_diff(
+                    current.splitlines(),
+                    generated.splitlines(),
+                    fromfile="committed",
+                    tofile="generated",
+                    lineterm="",
+                ):
+                    print(line)
+            else:
+                print(f"OK: {path.relative_to(ROOT)}")
+        else:
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(generated, encoding="utf-8", newline="")
+            print(f"WROTE: {path.relative_to(ROOT)}")
+    return 1 if failed else 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

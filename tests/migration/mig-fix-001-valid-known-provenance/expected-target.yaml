@@ -1,0 +1,28 @@
+session_state:
+  meta:
+    protocol: "MADP"
+    protocol_version: "0.3.0-alpha.1"
+    schema_version: "0.3.0-alpha.1"
+    session_id: "MIG-SESSION-001"
+    state_version: 8
+    parent_version: 7
+  goal: "Migrate a legacy grant safely"
+  current_issue: {id: "MIG-001", status: "IN_PROGRESS"}
+  participants:
+    - actor_id: "facilitator"
+      type: "FACILITATOR"
+      role: "Migration facilitator"
+      status: "ACTIVE"
+  decisions:
+    - id: "DEC-MIG-001"
+      revision: 1
+      deliberation_outcome: "MIGRATION_CANDIDATE"
+      approval_status: "PENDING"
+      summary: "Grant provenance was independently established."
+  permission_grants:
+    - id: "G1"
+      action: "WRITE_FILE"
+      scope: ["docs/design.md"]
+      assurance_level: "USER_CONFIRMED"
+      assurance_origin: "USER_ACTION"
+  next_step: {user: {action_required: true, prompt_action: "REVIEW_MIGRATION"}}

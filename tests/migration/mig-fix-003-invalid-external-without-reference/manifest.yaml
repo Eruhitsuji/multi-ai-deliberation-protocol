@@ -1,0 +1,15 @@
+fixture_id: "MIG-FIX-003"
+purpose: "Reject EXTERNALLY_VERIFIED authority without a reference."
+semantic_status: "IMPLEMENTED"
+required_files: ["source.yaml", "evidence.yaml", "proposed-invalid-target.yaml"]
+checks:
+  - file: "source.yaml"
+    schema: "rc2_session_state"
+    expect: "PASS"
+  - file: "evidence.yaml"
+    schema: "migration_evidence"
+    expect: "FAIL"
+  - file: "proposed-invalid-target.yaml"
+    schema: "session_state"
+    expect: "FAIL"
+expected_semantic_errors: []

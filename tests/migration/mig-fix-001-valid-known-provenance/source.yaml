@@ -1,0 +1,35 @@
+session_state:
+  meta:
+    protocol: "MADP"
+    protocol_version: "0.2.5-rc.2"
+    schema_version: "0.2.5-rc.2"
+    session_id: "MIG-SESSION-001"
+    state_version: 7
+    parent_version: 6
+    updated_at: "UNKNOWN"
+    updated_by: "fixture"
+  goal: "Migrate a legacy grant safely"
+  current_issue:
+    id: "MIG-001"
+    status: "IN_PROGRESS"
+    question: "Can a legacy user-confirmed grant be preserved?"
+  participants:
+    - actor_id: "facilitator"
+      type: "FACILITATOR"
+      role: "FACILITATOR"
+      status: "ACTIVE"
+      permission_grants:
+        - id: "G1"
+          action: "WRITE_FILE"
+          scope:
+            context_id: "MIG-SESSION-001"
+            target: "docs/design.md"
+          duration: "ONE_SHOT"
+          assurance_level: "USER_CONFIRMED"
+  next_step:
+    internal: null
+    user:
+      action_required: false
+      prompt_action: "NO_ACTION_REQUIRED"
+      task: null
+      response_format: null

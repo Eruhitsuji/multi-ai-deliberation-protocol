@@ -1,0 +1,165 @@
+$schema: "https://json-schema.org/draft/2020-12/schema"
+$id: "urn:madp:schema:definitions:0.3.0-alpha.1"
+title: "MADP v0.3.0-alpha.1 Shared Definitions"
+type: object
+$defs:
+  nonEmptyString:
+    type: string
+    minLength: 1
+  participant:
+    type: object
+    additionalProperties: false
+    required: [actor_id, type, role, status]
+    properties:
+      actor_id: {$ref: "#/$defs/nonEmptyString"}
+      type:
+        enum: [USER, FACILITATOR, AI_PARTICIPANT, ROLE_ACTOR, HUMAN_VALIDATOR, EXTERNAL_VALIDATOR, EXECUTION_AGENT]
+      role: {$ref: "#/$defs/nonEmptyString"}
+      status: {enum: [ACTIVE, PAUSED, REMOVED]}
+  permissionGrant:
+    type: object
+    additionalProperties: false
+    required: [id, action, scope, assurance_level, assurance_origin]
+    properties:
+      id: {$ref: "#/$defs/nonEmptyString"}
+      action:
+        enum: [READ_EXTERNAL, SEND_EXTERNAL_DATA, WRITE_FILE, RUN_COMMAND, COMMIT, PUSH, CREATE_PR, SEND_MESSAGE, MODIFY_EXTERNAL_RESOURCE]
+      scope:
+        type: array
+        minItems: 1
+        items: {$ref: "#/$defs/nonEmptyString"}
+      assurance_level: {enum: [USER_CONFIRMED, EXTERNALLY_VERIFIED]}
+      assurance_origin: {enum: [USER_ACTION, EXTERNAL_VALIDATION]}
+      reference: {type: [string, 'null']}
+    allOf:
+      - if:
+          properties: {assurance_level: {const: USER_CONFIRMED}}
+          required: [assurance_level]
+        then:
+          properties: {assurance_origin: {const: USER_ACTION}}
+      - if:
+          properties: {assurance_level: {const: EXTERNALLY_VERIFIED}}
+          required: [assurance_level]
+        then:
+          required: [reference]
+          properties:
+            assurance_origin: {const: EXTERNAL_VALIDATION}
+            reference: {type: string, minLength: 1}
+  permissionRequest:
+    type: object
+    additionalProperties: false
+    required: [id, action, status]
+    properties:
+      id: {$ref: "#/$defs/nonEmptyString"}
+      action: {$ref: "#/$defs/nonEmptyString"}
+      status: {enum: [PENDING, DENIED, USER_ESCALATION_REQUIRED]}
+      scope:
+        type: array
+        items: {$ref: "#/$defs/nonEmptyString"}
+  approval:
+    type: object
+    additionalProperties: false
+    required: [decision_id, decision_revision, approver, status, assurance_level]
+    properties:
+      decision_id: {$ref: "#/$defs/nonEmptyString"}
+      decision_revision: {type: integer, minimum: 1}
+      approver: {$ref: "#/$defs/nonEmptyString"}
+      status: {enum: [PENDING, APPROVE, APPROVE_WITH_CONDITIONS, APPROVE_WITH_CHANGES, DEFER, REJECT]}
+      assurance_level: {enum: [UNVERIFIED_ASSERTION, USER_CONFIRMED, EXTERNALLY_VERIFIED]}
+      assurance_origin: {enum: [USER_ACTION, EXTERNAL_VALIDATION]}
+      reference: {type: string, minLength: 1}
+      basis: {type: string}
+    allOf:
+      - if:
+          properties:
+            status: {enum: [APPROVE, APPROVE_WITH_CONDITIONS, APPROVE_WITH_CHANGES]}
+          required: [status]
+        then:
+          required: [assurance_origin]
+          properties:
+            assurance_level: {enum: [USER_CONFIRMED, EXTERNALLY_VERIFIED]}
+      - if:
+          properties: {assurance_level: {const: USER_CONFIRMED}}
+          required: [assurance_level]
+        then:
+          required: [assurance_origin]
+          properties: {assurance_origin: {const: USER_ACTION}}
+      - if:
+          properties: {assurance_level: {const: EXTERNALLY_VERIFIED}}
+          required: [assurance_level]
+        then:
+          required: [assurance_origin, reference]
+          properties:
+            assurance_origin: {const: EXTERNAL_VALIDATION}
+            reference: {type: string, minLength: 1}
+  decision:
+    type: object
+    additionalProperties: true
+    required: [id, revision, deliberation_outcome, approval_status, summary]
+    properties:
+      id: {$ref: "#/$defs/nonEmptyString"}
+      revision: {type: integer, minimum: 1}
+      deliberation_outcome: {$ref: "#/$defs/nonEmptyString"}
+      approval_status: {enum: [PENDING, APPROVE, APPROVE_WITH_CONDITIONS, APPROVE_WITH_CHANGES, DEFER, REJECT]}
+      summary: {type: string}
+      approval: {$ref: "#/$defs/approval"}
+  snapshotDigest:
+    type: object
+    additionalProperties: false
+    required: [canonicalization, algorithm, value, provenance]
+    properties:
+      canonicalization: {const: MADP_JCS_V1}
+      algorithm: {const: SHA-256}
+      value: {type: string, pattern: '^[0-9a-f]{64}$'}
+      provenance: {enum: [SENDER_COMPUTED, TRANSPORT_VERIFIED, POST_INGRESS_BASELINE]}
+      reference: {type: string, minLength: 1}
+    allOf:
+      - if:
+          properties: {provenance: {const: TRANSPORT_VERIFIED}}
+          required: [provenance]
+        then:
+          required: [reference]
+  meta:
+    type: object
+    additionalProperties: true
+    required: [protocol, protocol_version, schema_version, session_id, state_version, parent_version]
+    properties:
+      protocol: {const: MADP}
+      protocol_version: {const: 0.3.0-alpha.1}
+      schema_version: {const: 0.3.0-alpha.1}
+      session_id: {$ref: "#/$defs/nonEmptyString"}
+      state_version: {type: integer, minimum: 1}
+      parent_version: {type: integer, minimum: 0}
+      updated_at: {type: string}
+      updated_by: {type: string}
+  sessionState:
+    type: object
+    additionalProperties: true
+    required: [meta, goal, current_issue, participants, decisions, next_step]
+    properties:
+      meta: {$ref: "#/$defs/meta"}
+      goal: {type: string}
+      current_issue: {type: object}
+      participants:
+        type: array
+        items: {$ref: "#/$defs/participant"}
+      decisions:
+        type: array
+        items: {$ref: "#/$defs/decision"}
+      permission_requests:
+        type: array
+        items: {$ref: "#/$defs/permissionRequest"}
+      permission_grants:
+        type: array
+        items: {$ref: "#/$defs/permissionGrant"}
+      next_step: {type: object}
+  relayBlock:
+    type: object
+    additionalProperties: true
+    required: [protocol_version, session_id, source_state_version, operative_session_state_snapshot]
+    properties:
+      protocol_version: {const: MADP-v0.3.0-alpha.1}
+      session_id: {$ref: "#/$defs/nonEmptyString"}
+      source_state_version: {type: integer, minimum: 1}
+      snapshot_digest: {$ref: "#/$defs/snapshotDigest"}
+      operative_session_state_snapshot: {$ref: "#/$defs/sessionState"}

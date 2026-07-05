@@ -1,0 +1,16 @@
+migration_id: "MIGRUN-004"
+from_version: "MADP-v0.2.5-rc.2"
+to_version: "MADP-v0.3.0-alpha.1"
+source_state_version: 9
+result_state_version: 10
+result: "COMPLETED"
+official_source_modified: false
+candidate_discarded: false
+evidence_artifact_ref: "EVID-MIG-004"
+actions:
+  - rule_id: "MIG-004"
+    target_object: "session_state.decisions[DEC4].approval"
+    action_type: "DOWNGRADE_TO_PENDING"
+    automatic: true
+quarantined_items: []
+errors: []

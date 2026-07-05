@@ -1,0 +1,16 @@
+migration_id: "MIGRUN-007"
+from_version: "MADP-v0.2.5-rc.2"
+to_version: "MADP-v0.3.0-alpha.1"
+source_state_version: 1
+result_state_version: 2
+result: "COMPLETED"
+official_source_modified: false
+candidate_discarded: false
+evidence_artifact_ref: "EVID-MIG-007"
+actions:
+  - rule_id: "MIG-007"
+    target_object: "relay_block.snapshot_digest"
+    action_type: "LABEL_POST_INGRESS_BASELINE"
+    automatic: true
+quarantined_items: []
+errors: []

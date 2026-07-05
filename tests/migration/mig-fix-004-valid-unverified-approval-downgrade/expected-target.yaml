@@ -1,0 +1,28 @@
+session_state:
+  meta:
+    protocol: "MADP"
+    protocol_version: "0.3.0-alpha.1"
+    schema_version: "0.3.0-alpha.1"
+    session_id: "MIG-SESSION-004"
+    state_version: 10
+    parent_version: 9
+  goal: "Downgrade unverified affirmative approval"
+  current_issue: {id: "MIG-004", status: "IN_PROGRESS"}
+  participants:
+    - actor_id: "facilitator"
+      type: "FACILITATOR"
+      role: "Migration facilitator"
+      status: "ACTIVE"
+  decisions:
+    - id: "DEC4"
+      revision: 1
+      deliberation_outcome: "MIGRATION_CANDIDATE"
+      approval_status: "PENDING"
+      summary: "Unverified affirmative approval was downgraded to pending."
+      approval:
+        decision_id: "DEC4"
+        decision_revision: 1
+        approver: "legacy-ai"
+        status: "PENDING"
+        assurance_level: "UNVERIFIED_ASSERTION"
+  next_step: {user: {action_required: true, prompt_action: "REVIEW_APPROVAL"}}
