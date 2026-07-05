@@ -1,0 +1,11 @@
+artifact_id: "EVID-MIG-004"
+evidence_version: "0.3.0-alpha.1"
+migration_id: "MIGRUN-004"
+session_id: "MIG-SESSION-004"
+entries:
+  - target_object: "session_state.decisions[DEC4].approval"
+    item_id: "DEC4"
+    item_type: "APPROVAL"
+    evidence_type: "APPROVAL_PROVENANCE"
+    provenance_status: "UNKNOWN"
+    resolution_status: "QUARANTINED"
