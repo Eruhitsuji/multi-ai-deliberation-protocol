@@ -1,0 +1,4 @@
+fixture_id: MIG-FIX-005
+purpose: Abort instead of automatically selecting among multiple active facilitators.
+expected: SCHEMA_PASS_SEMANTIC_DEFERRED
+semantic_error: MIG_AUTOMATIC_FACILITATOR_RESOLUTION

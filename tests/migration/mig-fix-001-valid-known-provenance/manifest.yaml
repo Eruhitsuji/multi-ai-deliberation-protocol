@@ -1,0 +1,4 @@
+fixture_id: MIG-FIX-001
+purpose: Preserve a user-confirmed grant only with independent provenance.
+expected: PASS
+semantic_status: DEFERRED

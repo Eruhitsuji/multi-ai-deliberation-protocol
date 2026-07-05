@@ -1,0 +1,15 @@
+BEGIN_MADP_BUNDLE_METADATA
+protocol_version: MADP-v0.3.0-alpha.1
+status: GENERATED_DISTRIBUTION_DRAFT
+source_branch: feature/v0.3.0-alpha.1
+limitations:
+- This draft bundle is not a released or tagged artifact.
+- Regeneration and byte-drift validation are required before release.
+END_MADP_BUNDLE_METADATA
+
+Canonical source files:
+- protocol/MADP-v0.3.0-alpha.1.md
+- protocol/GLOSSARY-v0.3.0-alpha.1.md
+- schemas/generated/session-state-v0.3.0-alpha.1.bundle.schema.yaml
+- schemas/generated/relay-block-v0.3.0-alpha.1.bundle.schema.yaml
+- schemas/v0.3.0-alpha.1/migration-evidence.schema.yaml

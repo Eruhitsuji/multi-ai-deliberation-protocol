@@ -1,0 +1,4 @@
+fixture_id: MIG-FIX-002
+purpose: Reject fabricated USER_ACTION provenance.
+expected: SCHEMA_PASS_SEMANTIC_DEFERRED
+semantic_error: MIG_FABRICATED_PROVENANCE

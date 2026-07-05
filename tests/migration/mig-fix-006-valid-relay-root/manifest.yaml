@@ -1,0 +1,3 @@
+fixture_id: MIG-FIX-006
+purpose: Validate relay-only document with relay root and reject it with session root.
+expected: PASS

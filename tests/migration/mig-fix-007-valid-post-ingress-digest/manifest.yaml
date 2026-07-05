@@ -1,0 +1,3 @@
+fixture_id: MIG-FIX-007
+purpose: Accept POST_INGRESS_BASELINE as a local forward-integrity baseline.
+expected: PASS

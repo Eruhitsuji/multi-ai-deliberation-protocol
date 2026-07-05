@@ -1,0 +1,4 @@
+fixture_id: MIG-FIX-008
+purpose: Reject a claim that a post-ingress digest proves pre-ingress transport integrity.
+expected: SCHEMA_PASS_SEMANTIC_DEFERRED
+semantic_error: MIG_FALSE_DIGEST_PROVENANCE

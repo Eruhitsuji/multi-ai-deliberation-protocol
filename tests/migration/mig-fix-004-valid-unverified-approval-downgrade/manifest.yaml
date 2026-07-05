@@ -1,0 +1,4 @@
+fixture_id: MIG-FIX-004
+purpose: Downgrade affirmative unverified approval to PENDING.
+expected: PASS
+semantic_status: DEFERRED

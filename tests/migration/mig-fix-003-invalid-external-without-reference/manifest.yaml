@@ -1,0 +1,4 @@
+fixture_id: MIG-FIX-003
+purpose: Reject EXTERNALLY_VERIFIED authority without a reference.
+expected: FAIL
+semantic_error: MIG_AUTHORITY_CATEGORY_RECLASSIFICATION

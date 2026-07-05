@@ -1,0 +1,14 @@
+MADP v0.3.0-alpha.1 migration fixture index
+
+MIG-FIX-001 known provenance
+MIG-FIX-002 fabricated provenance
+MIG-FIX-003 external verification without reference
+MIG-FIX-004 unverified affirmative approval downgrade
+MIG-FIX-005 multiple active facilitator resolution
+MIG-FIX-006 relay-only root
+MIG-FIX-007 post-ingress baseline
+MIG-FIX-008 false pre-ingress claim
+MIG-FIX-009 old-version writeback
+MIG-FIX-010 official lossy downcast
+
+The alpha.1 runner performs schema-layer discovery only. Semantic migration validation is deferred.

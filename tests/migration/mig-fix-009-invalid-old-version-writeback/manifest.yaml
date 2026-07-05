@@ -1,0 +1,4 @@
+fixture_id: MIG-FIX-009
+purpose: Reject successful migration output retaining the rc.2 version.
+expected: FAIL
+semantic_error: MIG_VERSION_NOT_UPDATED

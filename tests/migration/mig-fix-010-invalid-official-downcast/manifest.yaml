@@ -1,0 +1,4 @@
+fixture_id: MIG-FIX-010
+purpose: Reject official lossy downcast to rc.2.
+expected: SCHEMA_PASS_SEMANTIC_DEFERRED
+semantic_error: MIG_UNSAFE_OFFICIAL_DOWNCAST
