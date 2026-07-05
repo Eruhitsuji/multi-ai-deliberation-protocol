@@ -1,0 +1,4 @@
+vector_id: "JCS-IV-003"
+vector_type: "INVALID"
+input_file: "input.yaml"
+expected_error: "NON_STRING_KEY_PROHIBITED"
