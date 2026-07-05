@@ -1,0 +1,10 @@
+legacy_state:
+  protocol_version: "MADP-v0.2.5-rc.2"
+  session_id: "MIG-SESSION-004"
+  state_version: 9
+  decisions:
+    - id: "DEC4"
+      revision: 1
+      approval_status: "APPROVE"
+      approval:
+        assurance_level: "UNVERIFIED_ASSERTION"
