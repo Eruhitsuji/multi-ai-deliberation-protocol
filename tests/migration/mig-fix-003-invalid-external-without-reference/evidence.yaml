@@ -1,0 +1,13 @@
+artifact_id: "EVID-MIG-003"
+evidence_version: "0.3.0-alpha.1"
+migration_id: "MIGRUN-003"
+session_id: "MIG-SESSION-003"
+entries:
+  - target_object: "session_state.permission_grants[G3]"
+    item_id: "G3"
+    item_type: "PERMISSION_GRANT"
+    evidence_type: "GRANT_PROVENANCE"
+    provenance_status: "KNOWN"
+    determined_origin: "EXTERNAL_VALIDATION"
+    basis_type: "EXTERNAL_VALIDATION_REFERENCE"
+    resolution_status: "REJECTED"
