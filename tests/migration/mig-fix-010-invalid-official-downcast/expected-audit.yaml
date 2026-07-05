@@ -1,0 +1,11 @@
+migration_id: "MIGRUN-010"
+from_version: "MADP-v0.3.0-alpha.1"
+to_version: "MADP-v0.2.5-rc.2"
+source_state_version: 4
+result: "REJECTED"
+official_source_modified: false
+candidate_discarded: true
+evidence_artifact_ref: "EVID-MIG-010"
+quarantined_items: []
+errors:
+  - "MIG_UNSAFE_OFFICIAL_DOWNCAST"
