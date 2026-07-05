@@ -1,0 +1,9 @@
+$schema: "https://json-schema.org/draft/2020-12/schema"
+$id: "urn:madp:schema:session-state:0.3.0-alpha.1"
+title: "MADP v0.3.0-alpha.1 Session State Root"
+type: object
+additionalProperties: false
+required: [session_state]
+properties:
+  session_state:
+    $ref: "urn:madp:schema:definitions:0.3.0-alpha.1#/$defs/sessionState"
