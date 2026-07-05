@@ -60,8 +60,11 @@ jobs:
       - name: Check v0.3 alpha traceability matrix
         run: python scripts/check_traceability_v030.py
 
-      - name: Discover v0.3 alpha migration fixtures
+      - name: Validate v0.3 alpha migration fixture schemas
         run: python scripts/run_schema_fixture_checks.py all --json
+
+      - name: Validate v0.3 alpha migration invariants
+        run: python scripts/check_migration_invariants_v030.py
 
       - name: Protect generated artifacts from accidental edits
         run: |
