@@ -4,55 +4,44 @@
 >
 > Status: draft, not tagged, not published, and not release-ready.
 >
-> Published `MADP-v0.3.0-alpha.1` artifacts remain the current published alpha prerelease until a separate explicit release action occurs.
+> Published `MADP-v0.3.0-alpha.1` remains the current published alpha prerelease until a separate explicit release action occurs.
 
 ## Status
 
-`MADP-v0.3.0-alpha.2` is a draft prerelease planning version for the Command and Context Relay Layer.
+`MADP-v0.3.0-alpha.2` is the draft Command, Context Relay, TODO, Review, and AI-Driven Development layer.
 
-It extends the alpha.1 security and authority model with draft support for:
+The draft currently includes:
 
-- structured MADP commands;
-- command semantic-invalid fixtures for unsafe or ambiguous command input;
-- a command registry for command-specific argument and authority rules;
-- AI-to-AI or chat-to-chat context sharing;
-- context package receipt validation;
-- bounded review request and response validation;
-- TODO tracking for future discussion and implementation planning;
+- structured `COMMAND_BLOCK` processing;
+- command registry and semantic-invalid command fixtures;
+- `CONTEXT_PACKAGE` and `CONTEXT_PACKAGE_RECEIPT`;
+- `REVIEW_REQUEST` and `REVIEW_RESPONSE`;
+- TODO lifecycle artifacts;
 - relay mode classification;
-- command parse and missing-argument error artifacts;
-- alpha.1 to alpha.2 draft migration fixtures;
-- draft bootstrap prompts and alpha.2 bootstrap prompt generation.
+- conservative alpha.1-to-alpha.2 migration fixtures;
+- generated alpha.2 bootstrap prompts;
+- an AI-driven development profile for coding agents such as Codex and Claude Code.
 
-This draft does not claim production readiness, stable command interoperability, release readiness, automatic external execution, or a complete permission-system redesign.
-
-## Relationship to v0.3.0-alpha.1
-
-`MADP-v0.3.0-alpha.1` remains the current published alpha prerelease.
-
-alpha.2 is intended to be conservative:
-
-- no automatic authority increase;
-- no fabricated user approval;
-- no external execution from command parsing alone;
-- no TODO-to-decision promotion without explicit decision handling;
-- no active-session auto-upgrade from alpha.1 to alpha.2.
-
-The core safety rules continue to apply:
+The core safety rules remain:
 
 ```text
 A TODO is not a decision.
 A decision is not approval.
 Approval is not execution permission.
-Raw command text is not authoritative by itself.
+A review is not merge approval.
+A patch proposal is not repository modification permission.
 ```
 
 ## Canonical draft sources
 
-Draft normative sources:
+Normative draft sources:
 
 - `protocol/MADP-v0.3.0-alpha.2.md`
 - `protocol/GLOSSARY-v0.3.0-alpha.2.md`
+
+Application profile:
+
+- `docs/profiles/AI_DRIVEN_DEVELOPMENT-v0.3.0-alpha.2.md`
 
 Draft schemas:
 
@@ -63,40 +52,18 @@ Draft schemas:
 - `schemas/v0.3.0-alpha.2/context-package-receipt.schema.yaml`
 - `schemas/v0.3.0-alpha.2/review.schema.yaml`
 
-Draft registries:
+Draft registry:
 
 - `registries/v0.3.0-alpha.2/commands.yaml`
 
-Draft planning and traceability:
+Planning and traceability:
 
 - `docs/planning/MADP-v0.3.0-alpha.2-scope.md`
 - `tests/traceability/traceability-matrix-v0.3.0-alpha.2.yaml`
 
-Draft migration fixtures:
+## Command and authority model
 
-- `tests/migration-v0.3.0-alpha.2/README.md`
-- `tests/migration-v0.3.0-alpha.2/A2-MIG-FIX-001/`
-- `tests/migration-v0.3.0-alpha.2/A2-MIG-FIX-002/`
-
-Draft bootstrap prompts:
-
-- `bootstrap/use-madp-commands.md`
-- `bootstrap/share-context-with-ai.md`
-- `bootstrap/request-review.md`
-
-Draft bootstrap generation:
-
-- `scripts/generate_alpha2_bootstrap_prompts.py`
-- `scripts/check_generated_alpha2_bootstrap.py`
-- `scripts/test_generate_alpha2_bootstrap_prompts.py`
-
-## New draft artifacts
-
-### COMMAND_BLOCK
-
-`COMMAND_BLOCK` is the canonical representation of a parsed MADP command.
-
-Raw command input must be processed in this order:
+Raw command text is never authoritative by itself.
 
 ```text
 Parse first.
@@ -106,49 +73,20 @@ Authorize fourth.
 Apply last.
 ```
 
-Command classes introduced in the draft:
+Recognized command classes are:
 
 - `AI_COMMAND`
 - `USER_COMMAND`
 - `TODO_COMMAND`
 - `EXTERNAL_ACTION_COMMAND`
 
-A parseable or schema-valid command is not execution permission.
+The command registry defines per-command arguments, default authority boundaries, safety notes, and prohibited effects.
 
-### Command registry
-
-The command registry defines command-specific operational rules that are intentionally not encoded in the generic `COMMAND_BLOCK` schema.
-
-Registry path:
-
-```text
-registries/v0.3.0-alpha.2/commands.yaml
-```
-
-Registry schema:
-
-```text
-schemas/v0.3.0-alpha.2/command-registry.schema.yaml
-```
-
-The registry records, for each command:
-
-- command class;
-- default authority boundary;
-- required arguments;
-- optional arguments;
-- effect summary;
-- safety notes;
-- prohibited effects.
-
-The registry checker verifies that command names match the `command.schema.yaml` enum, that required and optional arguments are not duplicated, and that sensitive commands keep conservative default authority.
-
-Examples:
+Sensitive examples:
 
 ```yaml
 approve:
   required_arguments: ["decision", "revision"]
-  default_authority_boundary: "USER_CONFIRMED"
 
 external-action:
   required_arguments: ["action", "scope"]
@@ -158,88 +96,99 @@ todo-promote:
   default_authority_boundary: "REQUIRES_USER_CONFIRMATION"
 ```
 
-### CONTEXT_PACKAGE and CONTEXT_PACKAGE_RECEIPT
+A parseable or schema-valid command is not execution permission.
 
-`CONTEXT_PACKAGE` is a lightweight artifact for sharing context with another AI system or chat session without requiring a full deliberation relay.
+## Context sharing and review
 
-It is intended for:
+`CONTEXT_PACKAGE` transfers bounded context without granting authority.
 
-- information transfer;
-- bounded review setup;
-- task handoff;
-- evidence or context packaging.
+`CONTEXT_PACKAGE_RECEIPT` records what the receiving AI understood, what remains limited, and the authority boundary applied. It must not infer user approval or permit external actions by itself.
 
-A context package is not a permission grant and must not be treated as user approval.
+`REVIEW_REQUEST` and `REVIEW_RESPONSE` support bounded review under `PROPOSE_ONLY` authority. Review findings may inform a user decision, but they are not user approval and are not merge authorization.
 
-`CONTEXT_PACKAGE_RECEIPT` records how a receiver interprets a context package. It must keep `external_actions_allowed: false` and `user_approval_inferred: false`.
+## AI-driven development profile
 
-### REVIEW_REQUEST and REVIEW_RESPONSE
+The AI-driven development profile supports coding agents such as Codex, Claude Code, and similar tools.
 
-`REVIEW_REQUEST` and `REVIEW_RESPONSE` support bounded review without granting execution authority.
+Profile files:
 
-Review artifacts must preserve these constraints:
+- `docs/profiles/AI_DRIVEN_DEVELOPMENT-v0.3.0-alpha.2.md`
+- `bootstrap/use-madp-for-ai-driven-development.md`
+- `scripts/check_ai_development_profile_v030_alpha2.py`
 
-- authority boundary is `PROPOSE_ONLY`;
-- external actions are not performed;
-- user approval is not claimed;
-- evidence and recommendations remain distinguishable.
+Profile fixtures:
 
-### TODO_ITEM and TODO_LIST
+- `fixtures/v0.3.0-alpha.2/ai-development/valid/coding-task-handoff.context-package.yaml`
+- `fixtures/v0.3.0-alpha.2/ai-development/valid/review-before-commit.review.yaml`
+- `fixtures/v0.3.0-alpha.2/ai-development/invalid/auto-commit-without-approval.command.yaml`
 
-`TODO_ITEM` records future work or future discussion.
-
-TODO records can help track:
-
-- discussion topics;
-- design work;
-- schema work;
-- implementation tasks;
-- validation work;
-- documentation work;
-- release preparation;
-- safety review.
-
-A TODO item does not approve a decision and does not authorize execution.
-
-### relay_mode
-
-alpha.2 drafts optional relay mode classification:
-
-- `DELIBERATION`
-- `INFORMATION_TRANSFER`
-- `REVIEW_REQUEST`
-- `TASK_HANDOFF`
-- `EVIDENCE_TRANSFER`
-- `RECOVERY`
-
-Migration default for alpha.1 material without `relay_mode` is `DELIBERATION`.
-
-### alpha.1 to alpha.2 migration fixtures
-
-alpha.2 draft migration fixtures live separately from the published alpha.1 migration corpus:
+The profile separates these stages:
 
 ```text
-tests/migration-v0.3.0-alpha.2/
+analysis -> proposal -> edit -> test -> review -> commit -> push -> PR -> merge -> tag -> release
 ```
 
-The draft migration checker verifies conservative migration planning invariants:
+Later stages do not inherit authority from earlier stages. In particular:
 
-- active alpha.1 sessions are not silently auto-upgraded to alpha.2;
-- alpha.1 relay material without `relay_mode` is interpreted as `DELIBERATION` only as proposed migration metadata;
-- historical alpha.1 text that resembles `/madp` syntax is not retroactively applied as an alpha.2 command;
-- user confirmation remains required for migration interpretation.
+- a patch is not edit permission;
+- an edit is not commit permission;
+- a commit is not push permission;
+- a review is not merge permission;
+- a passing CI run is not release permission.
 
-Run:
+Coding agents should return `AI_DEVELOPMENT_STATUS` with files read, files changed, tests run, skipped checks, assumptions, limitations, external-action state, and the next required user decision.
 
-```bash
-python scripts/check_migration_v030_alpha2.py
-```
+## Fixtures
 
-### alpha.2 bootstrap prompt generation
+Draft fixtures are under `fixtures/v0.3.0-alpha.2/`:
 
-alpha.2 draft bootstrap prompt generation is intentionally separate from the published alpha.1 generator.
+- `command/`
+- `todo/`
+- `context-package/`
+- `context-package-receipt/`
+- `review/`
+- `ai-development/`
 
-Generate draft prompts locally:
+The fixture corpus covers schema-valid, schema-invalid, and semantic-invalid cases, including:
+
+- missing approval revision;
+- repeated or unknown command options;
+- ambiguous quoted command input;
+- unconfirmed external actions;
+- silent AI repair of an approval command;
+- context packages that attempt external execution;
+- receipts that infer approval;
+- review responses that claim execution;
+- coding-agent commit requests without a confirmation reference.
+
+## Migration
+
+alpha.2 migration fixtures are separate from the published alpha.1 fixture corpus:
+
+- `tests/migration-v0.3.0-alpha.2/A2-MIG-FIX-001/`
+- `tests/migration-v0.3.0-alpha.2/A2-MIG-FIX-002/`
+
+The migration checker verifies that:
+
+- active alpha.1 sessions are not silently upgraded;
+- absent alpha.1 `relay_mode` is interpreted conservatively as `DELIBERATION`;
+- historical `/madp`-like text is not replayed as an alpha.2 command;
+- published alpha.1 tags remain immutable.
+
+## Bootstrap generation
+
+alpha.2 bootstrap generation is intentionally separate from the published alpha.1 generator.
+
+Templates generated by `scripts/generate_alpha2_bootstrap_prompts.py`:
+
+- `bootstrap/use-madp-commands.md`
+- `bootstrap/share-context-with-ai.md`
+- `bootstrap/request-review.md`
+- `bootstrap/use-madp-for-ai-driven-development.md`
+
+Generated output also contains `bootstrap/alpha2-manifest.yaml` and `index.html`.
+
+Example:
 
 ```bash
 python scripts/generate_alpha2_bootstrap_prompts.py \
@@ -248,89 +197,12 @@ python scripts/generate_alpha2_bootstrap_prompts.py \
   --commit-sha 0123456789abcdef0123456789abcdef01234567 \
   --workflow-run-id ALPHA2_LOCAL_TEST \
   --generated-by LOCAL
+
+python scripts/check_generated_alpha2_bootstrap.py \
+  tmp/generated-alpha2-bootstrap
 ```
 
-Check generated output:
-
-```bash
-python scripts/check_generated_alpha2_bootstrap.py tmp/generated-alpha2-bootstrap
-```
-
-The alpha.2 draft generator emits only:
-
-- `bootstrap/use-madp-commands.md`
-- `bootstrap/share-context-with-ai.md`
-- `bootstrap/request-review.md`
-- `bootstrap/alpha2-manifest.yaml`
-- `index.html`
-
-It does not publish a release and does not emit the alpha.1 complete protocol bundle.
-
-## Command syntax draft
-
-CLI-style surface form:
-
-```text
-/madp <command> [--key value] [--key=value] [--flag]
-```
-
-YAML command form:
-
-```yaml
-MADP_COMMAND:
-  command: "todo-add"
-  arguments:
-    type: "DISCUSSION"
-    title: "Define command syntax"
-    priority: "HIGH"
-```
-
-Malformed commands must not be partially applied.
-
-Missing required arguments should produce `COMMAND_NEEDS_ARGUMENTS`.
-
-Malformed syntax should produce `COMMAND_PARSE_ERROR`.
-
-Approval, authority, and external-action commands must not be silently repaired by AI.
-
-## Fixtures
-
-Draft fixtures are under `fixtures/v0.3.0-alpha.2/`.
-
-```text
-fixtures/v0.3.0-alpha.2/command/
-fixtures/v0.3.0-alpha.2/todo/
-fixtures/v0.3.0-alpha.2/context-package/
-fixtures/v0.3.0-alpha.2/context-package-receipt/
-fixtures/v0.3.0-alpha.2/review/
-```
-
-They contain `valid/`, schema-level `invalid/`, and command `semantic-invalid/` cases.
-
-The current fixture set covers:
-
-- valid TODO command normalization;
-- valid approval command binding;
-- command parse error shape;
-- invalid unknown command;
-- invalid applied parse error;
-- semantic-invalid approval missing revision;
-- semantic-invalid repeated option;
-- semantic-invalid unknown option;
-- semantic-invalid unconfirmed external action;
-- semantic-invalid silent AI repair of an approval command;
-- semantic-invalid quoted argument ambiguity;
-- valid TODO list;
-- invalid TODO status;
-- valid context package;
-- invalid context package attempting external execution;
-- valid context package receipt;
-- invalid context package receipt attempting external actions and approval inference;
-- valid review request;
-- valid review response;
-- invalid review response claiming execution and user approval.
-
-Semantic-invalid command fixtures are schema-valid `COMMAND_BLOCK` documents that should still be rejected by command semantics and authority checks.
+The generator creates draft implementation aids only. It does not publish a release and does not emit the alpha.1 complete protocol bundle.
 
 ## Validation
 
@@ -340,74 +212,25 @@ Install dependencies:
 python -m pip install -r requirements-dev.txt
 ```
 
-Run alpha.2 draft checks:
+Run the main alpha.2 checks:
 
 ```bash
-python scripts/check_traceability_v030_alpha2.py
-python scripts/validate_alpha2_command_context_todo_fixtures.py
-python scripts/check_command_semantic_invalid_fixtures_v030_alpha2.py
-python scripts/check_command_registry_v030_alpha2.py
-python scripts/check_migration_v030_alpha2.py
-python scripts/check_release_readiness_v030_alpha2.py
-```
-
-The existing alpha.1 and rc.2 checks remain part of CI and must continue to pass.
-
-Run the full validation workflow locally where practical:
-
-```bash
-python scripts/validate_schema.py
-python scripts/validate_examples.py
-python scripts/validate_semantics.py
-python scripts/validate_participant_response.py
-python scripts/check_markdown_links.py
-python scripts/check_document_consistency.py
-python scripts/check_bootstrap_prompts.py
-python scripts/test_generate_bootstrap_prompts.py
 python scripts/test_generate_alpha2_bootstrap_prompts.py
-python scripts/check_traceability_v030.py
+python scripts/check_generated_alpha2_bootstrap.py tmp/generated-alpha2-bootstrap
 python scripts/check_traceability_v030_alpha2.py
-python scripts/run_schema_fixture_checks.py all --json
 python scripts/validate_alpha2_command_context_todo_fixtures.py
 python scripts/check_command_semantic_invalid_fixtures_v030_alpha2.py
 python scripts/check_command_registry_v030_alpha2.py
+python scripts/check_ai_development_profile_v030_alpha2.py
 python scripts/check_migration_v030_alpha2.py
-python scripts/check_migration_invariants_v030.py
-python scripts/generate_artifacts.py --check
-python scripts/check_schema_bundle_equivalence.py
-python scripts/verify_jcs_vectors.py all --json
-python scripts/check_release_readiness_v030.py
 python scripts/check_release_readiness_v030_alpha2.py
 ```
 
-## Bootstrap prompts
-
-alpha.2 adds draft bootstrap aids:
-
-- `bootstrap/use-madp-commands.md`
-- `bootstrap/share-context-with-ai.md`
-- `bootstrap/request-review.md`
-
-These prompts are informative implementation aids. They do not override the protocol, glossary, schemas, user instructions, platform safety rules, or higher-priority authority.
-
-They also do not authorize:
-
-- external execution;
-- file writes;
-- commits;
-- releases;
-- user approval claims;
-- treating model convergence as evidence.
+The existing rc.2 and alpha.1 validation paths remain in CI and must continue to pass.
 
 ## Draft readiness audit
 
-The alpha.2 draft readiness audit checks that the draft has the expected minimum artifacts, schema IDs, required protocol phrases, glossary terms, traceability coverage, fixtures, semantic-invalid command fixtures, context package receipt fixtures, review fixtures, command registry, migration fixtures, bootstrap prompts, and alpha.2 bootstrap generation support.
-
-Run:
-
-```bash
-python scripts/check_release_readiness_v030_alpha2.py
-```
+The alpha.2 draft readiness audit checks required files, schema IDs, protocol phrases, glossary terms, traceability coverage, fixtures, command registry, migration artifacts, bootstrap prompts, bootstrap generation support, and the AI-driven development profile.
 
 The audit intentionally reports:
 
@@ -422,13 +245,7 @@ A passing draft audit means the draft is internally reviewable. It does not auth
 
 `MADP-v0.3.0-alpha.2` is not published by this file.
 
-Publishing alpha.2 would require a separate explicit user-authorized sequence, including at minimum:
-
-1. complete implementation and validation;
-2. user approval to merge;
-3. user approval to tag;
-4. user approval to publish a release;
-5. post-publication verification.
+Implementation completion, review, merge, tagging, and release publication are separate actions. Each requires its own applicable user authorization.
 
 No draft artifact authorizes modifying or moving the published `MADP-v0.3.0-alpha.1` tag.
 
@@ -437,3 +254,4 @@ The user remains the sole final decision-maker for promotion, supersession, tagg
 ## Known remaining work
 
 - Decide whether generated alpha.2 bundle schemas are needed before tagging.
+- Decide whether the AI-driven development profile should become a normative protocol section in a later prerelease.
