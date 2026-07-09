@@ -1,0 +1,82 @@
+traceability_version: "1"
+protocol_version: "MADP-v0.3.0-alpha.2"
+coverage_scope:
+  - "alpha.2 command layer draft"
+  - "alpha.2 context package draft"
+  - "alpha.2 TODO lifecycle draft"
+  - "alpha.2 relay mode draft"
+  - "alpha.2 command parsing and error artifacts"
+entries:
+  - requirement_id: "A2-TRC-CMD-001"
+    origin: ["TODO-CMD-001", "TODO-CMD-002", "TODO-CMD-008"]
+    protocol_clause: "11 Command layer"
+    schema_target: "schemas/v0.3.0-alpha.2/command.schema.yaml#/$defs/commandBlock"
+    fixtures:
+      - "fixtures/v0.3.0-alpha.2/command/valid/todo-add.command.yaml"
+      - "fixtures/v0.3.0-alpha.2/command/valid/approve.command.yaml"
+    error_codes:
+      - "CMD_SCHEMA_INVALID"
+      - "CMD_AUTHORITY_DENIED"
+    release_gates:
+      - "A2-RG-01"
+      - "A2-RG-02"
+
+  - requirement_id: "A2-TRC-CMD-002"
+    origin: ["TODO-CMD-002", "TODO-CMD-003"]
+    protocol_clause: "12 Command input syntax"
+    schema_target: "schemas/v0.3.0-alpha.2/command.schema.yaml#/$defs/commandParseError"
+    fixtures:
+      - "fixtures/v0.3.0-alpha.2/command/valid/parse-error.command.yaml"
+      - "fixtures/v0.3.0-alpha.2/command/invalid/parse-error-applied.command.yaml"
+    error_codes:
+      - "CMD_PARSE_ERROR"
+      - "CMD_MISSING_REQUIRED_ARGUMENT"
+    release_gates:
+      - "A2-RG-03"
+
+  - requirement_id: "A2-TRC-CMD-003"
+    origin: ["TODO-CMD-003", "TODO-CMD-008"]
+    protocol_clause: "13 User commands"
+    schema_target: "schemas/v0.3.0-alpha.2/command.schema.yaml#/$defs/commandName"
+    fixtures:
+      - "fixtures/v0.3.0-alpha.2/command/valid/approve.command.yaml"
+      - "fixtures/v0.3.0-alpha.2/command/invalid/unknown-command.command.yaml"
+    error_codes:
+      - "CMD_UNKNOWN_COMMAND"
+    release_gates:
+      - "A2-RG-04"
+
+  - requirement_id: "A2-TRC-TODO-001"
+    origin: ["TODO-CMD-005"]
+    protocol_clause: "15 TODO commands and TODO lifecycle"
+    schema_target: "schemas/v0.3.0-alpha.2/todo.schema.yaml#/$defs/todoItem"
+    fixtures:
+      - "fixtures/v0.3.0-alpha.2/todo/valid/initial.todo-list.yaml"
+      - "fixtures/v0.3.0-alpha.2/todo/invalid/bad-status.todo-list.yaml"
+    error_codes:
+      - "TODO_INVALID_STATUS_TRANSITION"
+      - "TODO_UNKNOWN_ID"
+    release_gates:
+      - "A2-RG-05"
+
+  - requirement_id: "A2-TRC-CTX-001"
+    origin: ["TODO-CMD-006", "TODO-CMD-007", "TODO-CMD-008"]
+    protocol_clause: "10 Context packages"
+    schema_target: "schemas/v0.3.0-alpha.2/context-package.schema.yaml#/$defs/contextPackage"
+    fixtures:
+      - "fixtures/v0.3.0-alpha.2/context-package/valid/share-context.context-package.yaml"
+      - "fixtures/v0.3.0-alpha.2/context-package/invalid/external-execution.context-package.yaml"
+    error_codes:
+      - "CTX_EXTERNAL_EXECUTION_FORBIDDEN"
+    release_gates:
+      - "A2-RG-06"
+
+  - requirement_id: "A2-TRC-RELAY-001"
+    origin: ["TODO-CMD-009"]
+    protocol_clause: "9 Relay blocks and relay modes"
+    schema_target: "protocol/MADP-v0.3.0-alpha.2.md#9-relay-blocks-and-relay-modes"
+    fixtures:
+      - "docs/planning/MADP-v0.3.0-alpha.2-scope.md"
+    error_codes: []
+    release_gates:
+      - "A2-RG-07"
