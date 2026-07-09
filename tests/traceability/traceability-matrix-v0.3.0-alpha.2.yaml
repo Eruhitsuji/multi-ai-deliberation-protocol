@@ -10,6 +10,7 @@ coverage_scope:
   - "alpha.2 TODO lifecycle draft"
   - "alpha.2 relay mode draft"
   - "alpha.2 command parsing and error artifacts"
+  - "alpha.2 bootstrap generation draft"
   - "alpha.1 to alpha.2 migration draft"
 entries:
   - requirement_id: "A2-TRC-CMD-001"
@@ -137,6 +138,22 @@ entries:
       - "REVIEW_USER_APPROVAL_CLAIM_FORBIDDEN"
     release_gates:
       - "A2-RG-12"
+
+  - requirement_id: "A2-TRC-BOOT-001"
+    origin: ["TODO-CMD-006", "TODO-CMD-007", "TODO-CMD-008"]
+    protocol_clause: "Bootstrap prompts for command, context sharing, and bounded review"
+    schema_target: "scripts/generate_alpha2_bootstrap_prompts.py"
+    fixtures:
+      - "scripts/check_generated_alpha2_bootstrap.py"
+      - "scripts/test_generate_alpha2_bootstrap_prompts.py"
+      - "bootstrap/use-madp-commands.md"
+      - "bootstrap/share-context-with-ai.md"
+      - "bootstrap/request-review.md"
+    error_codes:
+      - "A2_BOOTSTRAP_GENERATION_MISMATCH"
+      - "A2_BOOTSTRAP_REQUIRED_MARKER_MISSING"
+    release_gates:
+      - "A2-RG-13"
 
   - requirement_id: "A2-TRC-RELAY-001"
     origin: ["TODO-CMD-009"]
