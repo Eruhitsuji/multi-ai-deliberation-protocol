@@ -1,0 +1,21 @@
+command_block:
+  command_id: CMD-SEM-BAD-001
+  command_version: MADP-COMMAND-v0.1
+  protocol_version: MADP-v0.3.0-alpha.2
+  command: approve
+  command_class: USER_COMMAND
+  issued_by: USER
+  issued_at: UNKNOWN
+  raw_input: /madp approve --decision DEC-004
+  parse_status: PARSED
+  validation_status: SCHEMA_VALID
+  authority_status: USER_CONFIRMED
+  authority_boundary: USER_CONFIRMED
+  arguments:
+    decision: DEC-004
+  effects:
+    intended:
+      - Invalid approval missing required revision argument.
+    prohibited:
+      - Approval for an unspecified revision.
+      - External execution.
