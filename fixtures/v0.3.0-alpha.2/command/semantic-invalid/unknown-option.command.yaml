@@ -1,0 +1,22 @@
+command_block:
+  command_id: CMD-SEM-BAD-003
+  command_version: MADP-COMMAND-v0.1
+  protocol_version: MADP-v0.3.0-alpha.2
+  command: todo-add
+  command_class: TODO_COMMAND
+  issued_by: USER
+  issued_at: UNKNOWN
+  raw_input: /madp todo-add --title "Add registry tests" --teleport true
+  parse_status: PARSED
+  validation_status: SCHEMA_VALID
+  authority_status: PROPOSE_ONLY
+  authority_boundary: PROPOSE_ONLY
+  arguments:
+    title: Add registry tests
+    unknown_options:
+      - teleport
+  effects:
+    intended:
+      - Invalid unknown option should not be silently ignored.
+    prohibited:
+      - Creating a TODO after ignoring an unknown option.
