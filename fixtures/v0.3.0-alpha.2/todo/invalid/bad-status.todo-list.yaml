@@ -1,0 +1,14 @@
+todo_list:
+  protocol_version: MADP-v0.3.0-alpha.2
+  items:
+    - todo_id: TODO-BAD-001
+      type: DESIGN
+      title: Invalid TODO status should fail schema validation
+      status: WAITING
+      priority: HIGH
+      owner: USER
+      related_issue: null
+      related_decision: null
+      blocking_reason: null
+      created_by: USER
+      created_at: UNKNOWN
