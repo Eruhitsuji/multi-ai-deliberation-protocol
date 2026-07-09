@@ -1,0 +1,10 @@
+context_package_receipt:
+  package_id: CTX-PKG-001
+  protocol_version: MADP-v0.3.0-alpha.2
+  received_context_status: PARTIAL
+  authority_boundary_applied: PROPOSE_ONLY
+  external_actions_allowed: false
+  user_approval_inferred: false
+  limitations:
+    - Some referenced files were not independently read by the receiver.
+  next_response_type: QUESTIONS
