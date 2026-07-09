@@ -14,6 +14,12 @@ CHECK = ROOT / "scripts" / "check_generated_alpha2_bootstrap.py"
 REPOSITORY = "ExampleOwner/madp-alpha2-fixture"
 SHA = "0123456789abcdef0123456789abcdef01234567"
 RUN_ID = "ALPHA2_LOCAL_TEST"
+EXPECTED_ALPHA2_BOOTSTRAP_FILES = [
+    "use-madp-commands.md",
+    "share-context-with-ai.md",
+    "request-review.md",
+    "use-madp-for-ai-driven-development.md",
+]
 
 
 def env_clean() -> dict[str, str]:
@@ -57,11 +63,7 @@ def read_all(output: Path) -> dict[str, str]:
 def main() -> int:
     if generator.PROTOCOL_VERSION != "MADP-v0.3.0-alpha.2":
         raise AssertionError("alpha.2 generator protocol version mismatch")
-    if generator.ALPHA2_BOOTSTRAP_FILES != [
-        "use-madp-commands.md",
-        "share-context-with-ai.md",
-        "request-review.md",
-    ]:
+    if generator.ALPHA2_BOOTSTRAP_FILES != EXPECTED_ALPHA2_BOOTSTRAP_FILES:
         raise AssertionError("alpha.2 bootstrap file list mismatch")
 
     with tempfile.TemporaryDirectory(prefix="madp-alpha2-bootstrap-") as directory:
@@ -83,6 +85,8 @@ def main() -> int:
             raise AssertionError("manifest source_commit mismatch")
         if manifest["status"] != "draft implementation aid":
             raise AssertionError("manifest status mismatch")
+        if [item["path"] for item in manifest["files"]] != [f"bootstrap/{name}" for name in EXPECTED_ALPHA2_BOOTSTRAP_FILES]:
+            raise AssertionError("manifest alpha.2 file list mismatch")
 
         generated = read_all(output)
         for name in generator.ALPHA2_BOOTSTRAP_FILES:
@@ -91,6 +95,8 @@ def main() -> int:
                 raise AssertionError(f"missing alpha.2 version marker in {name}")
             if "Generated alpha.2 draft prompt" not in text:
                 raise AssertionError(f"missing generated metadata in {name}")
+        if "AI_DEVELOPMENT_STATUS" not in generated["bootstrap/use-madp-for-ai-driven-development.md"]:
+            raise AssertionError("generated AI development prompt missing status marker")
         if "complete-protocol-bundle.txt" in "\n".join(generated):
             raise AssertionError("alpha.2 draft generator must not emit alpha.1 complete bundle")
 
