@@ -1,0 +1,24 @@
+command_block:
+  command_id: CMD-SEM-BAD-006
+  command_version: MADP-COMMAND-v0.1
+  protocol_version: MADP-v0.3.0-alpha.2
+  command: todo-add
+  command_class: TODO_COMMAND
+  issued_by: USER
+  issued_at: UNKNOWN
+  raw_input: /madp todo-add --title "Review \"approval\" syntax" unquoted-tail
+  parse_status: PARSED
+  validation_status: SCHEMA_VALID
+  authority_status: PROPOSE_ONLY
+  authority_boundary: PROPOSE_ONLY
+  arguments:
+    title: Review "approval" syntax
+    parse_ambiguity: quoted_argument_with_unbound_tail
+    unbound_tokens:
+      - unquoted-tail
+  effects:
+    intended:
+      - Invalid quoted argument ambiguity should require clarification.
+    prohibited:
+      - Silently dropping unbound tokens.
+      - Creating a TODO from ambiguous quoted input.
