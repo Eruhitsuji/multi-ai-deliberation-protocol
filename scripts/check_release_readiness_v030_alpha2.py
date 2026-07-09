@@ -31,6 +31,7 @@ REQUIRED_FILES = [
     "fixtures/v0.3.0-alpha.2/command/semantic-invalid/unknown-option.command.yaml",
     "fixtures/v0.3.0-alpha.2/command/semantic-invalid/external-action-unconfirmed.command.yaml",
     "fixtures/v0.3.0-alpha.2/command/semantic-invalid/silent-approval-repair.command.yaml",
+    "fixtures/v0.3.0-alpha.2/command/semantic-invalid/quoted-argument-ambiguity.command.yaml",
     "fixtures/v0.3.0-alpha.2/todo/valid/initial.todo-list.yaml",
     "fixtures/v0.3.0-alpha.2/todo/invalid/bad-status.todo-list.yaml",
     "fixtures/v0.3.0-alpha.2/context-package/valid/share-context.context-package.yaml",
