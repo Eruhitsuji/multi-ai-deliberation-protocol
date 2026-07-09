@@ -5,6 +5,8 @@ coverage_scope:
   - "alpha.2 command registry draft"
   - "alpha.2 command semantic invalid fixture draft"
   - "alpha.2 context package draft"
+  - "alpha.2 context package receipt draft"
+  - "alpha.2 review request and response draft"
   - "alpha.2 TODO lifecycle draft"
   - "alpha.2 relay mode draft"
   - "alpha.2 command parsing and error artifacts"
@@ -108,6 +110,33 @@ entries:
       - "CTX_EXTERNAL_EXECUTION_FORBIDDEN"
     release_gates:
       - "A2-RG-06"
+
+  - requirement_id: "A2-TRC-CTX-002"
+    origin: ["TODO-CMD-006", "TODO-CMD-007", "TODO-CMD-008"]
+    protocol_clause: "10 Context packages / context package receipts"
+    schema_target: "schemas/v0.3.0-alpha.2/context-package-receipt.schema.yaml"
+    fixtures:
+      - "fixtures/v0.3.0-alpha.2/context-package-receipt/valid/partial.context-package-receipt.yaml"
+      - "fixtures/v0.3.0-alpha.2/context-package-receipt/invalid/external-actions-allowed.context-package-receipt.yaml"
+    error_codes:
+      - "CTX_RECEIPT_EXTERNAL_ACTION_FORBIDDEN"
+      - "CTX_RECEIPT_USER_APPROVAL_INFERENCE_FORBIDDEN"
+    release_gates:
+      - "A2-RG-11"
+
+  - requirement_id: "A2-TRC-REVIEW-001"
+    origin: ["TODO-CMD-007", "TODO-CMD-008"]
+    protocol_clause: "Review request and response artifacts"
+    schema_target: "schemas/v0.3.0-alpha.2/review.schema.yaml"
+    fixtures:
+      - "fixtures/v0.3.0-alpha.2/review/valid/review-request.review.yaml"
+      - "fixtures/v0.3.0-alpha.2/review/valid/review-response.review.yaml"
+      - "fixtures/v0.3.0-alpha.2/review/invalid/review-response-executed.review.yaml"
+    error_codes:
+      - "REVIEW_EXTERNAL_EXECUTION_FORBIDDEN"
+      - "REVIEW_USER_APPROVAL_CLAIM_FORBIDDEN"
+    release_gates:
+      - "A2-RG-12"
 
   - requirement_id: "A2-TRC-RELAY-001"
     origin: ["TODO-CMD-009"]
