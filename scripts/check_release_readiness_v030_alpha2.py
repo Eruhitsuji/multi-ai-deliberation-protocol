@@ -59,6 +59,9 @@ REQUIRED_FILES = [
     "scripts/check_traceability_v030_alpha2.py",
     "scripts/check_command_registry_v030_alpha2.py",
     "scripts/check_migration_v030_alpha2.py",
+    "scripts/generate_alpha2_bootstrap_prompts.py",
+    "scripts/check_generated_alpha2_bootstrap.py",
+    "scripts/test_generate_alpha2_bootstrap_prompts.py",
 ]
 
 EXPECTED_SCHEMA_IDS = {
