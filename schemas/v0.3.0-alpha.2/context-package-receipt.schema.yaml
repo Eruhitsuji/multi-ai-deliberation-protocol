@@ -1,0 +1,69 @@
+$schema: "https://json-schema.org/draft/2020-12/schema"
+$id: "urn:madp:schema:context-package-receipt:0.3.0-alpha.2"
+title: "MADP Context Package Receipt v0.3.0-alpha.2"
+description: "Draft schema for acknowledging receipt of a MADP v0.3.0-alpha.2 CONTEXT_PACKAGE without granting execution authority or inferring user approval."
+type: object
+additionalProperties: false
+required: [context_package_receipt]
+properties:
+  context_package_receipt:
+    $ref: "#/$defs/contextPackageReceipt"
+
+$defs:
+  identifier:
+    type: string
+    minLength: 1
+    pattern: "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+  stringList:
+    type: array
+    items:
+      type: string
+      minLength: 1
+  authorityBoundary:
+    enum:
+      - REFERENCE_ONLY
+      - PROPOSE_ONLY
+      - REQUIRES_USER_CONFIRMATION
+      - USER_CONFIRMED
+      - DENIED
+  receivedContextStatus:
+    enum:
+      - COMPLETE
+      - PARTIAL
+      - LIMITED
+      - REJECTED
+  nextResponseType:
+    enum:
+      - ACKNOWLEDGE
+      - REVIEW_FINDINGS
+      - QUESTIONS
+      - PROPOSAL
+  contextPackageReceipt:
+    type: object
+    additionalProperties: false
+    required:
+      - package_id
+      - protocol_version
+      - received_context_status
+      - authority_boundary_applied
+      - external_actions_allowed
+      - user_approval_inferred
+      - limitations
+      - next_response_type
+    properties:
+      package_id:
+        $ref: "#/$defs/identifier"
+      protocol_version:
+        const: "MADP-v0.3.0-alpha.2"
+      received_context_status:
+        $ref: "#/$defs/receivedContextStatus"
+      authority_boundary_applied:
+        $ref: "#/$defs/authorityBoundary"
+      external_actions_allowed:
+        const: false
+      user_approval_inferred:
+        const: false
+      limitations:
+        $ref: "#/$defs/stringList"
+      next_response_type:
+        $ref: "#/$defs/nextResponseType"
