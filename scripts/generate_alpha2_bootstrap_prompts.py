@@ -19,6 +19,7 @@ ALPHA2_BOOTSTRAP_FILES = [
     "use-madp-commands.md",
     "share-context-with-ai.md",
     "request-review.md",
+    "use-madp-for-ai-driven-development.md",
 ]
 REPO_PART_RE = re.compile(r"^[A-Za-z0-9_.-]+$")
 SHA_RE = re.compile(r"^[0-9a-fA-F]{40}$")
@@ -133,6 +134,7 @@ def _index_html(owner: str, repository: str, source_commit: str) -> str:
         ("Use MADP commands", "bootstrap/use-madp-commands.md"),
         ("Share context with AI", "bootstrap/share-context-with-ai.md"),
         ("Request review", "bootstrap/request-review.md"),
+        ("AI development", "bootstrap/use-madp-for-ai-driven-development.md"),
         ("Manifest", "bootstrap/alpha2-manifest.yaml"),
         ("Source repository", repo_url),
         ("Source commit", f"{repo_url}/commit/{source_commit}"),
