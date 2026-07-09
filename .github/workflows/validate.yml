@@ -63,6 +63,9 @@ jobs:
       - name: Validate v0.3 alpha migration fixture schemas
         run: python scripts/run_schema_fixture_checks.py all --json
 
+      - name: Validate v0.3 alpha.2 command/context/TODO fixtures
+        run: python scripts/validate_alpha2_command_context_todo_fixtures.py
+
       - name: Validate v0.3 alpha migration invariants
         run: python scripts/check_migration_invariants_v030.py
 
