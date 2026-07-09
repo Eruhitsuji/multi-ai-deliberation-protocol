@@ -1,0 +1,167 @@
+$schema: "https://json-schema.org/draft/2020-12/schema"
+$id: "urn:madp:schema:review:0.3.0-alpha.2"
+title: "MADP Review Request and Response v0.3.0-alpha.2"
+description: "Draft schema for bounded MADP v0.3.0-alpha.2 REVIEW_REQUEST and REVIEW_RESPONSE artifacts. Review artifacts do not authorize execution and do not imply user approval."
+type: object
+additionalProperties: false
+oneOf:
+  - required: [review_request]
+  - required: [review_response]
+properties:
+  review_request:
+    $ref: "#/$defs/reviewRequest"
+  review_response:
+    $ref: "#/$defs/reviewResponse"
+
+$defs:
+  identifier:
+    type: string
+    minLength: 1
+    pattern: "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+  stringList:
+    type: array
+    items:
+      type: string
+      minLength: 1
+  referenceList:
+    type: array
+    items:
+      type: string
+      minLength: 1
+  authorityBoundary:
+    enum:
+      - REFERENCE_ONLY
+      - PROPOSE_ONLY
+      - REQUIRES_USER_CONFIRMATION
+      - USER_CONFIRMED
+      - DENIED
+  allowedAction:
+    enum:
+      - comment
+      - propose_changes
+      - ask_questions
+  disallowedAction:
+    enum:
+      - execute
+      - claim_user_approval
+      - modify_external_resource
+  severity:
+    enum:
+      - INFO
+      - LOW
+      - MEDIUM
+      - HIGH
+      - BLOCKING
+  findingCategory:
+    enum:
+      - SCHEMA
+      - PROTOCOL
+      - AUTHORITY
+      - COMMAND
+      - TODO
+      - CONTEXT
+      - BOOTSTRAP
+      - DOCUMENTATION
+      - OTHER
+  finding:
+    type: object
+    additionalProperties: false
+    required: [finding_id, severity, category, statement, evidence, recommendation]
+    properties:
+      finding_id:
+        $ref: "#/$defs/identifier"
+      severity:
+        $ref: "#/$defs/severity"
+      category:
+        $ref: "#/$defs/findingCategory"
+      statement:
+        type: string
+        minLength: 1
+      evidence:
+        $ref: "#/$defs/referenceList"
+      recommendation:
+        type: string
+        minLength: 1
+  reviewRequest:
+    type: object
+    additionalProperties: false
+    required:
+      - request_id
+      - protocol_version
+      - requester
+      - target_role
+      - review_focus
+      - artifacts_under_review
+      - allowed_actions
+      - disallowed_actions
+      - authority_boundary
+    properties:
+      request_id:
+        $ref: "#/$defs/identifier"
+      protocol_version:
+        const: "MADP-v0.3.0-alpha.2"
+      requester:
+        $ref: "#/$defs/identifier"
+      target_role:
+        type: string
+        minLength: 1
+      review_focus:
+        $ref: "#/$defs/stringList"
+      artifacts_under_review:
+        $ref: "#/$defs/referenceList"
+      context_package:
+        anyOf:
+          - const: "NONE"
+          - $ref: "#/$defs/identifier"
+      allowed_actions:
+        type: array
+        minItems: 1
+        items:
+          $ref: "#/$defs/allowedAction"
+        uniqueItems: true
+      disallowed_actions:
+        type: array
+        minItems: 1
+        items:
+          $ref: "#/$defs/disallowedAction"
+        uniqueItems: true
+      authority_boundary:
+        const: "PROPOSE_ONLY"
+  reviewResponse:
+    type: object
+    additionalProperties: false
+    required:
+      - request_id
+      - reviewer_id
+      - protocol_version
+      - authority_boundary_applied
+      - external_actions_performed
+      - user_approval_claimed
+      - summary
+      - findings
+      - open_questions
+      - limitations
+    properties:
+      request_id:
+        $ref: "#/$defs/identifier"
+      reviewer_id:
+        $ref: "#/$defs/identifier"
+      protocol_version:
+        const: "MADP-v0.3.0-alpha.2"
+      authority_boundary_applied:
+        const: "PROPOSE_ONLY"
+      external_actions_performed:
+        const: false
+      user_approval_claimed:
+        const: false
+      summary:
+        type: string
+        minLength: 1
+      findings:
+        type: array
+        items:
+          $ref: "#/$defs/finding"
+      open_questions:
+        $ref: "#/$defs/stringList"
+      limitations:
+        $ref: "#/$defs/stringList"
