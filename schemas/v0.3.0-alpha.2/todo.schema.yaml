@@ -1,0 +1,164 @@
+$schema: "https://json-schema.org/draft/2020-12/schema"
+$id: "urn:madp:schema:todo:0.3.0-alpha.2"
+title: "MADP TODO List v0.3.0-alpha.2"
+description: "Draft schema for MADP v0.3.0-alpha.2 TODO items and TODO lists. Semantic invariants are defined by the protocol."
+type: object
+additionalProperties: false
+required: [todo_list]
+properties:
+  todo_list:
+    $ref: "#/$defs/todoList"
+
+$defs:
+  identifier:
+    type: string
+    minLength: 1
+    pattern: "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+  nullableIdentifier:
+    anyOf:
+      - type: "null"
+      - $ref: "#/$defs/identifier"
+  nullableString:
+    type: [string, "null"]
+  timestamp:
+    anyOf:
+      - const: "UNKNOWN"
+      - type: string
+        format: date-time
+  stringList:
+    type: array
+    items:
+      type: string
+      minLength: 1
+
+  todoType:
+    enum:
+      - DISCUSSION
+      - DESIGN
+      - SCHEMA
+      - IMPLEMENTATION
+      - VALIDATION
+      - DOCUMENTATION
+      - RELEASE
+      - SAFETY
+  todoStatus:
+    enum:
+      - OPEN
+      - IN_PROGRESS
+      - BLOCKED
+      - DONE
+      - DEFERRED
+      - CANCELLED
+  todoPriority:
+    enum:
+      - HIGH
+      - MEDIUM
+      - LOW
+  todoOwner:
+    enum:
+      - USER
+      - FACILITATOR
+      - PARTICIPANT
+      - UNSPECIFIED
+  todoCreator:
+    enum:
+      - USER
+      - FACILITATOR
+      - PARTICIPANT
+      - SYSTEM
+
+  todoItem:
+    type: object
+    additionalProperties: false
+    required:
+      - todo_id
+      - type
+      - title
+      - status
+      - priority
+      - owner
+      - related_issue
+      - related_decision
+      - blocking_reason
+      - created_by
+      - created_at
+    properties:
+      todo_id:
+        $ref: "#/$defs/identifier"
+      type:
+        $ref: "#/$defs/todoType"
+      title:
+        type: string
+        minLength: 1
+      status:
+        $ref: "#/$defs/todoStatus"
+      priority:
+        $ref: "#/$defs/todoPriority"
+      owner:
+        $ref: "#/$defs/todoOwner"
+      related_issue:
+        $ref: "#/$defs/nullableIdentifier"
+      related_decision:
+        $ref: "#/$defs/nullableIdentifier"
+      blocking_reason:
+        $ref: "#/$defs/nullableString"
+      created_by:
+        $ref: "#/$defs/todoCreator"
+      created_at:
+        $ref: "#/$defs/timestamp"
+      updated_at:
+        $ref: "#/$defs/timestamp"
+      completion_basis:
+        $ref: "#/$defs/nullableString"
+      defer_reason:
+        $ref: "#/$defs/nullableString"
+      revisit_condition:
+        $ref: "#/$defs/nullableString"
+      promoted_issue:
+        $ref: "#/$defs/nullableIdentifier"
+      notes:
+        $ref: "#/$defs/stringList"
+
+  todoList:
+    type: object
+    additionalProperties: false
+    required: [protocol_version, items]
+    properties:
+      protocol_version:
+        const: "MADP-v0.3.0-alpha.2"
+      list_id:
+        $ref: "#/$defs/identifier"
+      session_id:
+        $ref: "#/$defs/identifier"
+      created_at:
+        $ref: "#/$defs/timestamp"
+      updated_at:
+        $ref: "#/$defs/timestamp"
+      items:
+        type: array
+        items:
+          $ref: "#/$defs/todoItem"
+      ordering:
+        enum:
+          - INSERTION_ORDER
+          - PRIORITY_THEN_INSERTION
+          - STATUS_THEN_PRIORITY
+          - UNSPECIFIED
+      filters_applied:
+        type: object
+        additionalProperties: false
+        properties:
+          status:
+            type: array
+            items:
+              $ref: "#/$defs/todoStatus"
+          type:
+            type: array
+            items:
+              $ref: "#/$defs/todoType"
+          priority:
+            type: array
+            items:
+              $ref: "#/$defs/todoPriority"
+      limitations:
+        $ref: "#/$defs/stringList"
