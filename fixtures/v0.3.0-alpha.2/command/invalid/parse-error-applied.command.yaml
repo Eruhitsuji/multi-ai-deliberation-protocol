@@ -1,0 +1,5 @@
+command_parse_error:
+  input: /madp approve DEC-003
+  reason: A parse error cannot be applied.
+  command: approve
+  command_applied: true
