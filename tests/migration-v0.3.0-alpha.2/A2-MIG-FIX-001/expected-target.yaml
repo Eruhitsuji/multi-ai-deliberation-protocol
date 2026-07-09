@@ -1,0 +1,15 @@
+migration_plan:
+  source_protocol_version: "MADP-v0.3.0-alpha.1"
+  target_protocol_version: "MADP-v0.3.0-alpha.2"
+  migration_status: "PROPOSED_ONLY"
+  active_session_auto_upgraded: false
+  user_confirmation_required: true
+  published_alpha1_tag_immutable: true
+  notes:
+    - "alpha.2 draft interpretation may add relay_mode only as proposed migration metadata."
+    - "No active alpha.1 session is silently converted into alpha.2."
+relay_interpretation:
+  source_relay_id: "relay-alpha1-001"
+  relay_mode: "DELIBERATION"
+  relay_mode_basis: "alpha.1 material without relay_mode defaults to DELIBERATION for alpha.2 migration planning."
+  authority_boundary: "PROPOSE_ONLY"
