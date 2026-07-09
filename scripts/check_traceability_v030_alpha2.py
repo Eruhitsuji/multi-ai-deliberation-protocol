@@ -25,6 +25,7 @@ REQUIRED_REQUIREMENTS = {
     "A2-TRC-TODO-001",
     "A2-TRC-CTX-001",
     "A2-TRC-RELAY-001",
+    "A2-TRC-MIG-001",
 }
 
 
