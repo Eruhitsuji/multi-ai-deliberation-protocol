@@ -45,6 +45,9 @@ jobs:
       - name: Test bootstrap prompt generator
         run: python scripts/test_generate_bootstrap_prompts.py
 
+      - name: Test alpha.2 bootstrap prompt generator
+        run: python scripts/test_generate_alpha2_bootstrap_prompts.py
+
       - name: Generate bootstrap prompt fixture
         run: >-
           python scripts/generate_bootstrap_prompts.py
@@ -56,6 +59,18 @@ jobs:
 
       - name: Check generated bootstrap prompt fixture
         run: python scripts/check_generated_bootstrap.py tmp/generated-bootstrap-validation --expect tests/generated-bootstrap/local-generation.yaml
+
+      - name: Generate alpha.2 bootstrap prompt fixture
+        run: >-
+          python scripts/generate_alpha2_bootstrap_prompts.py
+          tmp/generated-alpha2-bootstrap-validation
+          --repository ExampleOwner/madp-alpha2-fixture
+          --commit-sha 0123456789abcdef0123456789abcdef01234567
+          --workflow-run-id ALPHA2_LOCAL_TEST
+          --generated-by LOCAL
+
+      - name: Check generated alpha.2 bootstrap prompt fixture
+        run: python scripts/check_generated_alpha2_bootstrap.py tmp/generated-alpha2-bootstrap-validation
 
       - name: Check v0.3 alpha traceability matrix
         run: python scripts/check_traceability_v030.py
