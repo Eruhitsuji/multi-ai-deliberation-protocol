@@ -1,0 +1,23 @@
+command_block:
+  command_id: CMD-001
+  command_version: MADP-COMMAND-v0.1
+  protocol_version: MADP-v0.3.0-alpha.2
+  command: todo-add
+  command_class: TODO_COMMAND
+  issued_by: USER
+  issued_at: UNKNOWN
+  raw_input: '/madp todo-add --type DISCUSSION --title "Define command syntax" --priority HIGH'
+  parse_status: PARSED
+  validation_status: SCHEMA_VALID
+  authority_status: PROPOSE_ONLY
+  authority_boundary: PROPOSE_ONLY
+  arguments:
+    type: DISCUSSION
+    title: Define command syntax
+    priority: HIGH
+  effects:
+    intended:
+      - Add a TODO item for command syntax design.
+    prohibited:
+      - External execution.
+      - Implicit user approval.
