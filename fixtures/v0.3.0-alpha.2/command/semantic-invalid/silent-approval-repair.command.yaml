@@ -1,0 +1,24 @@
+command_block:
+  command_id: CMD-SEM-BAD-005
+  command_version: MADP-COMMAND-v0.1
+  protocol_version: MADP-v0.3.0-alpha.2
+  command: approve
+  command_class: USER_COMMAND
+  issued_by: FACILITATOR
+  issued_at: UNKNOWN
+  raw_input: /madp approve DEC-005
+  parse_status: PARSED
+  validation_status: SCHEMA_VALID
+  authority_status: USER_CONFIRMED
+  authority_boundary: USER_CONFIRMED
+  arguments:
+    decision: DEC-005
+    revision: REV-AI-INFERRED
+    repaired_by_ai: true
+  effects:
+    intended:
+      - Invalid silent AI repair of approval command.
+    prohibited:
+      - Fabricating user approval.
+      - Inferring approval revision.
+      - External execution.
