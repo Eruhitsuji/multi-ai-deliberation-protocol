@@ -1,0 +1,38 @@
+context_package:
+  package_id: CTX-001
+  protocol_version: MADP-v0.3.0-alpha.2
+  created_at: UNKNOWN
+  created_by: USER
+  source_session_id: SESSION-ALPHA2
+  source_state_version: 1
+  purpose: Share current alpha.2 planning context with another AI for review.
+  source: MIXED
+  confidence: AI_SUMMARIZED
+  target_role: REVIEWER
+  contents:
+    goal: Review the proposed command, context relay, and TODO layer.
+    background:
+      - MADP alpha.1 established core authority and migration guarantees.
+      - alpha.2 proposes command and context relay extensions.
+    constraints:
+      - Do not infer user approval.
+      - Do not execute external actions.
+    decisions_so_far:
+      - alpha.2 should include COMMAND_BLOCK, CONTEXT_PACKAGE, TODO_ITEM, and TODO_LIST drafts.
+    open_questions:
+      - Should command-specific argument requirements be enforced by schema or semantic validation?
+    relevant_files:
+      - label: alpha.2 scope plan
+        path: docs/planning/MADP-v0.3.0-alpha.2-scope.md
+      - label: alpha.2 protocol draft
+        path: protocol/MADP-v0.3.0-alpha.2.md
+    known_limitations:
+      - This is a draft context package.
+      - Schema validation is not semantic approval.
+  usage_rules:
+    authority_boundary: PROPOSE_ONLY
+    may_propose_changes: true
+    may_execute_external_actions: false
+    allowed_use: REVIEW_ONLY
+    must_not_assume_user_approval: true
+    must_not_execute_external_actions: true
