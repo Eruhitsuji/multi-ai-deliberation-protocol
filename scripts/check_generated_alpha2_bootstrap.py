@@ -14,6 +14,7 @@ FILES = [
     "use-madp-commands.md",
     "share-context-with-ai.md",
     "request-review.md",
+    "use-madp-for-ai-driven-development.md",
 ]
 REQUIRED_MARKERS = {
     "use-madp-commands.md": [
@@ -33,6 +34,13 @@ REQUIRED_MARKERS = {
         "REVIEW_RESPONSE",
         "PROPOSE_ONLY",
         "external_actions_performed: false",
+    ],
+    "use-madp-for-ai-driven-development.md": [
+        "profile: AI_DRIVEN_DEVELOPMENT",
+        "AI_DEVELOPMENT_STATUS",
+        "AI_DEVELOPMENT_HANDOFF",
+        "external_actions_allowed: false",
+        "user_approval_inferred: false",
     ],
 }
 SHA_RE = re.compile(r"^[0-9a-f]{40}$")
@@ -90,6 +98,8 @@ def main() -> int:
         problems.append("index version mismatch")
     if "not a release publication" not in index:
         problems.append("index draft status missing")
+    if "use-madp-for-ai-driven-development.md" not in index:
+        problems.append("index missing AI development prompt")
 
     if problems:
         for problem in problems:
