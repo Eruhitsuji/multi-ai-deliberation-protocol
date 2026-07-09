@@ -3,6 +3,7 @@ protocol_version: "MADP-v0.3.0-alpha.2"
 coverage_scope:
   - "alpha.2 command layer draft"
   - "alpha.2 command registry draft"
+  - "alpha.2 command semantic invalid fixture draft"
   - "alpha.2 context package draft"
   - "alpha.2 TODO lifecycle draft"
   - "alpha.2 relay mode draft"
@@ -61,6 +62,25 @@ entries:
       - "CMD_AUTHORITY_DENIED"
     release_gates:
       - "A2-RG-08"
+
+  - requirement_id: "A2-TRC-CMD-005"
+    origin: ["TODO-CMD-002", "TODO-CMD-003", "TODO-CMD-004", "TODO-CMD-008"]
+    protocol_clause: "12 Command input syntax / semantic invalid command fixtures"
+    schema_target: "scripts/check_command_semantic_invalid_fixtures_v030_alpha2.py"
+    fixtures:
+      - "fixtures/v0.3.0-alpha.2/command/semantic-invalid/approve-missing-revision.command.yaml"
+      - "fixtures/v0.3.0-alpha.2/command/semantic-invalid/repeated-option.command.yaml"
+      - "fixtures/v0.3.0-alpha.2/command/semantic-invalid/unknown-option.command.yaml"
+      - "fixtures/v0.3.0-alpha.2/command/semantic-invalid/external-action-unconfirmed.command.yaml"
+      - "fixtures/v0.3.0-alpha.2/command/semantic-invalid/silent-approval-repair.command.yaml"
+    error_codes:
+      - "CMD_MISSING_REQUIRED_ARGUMENT"
+      - "CMD_REPEATED_OPTION"
+      - "CMD_UNKNOWN_OPTION"
+      - "CMD_EXTERNAL_ACTION_REQUIRES_CONFIRMATION"
+      - "CMD_AI_SILENT_APPROVAL_REPAIR_FORBIDDEN"
+    release_gates:
+      - "A2-RG-10"
 
   - requirement_id: "A2-TRC-TODO-001"
     origin: ["TODO-CMD-005"]
