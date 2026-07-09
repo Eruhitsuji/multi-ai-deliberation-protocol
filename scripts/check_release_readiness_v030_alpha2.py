@@ -27,6 +27,9 @@ REQUIRED_FILES = [
     "fixtures/v0.3.0-alpha.2/todo/invalid/bad-status.todo-list.yaml",
     "fixtures/v0.3.0-alpha.2/context-package/valid/share-context.context-package.yaml",
     "fixtures/v0.3.0-alpha.2/context-package/invalid/external-execution.context-package.yaml",
+    "bootstrap/use-madp-commands.md",
+    "bootstrap/share-context-with-ai.md",
+    "bootstrap/request-review.md",
     "tests/traceability/traceability-matrix-v0.3.0-alpha.2.yaml",
     "scripts/validate_alpha2_command_context_todo_fixtures.py",
     "scripts/check_traceability_v030_alpha2.py",
@@ -59,6 +62,31 @@ REQUIRED_GLOSSARY_TERMS = [
     "External Action Command",
     "Relay Mode",
 ]
+
+REQUIRED_BOOTSTRAP_PROMPTS = {
+    "bootstrap/use-madp-commands.md": [
+        "MADP-v0.3.0-alpha.2",
+        "COMMAND_BLOCK",
+        "COMMAND_PARSE_ERROR",
+        "COMMAND_NEEDS_ARGUMENTS",
+        "Parse first.",
+        "Do not claim user approval",
+    ],
+    "bootstrap/share-context-with-ai.md": [
+        "MADP-v0.3.0-alpha.2",
+        "CONTEXT_PACKAGE",
+        "CONTEXT_PACKAGE_RECEIPT",
+        "may_execute_external_actions: false",
+        "Do not claim user approval",
+    ],
+    "bootstrap/request-review.md": [
+        "MADP-v0.3.0-alpha.2",
+        "REVIEW_REQUEST",
+        "REVIEW_RESPONSE",
+        "PROPOSE_ONLY",
+        "external_actions_performed: false",
+    ],
+}
 
 
 def load_yaml(path: Path) -> Any:
@@ -112,6 +140,17 @@ def main() -> int:
         if not passed:
             errors.append("alpha.2 traceability matrix does not meet minimum draft coverage")
 
+    for relative, phrases in REQUIRED_BOOTSTRAP_PROMPTS.items():
+        path = ROOT / relative
+        if not path.is_file():
+            continue
+        text = path.read_text(encoding="utf-8")
+        missing = [phrase for phrase in phrases if phrase not in text]
+        passed = not missing
+        checks.append({"check": "alpha2_bootstrap_prompt", "target": relative, "passed": passed, "missing": missing})
+        if missing:
+            errors.append(f"alpha.2 bootstrap prompt {relative} missing required phrases: {missing}")
+
     report = {
         "report_version": "1",
         "protocol_version": VERSION,
@@ -122,7 +161,7 @@ def main() -> int:
         "errors": errors,
         "limitations": [
             "This audit checks alpha.2 draft readiness only; it does not claim release readiness.",
-            "Generated alpha.2 bundle schemas and bootstrap prompts are not required by this draft audit yet.",
+            "Generated alpha.2 bundle schemas are not required by this draft audit yet.",
             "A passing audit does not authorize merge, tagging, release publication, or external execution.",
         ],
     }
