@@ -20,6 +20,14 @@ CASES = [
         ROOT / "schemas" / "v0.3.0-alpha.2" / "context-package.schema.yaml",
         ROOT / "fixtures" / "v0.3.0-alpha.2" / "context-package",
     ),
+    (
+        ROOT / "schemas" / "v0.3.0-alpha.2" / "context-package-receipt.schema.yaml",
+        ROOT / "fixtures" / "v0.3.0-alpha.2" / "context-package-receipt",
+    ),
+    (
+        ROOT / "schemas" / "v0.3.0-alpha.2" / "review.schema.yaml",
+        ROOT / "fixtures" / "v0.3.0-alpha.2" / "review",
+    ),
 ]
 
 
@@ -67,7 +75,7 @@ def main() -> int:
         total_valid += validate_valid_cases(validator, fixture_root / "valid")
         total_invalid += validate_invalid_cases(validator, fixture_root / "invalid")
 
-    print("alpha.2 command/context/TODO fixtures: PASS")
+    print("alpha.2 command/context/TODO/review fixtures: PASS")
     print(f"valid fixtures: {total_valid}")
     print(f"invalid fixtures: {total_invalid}")
     return 0
