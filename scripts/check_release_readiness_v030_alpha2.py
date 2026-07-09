@@ -12,6 +12,7 @@ VERSION = "MADP-v0.3.0-alpha.2"
 REPOSITORY_STATE = "DRAFT_PRERELEASE_PLANNING"
 
 REQUIRED_FILES = [
+    "README-v0.3.0-alpha.2.md",
     "docs/planning/MADP-v0.3.0-alpha.2-scope.md",
     "protocol/MADP-v0.3.0-alpha.2.md",
     "protocol/GLOSSARY-v0.3.0-alpha.2.md",
@@ -61,6 +62,16 @@ REQUIRED_GLOSSARY_TERMS = [
     "User Command",
     "External Action Command",
     "Relay Mode",
+]
+
+REQUIRED_README_PHRASES = [
+    "Status: draft, not tagged, not published, and not release-ready.",
+    "MADP-v0.3.0-alpha.1` remains the current published alpha prerelease",
+    "A TODO is not a decision.",
+    "A decision is not approval.",
+    "Approval is not execution permission.",
+    "release_ready: false",
+    "draft_ready_for_review: true | false",
 ]
 
 REQUIRED_BOOTSTRAP_PROMPTS = {
@@ -130,6 +141,15 @@ def main() -> int:
         checks.append({"check": "glossary_required_terms", "passed": passed, "missing": missing})
         if missing:
             errors.append(f"alpha.2 glossary missing required terms: {missing}")
+
+    readme_path = ROOT / "README-v0.3.0-alpha.2.md"
+    if readme_path.is_file():
+        readme_text = readme_path.read_text(encoding="utf-8")
+        missing = [phrase for phrase in REQUIRED_README_PHRASES if phrase not in readme_text]
+        passed = not missing
+        checks.append({"check": "readme_required_phrases", "passed": passed, "missing": missing})
+        if missing:
+            errors.append(f"alpha.2 README missing required phrases: {missing}")
 
     matrix_path = ROOT / "tests" / "traceability" / "traceability-matrix-v0.3.0-alpha.2.yaml"
     if matrix_path.is_file():
