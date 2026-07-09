@@ -13,6 +13,7 @@
 It extends the alpha.1 security and authority model with draft support for:
 
 - structured MADP commands;
+- command semantic-invalid fixtures for unsafe or ambiguous command input;
 - a command registry for command-specific argument and authority rules;
 - AI-to-AI or chat-to-chat context sharing;
 - TODO tracking for future discussion and implementation planning;
@@ -248,7 +249,7 @@ fixtures/v0.3.0-alpha.2/todo/
 fixtures/v0.3.0-alpha.2/context-package/
 ```
 
-They contain both `valid/` and `invalid/` cases.
+They contain `valid/`, schema-level `invalid/`, and command `semantic-invalid/` cases.
 
 The current fixture set covers:
 
@@ -257,10 +258,18 @@ The current fixture set covers:
 - command parse error shape;
 - invalid unknown command;
 - invalid applied parse error;
+- semantic-invalid approval missing revision;
+- semantic-invalid repeated option;
+- semantic-invalid unknown option;
+- semantic-invalid unconfirmed external action;
+- semantic-invalid silent AI repair of an approval command;
+- semantic-invalid quoted argument ambiguity;
 - valid TODO list;
 - invalid TODO status;
 - valid context package;
 - invalid context package attempting external execution.
+
+Semantic-invalid command fixtures are schema-valid `COMMAND_BLOCK` documents that should still be rejected by command semantics and authority checks.
 
 ## Validation
 
@@ -275,6 +284,7 @@ Run alpha.2 draft checks:
 ```bash
 python scripts/check_traceability_v030_alpha2.py
 python scripts/validate_alpha2_command_context_todo_fixtures.py
+python scripts/check_command_semantic_invalid_fixtures_v030_alpha2.py
 python scripts/check_command_registry_v030_alpha2.py
 python scripts/check_migration_v030_alpha2.py
 python scripts/check_release_readiness_v030_alpha2.py
@@ -297,6 +307,7 @@ python scripts/check_traceability_v030.py
 python scripts/check_traceability_v030_alpha2.py
 python scripts/run_schema_fixture_checks.py all --json
 python scripts/validate_alpha2_command_context_todo_fixtures.py
+python scripts/check_command_semantic_invalid_fixtures_v030_alpha2.py
 python scripts/check_command_registry_v030_alpha2.py
 python scripts/check_migration_v030_alpha2.py
 python scripts/check_migration_invariants_v030.py
@@ -328,7 +339,7 @@ They also do not authorize:
 
 ## Draft readiness audit
 
-The alpha.2 draft readiness audit checks that the draft has the expected minimum artifacts, schema IDs, required protocol phrases, glossary terms, traceability coverage, fixtures, command registry, migration fixtures, and bootstrap prompts.
+The alpha.2 draft readiness audit checks that the draft has the expected minimum artifacts, schema IDs, required protocol phrases, glossary terms, traceability coverage, fixtures, semantic-invalid command fixtures, command registry, migration fixtures, and bootstrap prompts.
 
 Run:
 
@@ -364,6 +375,5 @@ The user remains the sole final decision-maker for promotion, supersession, tagg
 ## Known remaining work
 
 - Decide whether generated alpha.2 bundle schemas are needed before tagging.
-- Expand invalid command fixtures for quoting, repeated options, unknown options, and external-action denial.
 - Add bootstrap generation support for alpha.2 draft prompts if they become release artifacts.
 - Decide whether `CONTEXT_PACKAGE_RECEIPT` and `REVIEW_RESPONSE` need schemas in alpha.2 or a later prerelease.
