@@ -18,6 +18,7 @@ EXPECTED_ERRORS = {
     "unknown-option.command.yaml": ["CMD_UNKNOWN_OPTION:teleport"],
     "external-action-unconfirmed.command.yaml": ["CMD_EXTERNAL_ACTION_REQUIRES_CONFIRMATION"],
     "silent-approval-repair.command.yaml": ["CMD_AI_SILENT_APPROVAL_REPAIR_FORBIDDEN"],
+    "quoted-argument-ambiguity.command.yaml": ["CMD_PARSE_AMBIGUITY:quoted_argument_with_unbound_tail"],
 }
 
 
@@ -49,6 +50,10 @@ def semantic_errors(instance: dict[str, Any]) -> list[str]:
 
     for option in arguments.get("unknown_options", []) or []:
         errors.append(f"CMD_UNKNOWN_OPTION:{option}")
+
+    parse_ambiguity = arguments.get("parse_ambiguity")
+    if parse_ambiguity:
+        errors.append(f"CMD_PARSE_AMBIGUITY:{parse_ambiguity}")
 
     if command == "external-action":
         has_confirmation_ref = "confirmation_ref" in arguments
