@@ -73,12 +73,14 @@ entries:
       - "fixtures/v0.3.0-alpha.2/command/semantic-invalid/unknown-option.command.yaml"
       - "fixtures/v0.3.0-alpha.2/command/semantic-invalid/external-action-unconfirmed.command.yaml"
       - "fixtures/v0.3.0-alpha.2/command/semantic-invalid/silent-approval-repair.command.yaml"
+      - "fixtures/v0.3.0-alpha.2/command/semantic-invalid/quoted-argument-ambiguity.command.yaml"
     error_codes:
       - "CMD_MISSING_REQUIRED_ARGUMENT"
       - "CMD_REPEATED_OPTION"
       - "CMD_UNKNOWN_OPTION"
       - "CMD_EXTERNAL_ACTION_REQUIRES_CONFIRMATION"
       - "CMD_AI_SILENT_APPROVAL_REPAIR_FORBIDDEN"
+      - "CMD_PARSE_AMBIGUITY"
     release_gates:
       - "A2-RG-10"
 
