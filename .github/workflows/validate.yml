@@ -60,6 +60,9 @@ jobs:
       - name: Check v0.3 alpha traceability matrix
         run: python scripts/check_traceability_v030.py
 
+      - name: Check v0.3 alpha.2 traceability matrix
+        run: python scripts/check_traceability_v030_alpha2.py
+
       - name: Validate v0.3 alpha migration fixture schemas
         run: python scripts/run_schema_fixture_checks.py all --json
 
@@ -80,6 +83,9 @@ jobs:
 
       - name: Audit v0.3 alpha release readiness
         run: python scripts/check_release_readiness_v030.py
+
+      - name: Audit v0.3 alpha.2 draft readiness
+        run: python scripts/check_release_readiness_v030_alpha2.py
 
       - name: Generate self-contained v0.3 alpha upload bundle
         run: >-
