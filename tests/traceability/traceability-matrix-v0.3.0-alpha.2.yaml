@@ -11,6 +11,7 @@ coverage_scope:
   - "alpha.2 relay mode draft"
   - "alpha.2 command parsing and error artifacts"
   - "alpha.2 bootstrap generation draft"
+  - "alpha.2 AI development profile draft"
   - "alpha.1 to alpha.2 migration draft"
 entries:
   - requirement_id: "A2-TRC-CMD-001"
@@ -154,6 +155,22 @@ entries:
       - "A2_BOOTSTRAP_REQUIRED_MARKER_MISSING"
     release_gates:
       - "A2-RG-13"
+
+  - requirement_id: "A2-TRC-AIDEV-001"
+    origin: ["TODO-CMD-006", "TODO-CMD-007", "TODO-CMD-008"]
+    protocol_clause: "AI development profile"
+    schema_target: "docs/profiles/AI_DRIVEN_DEVELOPMENT-v0.3.0-alpha.2.md"
+    fixtures:
+      - "bootstrap/use-madp-for-ai-driven-development.md"
+      - "fixtures/v0.3.0-alpha.2/ai-development/valid/coding-task-handoff.context-package.yaml"
+      - "fixtures/v0.3.0-alpha.2/ai-development/valid/review-before-commit.review.yaml"
+      - "fixtures/v0.3.0-alpha.2/ai-development/invalid/auto-commit-without-approval.command.yaml"
+      - "scripts/check_ai_development_profile_v030_alpha2.py"
+    error_codes:
+      - "AI_DEV_USER_APPROVAL_BOUNDARY"
+      - "AI_DEV_ACTION_SCOPE_BOUNDARY"
+    release_gates:
+      - "A2-RG-14"
 
   - requirement_id: "A2-TRC-RELAY-001"
     origin: ["TODO-CMD-009"]
