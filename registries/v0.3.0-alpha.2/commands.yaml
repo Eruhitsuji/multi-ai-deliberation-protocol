@@ -1,0 +1,256 @@
+registry_version: "MADP-COMMAND-REGISTRY-v0.1"
+protocol_version: "MADP-v0.3.0-alpha.2"
+status: "draft"
+commands:
+  - command: "share-context"
+    command_class: "AI_COMMAND"
+    default_authority_boundary: "PROPOSE_ONLY"
+    required_arguments: ["purpose"]
+    optional_arguments: ["target_role", "source_session_id", "include_files", "limitations"]
+    arguments:
+      - name: "purpose"
+        required: true
+        description: "Reason for creating a CONTEXT_PACKAGE."
+      - name: "target_role"
+        required: false
+        description: "Expected receiver role for the context package."
+      - name: "source_session_id"
+        required: false
+        description: "Source session identifier when available."
+      - name: "include_files"
+        required: false
+        description: "Whether to include relevant file references."
+      - name: "limitations"
+        required: false
+        description: "Known context limits or unread sources."
+    effect_summary: "Prepare a CONTEXT_PACKAGE for information transfer or handoff."
+    safety_notes:
+      - "A context package is not a permission grant."
+      - "The receiver must not claim to have read referenced files unless it actually read them."
+    prohibited_effects:
+      - "External execution."
+      - "Implicit user approval."
+
+  - command: "issue-relay"
+    command_class: "AI_COMMAND"
+    default_authority_boundary: "PROPOSE_ONLY"
+    required_arguments: ["relay_mode", "target_role"]
+    optional_arguments: ["include_state", "include_evidence", "limitations"]
+    effect_summary: "Prepare a relay artifact for another role or session."
+    safety_notes:
+      - "Relay issuance must preserve authority boundaries."
+      - "Relay mode classification is not a grant of execution authority."
+    prohibited_effects:
+      - "Session auto-upgrade."
+      - "External execution."
+
+  - command: "request-review"
+    command_class: "AI_COMMAND"
+    default_authority_boundary: "PROPOSE_ONLY"
+    required_arguments: ["review_focus"]
+    optional_arguments: ["artifacts", "target_role", "context_package"]
+    effect_summary: "Request bounded review findings without execution authority."
+    safety_notes:
+      - "Review agreement is not approval."
+      - "Reviewer output must distinguish evidence from recommendation."
+    prohibited_effects:
+      - "Treating review findings as user approval."
+      - "Repository modification without separate permission."
+
+  - command: "summarize-state"
+    command_class: "AI_COMMAND"
+    default_authority_boundary: "REFERENCE_ONLY"
+    required_arguments: []
+    optional_arguments: ["focus", "since", "include_todos"]
+    effect_summary: "Summarize current known session state without changing authority."
+    safety_notes:
+      - "Summaries must label uncertainty and omissions."
+    prohibited_effects:
+      - "Changing session state."
+      - "Claiming unread material was read."
+
+  - command: "check-authority"
+    command_class: "AI_COMMAND"
+    default_authority_boundary: "REFERENCE_ONLY"
+    required_arguments: ["action"]
+    optional_arguments: ["scope", "grant_ref"]
+    effect_summary: "Classify whether a proposed action is allowed, denied, or requires confirmation."
+    safety_notes:
+      - "Default external action authority is denied unless a trusted grant exists."
+    prohibited_effects:
+      - "Executing the checked action."
+
+  - command: "propose-decision"
+    command_class: "AI_COMMAND"
+    default_authority_boundary: "PROPOSE_ONLY"
+    required_arguments: ["decision"]
+    optional_arguments: ["rationale", "alternatives", "risks"]
+    effect_summary: "Propose a decision candidate for user consideration."
+    safety_notes:
+      - "A proposed decision is not an approved decision."
+    prohibited_effects:
+      - "Claiming approval."
+      - "Executing the proposal."
+
+  - command: "approve"
+    command_class: "USER_COMMAND"
+    default_authority_boundary: "USER_CONFIRMED"
+    required_arguments: ["decision", "revision"]
+    optional_arguments: ["scope", "conditions"]
+    effect_summary: "Record explicit user approval for a specific decision revision."
+    safety_notes:
+      - "AI must not fabricate this command."
+      - "Approval is not execution permission."
+      - "Missing decision or revision must produce COMMAND_NEEDS_ARGUMENTS."
+    prohibited_effects:
+      - "External execution."
+      - "Approval for a different revision."
+
+  - command: "reject"
+    command_class: "USER_COMMAND"
+    default_authority_boundary: "USER_CONFIRMED"
+    required_arguments: ["target"]
+    optional_arguments: ["reason"]
+    effect_summary: "Record user rejection of a target decision, proposal, TODO, or request."
+    safety_notes:
+      - "AI must not infer rejection without user input."
+    prohibited_effects:
+      - "Deleting history."
+
+  - command: "defer"
+    command_class: "USER_COMMAND"
+    default_authority_boundary: "USER_CONFIRMED"
+    required_arguments: ["target"]
+    optional_arguments: ["until", "reason"]
+    effect_summary: "Mark a target as deferred by the user."
+    safety_notes:
+      - "Deferral is not rejection or approval."
+    prohibited_effects:
+      - "External execution."
+
+  - command: "prioritize"
+    command_class: "USER_COMMAND"
+    default_authority_boundary: "USER_CONFIRMED"
+    required_arguments: ["target", "priority"]
+    optional_arguments: ["reason"]
+    effect_summary: "Set or change user-visible priority."
+    safety_notes:
+      - "Priority is not approval."
+    prohibited_effects:
+      - "Executing high-priority items automatically."
+
+  - command: "pause"
+    command_class: "USER_COMMAND"
+    default_authority_boundary: "USER_CONFIRMED"
+    required_arguments: []
+    optional_arguments: ["reason"]
+    effect_summary: "Pause command processing or workflow progression."
+    safety_notes:
+      - "Pause must be honored unless higher-priority safety rules require response."
+    prohibited_effects:
+      - "Continuing non-safety workflow execution."
+
+  - command: "resume"
+    command_class: "USER_COMMAND"
+    default_authority_boundary: "USER_CONFIRMED"
+    required_arguments: []
+    optional_arguments: ["scope"]
+    effect_summary: "Resume a paused workflow within prior authority boundaries."
+    safety_notes:
+      - "Resume does not create new execution permission."
+    prohibited_effects:
+      - "External execution without separate permission."
+
+  - command: "status"
+    command_class: "USER_COMMAND"
+    default_authority_boundary: "REFERENCE_ONLY"
+    required_arguments: []
+    optional_arguments: ["scope"]
+    effect_summary: "Report current workflow, TODO, or decision status."
+    safety_notes:
+      - "Status reporting must not mutate state except for transparent reporting metadata."
+    prohibited_effects:
+      - "Approval inference."
+
+  - command: "todo-add"
+    command_class: "TODO_COMMAND"
+    default_authority_boundary: "PROPOSE_ONLY"
+    required_arguments: ["title"]
+    optional_arguments: ["type", "priority", "owner", "related_issue", "related_decision"]
+    effect_summary: "Add a TODO item to track future work or discussion."
+    safety_notes:
+      - "A TODO is not a decision."
+      - "A TODO is not approval."
+    prohibited_effects:
+      - "Executing the TODO."
+
+  - command: "todo-list"
+    command_class: "TODO_COMMAND"
+    default_authority_boundary: "REFERENCE_ONLY"
+    required_arguments: []
+    optional_arguments: ["status", "owner", "priority"]
+    effect_summary: "List TODO items matching optional filters."
+    safety_notes:
+      - "Listing TODOs must not change their status."
+    prohibited_effects:
+      - "Implicit prioritization."
+
+  - command: "todo-update"
+    command_class: "TODO_COMMAND"
+    default_authority_boundary: "PROPOSE_ONLY"
+    required_arguments: ["todo_id"]
+    optional_arguments: ["title", "status", "priority", "owner", "blocking_reason"]
+    effect_summary: "Propose or apply an allowed TODO metadata update within authority boundary."
+    safety_notes:
+      - "Invalid status transitions must be rejected or reported."
+    prohibited_effects:
+      - "Treating TODO update as decision approval."
+
+  - command: "todo-done"
+    command_class: "TODO_COMMAND"
+    default_authority_boundary: "PROPOSE_ONLY"
+    required_arguments: ["todo_id", "completion_basis"]
+    optional_arguments: ["evidence"]
+    effect_summary: "Mark a TODO as done only with an explicit completion basis."
+    safety_notes:
+      - "Completion basis must be stated."
+      - "Done status is not approval of any related decision."
+    prohibited_effects:
+      - "Closing related decisions automatically."
+
+  - command: "todo-defer"
+    command_class: "TODO_COMMAND"
+    default_authority_boundary: "PROPOSE_ONLY"
+    required_arguments: ["todo_id"]
+    optional_arguments: ["until", "reason"]
+    effect_summary: "Mark a TODO as deferred."
+    safety_notes:
+      - "Deferral is reversible and not rejection."
+    prohibited_effects:
+      - "Deleting the TODO."
+
+  - command: "todo-promote"
+    command_class: "TODO_COMMAND"
+    default_authority_boundary: "REQUIRES_USER_CONFIRMATION"
+    required_arguments: ["todo_id", "target_type"]
+    optional_arguments: ["rationale"]
+    effect_summary: "Promote a TODO into a proposal, issue, or decision candidate only with explicit boundary handling."
+    safety_notes:
+      - "A TODO is not a decision."
+      - "Promotion does not approve the promoted item."
+    prohibited_effects:
+      - "Automatic decision approval."
+      - "External issue creation without separate permission."
+
+  - command: "external-action"
+    command_class: "EXTERNAL_ACTION_COMMAND"
+    default_authority_boundary: "REQUIRES_USER_CONFIRMATION"
+    required_arguments: ["action", "scope"]
+    optional_arguments: ["reason", "confirmation_ref", "dry_run"]
+    effect_summary: "Request explicit confirmation for an external action."
+    safety_notes:
+      - "External action commands must not execute merely because they parse or validate."
+      - "A separate trusted permission grant is required before execution."
+    prohibited_effects:
+      - "External execution without explicit trusted permission."
+      - "Expanding scope beyond the confirmed action."
