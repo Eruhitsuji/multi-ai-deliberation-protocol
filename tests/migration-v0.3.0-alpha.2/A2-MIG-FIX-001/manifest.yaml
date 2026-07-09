@@ -1,0 +1,12 @@
+fixture_id: "A2-MIG-FIX-001"
+title: "alpha.1 relay material gets explicit alpha.2 relay_mode default without active-session auto-upgrade"
+source_protocol_version: "MADP-v0.3.0-alpha.1"
+target_protocol_version: "MADP-v0.3.0-alpha.2"
+fixture_kind: "valid_migration_plan"
+source: "source.yaml"
+expected_target: "expected-target.yaml"
+expected_invariants:
+  - "active_session_auto_upgraded_false"
+  - "user_confirmation_required_true"
+  - "relay_mode_defaulted_to_deliberation"
+  - "published_alpha1_tag_immutable_true"
