@@ -4,10 +4,13 @@ Normative terms use the exact spelling below.
 
 - **Affirmative Approval**: `APPROVE`, `APPROVE_WITH_CONDITIONS`, or `APPROVE_WITH_CHANGES` bound to a specific decision revision.
 - **AI Command**: A command class that asks an AI participant or assistant to produce an artifact, review, summary, relay, or proposal. AI commands default to `PROPOSE_ONLY` unless trusted authority grants more.
+- **AI Development Profile**: The alpha.2 application profile for using MADP with coding agents such as Codex, Claude Code, or other AI-assisted development systems while preserving explicit authority boundaries.
+- **AI Development Status**: A structured status report identifying files read and changed, tests run and skipped, assumptions, limitations, external-action state, and the next required user decision.
 - **Assurance Level**: confidence category attached to an assertion or grant. Core values are `UNVERIFIED_ASSERTION`, `USER_CONFIRMED`, and `EXTERNALLY_VERIFIED`.
 - **Assurance Origin**: provenance category explaining where trusted assurance came from. Core values are `USER_ACTION` and `EXTERNAL_VALIDATION`.
 - **Canonical Command Form**: The validated `COMMAND_BLOCK` representation of raw command input. Raw command text is not authoritative by itself.
 - **Canonical Source**: an editable normative protocol, glossary, or multi-file schema artifact.
+- **Coding Agent**: An AI-assisted development actor that may inspect accessible material, propose changes, produce patches, draft tests, and report limitations, but receives no repository-state authority from the profile alone.
 - **Command Argument**: A named value supplied to a command. Required arguments must not be guessed for approval, authority, or external-action commands.
 - **Command Block**: The canonical artifact representing a parsed, normalized, validated, and authority-classified MADP command.
 - **Command Class**: Category defining the kind of command. Initial alpha.2 classes are `AI_COMMAND`, `USER_COMMAND`, `TODO_COMMAND`, and `EXTERNAL_ACTION_COMMAND`.
@@ -16,6 +19,7 @@ Normative terms use the exact spelling below.
 - **Command Processing Order**: The required sequence: parse first, normalize second, validate third, authorize fourth, apply last.
 - **Command Suggestion**: A non-authoritative proposed correction or command. It has no effect until the user sends or confirms it.
 - **Context Package**: A lightweight artifact for sharing context with another AI system or chat session without requiring a full deliberation relay.
+- **Context Package Receipt**: A structured acknowledgement of received context that records limitations and authority boundaries without granting execution authority or inferring user approval.
 - **Convergence**: agreement among AI roles, models, or instances. Convergence is not evidence.
 - **Decision Revision**: the exact numbered revision to which approval is bound.
 - **Execution Gate**: the fail-closed check performed immediately before an external, privileged, irreversible, or permission-sensitive action.
@@ -27,6 +31,7 @@ Normative terms use the exact spelling below.
 - **MADP_JCS_V1**: the RFC 8785-based canonicalization profile restricted to the MADP JSON-compatible data model.
 - **Migration Evidence**: external structured evidence used to justify preservation or transformation of legacy authority during migration.
 - **Operative Session State Snapshot**: the bounded current state embedded in a relay block.
+- **Patch Proposal**: Proposed source-code or document changes. A patch proposal is not repository modification permission.
 - **Permission Grant**: active authority with recognized action, non-empty scope, trusted assurance, and explicit origin.
 - **Permission Request**: non-authoritative requested authority. It may represent unknown actions for escalation.
 - **POST_INGRESS_BASELINE**: digest provenance showing a new local integrity baseline computed after receipt; it does not prove transport or sender authenticity.
@@ -34,7 +39,9 @@ Normative terms use the exact spelling below.
 - **Quarantine**: safe target-version representation of an item that cannot retain authoritative status. A migration completed with quarantined items is still `COMPLETED`, not `PARTIAL`.
 - **Relay Block**: the transfer root containing relay metadata and an operative snapshot.
 - **Relay Mode**: Optional classification of the purpose of a relay. Initial alpha.2 values are `DELIBERATION`, `INFORMATION_TRANSFER`, `REVIEW_REQUEST`, `TASK_HANDOFF`, `EVIDENCE_TRANSFER`, and `RECOVERY`.
+- **Repository-State Action**: An action that changes repository or publication state, including file modification, commit, push, pull-request creation, merge, tag creation, or release publication. It requires action-specific authority.
 - **Review Request**: A relay mode or command purpose requesting bounded review from another AI or role actor.
+- **Review Response**: Structured review findings, evidence, recommendations, questions, and limitations. A review response is not user approval and is not merge authorization.
 - **Role Actor**: a role played within the same model/context. It has independence level `I0` unless separately instantiated.
 - **Session State**: the sole logical source of truth for a deliberation session.
 - **Snapshot Digest**: digest over `relay_block.operative_session_state_snapshot` only.
