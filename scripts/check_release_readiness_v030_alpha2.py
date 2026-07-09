@@ -30,6 +30,13 @@ REQUIRED_FILES = [
     "fixtures/v0.3.0-alpha.2/todo/invalid/bad-status.todo-list.yaml",
     "fixtures/v0.3.0-alpha.2/context-package/valid/share-context.context-package.yaml",
     "fixtures/v0.3.0-alpha.2/context-package/invalid/external-execution.context-package.yaml",
+    "tests/migration-v0.3.0-alpha.2/README.md",
+    "tests/migration-v0.3.0-alpha.2/A2-MIG-FIX-001/manifest.yaml",
+    "tests/migration-v0.3.0-alpha.2/A2-MIG-FIX-001/source.yaml",
+    "tests/migration-v0.3.0-alpha.2/A2-MIG-FIX-001/expected-target.yaml",
+    "tests/migration-v0.3.0-alpha.2/A2-MIG-FIX-002/manifest.yaml",
+    "tests/migration-v0.3.0-alpha.2/A2-MIG-FIX-002/source.yaml",
+    "tests/migration-v0.3.0-alpha.2/A2-MIG-FIX-002/expected-target.yaml",
     "bootstrap/use-madp-commands.md",
     "bootstrap/share-context-with-ai.md",
     "bootstrap/request-review.md",
@@ -37,6 +44,7 @@ REQUIRED_FILES = [
     "scripts/validate_alpha2_command_context_todo_fixtures.py",
     "scripts/check_traceability_v030_alpha2.py",
     "scripts/check_command_registry_v030_alpha2.py",
+    "scripts/check_migration_v030_alpha2.py",
 ]
 
 EXPECTED_SCHEMA_IDS = {
