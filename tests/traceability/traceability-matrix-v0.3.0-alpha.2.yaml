@@ -7,6 +7,7 @@ coverage_scope:
   - "alpha.2 TODO lifecycle draft"
   - "alpha.2 relay mode draft"
   - "alpha.2 command parsing and error artifacts"
+  - "alpha.1 to alpha.2 migration draft"
 entries:
   - requirement_id: "A2-TRC-CMD-001"
     origin: ["TODO-CMD-001", "TODO-CMD-002", "TODO-CMD-008"]
@@ -95,3 +96,17 @@ entries:
     error_codes: []
     release_gates:
       - "A2-RG-07"
+
+  - requirement_id: "A2-TRC-MIG-001"
+    origin: ["TODO-CMD-009", "TODO-CMD-010"]
+    protocol_clause: "16 Migration from alpha.1"
+    schema_target: "tests/migration-v0.3.0-alpha.2/README.md"
+    fixtures:
+      - "tests/migration-v0.3.0-alpha.2/A2-MIG-FIX-001/manifest.yaml"
+      - "tests/migration-v0.3.0-alpha.2/A2-MIG-FIX-002/manifest.yaml"
+      - "scripts/check_migration_v030_alpha2.py"
+    error_codes:
+      - "A2_MIG_ACTIVE_SESSION_AUTO_UPGRADE"
+      - "A2_MIG_HISTORICAL_COMMAND_REPLAY"
+    release_gates:
+      - "A2-RG-09"
