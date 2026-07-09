@@ -16,6 +16,8 @@ It extends the alpha.1 security and authority model with draft support for:
 - command semantic-invalid fixtures for unsafe or ambiguous command input;
 - a command registry for command-specific argument and authority rules;
 - AI-to-AI or chat-to-chat context sharing;
+- context package receipt validation;
+- bounded review request and response validation;
 - TODO tracking for future discussion and implementation planning;
 - relay mode classification;
 - command parse and missing-argument error artifacts;
@@ -58,6 +60,8 @@ Draft schemas:
 - `schemas/v0.3.0-alpha.2/command-registry.schema.yaml`
 - `schemas/v0.3.0-alpha.2/todo.schema.yaml`
 - `schemas/v0.3.0-alpha.2/context-package.schema.yaml`
+- `schemas/v0.3.0-alpha.2/context-package-receipt.schema.yaml`
+- `schemas/v0.3.0-alpha.2/review.schema.yaml`
 
 Draft registries:
 
@@ -148,7 +152,7 @@ todo-promote:
   default_authority_boundary: "REQUIRES_USER_CONFIRMATION"
 ```
 
-### CONTEXT_PACKAGE
+### CONTEXT_PACKAGE and CONTEXT_PACKAGE_RECEIPT
 
 `CONTEXT_PACKAGE` is a lightweight artifact for sharing context with another AI system or chat session without requiring a full deliberation relay.
 
@@ -160,6 +164,19 @@ It is intended for:
 - evidence or context packaging.
 
 A context package is not a permission grant and must not be treated as user approval.
+
+`CONTEXT_PACKAGE_RECEIPT` records how a receiver interprets a context package. It must keep `external_actions_allowed: false` and `user_approval_inferred: false`.
+
+### REVIEW_REQUEST and REVIEW_RESPONSE
+
+`REVIEW_REQUEST` and `REVIEW_RESPONSE` support bounded review without granting execution authority.
+
+Review artifacts must preserve these constraints:
+
+- authority boundary is `PROPOSE_ONLY`;
+- external actions are not performed;
+- user approval is not claimed;
+- evidence and recommendations remain distinguishable.
 
 ### TODO_ITEM and TODO_LIST
 
@@ -247,6 +264,8 @@ Draft fixtures are under `fixtures/v0.3.0-alpha.2/`.
 fixtures/v0.3.0-alpha.2/command/
 fixtures/v0.3.0-alpha.2/todo/
 fixtures/v0.3.0-alpha.2/context-package/
+fixtures/v0.3.0-alpha.2/context-package-receipt/
+fixtures/v0.3.0-alpha.2/review/
 ```
 
 They contain `valid/`, schema-level `invalid/`, and command `semantic-invalid/` cases.
@@ -267,7 +286,12 @@ The current fixture set covers:
 - valid TODO list;
 - invalid TODO status;
 - valid context package;
-- invalid context package attempting external execution.
+- invalid context package attempting external execution;
+- valid context package receipt;
+- invalid context package receipt attempting external actions and approval inference;
+- valid review request;
+- valid review response;
+- invalid review response claiming execution and user approval.
 
 Semantic-invalid command fixtures are schema-valid `COMMAND_BLOCK` documents that should still be rejected by command semantics and authority checks.
 
@@ -339,7 +363,7 @@ They also do not authorize:
 
 ## Draft readiness audit
 
-The alpha.2 draft readiness audit checks that the draft has the expected minimum artifacts, schema IDs, required protocol phrases, glossary terms, traceability coverage, fixtures, semantic-invalid command fixtures, command registry, migration fixtures, and bootstrap prompts.
+The alpha.2 draft readiness audit checks that the draft has the expected minimum artifacts, schema IDs, required protocol phrases, glossary terms, traceability coverage, fixtures, semantic-invalid command fixtures, context package receipt fixtures, review fixtures, command registry, migration fixtures, and bootstrap prompts.
 
 Run:
 
@@ -376,4 +400,3 @@ The user remains the sole final decision-maker for promotion, supersession, tagg
 
 - Decide whether generated alpha.2 bundle schemas are needed before tagging.
 - Add bootstrap generation support for alpha.2 draft prompts if they become release artifacts.
-- Decide whether `CONTEXT_PACKAGE_RECEIPT` and `REVIEW_RESPONSE` need schemas in alpha.2 or a later prerelease.
