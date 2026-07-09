@@ -69,6 +69,9 @@ jobs:
       - name: Validate v0.3 alpha.2 command/context/TODO fixtures
         run: python scripts/validate_alpha2_command_context_todo_fixtures.py
 
+      - name: Check v0.3 alpha.2 command registry
+        run: python scripts/check_command_registry_v030_alpha2.py
+
       - name: Validate v0.3 alpha migration invariants
         run: python scripts/check_migration_invariants_v030.py
 
