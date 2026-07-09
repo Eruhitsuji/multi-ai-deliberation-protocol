@@ -1,0 +1,13 @@
+migration_plan:
+  source_protocol_version: "MADP-v0.3.0-alpha.1"
+  target_protocol_version: "MADP-v0.3.0-alpha.2"
+  migration_status: "PROPOSED_ONLY"
+  user_confirmation_required: true
+  historical_text_interpreted_as_command: false
+command_interpretation:
+  raw_text: "/madp approve --decision old-plan"
+  command_applied: false
+  authority_boundary: "REFERENCE_ONLY"
+  reason: "The text occurred in alpha.1 discussion history before alpha.2 command processing existed and lacks an alpha.2 COMMAND_BLOCK."
+  acceptable_next_inputs:
+    - "User may reissue an explicit alpha.2 /madp approve command with required decision and revision arguments."
