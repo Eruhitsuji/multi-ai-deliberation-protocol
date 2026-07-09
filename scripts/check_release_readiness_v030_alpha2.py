@@ -17,8 +17,10 @@ REQUIRED_FILES = [
     "protocol/MADP-v0.3.0-alpha.2.md",
     "protocol/GLOSSARY-v0.3.0-alpha.2.md",
     "schemas/v0.3.0-alpha.2/command.schema.yaml",
+    "schemas/v0.3.0-alpha.2/command-registry.schema.yaml",
     "schemas/v0.3.0-alpha.2/todo.schema.yaml",
     "schemas/v0.3.0-alpha.2/context-package.schema.yaml",
+    "registries/v0.3.0-alpha.2/commands.yaml",
     "fixtures/v0.3.0-alpha.2/command/valid/todo-add.command.yaml",
     "fixtures/v0.3.0-alpha.2/command/valid/approve.command.yaml",
     "fixtures/v0.3.0-alpha.2/command/valid/parse-error.command.yaml",
@@ -34,10 +36,12 @@ REQUIRED_FILES = [
     "tests/traceability/traceability-matrix-v0.3.0-alpha.2.yaml",
     "scripts/validate_alpha2_command_context_todo_fixtures.py",
     "scripts/check_traceability_v030_alpha2.py",
+    "scripts/check_command_registry_v030_alpha2.py",
 ]
 
 EXPECTED_SCHEMA_IDS = {
     "schemas/v0.3.0-alpha.2/command.schema.yaml": "urn:madp:schema:command:0.3.0-alpha.2",
+    "schemas/v0.3.0-alpha.2/command-registry.schema.yaml": "urn:madp:schema:command-registry:0.3.0-alpha.2",
     "schemas/v0.3.0-alpha.2/todo.schema.yaml": "urn:madp:schema:todo:0.3.0-alpha.2",
     "schemas/v0.3.0-alpha.2/context-package.schema.yaml": "urn:madp:schema:context-package:0.3.0-alpha.2",
 }
