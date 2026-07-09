@@ -22,7 +22,7 @@ It extends the alpha.1 security and authority model with draft support for:
 - relay mode classification;
 - command parse and missing-argument error artifacts;
 - alpha.1 to alpha.2 draft migration fixtures;
-- draft bootstrap prompts for command use, context sharing, and bounded review.
+- draft bootstrap prompts and alpha.2 bootstrap prompt generation.
 
 This draft does not claim production readiness, stable command interoperability, release readiness, automatic external execution, or a complete permission-system redesign.
 
@@ -83,6 +83,12 @@ Draft bootstrap prompts:
 - `bootstrap/use-madp-commands.md`
 - `bootstrap/share-context-with-ai.md`
 - `bootstrap/request-review.md`
+
+Draft bootstrap generation:
+
+- `scripts/generate_alpha2_bootstrap_prompts.py`
+- `scripts/check_generated_alpha2_bootstrap.py`
+- `scripts/test_generate_alpha2_bootstrap_prompts.py`
 
 ## New draft artifacts
 
@@ -229,6 +235,37 @@ Run:
 python scripts/check_migration_v030_alpha2.py
 ```
 
+### alpha.2 bootstrap prompt generation
+
+alpha.2 draft bootstrap prompt generation is intentionally separate from the published alpha.1 generator.
+
+Generate draft prompts locally:
+
+```bash
+python scripts/generate_alpha2_bootstrap_prompts.py \
+  tmp/generated-alpha2-bootstrap \
+  --repository ExampleOwner/madp-alpha2-fixture \
+  --commit-sha 0123456789abcdef0123456789abcdef01234567 \
+  --workflow-run-id ALPHA2_LOCAL_TEST \
+  --generated-by LOCAL
+```
+
+Check generated output:
+
+```bash
+python scripts/check_generated_alpha2_bootstrap.py tmp/generated-alpha2-bootstrap
+```
+
+The alpha.2 draft generator emits only:
+
+- `bootstrap/use-madp-commands.md`
+- `bootstrap/share-context-with-ai.md`
+- `bootstrap/request-review.md`
+- `bootstrap/alpha2-manifest.yaml`
+- `index.html`
+
+It does not publish a release and does not emit the alpha.1 complete protocol bundle.
+
 ## Command syntax draft
 
 CLI-style surface form:
@@ -327,6 +364,7 @@ python scripts/check_markdown_links.py
 python scripts/check_document_consistency.py
 python scripts/check_bootstrap_prompts.py
 python scripts/test_generate_bootstrap_prompts.py
+python scripts/test_generate_alpha2_bootstrap_prompts.py
 python scripts/check_traceability_v030.py
 python scripts/check_traceability_v030_alpha2.py
 python scripts/run_schema_fixture_checks.py all --json
@@ -363,7 +401,7 @@ They also do not authorize:
 
 ## Draft readiness audit
 
-The alpha.2 draft readiness audit checks that the draft has the expected minimum artifacts, schema IDs, required protocol phrases, glossary terms, traceability coverage, fixtures, semantic-invalid command fixtures, context package receipt fixtures, review fixtures, command registry, migration fixtures, and bootstrap prompts.
+The alpha.2 draft readiness audit checks that the draft has the expected minimum artifacts, schema IDs, required protocol phrases, glossary terms, traceability coverage, fixtures, semantic-invalid command fixtures, context package receipt fixtures, review fixtures, command registry, migration fixtures, bootstrap prompts, and alpha.2 bootstrap generation support.
 
 Run:
 
@@ -399,4 +437,3 @@ The user remains the sole final decision-maker for promotion, supersession, tagg
 ## Known remaining work
 
 - Decide whether generated alpha.2 bundle schemas are needed before tagging.
-- Add bootstrap generation support for alpha.2 draft prompts if they become release artifacts.
