@@ -13,6 +13,7 @@
 It extends the alpha.1 security and authority model with draft support for:
 
 - structured MADP commands;
+- a command registry for command-specific argument and authority rules;
 - AI-to-AI or chat-to-chat context sharing;
 - TODO tracking for future discussion and implementation planning;
 - relay mode classification;
@@ -52,8 +53,13 @@ Draft normative sources:
 Draft schemas:
 
 - `schemas/v0.3.0-alpha.2/command.schema.yaml`
+- `schemas/v0.3.0-alpha.2/command-registry.schema.yaml`
 - `schemas/v0.3.0-alpha.2/todo.schema.yaml`
 - `schemas/v0.3.0-alpha.2/context-package.schema.yaml`
+
+Draft registries:
+
+- `registries/v0.3.0-alpha.2/commands.yaml`
 
 Draft planning and traceability:
 
@@ -90,6 +96,49 @@ Command classes introduced in the draft:
 - `EXTERNAL_ACTION_COMMAND`
 
 A parseable or schema-valid command is not execution permission.
+
+### Command registry
+
+The command registry defines command-specific operational rules that are intentionally not encoded in the generic `COMMAND_BLOCK` schema.
+
+Registry path:
+
+```text
+registries/v0.3.0-alpha.2/commands.yaml
+```
+
+Registry schema:
+
+```text
+schemas/v0.3.0-alpha.2/command-registry.schema.yaml
+```
+
+The registry records, for each command:
+
+- command class;
+- default authority boundary;
+- required arguments;
+- optional arguments;
+- effect summary;
+- safety notes;
+- prohibited effects.
+
+The registry checker verifies that command names match the `command.schema.yaml` enum, that required and optional arguments are not duplicated, and that sensitive commands keep conservative default authority.
+
+Examples:
+
+```yaml
+approve:
+  required_arguments: ["decision", "revision"]
+  default_authority_boundary: "USER_CONFIRMED"
+
+external-action:
+  required_arguments: ["action", "scope"]
+  default_authority_boundary: "REQUIRES_USER_CONFIRMATION"
+
+todo-promote:
+  default_authority_boundary: "REQUIRES_USER_CONFIRMATION"
+```
 
 ### CONTEXT_PACKAGE
 
@@ -198,6 +247,7 @@ Run alpha.2 draft checks:
 ```bash
 python scripts/check_traceability_v030_alpha2.py
 python scripts/validate_alpha2_command_context_todo_fixtures.py
+python scripts/check_command_registry_v030_alpha2.py
 python scripts/check_release_readiness_v030_alpha2.py
 ```
 
@@ -218,6 +268,7 @@ python scripts/check_traceability_v030.py
 python scripts/check_traceability_v030_alpha2.py
 python scripts/run_schema_fixture_checks.py all --json
 python scripts/validate_alpha2_command_context_todo_fixtures.py
+python scripts/check_command_registry_v030_alpha2.py
 python scripts/check_migration_invariants_v030.py
 python scripts/generate_artifacts.py --check
 python scripts/check_schema_bundle_equivalence.py
@@ -247,7 +298,7 @@ They also do not authorize:
 
 ## Draft readiness audit
 
-The alpha.2 draft readiness audit checks that the draft has the expected minimum artifacts, schema IDs, required protocol phrases, glossary terms, traceability coverage, fixtures, and bootstrap prompts.
+The alpha.2 draft readiness audit checks that the draft has the expected minimum artifacts, schema IDs, required protocol phrases, glossary terms, traceability coverage, fixtures, command registry, and bootstrap prompts.
 
 Run:
 
@@ -282,8 +333,6 @@ The user remains the sole final decision-maker for promotion, supersession, tagg
 
 ## Known remaining work
 
-- Decide whether command-specific argument requirements should live in schema, semantic validation, or a command registry.
-- Add a command registry artifact if needed.
 - Add migration fixtures for alpha.1 to alpha.2 session material.
 - Decide whether generated alpha.2 bundle schemas are needed before tagging.
 - Expand invalid command fixtures for quoting, repeated options, unknown options, and external-action denial.
