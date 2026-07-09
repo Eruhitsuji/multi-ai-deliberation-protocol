@@ -1,0 +1,30 @@
+todo_list:
+  protocol_version: MADP-v0.3.0-alpha.2
+  list_id: TODO-LIST-001
+  session_id: SESSION-ALPHA2
+  created_at: UNKNOWN
+  updated_at: UNKNOWN
+  ordering: PRIORITY_THEN_INSERTION
+  items:
+    - todo_id: TODO-CMD-001
+      type: DESIGN
+      title: Define COMMAND_BLOCK structure
+      status: OPEN
+      priority: HIGH
+      owner: FACILITATOR
+      related_issue: null
+      related_decision: null
+      blocking_reason: null
+      created_by: USER
+      created_at: UNKNOWN
+    - todo_id: TODO-CMD-002
+      type: VALIDATION
+      title: Add alpha.2 command schema fixtures
+      status: IN_PROGRESS
+      priority: MEDIUM
+      owner: FACILITATOR
+      related_issue: null
+      related_decision: null
+      blocking_reason: null
+      created_by: FACILITATOR
+      created_at: UNKNOWN
