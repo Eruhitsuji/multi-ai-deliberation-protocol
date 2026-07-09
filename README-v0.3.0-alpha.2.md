@@ -18,6 +18,7 @@ It extends the alpha.1 security and authority model with draft support for:
 - TODO tracking for future discussion and implementation planning;
 - relay mode classification;
 - command parse and missing-argument error artifacts;
+- alpha.1 to alpha.2 draft migration fixtures;
 - draft bootstrap prompts for command use, context sharing, and bounded review.
 
 This draft does not claim production readiness, stable command interoperability, release readiness, automatic external execution, or a complete permission-system redesign.
@@ -65,6 +66,12 @@ Draft planning and traceability:
 
 - `docs/planning/MADP-v0.3.0-alpha.2-scope.md`
 - `tests/traceability/traceability-matrix-v0.3.0-alpha.2.yaml`
+
+Draft migration fixtures:
+
+- `tests/migration-v0.3.0-alpha.2/README.md`
+- `tests/migration-v0.3.0-alpha.2/A2-MIG-FIX-001/`
+- `tests/migration-v0.3.0-alpha.2/A2-MIG-FIX-002/`
 
 Draft bootstrap prompts:
 
@@ -183,6 +190,27 @@ alpha.2 drafts optional relay mode classification:
 
 Migration default for alpha.1 material without `relay_mode` is `DELIBERATION`.
 
+### alpha.1 to alpha.2 migration fixtures
+
+alpha.2 draft migration fixtures live separately from the published alpha.1 migration corpus:
+
+```text
+tests/migration-v0.3.0-alpha.2/
+```
+
+The draft migration checker verifies conservative migration planning invariants:
+
+- active alpha.1 sessions are not silently auto-upgraded to alpha.2;
+- alpha.1 relay material without `relay_mode` is interpreted as `DELIBERATION` only as proposed migration metadata;
+- historical alpha.1 text that resembles `/madp` syntax is not retroactively applied as an alpha.2 command;
+- user confirmation remains required for migration interpretation.
+
+Run:
+
+```bash
+python scripts/check_migration_v030_alpha2.py
+```
+
 ## Command syntax draft
 
 CLI-style surface form:
@@ -248,6 +276,7 @@ Run alpha.2 draft checks:
 python scripts/check_traceability_v030_alpha2.py
 python scripts/validate_alpha2_command_context_todo_fixtures.py
 python scripts/check_command_registry_v030_alpha2.py
+python scripts/check_migration_v030_alpha2.py
 python scripts/check_release_readiness_v030_alpha2.py
 ```
 
@@ -269,6 +298,7 @@ python scripts/check_traceability_v030_alpha2.py
 python scripts/run_schema_fixture_checks.py all --json
 python scripts/validate_alpha2_command_context_todo_fixtures.py
 python scripts/check_command_registry_v030_alpha2.py
+python scripts/check_migration_v030_alpha2.py
 python scripts/check_migration_invariants_v030.py
 python scripts/generate_artifacts.py --check
 python scripts/check_schema_bundle_equivalence.py
@@ -298,7 +328,7 @@ They also do not authorize:
 
 ## Draft readiness audit
 
-The alpha.2 draft readiness audit checks that the draft has the expected minimum artifacts, schema IDs, required protocol phrases, glossary terms, traceability coverage, fixtures, command registry, and bootstrap prompts.
+The alpha.2 draft readiness audit checks that the draft has the expected minimum artifacts, schema IDs, required protocol phrases, glossary terms, traceability coverage, fixtures, command registry, migration fixtures, and bootstrap prompts.
 
 Run:
 
@@ -333,7 +363,6 @@ The user remains the sole final decision-maker for promotion, supersession, tagg
 
 ## Known remaining work
 
-- Add migration fixtures for alpha.1 to alpha.2 session material.
 - Decide whether generated alpha.2 bundle schemas are needed before tagging.
 - Expand invalid command fixtures for quoting, repeated options, unknown options, and external-action denial.
 - Add bootstrap generation support for alpha.2 draft prompts if they become release artifacts.
