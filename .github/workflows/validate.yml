@@ -72,6 +72,12 @@ jobs:
       - name: Check generated alpha.2 bootstrap prompt fixture
         run: python scripts/check_generated_alpha2_bootstrap.py tmp/generated-alpha2-bootstrap-validation
 
+      - name: Generate alpha.2 standalone schema bundles
+        run: python scripts/generate_alpha2_schema_bundles.py --output-dir tmp/generated-alpha2-schemas
+
+      - name: Check alpha.2 standalone schema bundle reproducibility
+        run: python scripts/generate_alpha2_schema_bundles.py --output-dir tmp/generated-alpha2-schemas --check
+
       - name: Check v0.3 alpha traceability matrix
         run: python scripts/check_traceability_v030.py
 
@@ -126,6 +132,13 @@ jobs:
           python scripts/check_complete_bundle_v030.py
           tmp/generated-v030/complete-protocol-bundle.full.txt
           tmp/generated-v030/complete-protocol-bundle.manifest.yaml
+
+      - name: Upload alpha.2 standalone schema bundles
+        uses: actions/upload-artifact@v4
+        with:
+          name: madp-v0.3.0-alpha.2-schema-bundles
+          path: tmp/generated-alpha2-schemas/
+          if-no-files-found: error
 
       - name: Upload self-contained v0.3 alpha bundle artifact
         uses: actions/upload-artifact@v4
