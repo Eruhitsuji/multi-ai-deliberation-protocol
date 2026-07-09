@@ -2,6 +2,7 @@ traceability_version: "1"
 protocol_version: "MADP-v0.3.0-alpha.2"
 coverage_scope:
   - "alpha.2 command layer draft"
+  - "alpha.2 command registry draft"
   - "alpha.2 context package draft"
   - "alpha.2 TODO lifecycle draft"
   - "alpha.2 relay mode draft"
@@ -45,6 +46,20 @@ entries:
       - "CMD_UNKNOWN_COMMAND"
     release_gates:
       - "A2-RG-04"
+
+  - requirement_id: "A2-TRC-CMD-004"
+    origin: ["TODO-CMD-002", "TODO-CMD-003", "TODO-CMD-004", "TODO-CMD-008"]
+    protocol_clause: "11 Command layer / command registry"
+    schema_target: "schemas/v0.3.0-alpha.2/command-registry.schema.yaml"
+    fixtures:
+      - "registries/v0.3.0-alpha.2/commands.yaml"
+      - "scripts/check_command_registry_v030_alpha2.py"
+    error_codes:
+      - "CMD_UNKNOWN_COMMAND"
+      - "CMD_MISSING_REQUIRED_ARGUMENT"
+      - "CMD_AUTHORITY_DENIED"
+    release_gates:
+      - "A2-RG-08"
 
   - requirement_id: "A2-TRC-TODO-001"
     origin: ["TODO-CMD-005"]
