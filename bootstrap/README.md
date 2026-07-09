@@ -36,6 +36,24 @@ If this bootstrap text conflicts with the protocol, glossary, or schemas, treat 
 3. If `all_required_files_read: true`, send either [start-facilitator.md](start-facilitator.md) or [join-as-participant.md](join-as-participant.md).
 4. Provide `SESSION_STATE` for facilitator startup or `RELAY_BLOCK` for participant startup.
 5. If loading failed or was partial, use [recover-from-load-failure.md](recover-from-load-failure.md).
+6. For draft alpha.2 command, context sharing, or review workflows, use the alpha.2 draft prompts listed below only after making the draft limitations clear.
+
+## Alpha.2 Draft Bootstrap Prompts
+
+The following prompts are draft aids for `MADP-v0.3.0-alpha.2` planning. They do not replace the alpha.1 load process and do not claim release readiness.
+
+- [use-madp-commands.md](use-madp-commands.md): helps an AI parse, normalize, validate, and authority-check MADP commands.
+- [share-context-with-ai.md](share-context-with-ai.md): helps prepare or receive a `CONTEXT_PACKAGE` for AI-to-AI or chat-to-chat context sharing.
+- [request-review.md](request-review.md): helps request bounded `PROPOSE_ONLY` review from another AI, role actor, or chat session.
+
+These alpha.2 prompts preserve the core safety rules:
+
+- Do not claim user approval.
+- Do not treat model convergence as evidence.
+- Default authority is `PROPOSE_ONLY` unless a trusted grant says otherwise.
+- A TODO is not a decision.
+- A decision is not approval.
+- Approval is not execution permission.
 
 ## Trust Order for Source Material
 
@@ -104,6 +122,14 @@ dry_run_result:
 - `{{FAILED_PATHS}}`: Files that were not read successfully.
 - `{{ACCESS_METHOD}}`: Method used for failed or partial access.
 - `{{PARTIAL_CONTENT_LIMITATIONS}}`: Known truncation, omissions, or uncertainty.
+- `{{MADP_COMMAND_NAME}}`: Name of a MADP command such as `todo-add` or `request-review`.
+- `{{COMMAND_ID}}`: Identifier for a normalized command block.
+- `{{CONTEXT_PACKAGE_ID}}`: Identifier for a context package.
+- `{{CONTEXT_PURPOSE}}`: Purpose of a context package.
+- `{{CONTEXT_GOAL}}`: Goal statement inside a context package.
+- `{{REVIEW_REQUEST_ID}}`: Identifier for a review request.
+- `{{REQUESTER_ID}}`: Actor identifier for the review requester.
+- `{{CONTEXT_PACKAGE_OR_NONE}}`: Full context package, reference to one, or `NONE`.
 
 ## Short Usage Examples
 
@@ -135,4 +161,22 @@ Use bootstrap/join-as-participant.md with:
 {{ALLOWED_ACTIONS}} = PROPOSE_ONLY
 {{EXPECTED_RESPONSE}} = review_findings
 {{RELAY_BLOCK}} = <paste full RELAY_BLOCK here>
+```
+
+Use an alpha.2 draft command prompt:
+
+```text
+Use bootstrap/use-madp-commands.md with:
+{{MADP_COMMAND_NAME}} = todo-add
+{{COMMAND_ID}} = CMD-001
+```
+
+Share alpha.2 draft context with another AI:
+
+```text
+Use bootstrap/share-context-with-ai.md with:
+{{CONTEXT_PACKAGE_ID}} = CTX-001
+{{SESSION_ID}} = MADP-SESSION-001
+{{CONTEXT_PURPOSE}} = Share alpha.2 design context for review
+{{CONTEXT_GOAL}} = Review command, context, and TODO draft design
 ```
