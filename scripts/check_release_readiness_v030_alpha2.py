@@ -20,6 +20,8 @@ REQUIRED_FILES = [
     "schemas/v0.3.0-alpha.2/command-registry.schema.yaml",
     "schemas/v0.3.0-alpha.2/todo.schema.yaml",
     "schemas/v0.3.0-alpha.2/context-package.schema.yaml",
+    "schemas/v0.3.0-alpha.2/context-package-receipt.schema.yaml",
+    "schemas/v0.3.0-alpha.2/review.schema.yaml",
     "registries/v0.3.0-alpha.2/commands.yaml",
     "fixtures/v0.3.0-alpha.2/command/valid/todo-add.command.yaml",
     "fixtures/v0.3.0-alpha.2/command/valid/approve.command.yaml",
@@ -36,6 +38,11 @@ REQUIRED_FILES = [
     "fixtures/v0.3.0-alpha.2/todo/invalid/bad-status.todo-list.yaml",
     "fixtures/v0.3.0-alpha.2/context-package/valid/share-context.context-package.yaml",
     "fixtures/v0.3.0-alpha.2/context-package/invalid/external-execution.context-package.yaml",
+    "fixtures/v0.3.0-alpha.2/context-package-receipt/valid/partial.context-package-receipt.yaml",
+    "fixtures/v0.3.0-alpha.2/context-package-receipt/invalid/external-actions-allowed.context-package-receipt.yaml",
+    "fixtures/v0.3.0-alpha.2/review/valid/review-request.review.yaml",
+    "fixtures/v0.3.0-alpha.2/review/valid/review-response.review.yaml",
+    "fixtures/v0.3.0-alpha.2/review/invalid/review-response-executed.review.yaml",
     "tests/migration-v0.3.0-alpha.2/README.md",
     "tests/migration-v0.3.0-alpha.2/A2-MIG-FIX-001/manifest.yaml",
     "tests/migration-v0.3.0-alpha.2/A2-MIG-FIX-001/source.yaml",
@@ -59,6 +66,8 @@ EXPECTED_SCHEMA_IDS = {
     "schemas/v0.3.0-alpha.2/command-registry.schema.yaml": "urn:madp:schema:command-registry:0.3.0-alpha.2",
     "schemas/v0.3.0-alpha.2/todo.schema.yaml": "urn:madp:schema:todo:0.3.0-alpha.2",
     "schemas/v0.3.0-alpha.2/context-package.schema.yaml": "urn:madp:schema:context-package:0.3.0-alpha.2",
+    "schemas/v0.3.0-alpha.2/context-package-receipt.schema.yaml": "urn:madp:schema:context-package-receipt:0.3.0-alpha.2",
+    "schemas/v0.3.0-alpha.2/review.schema.yaml": "urn:madp:schema:review:0.3.0-alpha.2",
 }
 
 REQUIRED_PROTOCOL_PHRASES = [
