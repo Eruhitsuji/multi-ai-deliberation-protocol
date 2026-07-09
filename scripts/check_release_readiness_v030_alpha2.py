@@ -14,6 +14,7 @@ REPOSITORY_STATE = "DRAFT_PRERELEASE_PLANNING"
 REQUIRED_FILES = [
     "README-v0.3.0-alpha.2.md",
     "docs/planning/MADP-v0.3.0-alpha.2-scope.md",
+    "docs/profiles/AI_DRIVEN_DEVELOPMENT-v0.3.0-alpha.2.md",
     "protocol/MADP-v0.3.0-alpha.2.md",
     "protocol/GLOSSARY-v0.3.0-alpha.2.md",
     "schemas/v0.3.0-alpha.2/command.schema.yaml",
@@ -43,6 +44,9 @@ REQUIRED_FILES = [
     "fixtures/v0.3.0-alpha.2/review/valid/review-request.review.yaml",
     "fixtures/v0.3.0-alpha.2/review/valid/review-response.review.yaml",
     "fixtures/v0.3.0-alpha.2/review/invalid/review-response-executed.review.yaml",
+    "fixtures/v0.3.0-alpha.2/ai-development/valid/coding-task-handoff.context-package.yaml",
+    "fixtures/v0.3.0-alpha.2/ai-development/valid/review-before-commit.review.yaml",
+    "fixtures/v0.3.0-alpha.2/ai-development/invalid/auto-commit-without-approval.command.yaml",
     "tests/migration-v0.3.0-alpha.2/README.md",
     "tests/migration-v0.3.0-alpha.2/A2-MIG-FIX-001/manifest.yaml",
     "tests/migration-v0.3.0-alpha.2/A2-MIG-FIX-001/source.yaml",
@@ -53,6 +57,7 @@ REQUIRED_FILES = [
     "bootstrap/use-madp-commands.md",
     "bootstrap/share-context-with-ai.md",
     "bootstrap/request-review.md",
+    "bootstrap/use-madp-for-ai-driven-development.md",
     "tests/traceability/traceability-matrix-v0.3.0-alpha.2.yaml",
     "scripts/validate_alpha2_command_context_todo_fixtures.py",
     "scripts/check_command_semantic_invalid_fixtures_v030_alpha2.py",
@@ -62,6 +67,7 @@ REQUIRED_FILES = [
     "scripts/generate_alpha2_bootstrap_prompts.py",
     "scripts/check_generated_alpha2_bootstrap.py",
     "scripts/test_generate_alpha2_bootstrap_prompts.py",
+    "scripts/check_ai_development_profile_v030_alpha2.py",
 ]
 
 EXPECTED_SCHEMA_IDS = {
@@ -127,6 +133,13 @@ REQUIRED_BOOTSTRAP_PROMPTS = {
         "REVIEW_RESPONSE",
         "PROPOSE_ONLY",
         "external_actions_performed: false",
+    ],
+    "bootstrap/use-madp-for-ai-driven-development.md": [
+        "MADP-v0.3.0-alpha.2",
+        "profile: AI_DRIVEN_DEVELOPMENT",
+        "AI_DEVELOPMENT_STATUS",
+        "external_actions_allowed: false",
+        "user_approval_inferred: false",
     ],
 }
 
