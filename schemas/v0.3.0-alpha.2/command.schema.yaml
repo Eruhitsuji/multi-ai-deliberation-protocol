@@ -92,6 +92,7 @@ $defs:
       - NOT_VALIDATED
   authorityStatus:
     enum:
+      - REFERENCE_ONLY
       - USER_CONFIRMED
       - PROPOSE_ONLY
       - REQUIRES_USER_CONFIRMATION
