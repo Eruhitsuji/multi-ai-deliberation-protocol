@@ -1,22 +1,24 @@
 review_disposition:
   protocol_version: MADP-v0.3.0-alpha.2
-  review_request: REVIEW-REQ-ALPHA2-CLAUDE-001
+  initial_review_request: REVIEW-REQ-ALPHA2-CLAUDE-001
+  follow_up_review_request: REVIEW-REQ-ALPHA2-CLAUDE-FOLLOWUP-001
   source_reviewer: CLAUDE
-  source_recommendation: READY_WITH_REQUIRED_FIXES
-  disposition_status: BLOCKING_FINDINGS_REMEDIATED_PENDING_FOLLOW_UP_REVIEW
+  initial_recommendation: READY_WITH_REQUIRED_FIXES
+  follow_up_recommendation: READY_WITH_NONBLOCKING_NOTES
+  disposition_status: ALL_REVIEW_FINDINGS_REMEDIATED_FOR_DRAFT_REVIEW
   external_actions_performed: false
   user_approval_claimed: false
   findings:
     - finding_id: CLAUDE-A2-001
-      status: REMEDIATED
+      status: VERIFIED_FIXED
       basis:
-        - execute() now requires an explicit issued_by value.
+        - execute() requires an explicit issued_by value.
         - the CLI requires --issued-by.
         - USER_COMMAND from a non-USER actor returns CMD_AUTHORITY_DENIED.
       regression_tests:
         - scripts/test_command_runtime_v030_alpha2.py
     - finding_id: CLAUDE-A2-002
-      status: REMEDIATED
+      status: VERIFIED_FIXED
       basis:
         - grants require assurance_level and assurance_origin.
         - USER_CONFIRMED requires USER_ACTION.
@@ -26,7 +28,7 @@ review_disposition:
       regression_tests:
         - scripts/test_command_runtime_v030_alpha2.py
     - finding_id: CLAUDE-A2-003
-      status: REMEDIATED
+      status: VERIFIED_FIXED
       basis:
         - implicit true is limited to declared boolean arguments.
         - approval decision identifiers and positive integer revisions are validated.
@@ -36,7 +38,7 @@ review_disposition:
         - scripts/test_command_parser_v030_alpha2.py
         - scripts/test_command_runtime_v030_alpha2.py
     - finding_id: CLAUDE-A2-004
-      status: REMEDIATED
+      status: VERIFIED_FIXED
       basis:
         - runtime and lifecycle checker import one shared transition table.
         - OPEN to BLOCKED is consistently allowed.
@@ -48,21 +50,41 @@ review_disposition:
         - scripts/test_command_runtime_v030_alpha2.py
         - scripts/check_todo_lifecycle_v030_alpha2.py
     - finding_id: CLAUDE-A2-005
-      status: REMEDIATED
+      status: VERIFIED_FIXED
       basis:
         - YAML commands use a duplicate-key rejecting loader.
         - anchors, aliases, and custom tags are rejected before construction.
       regression_tests:
         - scripts/test_command_parser_v030_alpha2.py
+    - finding_id: CLAUDE-A2-FOLLOWUP-001
+      status: REMEDIATED
+      basis:
+        - DONE and CANCELLED TODO items reject todo-update metadata changes.
+        - terminal item title, priority, owner, blocking reason, status, and completion evidence remain unchanged.
+      regression_tests:
+        - scripts/test_command_runtime_v030_alpha2.py
+    - finding_id: CLAUDE-A2-FOLLOWUP-002
+      status: REMEDIATED
+      basis:
+        - parse-failed, validation-failed, authority-denied, and unconfirmed commands do not append command_history.
+        - rejected commands do not increment state_version.
+        - rejected commands return state_changed false and history_appended false.
+        - accepted read-only commands remain versioned audit events with effect_applied false.
+      regression_tests:
+        - scripts/test_command_runtime_v030_alpha2.py
   additional_remediations:
     - required null and empty values are rejected.
     - selected enum-valued arguments are validated.
     - malformed state and grants documents return structured failures.
     - TODO identifiers use the maximum existing suffix to avoid collisions.
-    - state_version increments whenever command_history changes.
     - command history records issuer, raw input, grant id, and effect application.
     - check-authority and summarize-state return bounded read-only results.
     - external-action handling is based on command_class and remains non-executing.
+    - README distinguishes LIST accumulation from SCALAR duplicate rejection.
+  remaining_later_version_hardening:
+    - cryptographic or externally attested issuer provenance.
+    - state parent-version and stale-lineage validation.
+    - deriving argument type and enum metadata directly from the registry or schemas.
   follow_up:
-    required: true
-    action: Request Claude to rerun the adversarial review against the remediation commit before marking the PR ready for review.
+    required: false
+    result: All five original blocking findings were VERIFIED_FIXED independently; two LOW follow-up findings were subsequently remediated.
