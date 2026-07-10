@@ -3,7 +3,6 @@ from __future__ import annotations
 
 import argparse
 import json
-from pathlib import Path
 import shlex
 import sys
 from typing import Any
@@ -100,7 +99,8 @@ def parse_yaml_form(raw: str) -> tuple[str | None, dict[str, Any], list[str]]:
 
 def error_artifact(raw: str, command: str | None, errors: list[str]) -> dict[str, Any]:
     missing = [item.split(":", 1)[1] for item in errors if item.startswith("CMD_MISSING_REQUIRED_ARGUMENT:")]
-    if missing and command:
+    only_missing = bool(errors) and len(missing) == len(errors)
+    if only_missing and command:
         return {
             "command_needs_arguments": {
                 "command": command,
