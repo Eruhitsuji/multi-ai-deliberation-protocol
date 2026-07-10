@@ -22,6 +22,7 @@ SCHEMAS = {
     "context-package": "context-package.schema.yaml",
     "context-package-receipt": "context-package-receipt.schema.yaml",
     "review": "review.schema.yaml",
+    "relay": "relay.schema.yaml",
 }
 
 
