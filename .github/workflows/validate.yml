@@ -102,6 +102,9 @@ jobs:
       - name: Check v0.3 alpha.2 all-command coverage
         run: python scripts/check_all_commands_v030_alpha2.py
 
+      - name: Test v0.3 alpha.2 command authority and apply runtime
+        run: python scripts/test_command_runtime_v030_alpha2.py
+
       - name: Check v0.3 alpha.2 TODO lifecycle
         run: python scripts/check_todo_lifecycle_v030_alpha2.py
 
