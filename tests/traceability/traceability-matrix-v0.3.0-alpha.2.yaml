@@ -3,6 +3,8 @@ protocol_version: "MADP-v0.3.0-alpha.2"
 coverage_scope:
   - command schema and registry
   - command parser and normalization
+  - registry-defined list argument cardinality
+  - command authority evaluation and internal state application
   - all-command coverage
   - command semantic safety
   - TODO schema and lifecycle
@@ -26,7 +28,7 @@ entries:
     protocol_clause: 12 Command input syntax
     schema_target: scripts/parse_command_v030_alpha2.py
     fixtures: [scripts/test_command_parser_v030_alpha2.py]
-    error_codes: [CMD_PARSE_ERROR, CMD_PARSE_AMBIGUITY]
+    error_codes: [CMD_PARSE_ERROR, CMD_PARSE_AMBIGUITY, CMD_ARGUMENT_CARDINALITY]
     release_gates: [A2-RG-03]
   - requirement_id: A2-TRC-CMD-003
     origin: [TODO-CMD-003]
@@ -56,6 +58,13 @@ entries:
     fixtures: [scripts/test_command_parser_v030_alpha2.py]
     error_codes: [CMD_MISSING_REQUIRED_ARGUMENT, CMD_UNKNOWN_OPTION]
     release_gates: [A2-RG-15]
+  - requirement_id: A2-TRC-CMD-007
+    origin: [TODO-CMD-002, TODO-CMD-005, TODO-CMD-008]
+    protocol_clause: 11 Command processing order and 15 TODO application
+    schema_target: scripts/apply_command_v030_alpha2.py
+    fixtures: [scripts/test_command_runtime_v030_alpha2.py]
+    error_codes: [USER_CONFIRMATION_REQUIRED, TODO_INVALID_STATUS_TRANSITION, EXTERNAL_EXECUTION_NOT_IMPLEMENTED]
+    release_gates: [A2-RG-18]
   - requirement_id: A2-TRC-TODO-001
     origin: [TODO-CMD-005]
     protocol_clause: 15 TODO commands and TODO lifecycle
