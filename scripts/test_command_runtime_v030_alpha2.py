@@ -47,9 +47,18 @@ def main() -> int:
     require(added["state"]["todos"][0]["todo_id"] == "TODO-001", "TODO id mismatch")
     require(added["state"]["state_version"] == 1, "state version did not increment")
 
+    started = execute(
+        "/madp todo-update --todo_id TODO-001 --status IN_PROGRESS",
+        state=added["state"],
+        grants=grants,
+        confirmation_ref="GRANT-INTERNAL-001",
+    )
+    require(started["result"] == "APPLIED", f"TODO start failed: {started}")
+    require(started["state"]["todos"][0]["status"] == "IN_PROGRESS", "TODO did not enter IN_PROGRESS")
+
     completed = execute(
         "/madp todo-done --todo_id TODO-001 --completion_basis tested",
-        state=added["state"],
+        state=started["state"],
         grants=grants,
         confirmation_ref="GRANT-INTERNAL-001",
     )
