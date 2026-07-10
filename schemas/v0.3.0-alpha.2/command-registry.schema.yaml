@@ -1,7 +1,7 @@
 $schema: "https://json-schema.org/draft/2020-12/schema"
 $id: "urn:madp:schema:command-registry:0.3.0-alpha.2"
 title: "MADP Command Registry v0.3.0-alpha.2"
-description: "Draft registry schema for MADP command names, command classes, required arguments, and default authority boundaries. This registry defines command semantics that are intentionally not encoded in the generic COMMAND_BLOCK schema."
+description: "Draft registry schema for MADP command names, command classes, required arguments, argument cardinality, and default authority boundaries."
 type: object
 additionalProperties: false
 required:
@@ -80,6 +80,9 @@ $defs:
       description:
         type: string
         minLength: 1
+      cardinality:
+        enum: [SCALAR, LIST]
+        default: SCALAR
       allowed_values:
         $ref: "#/$defs/stringList"
       default:
