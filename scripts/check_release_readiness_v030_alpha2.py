@@ -14,6 +14,7 @@ REPOSITORY_STATE = "DRAFT_PRERELEASE_IMPLEMENTED"
 REQUIRED_FILES = [
     "README-v0.3.0-alpha.2.md",
     "docs/planning/MADP-v0.3.0-alpha.2-scope.md",
+    "docs/planning/MADP-v0.3.0-alpha.2-implementation-status.yaml",
     "docs/profiles/AI_DRIVEN_DEVELOPMENT-v0.3.0-alpha.2.md",
     "protocol/MADP-v0.3.0-alpha.2.md",
     "protocol/GLOSSARY-v0.3.0-alpha.2.md",
@@ -49,8 +50,11 @@ REQUIRED_FILES = [
     "scripts/parse_command_v030_alpha2.py",
     "scripts/test_command_parser_v030_alpha2.py",
     "scripts/check_all_commands_v030_alpha2.py",
+    "scripts/apply_command_v030_alpha2.py",
+    "scripts/test_command_runtime_v030_alpha2.py",
     "scripts/check_todo_lifecycle_v030_alpha2.py",
     "scripts/check_ai_development_profile_v030_alpha2.py",
+    "scripts/check_alpha2_implementation_status.py",
     "scripts/check_migration_v030_alpha2.py",
     "scripts/check_traceability_v030_alpha2.py",
     "scripts/generate_alpha2_bootstrap_prompts.py",
@@ -140,10 +144,10 @@ def main() -> int:
     matrix_path = ROOT / "tests" / "traceability" / "traceability-matrix-v0.3.0-alpha.2.yaml"
     if matrix_path.is_file():
         entries = load_yaml(matrix_path).get("entries", [])
-        passed = len(entries) >= 16
+        passed = len(entries) >= 17
         checks.append({"check": "traceability_matrix_minimum", "entries": len(entries), "passed": passed})
         if not passed:
-            errors.append("alpha.2 traceability matrix does not cover completed implementation areas")
+            errors.append("alpha.2 traceability matrix does not cover command runtime")
 
     for relative, phrases in REQUIRED_BOOTSTRAP_PROMPTS.items():
         path = ROOT / relative
@@ -153,6 +157,24 @@ def main() -> int:
             checks.append({"check": "alpha2_bootstrap_prompt", "target": relative, "passed": not missing, "missing": missing})
             if missing:
                 errors.append(f"alpha.2 bootstrap prompt {relative} missing required phrases: {missing}")
+
+    registry = load_yaml(ROOT / "registries" / "v0.3.0-alpha.2" / "commands.yaml")
+    review = next((entry for entry in registry.get("commands", []) if entry.get("command") == "request-review"), None)
+    review_args = {item.get("name"): item for item in (review or {}).get("arguments", [])}
+    list_args_ok = (
+        review_args.get("review_focus", {}).get("cardinality") == "LIST"
+        and review_args.get("artifacts", {}).get("cardinality") == "LIST"
+    )
+    checks.append({"check": "registry_list_cardinality", "passed": list_args_ok})
+    if not list_args_ok:
+        errors.append("request-review list argument cardinality is not configured")
+
+    runtime_text = (ROOT / "scripts" / "apply_command_v030_alpha2.py").read_text(encoding="utf-8")
+    runtime_markers = ["USER_CONFIRMATION_REQUIRED", "EXTERNAL_EXECUTION_NOT_IMPLEMENTED", "TODO_INVALID_STATUS_TRANSITION"]
+    missing_runtime = [marker for marker in runtime_markers if marker not in runtime_text]
+    checks.append({"check": "command_runtime_markers", "passed": not missing_runtime, "missing": missing_runtime})
+    if missing_runtime:
+        errors.append(f"alpha.2 command runtime missing markers: {missing_runtime}")
 
     generator_text = (ROOT / "scripts" / "generate_alpha2_schema_bundles.py").read_text(encoding="utf-8")
     bundle_names = ["command", "command-registry", "todo", "context-package", "context-package-receipt", "review", "relay"]
@@ -171,6 +193,7 @@ def main() -> int:
         "errors": errors,
         "limitations": [
             "This audit checks alpha.2 implementation and draft readiness; it does not claim publication readiness.",
+            "The internal apply runtime never performs external actions.",
             "A passing audit does not authorize merge, tagging, release publication, or external execution.",
         ],
     }
