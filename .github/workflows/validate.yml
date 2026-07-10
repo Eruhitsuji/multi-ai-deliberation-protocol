@@ -108,6 +108,9 @@ jobs:
       - name: Check v0.3 alpha.2 AI development profile
         run: python scripts/check_ai_development_profile_v030_alpha2.py
 
+      - name: Check v0.3 alpha.2 implementation status
+        run: python scripts/check_alpha2_implementation_status.py
+
       - name: Validate v0.3 alpha.2 migration fixtures
         run: python scripts/check_migration_v030_alpha2.py
 
