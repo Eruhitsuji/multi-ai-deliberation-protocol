@@ -1,0 +1,73 @@
+$schema: "https://json-schema.org/draft/2020-12/schema"
+$id: "urn:madp:schema:relay:0.3.0-alpha.2"
+title: "MADP Relay Mode Extension v0.3.0-alpha.2"
+description: "Draft schema for alpha.2 relay metadata and relay_mode classification."
+type: object
+additionalProperties: false
+required: [relay_block]
+properties:
+  relay_block:
+    $ref: "#/$defs/relayBlock"
+$defs:
+  identifier:
+    type: string
+    minLength: 1
+    pattern: "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+  relayMode:
+    enum:
+      - DELIBERATION
+      - INFORMATION_TRANSFER
+      - REVIEW_REQUEST
+      - TASK_HANDOFF
+      - EVIDENCE_TRANSFER
+      - RECOVERY
+  authorityBoundary:
+    enum:
+      - REFERENCE_ONLY
+      - PROPOSE_ONLY
+      - REQUIRES_USER_CONFIRMATION
+      - USER_CONFIRMED
+      - DENIED
+  relayBlock:
+    type: object
+    additionalProperties: false
+    required:
+      - relay_id
+      - protocol_version
+      - session_id
+      - source_state_version
+      - relay_mode
+      - purpose
+      - authority_boundary
+      - external_actions_allowed
+      - user_approval_inferred
+    properties:
+      relay_id:
+        $ref: "#/$defs/identifier"
+      protocol_version:
+        const: "MADP-v0.3.0-alpha.2"
+      session_id:
+        $ref: "#/$defs/identifier"
+      source_state_version:
+        type: integer
+        minimum: 1
+      relay_mode:
+        $ref: "#/$defs/relayMode"
+      purpose:
+        type: string
+        minLength: 1
+      authority_boundary:
+        $ref: "#/$defs/authorityBoundary"
+      external_actions_allowed:
+        const: false
+      user_approval_inferred:
+        const: false
+      context_package_ref:
+        anyOf:
+          - const: "NONE"
+          - $ref: "#/$defs/identifier"
+      limitations:
+        type: array
+        items:
+          type: string
+          minLength: 1
