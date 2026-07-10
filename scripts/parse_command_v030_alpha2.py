@@ -3,19 +3,41 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import shlex
 import sys
 from typing import Any
 
 import yaml
-from jsonschema import Draft202012Validator
+from jsonschema import Draft202012Validator, FormatChecker
 
-from madp_validation import ROOT, load_yaml
+from madp_validation import ROOT, UniqueKeyLoader, load_yaml
 
 VERSION = "MADP-v0.3.0-alpha.2"
 COMMAND_VERSION = "MADP-COMMAND-v0.1"
 REGISTRY_PATH = ROOT / "registries" / "v0.3.0-alpha.2" / "commands.yaml"
 SCHEMA_PATH = ROOT / "schemas" / "v0.3.0-alpha.2" / "command.schema.yaml"
+IDENTIFIER_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._:-]*$")
+
+BOOLEAN_ARGUMENTS = {
+    ("share-context", "include_files"),
+    ("issue-relay", "include_state"),
+    ("issue-relay", "include_evidence"),
+    ("summarize-state", "include_todos"),
+    ("external-action", "dry_run"),
+}
+ALLOWED_VALUES: dict[tuple[str, str], set[str]] = {
+    ("issue-relay", "relay_mode"): {"DELIBERATION", "INFORMATION_TRANSFER", "REVIEW_REQUEST", "TASK_HANDOFF", "EVIDENCE_TRANSFER", "RECOVERY"},
+    ("todo-add", "type"): {"DISCUSSION", "DESIGN", "SCHEMA", "IMPLEMENTATION", "VALIDATION", "DOCUMENTATION", "RELEASE", "SAFETY"},
+    ("todo-add", "priority"): {"HIGH", "MEDIUM", "LOW"},
+    ("todo-add", "owner"): {"USER", "FACILITATOR", "PARTICIPANT", "UNSPECIFIED"},
+    ("todo-list", "status"): {"OPEN", "IN_PROGRESS", "BLOCKED", "DONE", "DEFERRED", "CANCELLED"},
+    ("todo-list", "priority"): {"HIGH", "MEDIUM", "LOW"},
+    ("todo-update", "status"): {"OPEN", "IN_PROGRESS", "BLOCKED", "DONE", "DEFERRED", "CANCELLED"},
+    ("todo-update", "priority"): {"HIGH", "MEDIUM", "LOW"},
+    ("prioritize", "priority"): {"HIGH", "MEDIUM", "LOW"},
+    ("todo-promote", "target_type"): {"PROPOSAL", "ISSUE", "DECISION_CANDIDATE"},
+}
 
 
 def registry_by_name() -> dict[str, dict[str, Any]]:
@@ -24,10 +46,7 @@ def registry_by_name() -> dict[str, dict[str, Any]]:
 
 
 def argument_cardinalities(definition: dict[str, Any]) -> dict[str, str]:
-    return {
-        item["name"]: item.get("cardinality", "SCALAR")
-        for item in definition.get("arguments", [])
-    }
+    return {item["name"]: item.get("cardinality", "SCALAR") for item in definition.get("arguments", [])}
 
 
 def scalar(value: str) -> Any:
@@ -46,8 +65,7 @@ def scalar(value: str) -> Any:
 
 def add_argument(arguments: dict[str, Any], key: str, value: Any, cardinality: str, errors: list[str]) -> None:
     if cardinality == "LIST":
-        if key not in arguments:
-            arguments[key] = []
+        arguments.setdefault(key, [])
         if not isinstance(arguments[key], list):
             errors.append(f"CMD_ARGUMENT_CARDINALITY:{key}:expected_list")
             return
@@ -92,16 +110,27 @@ def parse_cli(raw: str) -> tuple[str | None, dict[str, Any], list[str]]:
             if index + 1 < len(tokens) and not tokens[index + 1].startswith("--"):
                 parsed_value = scalar(tokens[index + 1])
                 index += 1
-            else:
+            elif (command, key) in BOOLEAN_ARGUMENTS:
                 parsed_value = True
+            else:
+                errors.append(f"CMD_MISSING_REQUIRED_ARGUMENT:{key}")
+                index += 1
+                continue
         add_argument(arguments, key, parsed_value, cardinalities.get(key, "SCALAR"), errors)
         index += 1
     return command, arguments, errors
 
 
+def strict_yaml_load(raw: str) -> Any:
+    for token in yaml.scan(raw):
+        if isinstance(token, (yaml.tokens.AnchorToken, yaml.tokens.AliasToken, yaml.tokens.TagToken)):
+            raise yaml.YAMLError("YAML anchors, aliases, and custom tags are forbidden")
+    return yaml.load(raw, Loader=UniqueKeyLoader)
+
+
 def parse_yaml_form(raw: str) -> tuple[str | None, dict[str, Any], list[str]]:
     try:
-        document = yaml.safe_load(raw)
+        document = strict_yaml_load(raw)
     except yaml.YAMLError as error:
         return None, {}, [f"CMD_PARSE_ERROR:{error}"]
     if not isinstance(document, dict) or set(document) != {"MADP_COMMAND"}:
@@ -121,6 +150,9 @@ def parse_yaml_form(raw: str) -> tuple[str | None, dict[str, Any], list[str]]:
     errors: list[str] = []
     normalized: dict[str, Any] = {}
     for key, value in arguments.items():
+        if not isinstance(key, str):
+            errors.append("CMD_PARSE_ERROR:argument keys must be strings")
+            continue
         cardinality = cardinalities.get(key, "SCALAR")
         if cardinality == "LIST":
             normalized[key] = value if isinstance(value, list) else [value]
@@ -131,33 +163,45 @@ def parse_yaml_form(raw: str) -> tuple[str | None, dict[str, Any], list[str]]:
     return command, normalized, errors
 
 
+def empty_value(value: Any) -> bool:
+    return value is None or value == "" or value == []
+
+
+def semantic_errors(command: str, arguments: dict[str, Any]) -> list[str]:
+    errors: list[str] = []
+    for key, value in arguments.items():
+        allowed = ALLOWED_VALUES.get((command, key))
+        values = value if isinstance(value, list) else [value]
+        if allowed and any(not isinstance(item, str) or item not in allowed for item in values):
+            errors.append(f"CMD_ARGUMENT_VALUE_INVALID:{key}")
+    if command == "approve":
+        decision = arguments.get("decision")
+        revision = arguments.get("revision")
+        if not isinstance(decision, str) or not IDENTIFIER_RE.fullmatch(decision):
+            errors.append("CMD_APPROVAL_DECISION_INVALID")
+        if isinstance(revision, bool) or not isinstance(revision, int) or revision <= 0:
+            errors.append("CMD_APPROVAL_REVISION_INVALID")
+    return errors
+
+
 def error_artifact(raw: str, command: str | None, errors: list[str]) -> dict[str, Any]:
     missing = [item.split(":", 1)[1] for item in errors if item.startswith("CMD_MISSING_REQUIRED_ARGUMENT:")]
     only_missing = bool(errors) and len(missing) == len(errors)
     if only_missing and command:
-        return {
-            "command_needs_arguments": {
-                "command": command,
-                "missing": sorted(missing),
-                "command_applied": False,
-            }
-        }
+        return {"command_needs_arguments": {"command": command, "missing": sorted(set(missing)), "command_applied": False}}
     return {
         "command_parse_error": {
-            "input": raw,
-            "reason": "; ".join(errors),
+            "input": raw if raw else "<empty>",
+            "reason": "; ".join(errors) or "CMD_PARSE_ERROR:unknown",
             **({"command": command} if command in registry_by_name() else {}),
             "command_applied": False,
         }
     }
 
 
-def normalize(raw: str, command_id: str = "CMD-NORMALIZED-001", issued_by: str = "USER") -> dict[str, Any]:
+def normalize(raw: str, command_id: str = "CMD-NORMALIZED-001", issued_by: str = "SYSTEM") -> dict[str, Any]:
     stripped = raw.lstrip()
-    if stripped.startswith("/madp"):
-        command, arguments, errors = parse_cli(raw)
-    else:
-        command, arguments, errors = parse_yaml_form(raw)
+    command, arguments, errors = parse_cli(raw) if stripped.startswith("/madp") else parse_yaml_form(raw)
 
     registry = registry_by_name()
     if command not in registry:
@@ -170,8 +214,9 @@ def normalize(raw: str, command_id: str = "CMD-NORMALIZED-001", issued_by: str =
         if key not in known:
             errors.append(f"CMD_UNKNOWN_OPTION:{key}")
     for key in definition.get("required_arguments", []):
-        if key not in arguments or arguments[key] == []:
+        if key not in arguments or empty_value(arguments[key]):
             errors.append(f"CMD_MISSING_REQUIRED_ARGUMENT:{key}")
+    errors.extend(semantic_errors(command, arguments))
     if errors:
         return error_artifact(raw, command, errors)
 
@@ -191,13 +236,10 @@ def normalize(raw: str, command_id: str = "CMD-NORMALIZED-001", issued_by: str =
             "authority_status": authority,
             "authority_boundary": authority,
             "arguments": arguments,
-            "effects": {
-                "intended": [definition["effect_summary"]],
-                "prohibited": definition.get("prohibited_effects", []),
-            },
+            "effects": {"intended": [definition["effect_summary"]], "prohibited": definition.get("prohibited_effects", [])},
         }
     }
-    validator = Draft202012Validator(load_yaml(SCHEMA_PATH))
+    validator = Draft202012Validator(load_yaml(SCHEMA_PATH), format_checker=FormatChecker())
     schema_errors = list(validator.iter_errors(block))
     block["command_block"]["validation_status"] = "SCHEMA_VALID" if not schema_errors else "SCHEMA_INVALID"
     if schema_errors:
@@ -209,9 +251,10 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Parse and normalize a MADP v0.3.0-alpha.2 command.")
     parser.add_argument("command", nargs="?", help="CLI or YAML command text. Reads stdin when omitted.")
     parser.add_argument("--command-id", default="CMD-NORMALIZED-001")
+    parser.add_argument("--issued-by", choices=["USER", "FACILITATOR", "PARTICIPANT", "SYSTEM"], default="SYSTEM")
     args = parser.parse_args()
     raw = args.command if args.command is not None else sys.stdin.read()
-    result = normalize(raw, command_id=args.command_id)
+    result = normalize(raw, command_id=args.command_id, issued_by=args.issued_by)
     print(json.dumps(result, ensure_ascii=False, indent=2))
     return 0 if "command_block" in result else 2
 
