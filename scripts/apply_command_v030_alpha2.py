@@ -11,7 +11,7 @@ from typing import Any
 import yaml
 
 from parse_command_v030_alpha2 import normalize, strict_yaml_load
-from todo_transitions_v030_alpha2 import transition_allowed
+from todo_transitions_v030_alpha2 import TERMINAL_STATUSES, transition_allowed
 
 VERSION = "MADP-v0.3.0-alpha.2"
 READ_ONLY_COMMANDS = {"status", "todo-list", "summarize-state", "check-authority"}
@@ -41,6 +41,8 @@ def document_error(code: str, detail: str, state: dict[str, Any] | None = None) 
         "message": detail,
         "state": copy.deepcopy(state) if isinstance(state, dict) else initial_state(),
         "state_changed": False,
+        "effect_applied": False,
+        "history_appended": False,
         "external_actions_performed": False,
     }
 
@@ -235,6 +237,8 @@ def apply_effect(state: dict[str, Any], block: dict[str, Any]) -> tuple[bool, st
         if item is None:
             return False, "TODO_UNKNOWN_ID", None
         if command == "todo-update":
+            if item["status"] in TERMINAL_STATUSES:
+                return False, "TODO_ITEM_TERMINAL", None
             requested = args.get("status", item["status"])
             if requested == "DONE":
                 return False, "TODO_DONE_REQUIRES_TODO_DONE_COMMAND", None
@@ -308,7 +312,15 @@ def execute(
     working.setdefault("used_grants", [])
     normalized = normalize(raw, issued_by=issued_by)
     if "command_block" not in normalized:
-        return {"result": "PARSE_OR_VALIDATION_FAILED", "artifact": normalized, "state": working, "state_changed": False, "external_actions_performed": False}
+        return {
+            "result": "PARSE_OR_VALIDATION_FAILED",
+            "artifact": normalized,
+            "state": working,
+            "state_changed": False,
+            "effect_applied": False,
+            "history_appended": False,
+            "external_actions_performed": False,
+        }
 
     block = normalized["command_block"]
     auth = authorize(block, grant_list, confirmation_ref, working)
@@ -324,19 +336,23 @@ def execute(
         message = "read-only command accepted"
         effect_result = read_only_effect(working, block, grant_list)
 
-    history_entry = {
-        "command_id": block["command_id"],
-        "command": block["command"],
-        "issued_by": block["issued_by"],
-        "issued_at": block["issued_at"],
-        "raw_input": block["raw_input"],
-        "authority_result": auth["result"],
-        "grant_id": auth.get("grant_id"),
-        "effect_applied": effect_changed,
-        "message": message,
-    }
-    working["command_history"].append(history_entry)
-    working["state_version"] += 1
+    accepted = bool(auth["authorized"])
+    history_appended = accepted
+    if history_appended:
+        history_entry = {
+            "command_id": block["command_id"],
+            "command": block["command"],
+            "issued_by": block["issued_by"],
+            "issued_at": block["issued_at"],
+            "raw_input": block["raw_input"],
+            "authority_result": auth["result"],
+            "grant_id": auth.get("grant_id"),
+            "effect_applied": effect_changed,
+            "message": message,
+        }
+        working["command_history"].append(history_entry)
+        working["state_version"] += 1
+
     return {
         "result": "APPLIED" if effect_changed else "NOT_APPLIED",
         "message": message,
@@ -344,8 +360,9 @@ def execute(
         "command_block": block,
         "effect_result": effect_result,
         "state": working,
-        "state_changed": True,
+        "state_changed": history_appended,
         "effect_applied": effect_changed,
+        "history_appended": history_appended,
         "external_actions_performed": False,
     }
 
