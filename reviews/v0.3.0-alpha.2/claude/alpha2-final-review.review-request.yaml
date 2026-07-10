@@ -1,0 +1,50 @@
+review_request:
+  request_id: REVIEW-REQ-ALPHA2-CLAUDE-001
+  protocol_version: MADP-v0.3.0-alpha.2
+  requester: FACILITATOR-001
+  target_role: REVIEWER
+  review_focus:
+    - Verify protocol, schema, registry, parser, authority evaluator, and apply runtime consistency.
+    - Identify security, authority-escalation, stale-state, scope-matching, provenance, and approval-binding weaknesses.
+    - Identify commands whose runtime behavior is missing, incomplete, over-broad, or inconsistent with documentation.
+    - Review repeated LIST argument handling and rejection of repeated SCALAR arguments.
+    - Review TODO lifecycle transitions, completion basis, promotion behavior, and command-history recording.
+    - Review context package, receipt, review, relay, and AI-development authority boundaries.
+    - Review migration invariants, traceability completeness, schema bundle generation, and draft readiness gates.
+    - Recommend missing negative, property-based, fuzz, concurrency, and interoperability tests.
+    - Classify each recommendation as alpha.2-blocking, alpha.2-nonblocking, or later-version work.
+  artifacts_under_review:
+    - reviews/v0.3.0-alpha.2/claude/alpha2-final-review.context-package.yaml
+    - protocol/MADP-v0.3.0-alpha.2.md
+    - protocol/GLOSSARY-v0.3.0-alpha.2.md
+    - README-v0.3.0-alpha.2.md
+    - docs/planning/MADP-v0.3.0-alpha.2-implementation-status.yaml
+    - docs/profiles/AI_DRIVEN_DEVELOPMENT-v0.3.0-alpha.2.md
+    - schemas/v0.3.0-alpha.2/command.schema.yaml
+    - schemas/v0.3.0-alpha.2/command-registry.schema.yaml
+    - schemas/v0.3.0-alpha.2/todo.schema.yaml
+    - schemas/v0.3.0-alpha.2/context-package.schema.yaml
+    - schemas/v0.3.0-alpha.2/context-package-receipt.schema.yaml
+    - schemas/v0.3.0-alpha.2/review.schema.yaml
+    - schemas/v0.3.0-alpha.2/relay.schema.yaml
+    - registries/v0.3.0-alpha.2/commands.yaml
+    - scripts/parse_command_v030_alpha2.py
+    - scripts/apply_command_v030_alpha2.py
+    - scripts/test_command_parser_v030_alpha2.py
+    - scripts/test_command_runtime_v030_alpha2.py
+    - scripts/check_all_commands_v030_alpha2.py
+    - scripts/check_todo_lifecycle_v030_alpha2.py
+    - scripts/check_traceability_v030_alpha2.py
+    - scripts/check_release_readiness_v030_alpha2.py
+    - tests/traceability/traceability-matrix-v0.3.0-alpha.2.yaml
+    - .github/workflows/validate.yml
+  context_package: CTX-ALPHA2-CLAUDE-001
+  allowed_actions:
+    - comment
+    - propose_changes
+    - ask_questions
+  disallowed_actions:
+    - execute
+    - claim_user_approval
+    - modify_external_resource
+  authority_boundary: PROPOSE_ONLY
