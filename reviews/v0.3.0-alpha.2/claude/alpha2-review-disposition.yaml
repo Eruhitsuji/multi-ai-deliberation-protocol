@@ -1,0 +1,68 @@
+review_disposition:
+  protocol_version: MADP-v0.3.0-alpha.2
+  review_request: REVIEW-REQ-ALPHA2-CLAUDE-001
+  source_reviewer: CLAUDE
+  source_recommendation: READY_WITH_REQUIRED_FIXES
+  disposition_status: BLOCKING_FINDINGS_REMEDIATED_PENDING_FOLLOW_UP_REVIEW
+  external_actions_performed: false
+  user_approval_claimed: false
+  findings:
+    - finding_id: CLAUDE-A2-001
+      status: REMEDIATED
+      basis:
+        - execute() now requires an explicit issued_by value.
+        - the CLI requires --issued-by.
+        - USER_COMMAND from a non-USER actor returns CMD_AUTHORITY_DENIED.
+      regression_tests:
+        - scripts/test_command_runtime_v030_alpha2.py
+    - finding_id: CLAUDE-A2-002
+      status: REMEDIATED
+      basis:
+        - grants require assurance_level and assurance_origin.
+        - USER_CONFIRMED requires USER_ACTION.
+        - EXTERNALLY_VERIFIED requires EXTERNAL_VALIDATION and a non-empty reference.
+        - generic grants cannot authorize non-user USER_COMMAND issuance.
+        - grants are single-use by default and recorded in used_grants.
+      regression_tests:
+        - scripts/test_command_runtime_v030_alpha2.py
+    - finding_id: CLAUDE-A2-003
+      status: REMEDIATED
+      basis:
+        - implicit true is limited to declared boolean arguments.
+        - approval decision identifiers and positive integer revisions are validated.
+        - revision downgrade or same-revision overwrite is rejected.
+        - prior approval data is retained in approval_history.
+      regression_tests:
+        - scripts/test_command_parser_v030_alpha2.py
+        - scripts/test_command_runtime_v030_alpha2.py
+    - finding_id: CLAUDE-A2-004
+      status: REMEDIATED
+      basis:
+        - runtime and lifecycle checker import one shared transition table.
+        - OPEN to BLOCKED is consistently allowed.
+        - terminal self-transitions are rejected.
+        - repeated todo-done cannot rewrite completion_basis.
+      implementation:
+        - scripts/todo_transitions_v030_alpha2.py
+      regression_tests:
+        - scripts/test_command_runtime_v030_alpha2.py
+        - scripts/check_todo_lifecycle_v030_alpha2.py
+    - finding_id: CLAUDE-A2-005
+      status: REMEDIATED
+      basis:
+        - YAML commands use a duplicate-key rejecting loader.
+        - anchors, aliases, and custom tags are rejected before construction.
+      regression_tests:
+        - scripts/test_command_parser_v030_alpha2.py
+  additional_remediations:
+    - required null and empty values are rejected.
+    - selected enum-valued arguments are validated.
+    - malformed state and grants documents return structured failures.
+    - TODO identifiers use the maximum existing suffix to avoid collisions.
+    - state_version increments whenever command_history changes.
+    - command history records issuer, raw input, grant id, and effect application.
+    - check-authority and summarize-state return bounded read-only results.
+    - external-action handling is based on command_class and remains non-executing.
+  follow_up:
+    required: true
+    action: Request Claude to rerun the adversarial review against the remediation commit before marking the PR ready for review.
