@@ -1,0 +1,227 @@
+$schema: "https://json-schema.org/draft/2020-12/schema"
+$id: "urn:madp:schema:command:0.3.0-alpha.2"
+title: "MADP Command Block v0.3.0-alpha.2"
+description: "Draft schema for MADP v0.3.0-alpha.2 command blocks and command error artifacts. Semantic invariants are defined by the protocol."
+type: object
+additionalProperties: false
+oneOf:
+  - required: [command_block]
+  - required: [command_parse_error]
+  - required: [command_needs_arguments]
+properties:
+  command_block:
+    $ref: "#/$defs/commandBlock"
+  command_parse_error:
+    $ref: "#/$defs/commandParseError"
+  command_needs_arguments:
+    $ref: "#/$defs/commandNeedsArguments"
+
+$defs:
+  identifier:
+    type: string
+    minLength: 1
+    pattern: "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+  nullableString:
+    type: [string, "null"]
+  timestamp:
+    anyOf:
+      - const: "UNKNOWN"
+      - type: string
+        format: date-time
+  stringList:
+    type: array
+    items:
+      type: string
+      minLength: 1
+  jsonScalar:
+    type: [string, integer, boolean, "null"]
+  jsonValue:
+    oneOf:
+      - $ref: "#/$defs/jsonScalar"
+      - type: array
+        items:
+          $ref: "#/$defs/jsonValue"
+      - type: object
+        additionalProperties:
+          $ref: "#/$defs/jsonValue"
+
+  commandName:
+    enum:
+      - share-context
+      - issue-relay
+      - request-review
+      - summarize-state
+      - check-authority
+      - propose-decision
+      - approve
+      - reject
+      - defer
+      - prioritize
+      - pause
+      - resume
+      - status
+      - todo-add
+      - todo-list
+      - todo-update
+      - todo-done
+      - todo-defer
+      - todo-promote
+      - external-action
+
+  commandClass:
+    enum:
+      - AI_COMMAND
+      - USER_COMMAND
+      - TODO_COMMAND
+      - EXTERNAL_ACTION_COMMAND
+  issuedBy:
+    enum:
+      - USER
+      - FACILITATOR
+      - PARTICIPANT
+      - SYSTEM
+  parseStatus:
+    enum:
+      - PARSED
+      - PARSE_ERROR
+      - NEEDS_ARGUMENTS
+  validationStatus:
+    enum:
+      - SCHEMA_VALID
+      - SCHEMA_INVALID
+      - NOT_VALIDATED
+  authorityStatus:
+    enum:
+      - REFERENCE_ONLY
+      - USER_CONFIRMED
+      - PROPOSE_ONLY
+      - REQUIRES_USER_CONFIRMATION
+      - DENIED
+  authorityBoundary:
+    enum:
+      - REFERENCE_ONLY
+      - PROPOSE_ONLY
+      - REQUIRES_USER_CONFIRMATION
+      - USER_CONFIRMED
+      - DENIED
+
+  commandEffects:
+    type: object
+    additionalProperties: false
+    required: [intended, prohibited]
+    properties:
+      intended:
+        $ref: "#/$defs/stringList"
+      prohibited:
+        $ref: "#/$defs/stringList"
+
+  commandBlock:
+    type: object
+    additionalProperties: false
+    required:
+      - command_id
+      - command_version
+      - command
+      - command_class
+      - issued_by
+      - issued_at
+      - raw_input
+      - parse_status
+      - validation_status
+      - authority_status
+      - arguments
+      - effects
+    properties:
+      command_id:
+        $ref: "#/$defs/identifier"
+      command_version:
+        const: "MADP-COMMAND-v0.1"
+      protocol_version:
+        const: "MADP-v0.3.0-alpha.2"
+      command:
+        $ref: "#/$defs/commandName"
+      command_class:
+        $ref: "#/$defs/commandClass"
+      issued_by:
+        $ref: "#/$defs/issuedBy"
+      issued_at:
+        $ref: "#/$defs/timestamp"
+      raw_input:
+        type: string
+        minLength: 1
+      parse_status:
+        $ref: "#/$defs/parseStatus"
+      validation_status:
+        $ref: "#/$defs/validationStatus"
+      authority_status:
+        $ref: "#/$defs/authorityStatus"
+      authority_boundary:
+        $ref: "#/$defs/authorityBoundary"
+      arguments:
+        type: object
+        additionalProperties:
+          $ref: "#/$defs/jsonValue"
+      input_refs:
+        $ref: "#/$defs/stringList"
+      output_type:
+        type: string
+        minLength: 1
+      effects:
+        $ref: "#/$defs/commandEffects"
+      validation_receipt:
+        type: object
+        additionalProperties: false
+        required: [validator, schema, instance, result]
+        properties:
+          validator:
+            type: string
+            minLength: 1
+          schema:
+            type: string
+            minLength: 1
+          instance:
+            type: string
+            minLength: 1
+          result:
+            enum: [PASS, FAIL]
+          error_count:
+            type: integer
+            minimum: 0
+      limitations:
+        $ref: "#/$defs/stringList"
+
+  commandParseError:
+    type: object
+    additionalProperties: false
+    required: [input, reason, command_applied]
+    properties:
+      input:
+        type: string
+        minLength: 1
+      reason:
+        type: string
+        minLength: 1
+      command:
+        $ref: "#/$defs/commandName"
+      missing_arguments:
+        $ref: "#/$defs/stringList"
+      unknown_options:
+        $ref: "#/$defs/stringList"
+      suggested_correction:
+        $ref: "#/$defs/stringList"
+      command_applied:
+        const: false
+
+  commandNeedsArguments:
+    type: object
+    additionalProperties: false
+    required: [command, missing, command_applied]
+    properties:
+      command:
+        $ref: "#/$defs/commandName"
+      missing:
+        $ref: "#/$defs/stringList"
+      acceptable_next_inputs:
+        $ref: "#/$defs/stringList"
+      command_applied:
+        const: false

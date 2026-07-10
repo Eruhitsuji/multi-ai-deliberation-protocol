@@ -1,0 +1,22 @@
+command_block:
+  command_id: CMD-002
+  command_version: MADP-COMMAND-v0.1
+  protocol_version: MADP-v0.3.0-alpha.2
+  command: approve
+  command_class: USER_COMMAND
+  issued_by: USER
+  issued_at: UNKNOWN
+  raw_input: /madp approve --decision DEC-003 --revision 2
+  parse_status: PARSED
+  validation_status: SCHEMA_VALID
+  authority_status: USER_CONFIRMED
+  authority_boundary: USER_CONFIRMED
+  arguments:
+    decision: DEC-003
+    revision: 2
+  effects:
+    intended:
+      - Record user approval for decision DEC-003 revision 2.
+    prohibited:
+      - External execution.
+      - Approval of other decision revisions.

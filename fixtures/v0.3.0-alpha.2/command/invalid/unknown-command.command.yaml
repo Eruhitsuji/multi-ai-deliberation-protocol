@@ -1,0 +1,18 @@
+command_block:
+  command_id: CMD-BAD-001
+  command_version: MADP-COMMAND-v0.1
+  protocol_version: MADP-v0.3.0-alpha.2
+  command: approve-all
+  command_class: USER_COMMAND
+  issued_by: USER
+  issued_at: UNKNOWN
+  raw_input: /madp approve-all
+  parse_status: PARSED
+  validation_status: SCHEMA_VALID
+  authority_status: USER_CONFIRMED
+  arguments: {}
+  effects:
+    intended:
+      - Invalid unknown command should fail schema validation.
+    prohibited:
+      - External execution.

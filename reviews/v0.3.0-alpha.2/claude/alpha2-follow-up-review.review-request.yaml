@@ -1,0 +1,54 @@
+review_request:
+  request_id: REVIEW-REQ-ALPHA2-CLAUDE-FOLLOWUP-001
+  protocol_version: MADP-v0.3.0-alpha.2
+  requester: FACILITATOR-001
+  target_role: REVIEWER
+  review_focus:
+    - Reproduce each original ALPHA2_BLOCKING finding after remediation.
+    - Determine whether any bypass or equivalent counterexample remains.
+    - Identify regressions introduced by the remediation.
+    - Reassess the prior ALPHA2_NONBLOCKING findings where touched by the fixes.
+  artifacts_under_review:
+    - reviews/v0.3.0-alpha.2/claude/alpha2-review-disposition.yaml
+    - scripts/parse_command_v030_alpha2.py
+    - scripts/apply_command_v030_alpha2.py
+    - scripts/todo_transitions_v030_alpha2.py
+    - scripts/check_todo_lifecycle_v030_alpha2.py
+    - scripts/test_command_parser_v030_alpha2.py
+    - scripts/test_command_runtime_v030_alpha2.py
+    - scripts/check_all_commands_v030_alpha2.py
+    - protocol/MADP-v0.3.0-alpha.2.md
+    - README-v0.3.0-alpha.2.md
+    - .github/workflows/validate.yml
+  context_package: CTX-ALPHA2-CLAUDE-FOLLOWUP-001
+  required_reproductions:
+    - USER_COMMAND issued without explicit USER provenance.
+    - PARTICIPANT-issued approve with and without a generic internal grant.
+    - Grant missing assurance fields, UNVERIFIED_ASSERTION grant, EXTERNALLY_VERIFIED grant without reference, and replay of a single-use grant.
+    - Approve with bare decision or revision, boolean revision, zero or negative revision, and revision downgrade.
+    - All TODO transition pairs compared between runtime and checker, including DONE to DONE.
+    - Duplicate YAML command keys, duplicate argument keys, anchors, aliases, and custom tags.
+  required_commands:
+    - python scripts/test_command_parser_v030_alpha2.py
+    - python scripts/check_all_commands_v030_alpha2.py
+    - python scripts/test_command_runtime_v030_alpha2.py
+    - python scripts/check_todo_lifecycle_v030_alpha2.py
+    - python scripts/check_traceability_v030_alpha2.py
+    - python scripts/check_release_readiness_v030_alpha2.py
+  allowed_actions:
+    - read
+    - run_existing_tests
+    - run_read_only_reproduction_harness
+    - comment
+    - propose_changes
+    - ask_questions
+  disallowed_actions:
+    - modify_repository
+    - commit
+    - push
+    - change_pull_request_state
+    - merge
+    - tag
+    - release
+    - claim_user_approval
+  authority_boundary: PROPOSE_ONLY

@@ -1,0 +1,11 @@
+session_state:
+  meta:
+    protocol_version: "MADP-v0.3.0-alpha.1"
+    session_id: "alpha1-transcript-session"
+  lifecycle:
+    status: "CLOSED"
+transcript_excerpt:
+  - speaker: "USER"
+    text: "In our notes, write: /madp approve --decision old-plan"
+  - speaker: "FACILITATOR"
+    text: "Recorded as plain alpha.1 discussion text."

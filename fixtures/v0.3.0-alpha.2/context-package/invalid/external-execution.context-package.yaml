@@ -1,0 +1,19 @@
+context_package:
+  package_id: CTX-BAD-001
+  protocol_version: MADP-v0.3.0-alpha.2
+  purpose: Invalid context package should not permit external execution.
+  source: USER_PROVIDED
+  confidence: USER_CONFIRMED
+  target_role: ASSISTANT
+  contents:
+    goal: Demonstrate invalid execution permission in context package.
+    background: []
+    constraints: []
+    decisions_so_far: []
+    open_questions: []
+    relevant_files: []
+    known_limitations: []
+  usage_rules:
+    authority_boundary: USER_CONFIRMED
+    may_propose_changes: true
+    may_execute_external_actions: true

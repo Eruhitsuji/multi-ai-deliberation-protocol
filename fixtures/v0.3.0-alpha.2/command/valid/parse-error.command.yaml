@@ -1,0 +1,9 @@
+command_parse_error:
+  input: /madp approve DEC-003
+  reason: approve requires explicit --decision and --revision arguments.
+  command: approve
+  missing_arguments:
+    - revision
+  suggested_correction:
+    - /madp approve --decision DEC-003 --revision <number>
+  command_applied: false

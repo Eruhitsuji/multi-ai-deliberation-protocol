@@ -1,0 +1,12 @@
+fixture_id: "A2-MIG-FIX-002"
+title: "historical alpha.1 text that resembles /madp syntax is not retroactively applied as an alpha.2 command"
+source_protocol_version: "MADP-v0.3.0-alpha.1"
+target_protocol_version: "MADP-v0.3.0-alpha.2"
+fixture_kind: "valid_migration_plan"
+source: "source.yaml"
+expected_target: "expected-target.yaml"
+expected_invariants:
+  - "historical_text_interpreted_as_command_false"
+  - "command_applied_false"
+  - "authority_boundary_reference_only"
+  - "user_confirmation_required_true"

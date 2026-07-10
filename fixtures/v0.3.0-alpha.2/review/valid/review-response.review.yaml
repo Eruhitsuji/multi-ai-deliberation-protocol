@@ -1,0 +1,20 @@
+review_response:
+  request_id: REVIEW-REQ-001
+  reviewer_id: REVIEWER-001
+  protocol_version: MADP-v0.3.0-alpha.2
+  authority_boundary_applied: PROPOSE_ONLY
+  external_actions_performed: false
+  user_approval_claimed: false
+  summary: Review completed within PROPOSE_ONLY authority.
+  findings:
+    - finding_id: FINDING-001
+      severity: INFO
+      category: AUTHORITY
+      statement: External actions remain disallowed by the review response.
+      evidence:
+        - bootstrap/request-review.md
+      recommendation: Keep external_actions_performed set to false unless a later explicit action is separately authorized.
+  open_questions:
+    - Should future prereleases add a REVIEW_SELF_CHECK schema?
+  limitations:
+    - This fixture does not validate inline comments or external review platforms.

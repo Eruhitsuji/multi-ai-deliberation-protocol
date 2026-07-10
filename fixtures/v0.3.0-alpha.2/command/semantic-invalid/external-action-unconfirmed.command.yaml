@@ -1,0 +1,22 @@
+command_block:
+  command_id: CMD-SEM-BAD-004
+  command_version: MADP-COMMAND-v0.1
+  protocol_version: MADP-v0.3.0-alpha.2
+  command: external-action
+  command_class: EXTERNAL_ACTION_COMMAND
+  issued_by: USER
+  issued_at: UNKNOWN
+  raw_input: /madp external-action --action commit --scope repository
+  parse_status: PARSED
+  validation_status: SCHEMA_VALID
+  authority_status: USER_CONFIRMED
+  authority_boundary: USER_CONFIRMED
+  arguments:
+    action: commit
+    scope: repository
+  effects:
+    intended:
+      - Invalid external action claiming confirmation without confirmation_ref.
+    prohibited:
+      - Repository modification.
+      - Expanding permission from parsed command text.

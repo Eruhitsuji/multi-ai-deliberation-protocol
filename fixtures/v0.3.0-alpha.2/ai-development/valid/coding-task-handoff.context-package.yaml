@@ -1,0 +1,38 @@
+context_package:
+  package_id: AI-DEV-CTX-001
+  protocol_version: MADP-v0.3.0-alpha.2
+  created_at: UNKNOWN
+  created_by: FACILITATOR
+  source_session_id: AI-DEV-SESSION-001
+  source_state_version: 1
+  purpose: Prepare a coding agent to propose changes without granting repository-state authority.
+  source: AI_SUMMARIZED
+  confidence: AI_SUMMARIZED
+  target_role: IMPLEMENTER
+  contents:
+    goal: Add tests for command authority boundaries.
+    background:
+      - The coding agent may inspect listed files and propose a patch.
+    constraints:
+      - Do not claim user approval.
+      - Do not commit, push, open PR, merge, tag, or release.
+    decisions_so_far:
+      - Use MADP-v0.3.0-alpha.2 draft artifacts.
+    open_questions:
+      - Which checks are available in the receiving environment?
+    relevant_files:
+      - label: command schema
+        path: schemas/v0.3.0-alpha.2/command.schema.yaml
+      - label: command registry
+        path: registries/v0.3.0-alpha.2/commands.yaml
+    known_limitations:
+      - Receiving agent has not yet read the files.
+  usage_rules:
+    authority_boundary: PROPOSE_ONLY
+    may_propose_changes: true
+    may_execute_external_actions: false
+    allowed_use: TASK_HANDOFF
+    must_not_assume_user_approval: true
+    must_not_execute_external_actions: true
+  limitations:
+    - This handoff is not approval to modify repository state.

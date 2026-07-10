@@ -1,0 +1,137 @@
+traceability_version: "1"
+protocol_version: "MADP-v0.3.0-alpha.2"
+coverage_scope:
+  - command schema and registry
+  - command parser and normalization
+  - registry-defined list argument cardinality
+  - command authority evaluation and internal state application
+  - all-command coverage
+  - command semantic safety
+  - TODO schema and lifecycle
+  - context package and receipt
+  - review artifacts
+  - relay mode schema
+  - bootstrap generation
+  - AI development profile
+  - migration
+  - generated schema bundles
+entries:
+  - requirement_id: A2-TRC-CMD-001
+    origin: [TODO-CMD-001]
+    protocol_clause: 11 Command layer
+    schema_target: schemas/v0.3.0-alpha.2/command.schema.yaml
+    fixtures: [fixtures/v0.3.0-alpha.2/command/valid/todo-add.command.yaml]
+    error_codes: [CMD_SCHEMA_INVALID]
+    release_gates: [A2-RG-01]
+  - requirement_id: A2-TRC-CMD-002
+    origin: [TODO-CMD-002]
+    protocol_clause: 12 Command input syntax
+    schema_target: scripts/parse_command_v030_alpha2.py
+    fixtures: [scripts/test_command_parser_v030_alpha2.py]
+    error_codes: [CMD_PARSE_ERROR, CMD_PARSE_AMBIGUITY, CMD_ARGUMENT_CARDINALITY]
+    release_gates: [A2-RG-03]
+  - requirement_id: A2-TRC-CMD-003
+    origin: [TODO-CMD-003]
+    protocol_clause: 13 User commands
+    schema_target: schemas/v0.3.0-alpha.2/command.schema.yaml
+    fixtures: [fixtures/v0.3.0-alpha.2/command/valid/approve.command.yaml]
+    error_codes: [CMD_UNKNOWN_COMMAND]
+    release_gates: [A2-RG-04]
+  - requirement_id: A2-TRC-CMD-004
+    origin: [TODO-CMD-004]
+    protocol_clause: 14 AI commands
+    schema_target: schemas/v0.3.0-alpha.2/command-registry.schema.yaml
+    fixtures: [registries/v0.3.0-alpha.2/commands.yaml]
+    error_codes: [CMD_AUTHORITY_DENIED]
+    release_gates: [A2-RG-08]
+  - requirement_id: A2-TRC-CMD-005
+    origin: [TODO-CMD-008]
+    protocol_clause: 11 Command semantic safety
+    schema_target: scripts/check_command_semantic_invalid_fixtures_v030_alpha2.py
+    fixtures: [fixtures/v0.3.0-alpha.2/command/semantic-invalid/external-action-unconfirmed.command.yaml]
+    error_codes: [CMD_EXTERNAL_ACTION_REQUIRES_CONFIRMATION, CMD_AI_SILENT_APPROVAL_REPAIR_FORBIDDEN]
+    release_gates: [A2-RG-10]
+  - requirement_id: A2-TRC-CMD-006
+    origin: [TODO-CMD-002, TODO-CMD-003, TODO-CMD-004]
+    protocol_clause: 11-17 Command implementation coverage
+    schema_target: scripts/check_all_commands_v030_alpha2.py
+    fixtures: [scripts/test_command_parser_v030_alpha2.py]
+    error_codes: [CMD_MISSING_REQUIRED_ARGUMENT, CMD_UNKNOWN_OPTION]
+    release_gates: [A2-RG-15]
+  - requirement_id: A2-TRC-CMD-007
+    origin: [TODO-CMD-002, TODO-CMD-005, TODO-CMD-008]
+    protocol_clause: 11 Command processing order and 15 TODO application
+    schema_target: scripts/apply_command_v030_alpha2.py
+    fixtures: [scripts/test_command_runtime_v030_alpha2.py]
+    error_codes: [USER_CONFIRMATION_REQUIRED, TODO_INVALID_STATUS_TRANSITION, EXTERNAL_EXECUTION_NOT_IMPLEMENTED]
+    release_gates: [A2-RG-18]
+  - requirement_id: A2-TRC-TODO-001
+    origin: [TODO-CMD-005]
+    protocol_clause: 15 TODO commands and TODO lifecycle
+    schema_target: schemas/v0.3.0-alpha.2/todo.schema.yaml
+    fixtures: [fixtures/v0.3.0-alpha.2/todo/valid/initial.todo-list.yaml]
+    error_codes: [TODO_UNKNOWN_ID]
+    release_gates: [A2-RG-05]
+  - requirement_id: A2-TRC-TODO-002
+    origin: [TODO-CMD-005]
+    protocol_clause: 15 TODO transition semantics
+    schema_target: scripts/check_todo_lifecycle_v030_alpha2.py
+    fixtures: [tests/todo-lifecycle-v0.3.0-alpha.2/cases.yaml]
+    error_codes: [TODO_INVALID_STATUS_TRANSITION, TODO_DONE_REQUIRES_COMPLETION_BASIS]
+    release_gates: [A2-RG-16]
+  - requirement_id: A2-TRC-CTX-001
+    origin: [TODO-CMD-006]
+    protocol_clause: 10 Context packages
+    schema_target: schemas/v0.3.0-alpha.2/context-package.schema.yaml
+    fixtures: [fixtures/v0.3.0-alpha.2/context-package/valid/share-context.context-package.yaml]
+    error_codes: [CTX_EXTERNAL_EXECUTION_FORBIDDEN]
+    release_gates: [A2-RG-06]
+  - requirement_id: A2-TRC-CTX-002
+    origin: [TODO-CMD-006]
+    protocol_clause: 10 Context package receipts
+    schema_target: schemas/v0.3.0-alpha.2/context-package-receipt.schema.yaml
+    fixtures: [fixtures/v0.3.0-alpha.2/context-package-receipt/valid/partial.context-package-receipt.yaml]
+    error_codes: [CTX_RECEIPT_USER_APPROVAL_INFERENCE_FORBIDDEN]
+    release_gates: [A2-RG-11]
+  - requirement_id: A2-TRC-REVIEW-001
+    origin: [TODO-CMD-007]
+    protocol_clause: Review request and response artifacts
+    schema_target: schemas/v0.3.0-alpha.2/review.schema.yaml
+    fixtures: [fixtures/v0.3.0-alpha.2/review/valid/review-response.review.yaml]
+    error_codes: [REVIEW_EXTERNAL_EXECUTION_FORBIDDEN]
+    release_gates: [A2-RG-12]
+  - requirement_id: A2-TRC-BOOT-001
+    origin: [TODO-CMD-007]
+    protocol_clause: Bootstrap generation
+    schema_target: scripts/generate_alpha2_bootstrap_prompts.py
+    fixtures: [scripts/test_generate_alpha2_bootstrap_prompts.py]
+    error_codes: [A2_BOOTSTRAP_GENERATION_MISMATCH]
+    release_gates: [A2-RG-13]
+  - requirement_id: A2-TRC-AIDEV-001
+    origin: [TODO-CMD-008]
+    protocol_clause: AI development profile
+    schema_target: docs/profiles/AI_DRIVEN_DEVELOPMENT-v0.3.0-alpha.2.md
+    fixtures: [scripts/check_ai_development_profile_v030_alpha2.py]
+    error_codes: [AI_DEV_ACTION_SCOPE_BOUNDARY]
+    release_gates: [A2-RG-14]
+  - requirement_id: A2-TRC-RELAY-001
+    origin: [TODO-CMD-009]
+    protocol_clause: 9 Relay blocks and relay modes
+    schema_target: schemas/v0.3.0-alpha.2/relay.schema.yaml
+    fixtures: [fixtures/v0.3.0-alpha.2/relay/valid/task-handoff.relay.yaml, fixtures/v0.3.0-alpha.2/relay/invalid/external-action.relay.yaml]
+    error_codes: [RELAY_EXTERNAL_ACTION_FORBIDDEN, RELAY_USER_APPROVAL_INFERENCE_FORBIDDEN]
+    release_gates: [A2-RG-07]
+  - requirement_id: A2-TRC-MIG-001
+    origin: [TODO-CMD-009]
+    protocol_clause: 20 Migration from alpha.1
+    schema_target: tests/migration-v0.3.0-alpha.2/README.md
+    fixtures: [scripts/check_migration_v030_alpha2.py]
+    error_codes: [A2_MIG_ACTIVE_SESSION_AUTO_UPGRADE, A2_MIG_HISTORICAL_COMMAND_REPLAY]
+    release_gates: [A2-RG-09]
+  - requirement_id: A2-TRC-BUNDLE-001
+    origin: [TODO-CMD-006]
+    protocol_clause: Generated alpha.2 distributions
+    schema_target: scripts/generate_alpha2_schema_bundles.py
+    fixtures: [schemas/v0.3.0-alpha.2/relay.schema.yaml]
+    error_codes: [A2_SCHEMA_BUNDLE_DRIFT]
+    release_gates: [A2-RG-17]

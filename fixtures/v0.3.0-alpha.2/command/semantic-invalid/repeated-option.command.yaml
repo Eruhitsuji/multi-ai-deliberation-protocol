@@ -1,0 +1,23 @@
+command_block:
+  command_id: CMD-SEM-BAD-002
+  command_version: MADP-COMMAND-v0.1
+  protocol_version: MADP-v0.3.0-alpha.2
+  command: todo-add
+  command_class: TODO_COMMAND
+  issued_by: USER
+  issued_at: UNKNOWN
+  raw_input: /madp todo-add --title "First title" --title "Second title"
+  parse_status: PARSED
+  validation_status: SCHEMA_VALID
+  authority_status: PROPOSE_ONLY
+  authority_boundary: PROPOSE_ONLY
+  arguments:
+    title: Second title
+    repeated_options:
+      - title
+  effects:
+    intended:
+      - Invalid repeated option should not be silently normalized.
+    prohibited:
+      - Silently choosing one repeated value.
+      - Creating a TODO from ambiguous input.

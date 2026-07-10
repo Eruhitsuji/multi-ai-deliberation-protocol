@@ -1,0 +1,57 @@
+context_package:
+  package_id: CTX-ALPHA2-CLAUDE-FOLLOWUP-001
+  protocol_version: MADP-v0.3.0-alpha.2
+  created_at: UNKNOWN
+  created_by: USER
+  source_session_id: SESSION-ALPHA2-FOLLOWUP
+  source_state_version: 1
+  purpose: Verify remediation of Claude's blocking alpha.2 findings before Draft PR #2 is marked ready for review.
+  source: MIXED
+  confidence: AI_SUMMARIZED
+  target_role: REVIEWER
+  contents:
+    goal: Independently reproduce the original blocking counterexamples and determine whether they are fully remediated.
+    background:
+      - The initial Claude review returned READY_WITH_REQUIRED_FIXES.
+      - Five findings were classified as ALPHA2_BLOCKING.
+      - The implementation was changed and all registered GitHub Actions checks currently pass.
+      - Passing CI is not proof that the original counterexamples are closed.
+    blocking_findings_under_retest:
+      - finding_id: CLAUDE-A2-001
+        topic: USER_COMMAND provenance and issued_by defaults.
+      - finding_id: CLAUDE-A2-002
+        topic: Trusted-grant assurance validation and replay.
+      - finding_id: CLAUDE-A2-003
+        topic: Approval argument semantics and revision binding.
+      - finding_id: CLAUDE-A2-004
+        topic: TODO transition consistency and terminal self-transition.
+      - finding_id: CLAUDE-A2-005
+        topic: Strict YAML duplicate-key and alias handling.
+    required_files:
+      - reviews/v0.3.0-alpha.2/claude/alpha2-review-disposition.yaml
+      - scripts/parse_command_v030_alpha2.py
+      - scripts/apply_command_v030_alpha2.py
+      - scripts/todo_transitions_v030_alpha2.py
+      - scripts/check_todo_lifecycle_v030_alpha2.py
+      - scripts/test_command_parser_v030_alpha2.py
+      - scripts/test_command_runtime_v030_alpha2.py
+      - scripts/check_all_commands_v030_alpha2.py
+      - protocol/MADP-v0.3.0-alpha.2.md
+      - README-v0.3.0-alpha.2.md
+      - .github/workflows/validate.yml
+    known_state:
+      - Latest registered CI was green after the remediation changes.
+      - Draft PR #2 remains draft.
+      - No merge, tag, or release action is authorized.
+    constraints:
+      - Review only; do not modify repository files.
+      - Re-run the original counterexamples rather than relying only on the new tests.
+      - Report unread files and commands that could not be run.
+      - Do not infer user approval from this package.
+  usage_rules:
+    authority_boundary: PROPOSE_ONLY
+    may_propose_changes: true
+    may_execute_external_actions: false
+    allowed_use: REVIEW_ONLY
+    must_not_assume_user_approval: true
+    must_not_execute_external_actions: true

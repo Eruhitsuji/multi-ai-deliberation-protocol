@@ -1,0 +1,23 @@
+command_block:
+  command_id: AI-DEV-CMD-BAD-001
+  command_version: MADP-COMMAND-v0.1
+  protocol_version: MADP-v0.3.0-alpha.2
+  command: external-action
+  command_class: EXTERNAL_ACTION_COMMAND
+  issued_by: FACILITATOR
+  issued_at: UNKNOWN
+  raw_input: /madp external-action --action commit --scope repository
+  parse_status: PARSED
+  validation_status: SCHEMA_VALID
+  authority_status: USER_CONFIRMED
+  authority_boundary: USER_CONFIRMED
+  arguments:
+    action: commit
+    scope: repository
+    profile: AI_DRIVEN_DEVELOPMENT
+  effects:
+    intended:
+      - Invalid coding-agent command claims commit authority without a confirmation reference.
+    prohibited:
+      - Repository commit.
+      - Inferring user approval from profile use.

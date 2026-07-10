@@ -1,0 +1,12 @@
+session_state:
+  meta:
+    protocol_version: "MADP-v0.3.0-alpha.1"
+    session_id: "alpha1-active-session"
+  lifecycle:
+    status: "ACTIVE"
+relay_block:
+  relay_id: "relay-alpha1-001"
+  sender_role: "FACILITATOR"
+  receiver_role: "PARTICIPANT"
+  purpose: "Continue deliberation from alpha.1 material."
+  content_summary: "alpha.1 relay block with no relay_mode field."

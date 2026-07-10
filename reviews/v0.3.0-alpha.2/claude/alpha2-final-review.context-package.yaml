@@ -1,0 +1,102 @@
+context_package:
+  package_id: CTX-ALPHA2-CLAUDE-001
+  protocol_version: MADP-v0.3.0-alpha.2
+  created_at: UNKNOWN
+  created_by: USER
+  source_session_id: SESSION-ALPHA2-FINAL-REVIEW
+  source_state_version: 1
+  purpose: Provide Claude or Claude Code with bounded context for an independent final review of MADP v0.3.0-alpha.2.
+  source: MIXED
+  confidence: AI_SUMMARIZED
+  target_role: REVIEWER
+  contents:
+    goal: Identify defects, inconsistencies, security or authority weaknesses, missing tests, interoperability risks, and concrete improvement proposals before the alpha.2 draft PR is marked ready for review.
+    background:
+      - MADP alpha.1 established authority, migration, canonicalization, and validation foundations.
+      - alpha.2 adds command parsing and normalization, a 20-command registry, internal authority evaluation and state application, TODO lifecycle handling, context packages, receipts, reviews, relay modes, AI-driven development guidance, bootstrap generation, migration fixtures, traceability, and standalone schema bundles.
+      - The current branch reports implementation_status COMPLETE_FOR_DRAFT_REVIEW, while release_ready remains false.
+      - External actions are intentionally never executed by the alpha.2 runtime.
+      - The latest CI run before this review passed all registered checks.
+    constraints:
+      - Review independently rather than assuming the current implementation is correct.
+      - Do not infer user approval.
+      - Do not execute external actions, modify the repository, create commits, push, open or merge pull requests, create tags, or publish releases.
+      - Distinguish confirmed defects from suggestions, preferences, and future-version ideas.
+      - Cite exact repository paths and relevant functions, schema fields, or protocol clauses for each substantive finding.
+      - Treat passing CI as evidence that registered checks passed, not as proof of complete correctness.
+    decisions_so_far:
+      - Raw command text is never authoritative by itself.
+      - Command processing follows Parse, Normalize, Validate, Authorize, Apply.
+      - Repeated options accumulate only when registry cardinality is LIST; repeated SCALAR options are rejected.
+      - Internal state changes require the applicable authority boundary and trusted internal grant where required.
+      - EXTERNAL_ACTION_COMMAND is parsed and classified but never executed by the alpha.2 runtime.
+      - Context, relay, review, TODO, patch, and CI artifacts do not grant user approval or execution authority.
+      - The PR remains draft and no merge, tag, or release action is authorized.
+    open_questions:
+      - Are parser, registry, schema, and protocol semantics mutually consistent for all commands and argument cardinalities?
+      - Does the internal authority evaluator fail closed for malformed, stale, mismatched, or over-broad grants?
+      - Can any USER_COMMAND be fabricated or treated as user-confirmed when issued by a non-user actor?
+      - Does the internal apply runtime preserve state-version, command-history, TODO-transition, and approval-binding invariants?
+      - Are there commands whose documented effect is not implemented, or whose runtime effect exceeds the documented authority boundary?
+      - Are context package, receipt, review, relay, and AI-development artifacts sufficiently separated from execution authority?
+      - Are migration rules and generated schema bundles complete and internally consistent?
+      - Are there missing negative tests, property tests, fuzz tests, concurrency tests, or cross-model interoperability tests that should block draft promotion?
+      - Which improvements belong in alpha.2, and which should be deferred to a later prerelease?
+    relevant_files:
+      - label: alpha.2 protocol
+        path: protocol/MADP-v0.3.0-alpha.2.md
+      - label: alpha.2 glossary
+        path: protocol/GLOSSARY-v0.3.0-alpha.2.md
+      - label: alpha.2 README
+        path: README-v0.3.0-alpha.2.md
+      - label: implementation status
+        path: docs/planning/MADP-v0.3.0-alpha.2-implementation-status.yaml
+      - label: AI-driven development profile
+        path: docs/profiles/AI_DRIVEN_DEVELOPMENT-v0.3.0-alpha.2.md
+      - label: command schema
+        path: schemas/v0.3.0-alpha.2/command.schema.yaml
+      - label: command registry schema
+        path: schemas/v0.3.0-alpha.2/command-registry.schema.yaml
+      - label: command registry
+        path: registries/v0.3.0-alpha.2/commands.yaml
+      - label: command parser
+        path: scripts/parse_command_v030_alpha2.py
+      - label: authority and apply runtime
+        path: scripts/apply_command_v030_alpha2.py
+      - label: parser tests
+        path: scripts/test_command_parser_v030_alpha2.py
+      - label: runtime tests
+        path: scripts/test_command_runtime_v030_alpha2.py
+      - label: all-command coverage
+        path: scripts/check_all_commands_v030_alpha2.py
+      - label: TODO lifecycle checker
+        path: scripts/check_todo_lifecycle_v030_alpha2.py
+      - label: context package schema
+        path: schemas/v0.3.0-alpha.2/context-package.schema.yaml
+      - label: context receipt schema
+        path: schemas/v0.3.0-alpha.2/context-package-receipt.schema.yaml
+      - label: review schema
+        path: schemas/v0.3.0-alpha.2/review.schema.yaml
+      - label: relay schema
+        path: schemas/v0.3.0-alpha.2/relay.schema.yaml
+      - label: traceability matrix
+        path: tests/traceability/traceability-matrix-v0.3.0-alpha.2.yaml
+      - label: draft readiness checker
+        path: scripts/check_release_readiness_v030_alpha2.py
+      - label: CI workflow
+        path: .github/workflows/validate.yml
+    known_limitations:
+      - This package summarizes the implementation and does not replace reading the referenced files.
+      - The reviewer may not have access to GitHub Actions logs unless separately provided.
+      - External action execution is intentionally outside the alpha.2 runtime.
+      - The review itself cannot mark the PR ready, merge it, tag it, or publish a release.
+  usage_rules:
+    authority_boundary: PROPOSE_ONLY
+    may_propose_changes: true
+    may_execute_external_actions: false
+    allowed_use: REVIEW_ONLY
+    must_not_assume_user_approval: true
+    must_not_execute_external_actions: true
+  limitations:
+    - This context package is a review aid and not a permission grant.
+    - Claude should explicitly list unread or inaccessible files before making completeness claims.

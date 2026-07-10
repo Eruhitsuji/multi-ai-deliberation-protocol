@@ -1,0 +1,20 @@
+review_response:
+  request_id: REVIEW-REQ-BAD-001
+  reviewer_id: REVIEWER-001
+  protocol_version: MADP-v0.3.0-alpha.2
+  authority_boundary_applied: USER_CONFIRMED
+  external_actions_performed: true
+  user_approval_claimed: true
+  summary: Invalid review response claims approval and execution.
+  findings:
+    - finding_id: FINDING-BAD-001
+      severity: HIGH
+      category: AUTHORITY
+      statement: Invalid response exceeds review authority.
+      evidence:
+        - bootstrap/request-review.md
+      recommendation: Reject this response.
+  open_questions:
+    - Why was execution claimed?
+  limitations:
+    - Invalid fixture.

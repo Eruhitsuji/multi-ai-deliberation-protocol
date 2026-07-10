@@ -1,0 +1,21 @@
+review_request:
+  request_id: AI-DEV-REVIEW-001
+  protocol_version: MADP-v0.3.0-alpha.2
+  requester: FACILITATOR-001
+  target_role: REVIEWER
+  review_focus:
+    - Check proposed changes before a user decision.
+    - Check that repository-state authority remains separate.
+  artifacts_under_review:
+    - docs/profiles/AI_DRIVEN_DEVELOPMENT-v0.3.0-alpha.2.md
+    - bootstrap/use-madp-for-ai-driven-development.md
+  context_package: AI-DEV-CTX-001
+  allowed_actions:
+    - comment
+    - propose_changes
+    - ask_questions
+  disallowed_actions:
+    - execute
+    - claim_user_approval
+    - modify_external_resource
+  authority_boundary: PROPOSE_ONLY

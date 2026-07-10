@@ -1,0 +1,176 @@
+$schema: "https://json-schema.org/draft/2020-12/schema"
+$id: "urn:madp:schema:context-package:0.3.0-alpha.2"
+title: "MADP Context Package v0.3.0-alpha.2"
+description: "Draft schema for MADP v0.3.0-alpha.2 context packages used for AI-to-AI or chat-to-chat context sharing. Semantic invariants are defined by the protocol."
+type: object
+additionalProperties: false
+required: [context_package]
+properties:
+  context_package:
+    $ref: "#/$defs/contextPackage"
+
+$defs:
+  identifier:
+    type: string
+    minLength: 1
+    pattern: "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+  timestamp:
+    anyOf:
+      - const: "UNKNOWN"
+      - type: string
+        format: date-time
+  stringList:
+    type: array
+    items:
+      type: string
+      minLength: 1
+  referenceItem:
+    type: object
+    additionalProperties: false
+    required: [label]
+    properties:
+      label:
+        type: string
+        minLength: 1
+      path:
+        type: string
+        minLength: 1
+      url:
+        type: string
+        minLength: 1
+      digest:
+        type: string
+        minLength: 1
+      notes:
+        $ref: "#/$defs/stringList"
+
+  contextSource:
+    enum:
+      - USER_PROVIDED
+      - AI_SUMMARIZED
+      - MIXED
+  contextConfidence:
+    enum:
+      - USER_CONFIRMED
+      - AI_SUMMARIZED
+      - UNVERIFIED
+  targetRole:
+    enum:
+      - REVIEWER
+      - IMPLEMENTER
+      - VALIDATOR
+      - ASSISTANT
+      - FACILITATOR
+      - PARTICIPANT
+      - UNSPECIFIED
+  authorityBoundary:
+    enum:
+      - REFERENCE_ONLY
+      - PROPOSE_ONLY
+      - REQUIRES_USER_CONFIRMATION
+      - USER_CONFIRMED
+      - DENIED
+
+  contextContents:
+    type: object
+    additionalProperties: false
+    required:
+      - goal
+      - background
+      - constraints
+      - decisions_so_far
+      - open_questions
+      - relevant_files
+      - known_limitations
+    properties:
+      goal:
+        type: string
+        minLength: 1
+      background:
+        $ref: "#/$defs/stringList"
+      constraints:
+        $ref: "#/$defs/stringList"
+      decisions_so_far:
+        $ref: "#/$defs/stringList"
+      open_questions:
+        $ref: "#/$defs/stringList"
+      relevant_files:
+        type: array
+        items:
+          $ref: "#/$defs/referenceItem"
+      known_limitations:
+        $ref: "#/$defs/stringList"
+      evidence:
+        type: array
+        items:
+          $ref: "#/$defs/referenceItem"
+      excluded_context:
+        $ref: "#/$defs/stringList"
+
+  usageRules:
+    type: object
+    additionalProperties: false
+    required: [authority_boundary, may_propose_changes, may_execute_external_actions]
+    properties:
+      authority_boundary:
+        $ref: "#/$defs/authorityBoundary"
+      may_propose_changes:
+        type: boolean
+      may_execute_external_actions:
+        const: false
+      allowed_use:
+        enum:
+          - REFERENCE_ONLY
+          - PROPOSE_ONLY
+          - REVIEW_ONLY
+          - TASK_HANDOFF
+      must_not_assume_user_approval:
+        type: boolean
+      must_not_execute_external_actions:
+        type: boolean
+
+  contextPackage:
+    type: object
+    additionalProperties: false
+    required:
+      - package_id
+      - protocol_version
+      - purpose
+      - source
+      - confidence
+      - target_role
+      - contents
+      - usage_rules
+    properties:
+      package_id:
+        $ref: "#/$defs/identifier"
+      protocol_version:
+        const: "MADP-v0.3.0-alpha.2"
+      created_at:
+        $ref: "#/$defs/timestamp"
+      created_by:
+        enum:
+          - USER
+          - FACILITATOR
+          - PARTICIPANT
+          - SYSTEM
+      source_session_id:
+        $ref: "#/$defs/identifier"
+      source_state_version:
+        type: integer
+        minimum: 1
+      purpose:
+        type: string
+        minLength: 1
+      source:
+        $ref: "#/$defs/contextSource"
+      confidence:
+        $ref: "#/$defs/contextConfidence"
+      target_role:
+        $ref: "#/$defs/targetRole"
+      contents:
+        $ref: "#/$defs/contextContents"
+      usage_rules:
+        $ref: "#/$defs/usageRules"
+      limitations:
+        $ref: "#/$defs/stringList"
