@@ -14,6 +14,7 @@ The implemented draft includes:
 
 - structured `COMMAND_BLOCK` processing;
 - an executable CLI/YAML command parser and normalizer;
+- an authority evaluator and bounded internal-state apply runtime;
 - registry-driven coverage for all 20 commands;
 - semantic-invalid command fixtures;
 - `CONTEXT_PACKAGE` and `CONTEXT_PACKAGE_RECEIPT`;
@@ -91,31 +92,40 @@ MADP_COMMAND:
 Implementation files:
 
 - `scripts/parse_command_v030_alpha2.py`
+- `scripts/apply_command_v030_alpha2.py`
 - `scripts/test_command_parser_v030_alpha2.py`
+- `scripts/test_command_runtime_v030_alpha2.py`
 - `scripts/check_all_commands_v030_alpha2.py`
 
-The parser rejects unknown commands, unknown options, repeated options, unbound tokens, malformed quoting, and missing required arguments. All 20 registry commands are exercised with minimum valid arguments and missing-argument cases.
+The parser rejects unknown commands, unknown options, repeated `SCALAR` options, unbound tokens, malformed quoting, duplicate YAML keys, YAML anchors or aliases, invalid semantic values, and missing required arguments. Repeated `LIST` options accumulate in input order when the registry declares list cardinality. All 20 registry commands are exercised with minimum valid arguments and missing-argument cases.
 
-A parseable or schema-valid command is not execution permission.
+A parseable or schema-valid command is not execution permission. `USER_COMMAND` execution requires an explicit trusted `issued_by: USER` assertion from the invoking environment. Confirmation grants are assurance-checked and single-use by default. External-action commands remain non-executable in alpha.2.
+
+Authorized read-only commands may append command history and advance `state_version`, but they do not report `effect_applied: true`. Commands that fail parsing, validation, or authorization do not append history, do not increment `state_version`, and return `state_changed: false`.
 
 ## TODO lifecycle
 
 TODO lifecycle semantics are tested separately from schema enums.
 
+- shared transition table: `scripts/todo_transitions_v030_alpha2.py`
 - lifecycle cases: `tests/todo-lifecycle-v0.3.0-alpha.2/cases.yaml`
 - checker: `scripts/check_todo_lifecycle_v030_alpha2.py`
 
 Covered transitions include:
 
 - `OPEN -> IN_PROGRESS`;
+- `OPEN -> BLOCKED`;
 - `IN_PROGRESS -> BLOCKED`;
 - `BLOCKED -> IN_PROGRESS`;
 - `IN_PROGRESS -> DONE` with `todo-done` and a completion basis;
 - `OPEN -> DEFERRED`;
 - `DEFERRED -> OPEN`;
 - denial of terminal-state reopening;
+- denial of terminal-item metadata updates;
 - denial of `DONE` without a completion basis;
 - confirmation requirements for `todo-promote`.
+
+`DONE` and `CANCELLED` TODO items are immutable in the alpha.2 runtime. Their status, title, priority, owner, blocking reason, and completion evidence cannot be changed through `todo-update`.
 
 ## Context sharing, review, and relay mode
 
@@ -207,6 +217,7 @@ python scripts/check_command_semantic_invalid_fixtures_v030_alpha2.py
 python scripts/check_command_registry_v030_alpha2.py
 python scripts/test_command_parser_v030_alpha2.py
 python scripts/check_all_commands_v030_alpha2.py
+python scripts/test_command_runtime_v030_alpha2.py
 python scripts/check_todo_lifecycle_v030_alpha2.py
 python scripts/check_ai_development_profile_v030_alpha2.py
 python scripts/check_migration_v030_alpha2.py
@@ -217,7 +228,7 @@ python scripts/check_release_readiness_v030_alpha2.py
 
 ## Draft readiness audit
 
-The audit verifies required files, all seven schema IDs, parser and all-command coverage, TODO lifecycle checks, relay fixtures, migration artifacts, bootstrap generation, AI-driven development support, traceability, and schema bundle configuration.
+The audit verifies required files, all seven schema IDs, parser and all-command coverage, command authority/apply runtime tests, TODO lifecycle checks, relay fixtures, migration artifacts, bootstrap generation, AI-driven development support, traceability, and schema bundle configuration.
 
 It intentionally reports:
 
@@ -240,4 +251,4 @@ The user remains the sole final decision-maker for promotion, supersession, tagg
 
 ## Known remaining work
 
-No planned alpha.2 implementation item is currently marked as unimplemented. Remaining work is release governance: final review, merge authorization, tag authorization, release publication authorization, and post-publication verification.
+No planned alpha.2 implementation item is currently marked as unimplemented. Remaining work is release governance: final review, merge authorization, tag authorization, release publication authorization, and post-publication verification. Later-version hardening may include cryptographic issuer provenance, state-lineage and stale-parent checks, and registry-derived argument type metadata.
