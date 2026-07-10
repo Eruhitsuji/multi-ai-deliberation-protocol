@@ -8,16 +8,16 @@ items:
     completion_basis: COMMAND_BLOCK schema and fixtures implemented.
   - todo_id: TODO-CMD-002
     status: DONE
-    completion_basis: CLI/YAML parser, normalizer, parser tests, and error handling implemented.
+    completion_basis: CLI/YAML parser, registry-defined scalar/list cardinality, normalizer, parser tests, authority evaluator, and internal state apply runtime implemented.
   - todo_id: TODO-CMD-003
     status: DONE
-    completion_basis: User commands defined in schema and registry and covered by all-command checks.
+    completion_basis: User commands defined in schema and registry, covered by all-command checks, and supported by internal state handlers where applicable.
   - todo_id: TODO-CMD-004
     status: DONE
-    completion_basis: AI commands defined in schema and registry and covered by all-command checks.
+    completion_basis: AI commands defined in schema and registry and covered by all-command checks; proposal-only boundaries are enforced by the runtime.
   - todo_id: TODO-CMD-005
     status: DONE
-    completion_basis: TODO schema and lifecycle transition checker implemented.
+    completion_basis: TODO schema, lifecycle transition checker, and grant-gated TODO state application implemented.
   - todo_id: TODO-CMD-006
     status: DONE
     completion_basis: Command, registry, TODO, context, receipt, review, and relay schemas plus seven generated bundles implemented.
@@ -26,10 +26,11 @@ items:
     completion_basis: Command, context-sharing, review, and AI-development bootstrap prompts and generator implemented.
   - todo_id: TODO-CMD-008
     status: DONE
-    completion_basis: Semantic-invalid fixtures, authority checks, and AI-development boundaries implemented.
+    completion_basis: Semantic-invalid fixtures, trusted-grant checks, fail-closed authority evaluation, external-action non-execution, and AI-development boundaries implemented.
   - todo_id: TODO-CMD-009
     status: DONE
     completion_basis: Relay mode schema and alpha.1-to-alpha.2 migration fixtures implemented.
 limitations:
   - Completion means implemented for draft review, not merged, tagged, or published.
+  - The alpha.2 apply runtime updates only its explicit internal runtime state model; it does not execute external actions.
   - Release governance actions remain separately user-authorized.
