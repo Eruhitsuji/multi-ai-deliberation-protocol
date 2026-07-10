@@ -8,26 +8,12 @@ from madp_validation import ROOT, load_yaml, rel
 
 
 CASES = [
-    (
-        ROOT / "schemas" / "v0.3.0-alpha.2" / "command.schema.yaml",
-        ROOT / "fixtures" / "v0.3.0-alpha.2" / "command",
-    ),
-    (
-        ROOT / "schemas" / "v0.3.0-alpha.2" / "todo.schema.yaml",
-        ROOT / "fixtures" / "v0.3.0-alpha.2" / "todo",
-    ),
-    (
-        ROOT / "schemas" / "v0.3.0-alpha.2" / "context-package.schema.yaml",
-        ROOT / "fixtures" / "v0.3.0-alpha.2" / "context-package",
-    ),
-    (
-        ROOT / "schemas" / "v0.3.0-alpha.2" / "context-package-receipt.schema.yaml",
-        ROOT / "fixtures" / "v0.3.0-alpha.2" / "context-package-receipt",
-    ),
-    (
-        ROOT / "schemas" / "v0.3.0-alpha.2" / "review.schema.yaml",
-        ROOT / "fixtures" / "v0.3.0-alpha.2" / "review",
-    ),
+    (ROOT / "schemas" / "v0.3.0-alpha.2" / "command.schema.yaml", ROOT / "fixtures" / "v0.3.0-alpha.2" / "command"),
+    (ROOT / "schemas" / "v0.3.0-alpha.2" / "todo.schema.yaml", ROOT / "fixtures" / "v0.3.0-alpha.2" / "todo"),
+    (ROOT / "schemas" / "v0.3.0-alpha.2" / "context-package.schema.yaml", ROOT / "fixtures" / "v0.3.0-alpha.2" / "context-package"),
+    (ROOT / "schemas" / "v0.3.0-alpha.2" / "context-package-receipt.schema.yaml", ROOT / "fixtures" / "v0.3.0-alpha.2" / "context-package-receipt"),
+    (ROOT / "schemas" / "v0.3.0-alpha.2" / "review.schema.yaml", ROOT / "fixtures" / "v0.3.0-alpha.2" / "review"),
+    (ROOT / "schemas" / "v0.3.0-alpha.2" / "relay.schema.yaml", ROOT / "fixtures" / "v0.3.0-alpha.2" / "relay"),
 ]
 
 
@@ -75,7 +61,7 @@ def main() -> int:
         total_valid += validate_valid_cases(validator, fixture_root / "valid")
         total_invalid += validate_invalid_cases(validator, fixture_root / "invalid")
 
-    print("alpha.2 command/context/TODO/review fixtures: PASS")
+    print("alpha.2 command/context/TODO/review/relay fixtures: PASS")
     print(f"valid fixtures: {total_valid}")
     print(f"invalid fixtures: {total_invalid}")
     return 0
