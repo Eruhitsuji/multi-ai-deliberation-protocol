@@ -8,19 +8,22 @@
 
 ## Status
 
-`MADP-v0.3.0-alpha.2` is the draft Command, Context Relay, TODO, Review, and AI-Driven Development layer.
+`MADP-v0.3.0-alpha.2` is the draft Command, Context Relay, TODO, Review, Relay Mode, and AI-Driven Development layer.
 
-The draft currently includes:
+The implemented draft includes:
 
 - structured `COMMAND_BLOCK` processing;
-- command registry and semantic-invalid command fixtures;
+- an executable CLI/YAML command parser and normalizer;
+- registry-driven coverage for all 20 commands;
+- semantic-invalid command fixtures;
 - `CONTEXT_PACKAGE` and `CONTEXT_PACKAGE_RECEIPT`;
 - `REVIEW_REQUEST` and `REVIEW_RESPONSE`;
-- TODO lifecycle artifacts;
-- relay mode classification;
+- TODO schema and lifecycle transition checks;
+- a schema-validated `relay_mode` extension;
 - conservative alpha.1-to-alpha.2 migration fixtures;
 - generated alpha.2 bootstrap prompts;
-- an AI-driven development profile for coding agents such as Codex and Claude Code.
+- an AI-driven development profile for Codex, Claude Code, and similar coding agents;
+- seven reproducible standalone schema bundles generated in CI.
 
 The core safety rules remain:
 
@@ -51,17 +54,14 @@ Draft schemas:
 - `schemas/v0.3.0-alpha.2/context-package.schema.yaml`
 - `schemas/v0.3.0-alpha.2/context-package-receipt.schema.yaml`
 - `schemas/v0.3.0-alpha.2/review.schema.yaml`
+- `schemas/v0.3.0-alpha.2/relay.schema.yaml`
 
-Draft registry:
+Registry and traceability:
 
 - `registries/v0.3.0-alpha.2/commands.yaml`
-
-Planning and traceability:
-
-- `docs/planning/MADP-v0.3.0-alpha.2-scope.md`
 - `tests/traceability/traceability-matrix-v0.3.0-alpha.2.yaml`
 
-## Command and authority model
+## Command implementation
 
 Raw command text is never authoritative by itself.
 
@@ -73,70 +73,84 @@ Authorize fourth.
 Apply last.
 ```
 
-Recognized command classes are:
+The parser supports:
 
-- `AI_COMMAND`
-- `USER_COMMAND`
-- `TODO_COMMAND`
-- `EXTERNAL_ACTION_COMMAND`
+```text
+/madp <command> [--key value] [--key=value] [--flag]
+```
 
-The command registry defines per-command arguments, default authority boundaries, safety notes, and prohibited effects.
-
-Sensitive examples:
+and:
 
 ```yaml
-approve:
-  required_arguments: ["decision", "revision"]
-
-external-action:
-  required_arguments: ["action", "scope"]
-  default_authority_boundary: "REQUIRES_USER_CONFIRMATION"
-
-todo-promote:
-  default_authority_boundary: "REQUIRES_USER_CONFIRMATION"
+MADP_COMMAND:
+  command: "todo-add"
+  arguments:
+    title: "Write tests"
 ```
+
+Implementation files:
+
+- `scripts/parse_command_v030_alpha2.py`
+- `scripts/test_command_parser_v030_alpha2.py`
+- `scripts/check_all_commands_v030_alpha2.py`
+
+The parser rejects unknown commands, unknown options, repeated options, unbound tokens, malformed quoting, and missing required arguments. All 20 registry commands are exercised with minimum valid arguments and missing-argument cases.
 
 A parseable or schema-valid command is not execution permission.
 
-## Context sharing and review
+## TODO lifecycle
+
+TODO lifecycle semantics are tested separately from schema enums.
+
+- lifecycle cases: `tests/todo-lifecycle-v0.3.0-alpha.2/cases.yaml`
+- checker: `scripts/check_todo_lifecycle_v030_alpha2.py`
+
+Covered transitions include:
+
+- `OPEN -> IN_PROGRESS`;
+- `IN_PROGRESS -> BLOCKED`;
+- `BLOCKED -> IN_PROGRESS`;
+- `IN_PROGRESS -> DONE` with `todo-done` and a completion basis;
+- `OPEN -> DEFERRED`;
+- `DEFERRED -> OPEN`;
+- denial of terminal-state reopening;
+- denial of `DONE` without a completion basis;
+- confirmation requirements for `todo-promote`.
+
+## Context sharing, review, and relay mode
 
 `CONTEXT_PACKAGE` transfers bounded context without granting authority.
 
-`CONTEXT_PACKAGE_RECEIPT` records what the receiving AI understood, what remains limited, and the authority boundary applied. It must not infer user approval or permit external actions by itself.
+`CONTEXT_PACKAGE_RECEIPT` records what the receiving AI understood and must not infer user approval or permit external actions by itself.
 
-`REVIEW_REQUEST` and `REVIEW_RESPONSE` support bounded review under `PROPOSE_ONLY` authority. Review findings may inform a user decision, but they are not user approval and are not merge authorization.
+`REVIEW_REQUEST` and `REVIEW_RESPONSE` support bounded review under `PROPOSE_ONLY` authority.
+
+`schemas/v0.3.0-alpha.2/relay.schema.yaml` validates these relay modes:
+
+- `DELIBERATION`
+- `INFORMATION_TRANSFER`
+- `REVIEW_REQUEST`
+- `TASK_HANDOFF`
+- `EVIDENCE_TRANSFER`
+- `RECOVERY`
+
+Relay fixtures verify that relay metadata does not grant external-action authority or infer user approval.
 
 ## AI-driven development profile
 
-The AI-driven development profile supports coding agents such as Codex, Claude Code, and similar tools.
-
-Profile files:
+The profile supports coding agents such as Codex and Claude Code.
 
 - `docs/profiles/AI_DRIVEN_DEVELOPMENT-v0.3.0-alpha.2.md`
 - `bootstrap/use-madp-for-ai-driven-development.md`
 - `scripts/check_ai_development_profile_v030_alpha2.py`
 
-Profile fixtures:
-
-- `fixtures/v0.3.0-alpha.2/ai-development/valid/coding-task-handoff.context-package.yaml`
-- `fixtures/v0.3.0-alpha.2/ai-development/valid/review-before-commit.review.yaml`
-- `fixtures/v0.3.0-alpha.2/ai-development/invalid/auto-commit-without-approval.command.yaml`
-
-The profile separates these stages:
+The profile separates:
 
 ```text
 analysis -> proposal -> edit -> test -> review -> commit -> push -> PR -> merge -> tag -> release
 ```
 
-Later stages do not inherit authority from earlier stages. In particular:
-
-- a patch is not edit permission;
-- an edit is not commit permission;
-- a commit is not push permission;
-- a review is not merge permission;
-- a passing CI run is not release permission.
-
-Coding agents should return `AI_DEVELOPMENT_STATUS` with files read, files changed, tests run, skipped checks, assumptions, limitations, external-action state, and the next required user decision.
+Later stages do not inherit authority from earlier stages.
 
 ## Fixtures
 
@@ -147,37 +161,10 @@ Draft fixtures are under `fixtures/v0.3.0-alpha.2/`:
 - `context-package/`
 - `context-package-receipt/`
 - `review/`
+- `relay/`
 - `ai-development/`
 
-The fixture corpus covers schema-valid, schema-invalid, and semantic-invalid cases, including:
-
-- missing approval revision;
-- repeated or unknown command options;
-- ambiguous quoted command input;
-- unconfirmed external actions;
-- silent AI repair of an approval command;
-- context packages that attempt external execution;
-- receipts that infer approval;
-- review responses that claim execution;
-- coding-agent commit requests without a confirmation reference.
-
-## Migration
-
-alpha.2 migration fixtures are separate from the published alpha.1 fixture corpus:
-
-- `tests/migration-v0.3.0-alpha.2/A2-MIG-FIX-001/`
-- `tests/migration-v0.3.0-alpha.2/A2-MIG-FIX-002/`
-
-The migration checker verifies that:
-
-- active alpha.1 sessions are not silently upgraded;
-- absent alpha.1 `relay_mode` is interpreted conservatively as `DELIBERATION`;
-- historical `/madp`-like text is not replayed as an alpha.2 command;
-- published alpha.1 tags remain immutable.
-
 ## Bootstrap generation
-
-alpha.2 bootstrap generation is intentionally separate from the published alpha.1 generator.
 
 Templates generated by `scripts/generate_alpha2_bootstrap_prompts.py`:
 
@@ -188,58 +175,58 @@ Templates generated by `scripts/generate_alpha2_bootstrap_prompts.py`:
 
 Generated output also contains `bootstrap/alpha2-manifest.yaml` and `index.html`.
 
-Example:
+## Standalone schema bundles
+
+`scripts/generate_alpha2_schema_bundles.py` produces deterministic standalone JSON schema bundles for:
+
+- command;
+- command registry;
+- TODO;
+- context package;
+- context package receipt;
+- review;
+- relay.
+
+Generate and check them with:
 
 ```bash
-python scripts/generate_alpha2_bootstrap_prompts.py \
-  tmp/generated-alpha2-bootstrap \
-  --repository ExampleOwner/madp-alpha2-fixture \
-  --commit-sha 0123456789abcdef0123456789abcdef01234567 \
-  --workflow-run-id ALPHA2_LOCAL_TEST \
-  --generated-by LOCAL
-
-python scripts/check_generated_alpha2_bootstrap.py \
-  tmp/generated-alpha2-bootstrap
+python scripts/generate_alpha2_schema_bundles.py --output-dir tmp/generated-alpha2-schemas
+python scripts/generate_alpha2_schema_bundles.py --output-dir tmp/generated-alpha2-schemas --check
 ```
 
-The generator creates draft implementation aids only. It does not publish a release and does not emit the alpha.1 complete protocol bundle.
+The CI policy is to generate these distributions into a temporary directory and upload them as a GitHub Actions artifact. They are not committed under `schemas/generated/` in this draft.
 
 ## Validation
 
-Install dependencies:
-
 ```bash
 python -m pip install -r requirements-dev.txt
-```
-
-Run the main alpha.2 checks:
-
-```bash
 python scripts/test_generate_alpha2_bootstrap_prompts.py
-python scripts/check_generated_alpha2_bootstrap.py tmp/generated-alpha2-bootstrap
 python scripts/check_traceability_v030_alpha2.py
 python scripts/validate_alpha2_command_context_todo_fixtures.py
 python scripts/check_command_semantic_invalid_fixtures_v030_alpha2.py
 python scripts/check_command_registry_v030_alpha2.py
+python scripts/test_command_parser_v030_alpha2.py
+python scripts/check_all_commands_v030_alpha2.py
+python scripts/check_todo_lifecycle_v030_alpha2.py
 python scripts/check_ai_development_profile_v030_alpha2.py
 python scripts/check_migration_v030_alpha2.py
+python scripts/generate_alpha2_schema_bundles.py --output-dir tmp/generated-alpha2-schemas
+python scripts/generate_alpha2_schema_bundles.py --output-dir tmp/generated-alpha2-schemas --check
 python scripts/check_release_readiness_v030_alpha2.py
 ```
 
-The existing rc.2 and alpha.1 validation paths remain in CI and must continue to pass.
-
 ## Draft readiness audit
 
-The alpha.2 draft readiness audit checks required files, schema IDs, protocol phrases, glossary terms, traceability coverage, fixtures, command registry, migration artifacts, bootstrap prompts, bootstrap generation support, and the AI-driven development profile.
+The audit verifies required files, all seven schema IDs, parser and all-command coverage, TODO lifecycle checks, relay fixtures, migration artifacts, bootstrap generation, AI-driven development support, traceability, and schema bundle configuration.
 
-The audit intentionally reports:
+It intentionally reports:
 
 ```yaml
 release_ready: false
 draft_ready_for_review: true | false
 ```
 
-A passing draft audit means the draft is internally reviewable. It does not authorize merge, tagging, release publication, or external execution.
+A passing draft audit does not authorize merge, tagging, release publication, or external execution.
 
 ## Release and authority boundaries
 
@@ -253,5 +240,4 @@ The user remains the sole final decision-maker for promotion, supersession, tagg
 
 ## Known remaining work
 
-- Decide whether generated alpha.2 bundle schemas are needed before tagging.
-- Decide whether the AI-driven development profile should become a normative protocol section in a later prerelease.
+No planned alpha.2 implementation item is currently marked as unimplemented. Remaining work is release governance: final review, merge authorization, tag authorization, release publication authorization, and post-publication verification.
