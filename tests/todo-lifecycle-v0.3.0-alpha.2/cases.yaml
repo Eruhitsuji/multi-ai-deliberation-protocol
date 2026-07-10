@@ -1,0 +1,86 @@
+protocol_version: MADP-v0.3.0-alpha.2
+cases:
+  - case_id: TODO-TRANS-001
+    from: OPEN
+    to: IN_PROGRESS
+    operation: todo-update
+    completion_basis: null
+    confirmation_ref: null
+    expected: ALLOW
+  - case_id: TODO-TRANS-002
+    from: IN_PROGRESS
+    to: BLOCKED
+    operation: todo-update
+    completion_basis: null
+    confirmation_ref: null
+    expected: ALLOW
+  - case_id: TODO-TRANS-003
+    from: BLOCKED
+    to: IN_PROGRESS
+    operation: todo-update
+    completion_basis: null
+    confirmation_ref: null
+    expected: ALLOW
+  - case_id: TODO-TRANS-004
+    from: IN_PROGRESS
+    to: DONE
+    operation: todo-done
+    completion_basis: CI and required checks passed.
+    confirmation_ref: null
+    expected: ALLOW
+  - case_id: TODO-TRANS-005
+    from: OPEN
+    to: DEFERRED
+    operation: todo-defer
+    completion_basis: null
+    confirmation_ref: null
+    expected: ALLOW
+  - case_id: TODO-TRANS-006
+    from: DEFERRED
+    to: OPEN
+    operation: todo-update
+    completion_basis: null
+    confirmation_ref: null
+    expected: ALLOW
+  - case_id: TODO-TRANS-BAD-001
+    from: DONE
+    to: IN_PROGRESS
+    operation: todo-update
+    completion_basis: null
+    confirmation_ref: null
+    expected: DENY
+  - case_id: TODO-TRANS-BAD-002
+    from: CANCELLED
+    to: DONE
+    operation: todo-done
+    completion_basis: Work was not actually completed.
+    confirmation_ref: null
+    expected: DENY
+  - case_id: TODO-TRANS-BAD-003
+    from: IN_PROGRESS
+    to: DONE
+    operation: todo-done
+    completion_basis: null
+    confirmation_ref: null
+    expected: DENY
+  - case_id: TODO-TRANS-BAD-004
+    from: OPEN
+    to: DONE
+    operation: todo-update
+    completion_basis: Bypassed todo-done.
+    confirmation_ref: null
+    expected: DENY
+  - case_id: TODO-PROMOTE-001
+    from: OPEN
+    to: OPEN
+    operation: todo-promote
+    completion_basis: null
+    confirmation_ref: USER-CONFIRM-001
+    expected: ALLOW
+  - case_id: TODO-PROMOTE-BAD-001
+    from: OPEN
+    to: OPEN
+    operation: todo-promote
+    completion_basis: null
+    confirmation_ref: null
+    expected: DENY
