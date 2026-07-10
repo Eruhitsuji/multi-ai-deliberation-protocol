@@ -2,20 +2,11 @@
 from __future__ import annotations
 
 import json
-from pathlib import Path
 
 from madp_validation import ROOT, load_yaml
+from todo_transitions_v030_alpha2 import ALLOWED_TRANSITIONS
 
 CASES = ROOT / "tests" / "todo-lifecycle-v0.3.0-alpha.2" / "cases.yaml"
-
-ALLOWED_TRANSITIONS = {
-    "OPEN": {"IN_PROGRESS", "BLOCKED", "DEFERRED", "CANCELLED"},
-    "IN_PROGRESS": {"BLOCKED", "DONE", "DEFERRED", "CANCELLED"},
-    "BLOCKED": {"IN_PROGRESS", "DEFERRED", "CANCELLED"},
-    "DEFERRED": {"OPEN", "IN_PROGRESS", "CANCELLED"},
-    "DONE": set(),
-    "CANCELLED": set(),
-}
 
 
 def evaluate(case: dict) -> tuple[str, list[str]]:
