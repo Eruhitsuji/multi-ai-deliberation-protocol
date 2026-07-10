@@ -23,6 +23,13 @@ def registry_by_name() -> dict[str, dict[str, Any]]:
     return {entry["command"]: entry for entry in registry["commands"]}
 
 
+def argument_cardinalities(definition: dict[str, Any]) -> dict[str, str]:
+    return {
+        item["name"]: item.get("cardinality", "SCALAR")
+        for item in definition.get("arguments", [])
+    }
+
+
 def scalar(value: str) -> Any:
     lowered = value.lower()
     if lowered == "true":
@@ -37,6 +44,21 @@ def scalar(value: str) -> Any:
         return value
 
 
+def add_argument(arguments: dict[str, Any], key: str, value: Any, cardinality: str, errors: list[str]) -> None:
+    if cardinality == "LIST":
+        if key not in arguments:
+            arguments[key] = []
+        if not isinstance(arguments[key], list):
+            errors.append(f"CMD_ARGUMENT_CARDINALITY:{key}:expected_list")
+            return
+        arguments[key].append(value)
+        return
+    if key in arguments:
+        errors.append(f"CMD_REPEATED_OPTION:{key}")
+        return
+    arguments[key] = value
+
+
 def parse_cli(raw: str) -> tuple[str | None, dict[str, Any], list[str]]:
     try:
         tokens = shlex.split(raw, posix=True)
@@ -46,6 +68,8 @@ def parse_cli(raw: str) -> tuple[str | None, dict[str, Any], list[str]]:
         return None, {}, ["CMD_PARSE_ERROR:expected /madp <command>"]
 
     command = tokens[1]
+    definition = registry_by_name().get(command, {})
+    cardinalities = argument_cardinalities(definition)
     arguments: dict[str, Any] = {}
     errors: list[str] = []
     index = 2
@@ -70,10 +94,7 @@ def parse_cli(raw: str) -> tuple[str | None, dict[str, Any], list[str]]:
                 index += 1
             else:
                 parsed_value = True
-        if key in arguments:
-            errors.append(f"CMD_REPEATED_OPTION:{key}")
-        else:
-            arguments[key] = parsed_value
+        add_argument(arguments, key, parsed_value, cardinalities.get(key, "SCALAR"), errors)
         index += 1
     return command, arguments, errors
 
@@ -94,7 +115,20 @@ def parse_yaml_form(raw: str) -> tuple[str | None, dict[str, Any], list[str]]:
         return None, {}, ["CMD_PARSE_ERROR:command is required"]
     if not isinstance(arguments, dict):
         return command, {}, ["CMD_PARSE_ERROR:arguments must be an object"]
-    return command, arguments, []
+
+    definition = registry_by_name().get(command, {})
+    cardinalities = argument_cardinalities(definition)
+    errors: list[str] = []
+    normalized: dict[str, Any] = {}
+    for key, value in arguments.items():
+        cardinality = cardinalities.get(key, "SCALAR")
+        if cardinality == "LIST":
+            normalized[key] = value if isinstance(value, list) else [value]
+        elif isinstance(value, list):
+            errors.append(f"CMD_ARGUMENT_CARDINALITY:{key}:expected_scalar")
+        else:
+            normalized[key] = value
+    return command, normalized, errors
 
 
 def error_artifact(raw: str, command: str | None, errors: list[str]) -> dict[str, Any]:
@@ -136,7 +170,7 @@ def normalize(raw: str, command_id: str = "CMD-NORMALIZED-001", issued_by: str =
         if key not in known:
             errors.append(f"CMD_UNKNOWN_OPTION:{key}")
     for key in definition.get("required_arguments", []):
-        if key not in arguments:
+        if key not in arguments or arguments[key] == []:
             errors.append(f"CMD_MISSING_REQUIRED_ARGUMENT:{key}")
     if errors:
         return error_artifact(raw, command, errors)
