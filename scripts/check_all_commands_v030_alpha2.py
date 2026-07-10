@@ -16,6 +16,10 @@ def value_for(name: str):
         "priority": "HIGH",
         "relay_mode": "TASK_HANDOFF",
         "target_role": "REVIEWER",
+        "target_type": "PROPOSAL",
+        "status": "OPEN",
+        "type": "IMPLEMENTATION",
+        "owner": "UNSPECIFIED",
         "dry_run": True,
     }
     return values.get(name, f"VALUE-{name.upper()}")
