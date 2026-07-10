@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 from pathlib import Path
-import sys
 import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -23,7 +22,9 @@ REQUIRED_REQUIREMENTS = {
     "A2-TRC-CMD-003",
     "A2-TRC-CMD-004",
     "A2-TRC-CMD-005",
+    "A2-TRC-CMD-006",
     "A2-TRC-TODO-001",
+    "A2-TRC-TODO-002",
     "A2-TRC-CTX-001",
     "A2-TRC-CTX-002",
     "A2-TRC-REVIEW-001",
@@ -31,6 +32,7 @@ REQUIRED_REQUIREMENTS = {
     "A2-TRC-AIDEV-001",
     "A2-TRC-RELAY-001",
     "A2-TRC-MIG-001",
+    "A2-TRC-BUNDLE-001",
 }
 
 
@@ -65,20 +67,23 @@ def main() -> int:
         if not entry.get("release_gates"):
             failures.append(f"entry {index}: release_gates must not be empty")
 
-        schema_target = entry.get("schema_target", "")
-        if isinstance(schema_target, str):
-            target_path = schema_target.split("#", 1)[0]
-            if target_path and not (ROOT / target_path).exists():
-                failures.append(f"entry {index}: missing schema target path {target_path}")
+        target_path = str(entry.get("schema_target", "")).split("#", 1)[0]
+        if target_path and not (ROOT / target_path).exists():
+            failures.append(f"entry {index}: missing schema target path {target_path}")
 
         for fixture in entry.get("fixtures", []):
-            path = fixture.split("#", 1)[0]
+            path = str(fixture).split("#", 1)[0]
             if path and not (ROOT / path).exists():
                 failures.append(f"entry {index}: missing fixture path {path}")
 
     missing_requirements = REQUIRED_REQUIREMENTS - seen_ids
+    extra_requirements = seen_ids - REQUIRED_REQUIREMENTS
     if missing_requirements:
         failures.append(f"missing alpha.2 requirement coverage: {sorted(missing_requirements)}")
+    if extra_requirements:
+        failures.append(f"unregistered alpha.2 requirement coverage: {sorted(extra_requirements)}")
+    if len(entries) != len(REQUIRED_REQUIREMENTS):
+        failures.append(f"traceability entry count mismatch: {len(entries)} != {len(REQUIRED_REQUIREMENTS)}")
 
     if failures:
         print("alpha.2 traceability: FAIL")
@@ -86,6 +91,7 @@ def main() -> int:
         return 1
 
     print("alpha.2 traceability: PASS")
+    print("requirements:", len(entries))
     return 0
 
 
