@@ -175,12 +175,14 @@ def semantic_errors(command: str, arguments: dict[str, Any]) -> list[str]:
         if allowed and any(not isinstance(item, str) or item not in allowed for item in values):
             errors.append(f"CMD_ARGUMENT_VALUE_INVALID:{key}")
     if command == "approve":
-        decision = arguments.get("decision")
-        revision = arguments.get("revision")
-        if not isinstance(decision, str) or not IDENTIFIER_RE.fullmatch(decision):
-            errors.append("CMD_APPROVAL_DECISION_INVALID")
-        if isinstance(revision, bool) or not isinstance(revision, int) or revision <= 0:
-            errors.append("CMD_APPROVAL_REVISION_INVALID")
+        if "decision" in arguments and not empty_value(arguments["decision"]):
+            decision = arguments["decision"]
+            if not isinstance(decision, str) or not IDENTIFIER_RE.fullmatch(decision):
+                errors.append("CMD_APPROVAL_DECISION_INVALID")
+        if "revision" in arguments and not empty_value(arguments["revision"]):
+            revision = arguments["revision"]
+            if isinstance(revision, bool) or not isinstance(revision, int) or revision <= 0:
+                errors.append("CMD_APPROVAL_REVISION_INVALID")
     return errors
 
 
