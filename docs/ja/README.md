@@ -15,9 +15,17 @@ normative: false
 ## 最初に読む
 
 - [はじめに](getting-started.md)
+- [基本的な使用方法とworkflow選択](basic-usage.md)
+- [実践ガイド一覧](practical-guides.md)
 - [基本概念](concepts.md)
 - [説明用用語集](glossary.md)
 - [よくある質問](faq.md)
+
+## 議論方式
+
+- [複数生成AIモデルでの議論](multi-model-deliberation.md)
+- [単体生成AIモデル・複数チャットでの議論](single-model-multi-chat.md)
+- [単体生成AIモデル・単一チャットでの議論](single-model-single-chat.md)
 
 ## 実践ガイド
 
