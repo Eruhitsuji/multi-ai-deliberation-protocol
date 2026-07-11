@@ -12,6 +12,7 @@ VERSION = "MADP-v0.3.0-alpha.3"
 SCHEMAS = {
     "deliberation": ROOT / "schemas/v0.3.0-alpha.3/deliberation.schema.yaml",
     "command": ROOT / "schemas/v0.3.0-alpha.3/command.schema.yaml",
+    "migration": ROOT / "schemas/v0.3.0-alpha.3/migration.schema.yaml",
 }
 REQUIRED_COMMANDS = {
     "participant-add", "participant-update-capability", "participant-set-mode",
@@ -23,10 +24,12 @@ REQUIRED_COMMANDS = {
 }
 REQUIRED_FILES = [
     "README-v0.3.0-alpha.3.md",
+    "README-v0.3.0-alpha.3.ja.md",
     "protocol/MADP-v0.3.0-alpha.3.md",
     "protocol/GLOSSARY-v0.3.0-alpha.3.md",
     "schemas/v0.3.0-alpha.3/deliberation.schema.yaml",
     "schemas/v0.3.0-alpha.3/command.schema.yaml",
+    "schemas/v0.3.0-alpha.3/migration.schema.yaml",
     "registries/v0.3.0-alpha.3/commands.yaml",
     "bootstrap/alpha3/README.md",
     "bootstrap/alpha3/quick-start.md",
@@ -37,6 +40,10 @@ REQUIRED_FILES = [
     "docs/profiles/MODEL_RESPONSE_COMPARISON-v0.3.0-alpha.3.md",
     "docs/profiles/MADP_HELP-v0.3.0-alpha.3.md",
     "docs/profiles/SKILL_ADAPTERS-v0.3.0-alpha.3.md",
+    "docs/migration/MADP-v0.3.0-alpha.2-to-alpha.3.md",
+    "docs/evaluation/MADP-v0.3.0-alpha.3-usability-plan.md",
+    "docs/evaluation/MADP-v0.3.0-alpha.3-usability-results.yaml",
+    "docs/ja/v0.3.0-alpha.3/translation-manifest.yaml",
     "skills/madp-facilitator/SKILL.md",
     "skills/madp-help/SKILL.md",
     "dist/chatgpt/madp-facilitator-instructions.md",
@@ -44,6 +51,14 @@ REQUIRED_FILES = [
     "docs/planning/MADP-v0.3.0-alpha.3-implementation-status.yaml",
     "docs/planning/MADP-v0.3.0-alpha.3-traceability.yaml",
     "tests/v0.3.0-alpha.3/fixtures.yaml",
+    "tests/v0.3.0-alpha.3/migration-fixtures.yaml",
+    "tests/v0.3.0-alpha.3/usability-scenarios.yaml",
+    "scripts/check_alpha3_translation.py",
+    "scripts/check_alpha3_migration.py",
+    "scripts/check_alpha3_usability.py",
+    "scripts/generate_alpha3_release_artifacts.py",
+    "scripts/check_generated_alpha3_release_artifacts.py",
+    "scripts/check_release_readiness_v030_alpha3.py",
 ]
 
 
@@ -104,15 +119,27 @@ def main() -> int:
         status = load_yaml(status_path)
         if status.get("protocol_version") != VERSION:
             problems.append("implementation status version mismatch")
-        if status.get("implementation_status") != "DRAFT_IMPLEMENTED":
-            problems.append("implementation status must be DRAFT_IMPLEMENTED")
+        if status.get("implementation_status") != "RELEASE_CANDIDATE_CONTENT_READY":
+            problems.append("implementation status must be RELEASE_CANDIDATE_CONTENT_READY")
+        if status.get("integration_status") != "IMPLEMENTATION_BRANCH":
+            problems.append("implementation branch must identify IMPLEMENTATION_BRANCH")
+        if status.get("content_ready") is not True:
+            problems.append("release candidate content must be ready")
         if status.get("release_ready") is not False:
-            problems.append("draft implementation must not be release_ready")
+            problems.append("implementation branch must not claim final release readiness")
         checks = status.get("automated_checks", {})
         if not checks or any(value != "DONE" for value in checks.values()):
             problems.append("automated implementation checks are not all DONE")
-        if not status.get("release_blockers"):
-            problems.append("release blockers must be explicit before release")
+        blockers = {item.get("id"): item.get("status") for item in status.get("release_blockers", [])}
+        expected = {
+            "A3-REL-001": "MANUAL_ACTION_REQUIRED",
+            "A3-REL-002": "DONE",
+            "A3-REL-003": "DONE",
+            "A3-REL-004": "DONE",
+            "A3-REL-005": "POST_MERGE_REQUIRED",
+        }
+        if blockers != expected:
+            problems.append(f"release blocker status mismatch: {blockers}")
 
     trace_path = ROOT / "docs/planning/MADP-v0.3.0-alpha.3-traceability.yaml"
     if trace_path.is_file():
@@ -121,7 +148,7 @@ def main() -> int:
         ids = [entry.get("id") for entry in entries]
         if len(ids) != len(set(ids)):
             problems.append("duplicate traceability requirement IDs")
-        if len(entries) < 15:
+        if len(entries) < 20:
             problems.append("alpha.3 traceability is incomplete")
         for entry in entries:
             if entry.get("status") != "IMPLEMENTED":
@@ -129,6 +156,9 @@ def main() -> int:
             artifact = entry.get("artifact")
             if not artifact or not (ROOT / artifact).is_file():
                 problems.append(f"traceability artifact missing for {entry.get('id')}: {artifact}")
+            validation = entry.get("validation")
+            if not validation or not (ROOT / validation).is_file():
+                problems.append(f"traceability validation missing for {entry.get('id')}: {validation}")
 
     if fixture_path.is_file():
         data = load_yaml(fixture_path)
@@ -159,7 +189,7 @@ def main() -> int:
             print(f"FAIL: {problem}", file=sys.stderr)
         return 1
 
-    print("MADP-v0.3.0-alpha.3 implementation checks: PASS")
+    print("MADP-v0.3.0-alpha.3 integrated implementation checks: PASS")
     print(f"schemas: {len(validators)}")
     print(f"commands: {len(REQUIRED_COMMANDS)}")
     print(f"required_files: {len(REQUIRED_FILES)}")

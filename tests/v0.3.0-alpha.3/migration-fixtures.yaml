@@ -1,0 +1,59 @@
+valid:
+  - migration_record:
+      migration_id: MIG-A2-A3-001
+      source_protocol_version: MADP-v0.3.0-alpha.2
+      target_protocol_version: MADP-v0.3.0-alpha.3
+      source_state_ref: artifact://alpha2/session-state-7
+      source_state_version: 7
+      source_raw_preserved: true
+      authority_escalated: false
+      user_approval_inferred: false
+      transformations:
+        - source_type: ROLE_ACTOR
+          target_type: participant_profile
+          mapping: Preserve actor identity; classify as AI_ROLE_ACTOR and I0.
+          information_loss: false
+        - source_type: RELAY_RESPONSE
+          target_type: response_ingest_record
+          mapping: Preserve raw response and classify observed format.
+          information_loss: false
+      target_artifact_refs:
+        - artifact://alpha3/participant/actor-1
+        - artifact://alpha3/ingest/relay-7
+      validation_status: PASS
+      rollback_available: true
+      limitations:
+        - Capability fields not present in alpha.2 are UNKNOWN.
+invalid:
+  - migration_record:
+      migration_id: MIG-BAD-AUTH
+      source_protocol_version: MADP-v0.3.0-alpha.2
+      target_protocol_version: MADP-v0.3.0-alpha.3
+      source_state_ref: artifact://alpha2/session-state-7
+      source_raw_preserved: true
+      authority_escalated: true
+      user_approval_inferred: false
+      transformations:
+        - source_type: ROLE_ACTOR
+          target_type: participant_profile
+          mapping: Add approval authority.
+          information_loss: false
+      target_artifact_refs: [artifact://alpha3/participant/actor-1]
+      validation_status: PASS
+      rollback_available: true
+  - migration_record:
+      migration_id: MIG-BAD-APPROVAL
+      source_protocol_version: MADP-v0.3.0-alpha.2
+      target_protocol_version: MADP-v0.3.0-alpha.3
+      source_state_ref: artifact://alpha2/session-state-7
+      source_raw_preserved: true
+      authority_escalated: false
+      user_approval_inferred: true
+      transformations:
+        - source_type: PROPOSAL
+          target_type: APPROVED_DECISION
+          mapping: Treat proposal as approval.
+          information_loss: false
+      target_artifact_refs: [artifact://alpha3/decision/1]
+      validation_status: PASS
+      rollback_available: true

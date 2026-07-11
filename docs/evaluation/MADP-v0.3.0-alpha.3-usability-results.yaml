@@ -1,0 +1,26 @@
+protocol_version: MADP-v0.3.0-alpha.3
+results_version: 1
+automated_walkthrough:
+  status: PASS
+  scenario_count: 7
+  checks:
+    all_scenarios_have_success_condition: PASS
+    all_scenarios_map_required_features: PASS
+    next_action_coverage: PASS
+    authority_invariant_coverage: PASS
+manual_trials:
+  status: NOT_RUN
+  participants: []
+  scenario_results: []
+  metrics:
+    task_completion_rate: null
+    critical_authority_errors: null
+    unnecessary_user_pauses: null
+    next_action_understood_rate: null
+    median_recovery_attempts: null
+  sign_off:
+    approved_by: []
+    approved_at: null
+limitations:
+  - Automated walkthroughs do not prove human comprehension.
+  - Manual trial evidence is required before release_ready may become true.

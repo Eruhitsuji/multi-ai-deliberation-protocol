@@ -1,6 +1,6 @@
 # MADP v0.3.0-alpha.3 — Inclusive, Guided, and Team-Aware Deliberation
 
-Status: implementation draft; not tagged or published.
+Status: release-candidate content implemented; not tagged or published.
 
 MADP v0.3.0-alpha.3 extends the published alpha.2 core with practical workflow support for:
 
@@ -19,7 +19,7 @@ MADP v0.3.0-alpha.3 extends the published alpha.2 core with practical workflow s
 
 ## Normative source set
 
-Until alpha.3 becomes a self-contained release bundle, the implementation draft uses:
+The alpha.3 release generator creates a self-contained commit-pinned bundle using:
 
 1. the published `MADP-v0.3.0-alpha.2` protocol and glossary for unchanged core rules;
 2. `protocol/MADP-v0.3.0-alpha.3.md` for alpha.3 additions and overrides;
@@ -49,16 +49,21 @@ If alpha.3 text conflicts with unchanged alpha.2 safety or authority rules, the 
 - Bootstrap: `bootstrap/alpha3/`
 - Team, comparison, help, and skill profiles: `docs/profiles/`
 - Automated fixtures: `tests/v0.3.0-alpha.3/fixtures.yaml`
+- Migration: `docs/migration/MADP-v0.3.0-alpha.2-to-alpha.3.md`
+- Usability evaluation: `docs/evaluation/MADP-v0.3.0-alpha.3-usability-plan.md`
+- Japanese translations: `docs/ja/v0.3.0-alpha.3/`
+- Release artifact generator: `scripts/generate_alpha3_release_artifacts.py`
 - Validation: `scripts/check_alpha3_implementation.py`
+- Release audit: `scripts/check_release_readiness_v030_alpha3.py`
 - Traceability: `docs/planning/MADP-v0.3.0-alpha.3-traceability.yaml`
 
 ## Release status
 
 ```yaml
-implementation_status: DRAFT_IMPLEMENTED
+implementation_status: RELEASE_CANDIDATE_CONTENT_READY
 release_ready: false
 tagged: false
 published: false
 ```
 
-Manual usability trials, bilingual document completion, generated distribution, migration fixtures, and release-candidate audit remain release blockers.
+Japanese translations, migration fixtures, release artifact generation, reproducibility checks, and branch release audit are implemented. Manual human usability sign-off and the final audit on the merged main commit remain release gates.

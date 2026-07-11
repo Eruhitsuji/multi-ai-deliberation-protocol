@@ -1,0 +1,37 @@
+protocol_version: MADP-v0.3.0-alpha.3
+scenarios:
+  - id: USAB-QUICK-001
+    title: Start a single-chat discussion
+    participant_class: FIRST_TIME_USER
+    required_features: [QUICK_BOOTSTRAP, DELIBERATION_PLAN, NEXT_ACTION_CARD]
+    success_condition: User reaches a confirmed or explicitly optional goal gate and knows the next action.
+  - id: USAB-RELAY-001
+    title: Request an external Claude review
+    participant_class: GENERAL_USER
+    required_features: [PLAIN_OR_STRUCTURED_RELAY, COPY_BOUNDARY, RETURN_DESTINATION]
+    success_condition: User copies the correct block and returns the unchanged response to the facilitator.
+  - id: USAB-LIMITED-001
+    title: Invite a limited-capability AI
+    participant_class: GENERAL_USER
+    required_features: [CAPABILITY_PROFILE, OPINION_ONLY, PLAIN_RELAY]
+    success_condition: Useful free-text opinion is accepted without granting canonical authority.
+  - id: USAB-RECOVERY-001
+    title: Recover from nonconformant output
+    participant_class: GENERAL_USER
+    required_features: [RAW_RESPONSE, RESPONSE_INGEST, NORMALIZATION_AUDIT]
+    success_condition: Raw content is retained and no approval, confidence, evidence, or permission is invented.
+  - id: USAB-TEAM-001
+    title: Conduct a multi-human decision
+    participant_class: TEAM_MEMBER
+    required_features: [TEAM_PARTICIPANTS, NAMED_APPROVERS, DISSENT]
+    success_condition: Decision status identifies approvers and silence is not counted as consent.
+  - id: USAB-MINUTES-001
+    title: Generate reviewable minutes
+    participant_class: TEAM_MEMBER
+    required_features: [SESSION_MINUTES, DECISION_SEPARATION, ACTION_ITEMS]
+    success_condition: User distinguishes draft minutes, decisions, dissent, and actions.
+  - id: USAB-HELP-001
+    title: Use a separate Help chat
+    participant_class: FIRST_TIME_USER
+    required_features: [HELP_CONTEXT, ADVICE_ONLY, RESUME_PATH]
+    success_condition: Help provides a concrete next action without modifying canonical state.

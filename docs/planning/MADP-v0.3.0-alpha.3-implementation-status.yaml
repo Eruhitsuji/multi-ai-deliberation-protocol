@@ -1,7 +1,8 @@
-status_version: 1
+status_version: 2
 protocol_version: MADP-v0.3.0-alpha.3
-implementation_status: DRAFT_IMPLEMENTED
+implementation_status: RELEASE_CANDIDATE_CONTENT_READY
 integration_status: IMPLEMENTATION_BRANCH
+content_ready: true
 release_ready: false
 tagged: false
 published: false
@@ -13,19 +14,29 @@ automated_checks:
   document_presence: DONE
   skill_adapter_presence: DONE
   traceability: DONE
+  japanese_translation_audit: DONE
+  release_artifact_generation: DONE
+  standalone_schema_bundles: DONE
+  migration_fixtures: DONE
+  automated_usability_walkthrough: DONE
+  branch_release_audit: DONE
 release_blockers:
-  - id: A3-REL-001
-    status: PENDING
-    title: Complete manual usability trials
-  - id: A3-REL-002
-    status: PENDING
-    title: Complete Japanese translations and translation audit
-  - id: A3-REL-003
-    status: PENDING
-    title: Generate release bootstrap and standalone bundles
-  - id: A3-REL-004
-    status: PENDING
-    title: Implement alpha.2 to alpha.3 migration fixtures
-  - id: A3-REL-005
-    status: PENDING
-    title: Run release-candidate audit on final main commit
+- id: A3-REL-001
+  status: MANUAL_ACTION_REQUIRED
+  title: Complete and sign off manual human usability trials
+- id: A3-REL-002
+  status: DONE
+  title: Complete Japanese translations and translation audit
+- id: A3-REL-003
+  status: DONE
+  title: Generate release bootstrap and standalone bundles
+- id: A3-REL-004
+  status: DONE
+  title: Implement alpha.2 to alpha.3 migration fixtures
+- id: A3-REL-005
+  status: POST_MERGE_REQUIRED
+  title: Run release-candidate audit on final main commit
+release_notes:
+- Automated checks must not be treated as human usability evidence.
+- Current published bootstrap remains alpha.2 until alpha.3 release authorization.
+- No tag or release is created by this implementation branch.

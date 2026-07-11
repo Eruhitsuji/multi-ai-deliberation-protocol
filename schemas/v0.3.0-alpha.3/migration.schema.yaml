@@ -1,0 +1,55 @@
+$schema: "https://json-schema.org/draft/2020-12/schema"
+$id: "urn:madp:schema:migration:0.3.0-alpha.3"
+title: "MADP alpha.2 to alpha.3 Migration Record"
+type: object
+additionalProperties: false
+required: [migration_record]
+properties:
+  migration_record:
+    type: object
+    additionalProperties: false
+    required:
+      - migration_id
+      - source_protocol_version
+      - target_protocol_version
+      - source_state_ref
+      - source_raw_preserved
+      - authority_escalated
+      - user_approval_inferred
+      - transformations
+      - target_artifact_refs
+      - validation_status
+      - rollback_available
+    properties:
+      migration_id: {type: string, minLength: 1, pattern: "^[A-Za-z0-9][A-Za-z0-9._:-]*$"}
+      source_protocol_version: {const: "MADP-v0.3.0-alpha.2"}
+      target_protocol_version: {const: "MADP-v0.3.0-alpha.3"}
+      source_state_ref: {type: string, minLength: 1}
+      source_state_version: {type: integer, minimum: 0}
+      source_raw_preserved: {const: true}
+      authority_escalated: {const: false}
+      user_approval_inferred: {const: false}
+      transformations:
+        type: array
+        minItems: 1
+        items:
+          type: object
+          additionalProperties: false
+          required: [source_type, target_type, mapping, information_loss]
+          properties:
+            source_type: {type: string, minLength: 1}
+            target_type: {type: string, minLength: 1}
+            mapping: {type: string, minLength: 1}
+            information_loss: {type: boolean}
+            limitations:
+              type: array
+              items: {type: string, minLength: 1}
+      target_artifact_refs:
+        type: array
+        minItems: 1
+        items: {type: string, minLength: 1}
+      validation_status: {enum: [PASS, FAIL, NOT_VALIDATED]}
+      rollback_available: {const: true}
+      limitations:
+        type: array
+        items: {type: string, minLength: 1}
