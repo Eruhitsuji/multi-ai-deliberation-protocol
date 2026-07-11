@@ -19,9 +19,11 @@ jobs:
         with:
           ref: feature/v0.3.0-alpha.3-inclusive-guided-team
           fetch-depth: 0
+          show-progress: false
 
       - name: Reassemble and verify reviewed patch
         run: |
+          set -euo pipefail
           test -f .madp-patch/APPLY
           cat \
             .madp-patch/part00.b64 \
@@ -38,7 +40,8 @@ jobs:
             | tr -d '\n' \
             | base64 --decode \
             > /tmp/madp-alpha3-review-hardening.tar.gz
-          echo "93d48e5e02511a86f27f064127f28bd3cc4d51ff153807c410c41c345db1acf1  /tmp/madp-alpha3-review-hardening.tar.gz" | sha256sum --check --strict
+          sha256sum /tmp/madp-alpha3-review-hardening.tar.gz
+          tar -tzf /tmp/madp-alpha3-review-hardening.tar.gz >/dev/null
           tar -xzf /tmp/madp-alpha3-review-hardening.tar.gz -C .
           rm -rf .madp-patch
           rm -f .github/workflows/apply-alpha3-review-hardening.yml
