@@ -1,5 +1,5 @@
 protocol_version: MADP-v0.3.0-alpha.3
-results_version: 2
+results_version: 3
 automated_walkthrough:
   status: PASS
   scenario_count: 8
@@ -11,6 +11,8 @@ automated_walkthrough:
     alpha2_command_compatibility_coverage: PASS
 manual_trials:
   status: NOT_RUN
+  protocol_load_report_required: true
+  required_load_report_version: MADP-PROTOCOL-LOAD-REPORT-v1
   participants: []
   scenario_results: []
   metrics:
@@ -29,3 +31,4 @@ manual_trials:
 limitations:
   - Automated walkthroughs do not prove human comprehension.
   - Manual trial evidence is required before release_ready may become true.
+  - Trials without a COMPLETE commit-bound protocol load report are negative bootstrap observations, not protocol-conformance evidence.
