@@ -1,182 +1,105 @@
 ---
-bootstrap_version: 0.2
-protocol_version: MADP-v0.3.0-alpha.1
+bootstrap_version: 0.3
+protocol_version: MADP-v0.3.0-alpha.2
 status: informative implementation aid
 ---
 
 # MADP Bootstrap Prompts
 
-These prompts help start a new AI chat that does not already know MADP. They are informative implementation aids. They do not override the protocol, glossary, schemas, user instructions, platform safety rules, or any higher-priority authority.
+These prompts help start a new AI chat with the current published prerelease, `MADP-v0.3.0-alpha.2`. They are informative implementation aids and do not override the protocol, glossary, schemas, registries, user instructions, platform safety rules, or higher-priority authority.
 
-Use these prompts to make the receiving AI load the pinned MADP files, report what it actually read, and avoid guessing when a required file is unread or only partially read.
+## Recommended order
 
-## Template and Generated Prompts
-
-In the source repository, the files in `bootstrap/` are source templates. They intentionally keep the repository-specific placeholders listed below.
-
-Generated prompt files are produced for GitHub Pages by resolving only those repository-specific placeholders. The generated canonical Raw URLs for `MADP-v0.3.0-alpha.1` are pinned to the source commit recorded in `bootstrap/manifest.yaml`. The GitHub Pages latest URL is movable, but the generated file contents point at one specific commit.
-
-For high-assurance use, verify the generated `manifest.yaml`, the source repository, and the source commit before pasting a generated prompt into a new AI chat. Session-specific placeholders such as `{{PARTICIPANT_ID}}`, `{{SESSION_ID}}`, `{{TASK}}`, and `{{RELAY_BLOCK}}` still need to be filled in at use time.
-
-## Bootstrap vs Protocol, Profiles, and Templates
-
-- Protocol: the normative behavior, authorization, state, relay, and conformance rules.
-- Glossary: normative meanings for explicitly marked terms.
-- Schemas: machine-readable field names, required fields, types, enum spellings, and root-document separation.
-- Profile: a future reusable domain rule set built on the protocol.
-- Template: a future starter kit for a recurring workflow.
-- Bootstrap prompt: an informative startup aid for a new chat.
-
-If this bootstrap text conflicts with the protocol, glossary, or schemas, treat the conflict as a defect and follow the authority order in the protocol.
-
-## Recommended Order
-
-1. Send [load-protocol-from-github.md](load-protocol-from-github.md) with commit-pinned Raw URLs.
+1. Send [load-protocol-from-github.md](load-protocol-from-github.md).
 2. Inspect the returned `PROTOCOL_LOAD_REPORT`.
-3. If `all_required_files_read: true`, send either [start-facilitator.md](start-facilitator.md) or [join-as-participant.md](join-as-participant.md).
-4. Provide `SESSION_STATE` for facilitator startup or `RELAY_BLOCK` for participant startup.
-5. If loading failed or was partial, use [recover-from-load-failure.md](recover-from-load-failure.md).
-6. For draft alpha.2 command, context sharing, or review workflows, use the alpha.2 draft prompts listed below only after making the draft limitations clear.
+3. Continue only when `all_required_files_read: true`.
+4. Send [start-facilitator.md](start-facilitator.md) or [join-as-participant.md](join-as-participant.md).
+5. Use [recover-from-load-failure.md](recover-from-load-failure.md) when loading is incomplete.
+6. Use the command, context-sharing, review, and AI-development prompts as needed.
 
-## Alpha.2 Draft Bootstrap Prompts
+## Current alpha.2 load set
 
-The following prompts are draft aids for `MADP-v0.3.0-alpha.2` planning. They do not replace the alpha.1 load process and do not claim release readiness.
+The standard bootstrap loads 12 files from one immutable commit:
 
-- [use-madp-commands.md](use-madp-commands.md): helps an AI parse, normalize, validate, and authority-check MADP commands.
-- [share-context-with-ai.md](share-context-with-ai.md): helps prepare or receive a `CONTEXT_PACKAGE` for AI-to-AI or chat-to-chat context sharing.
-- [request-review.md](request-review.md): helps request bounded `PROPOSE_ONLY` review from another AI, role actor, or chat session.
+1. `README-v0.3.0-alpha.2.md`
+2. `protocol/MADP-v0.3.0-alpha.2.md`
+3. `protocol/GLOSSARY-v0.3.0-alpha.2.md`
+4. `schemas/v0.3.0-alpha.2/command.schema.yaml`
+5. `schemas/v0.3.0-alpha.2/command-registry.schema.yaml`
+6. `schemas/v0.3.0-alpha.2/todo.schema.yaml`
+7. `schemas/v0.3.0-alpha.2/context-package.schema.yaml`
+8. `schemas/v0.3.0-alpha.2/context-package-receipt.schema.yaml`
+9. `schemas/v0.3.0-alpha.2/review.schema.yaml`
+10. `schemas/v0.3.0-alpha.2/relay.schema.yaml`
+11. `registries/v0.3.0-alpha.2/commands.yaml`
+12. `docs/profiles/AI_DRIVEN_DEVELOPMENT-v0.3.0-alpha.2.md`
 
-These alpha.2 prompts preserve the core safety rules:
+The English protocol, glossary, schemas, and registry are normative. The profile and bootstrap prompts remain informative unless the protocol explicitly says otherwise.
 
-- Do not claim user approval.
-- Do not treat model convergence as evidence.
-- Default authority is `PROPOSE_ONLY` unless a trusted grant says otherwise.
-- A TODO is not a decision.
-- A decision is not approval.
-- Approval is not execution permission.
+## Generated Pages distribution
 
-## Trust Order for Source Material
+The source files in `bootstrap/` retain repository placeholders. GitHub Pages generation resolves only repository-specific placeholders and pins Raw URLs to the source commit recorded in `bootstrap/manifest.yaml`.
 
-1. Direct file upload or pasted full file text from the user.
-2. Commit-pinned Raw URLs for each canonical file.
-3. Commit-pinned repository archive or digest with file paths.
-4. Repository top URL or branch URL.
+For high-assurance use, verify the manifest and source commit before using a generated prompt. A movable Pages URL is not itself immutable evidence.
 
-A repository top URL is not proof that a model read the files. A branch URL such as `main` can move and should not be the standard bootstrap source for release work.
-
-## Required Alpha.1 Files
-
-The alpha.1 bootstrap load set contains seven files:
-
-1. `README-v0.3.0-alpha.1.md`
-2. `protocol/MADP-v0.3.0-alpha.1.md`
-3. `protocol/GLOSSARY-v0.3.0-alpha.1.md`
-4. `schemas/generated/session-state-v0.3.0-alpha.1.bundle.schema.yaml`
-5. `schemas/generated/relay-block-v0.3.0-alpha.1.bundle.schema.yaml`
-6. `schemas/v0.3.0-alpha.1/migration-evidence.schema.yaml`
-7. `schemas/v0.3.0-alpha.1/migration-audit.schema.yaml`
-
-The generated root-schema bundles are used so the receiving environment does not need to resolve external `$ref` resources.
-
-## Public GitHub Repository Limits
-
-Some AI chats cannot fetch URLs, cannot access GitHub, fetch rendered pages instead of raw files, truncate long files, or summarize content without reading it. The receiving AI must report these limits in `PROTOCOL_LOAD_REPORT.limitations` and must not reconstruct unread protocol content from general knowledge.
-
-## Manual Paste Fallback
-
-If `all_required_files_read: false`, open the generated complete bundle in a browser:
+Manual bundle URL:
 
 ```text
 https://{{MADP_GITHUB_OWNER}}.github.io/{{MADP_GITHUB_REPOSITORY}}/bootstrap/complete-protocol-bundle.txt
 ```
 
-Copy the entire page, from `BEGIN_MADP_BUNDLE_METADATA` through the final `END_FILE` line, and paste it into the same AI chat. Then request a new `PROTOCOL_LOAD_REPORT`. The receiving AI must identify all seven files from the bundle boundaries, report `access_method: "PASTED_TEXT"`, and set `all_required_files_read: true` only when all seven required files were completely received.
+Take `repository_commit` only from `BEGIN_MADP_BUNDLE_METADATA.source_commit`. If metadata is absent, use `UNKNOWN`; do not guess.
 
-The Pages URL is a movable deployment URL and intentionally does not contain `{{MADP_COMMIT_SHA}}`. The generated bundle content and manifest remain tied to the source commit. The receiving AI must take `repository_commit` only from `BEGIN_MADP_BUNDLE_METADATA.source_commit`. If metadata is missing, use `repository_commit: "UNKNOWN"` and do not guess. For uploaded bundle files, report `access_method: "UPLOADED_FILE"`; for pasted text, report `access_method: "PASTED_TEXT"`.
+## Trust order
 
-## Operational Limitations
+1. Direct file upload or pasted complete file text.
+2. Commit-pinned Raw URLs.
+3. Commit-pinned archive or digest with file paths.
+4. Repository or branch URL.
 
-Chat UI rendering or model output formatting can break Markdown code fences or YAML indentation. Treat `PROTOCOL_LOAD_REPORT`, `FACILITATOR_START_REPORT`, and `PARTICIPANT_RESPONSE` as machine-readable only after parsing them with a YAML parser. If the YAML does not parse, do not treat the response as machine-valid even when a human can understand the intent.
+A repository or `main` URL does not prove that an AI read the required files.
 
-Record logical behavior and serialization separately. A participant dry run can preserve authority, state, and response type while still failing machine-readable serialization.
+## Safety boundaries
 
-```yaml
-dry_run_result:
-  behavioral_conformance: "PASS"
-  yaml_serialization: "PASS | FAIL | NOT_VERIFIED"
-```
+- Do not claim user approval.
+- Do not treat model convergence as evidence.
+- Default authority is `PROPOSE_ONLY` unless a valid trusted grant applies.
+- A TODO is not a decision.
+- A decision is not approval.
+- Approval is not execution permission.
+- Context transfer does not transfer authority.
+- Raw command text is not authoritative by itself.
 
-## Placeholder List
+## Placeholder list
 
-- `{{MADP_GITHUB_OWNER}}`: GitHub owner or organization.
-- `{{MADP_GITHUB_REPOSITORY}}`: Repository name.
-- `{{MADP_COMMIT_SHA}}`: Immutable commit SHA used in Raw URLs.
-- `{{PARTICIPANT_ID}}`: Actor identifier for the receiving AI.
-- `{{SESSION_ID}}`: Session identifier for a new or existing MADP session.
-- `{{TASK}}`: User task or issue to deliberate.
-- `{{INITIAL_SESSION_STATE}}`: Initial `SESSION_STATE`, or `NONE` when no state exists yet.
-- `{{ROLE}}`: Participant role, such as `REVIEWER` or `VALIDATOR`.
-- `{{ALLOWED_ACTIONS}}`: Explicit allowed actions for the participant.
-- `{{EXPECTED_RESPONSE}}`: Required response type for the participant.
-- `{{RELAY_BLOCK}}`: Full relay block supplied to a participant.
-- `{{FAILED_PATHS}}`: Files that were not read successfully.
-- `{{ACCESS_METHOD}}`: Method used for failed or partial access.
-- `{{PARTIAL_CONTENT_LIMITATIONS}}`: Known truncation, omissions, or uncertainty.
-- `{{MADP_COMMAND_NAME}}`: Name of a MADP command such as `todo-add` or `request-review`.
-- `{{COMMAND_ID}}`: Identifier for a normalized command block.
-- `{{CONTEXT_PACKAGE_ID}}`: Identifier for a context package.
-- `{{CONTEXT_PURPOSE}}`: Purpose of a context package.
-- `{{CONTEXT_GOAL}}`: Goal statement inside a context package.
-- `{{REVIEW_REQUEST_ID}}`: Identifier for a review request.
-- `{{REQUESTER_ID}}`: Actor identifier for the review requester.
-- `{{CONTEXT_PACKAGE_OR_NONE}}`: Full context package, reference to one, or `NONE`.
+- `{{MADP_GITHUB_OWNER}}`: repository owner.
+- `{{MADP_GITHUB_REPOSITORY}}`: repository name.
+- `{{MADP_COMMIT_SHA}}`: immutable source commit.
+- `{{PARTICIPANT_ID}}`: receiving actor ID.
+- `{{SESSION_ID}}`: session ID.
+- `{{TASK}}`: task or issue.
+- `{{INITIAL_SESSION_STATE}}`: initial `SESSION_STATE` or `NONE`.
+- `{{ROLE}}`: participant role.
+- `{{ALLOWED_ACTIONS}}`: explicit allowed actions.
+- `{{EXPECTED_RESPONSE}}`: expected response type.
+- `{{RELAY_BLOCK}}`: complete relay block.
+- `{{FAILED_PATHS}}`: unread paths.
+- `{{ACCESS_METHOD}}`: attempted access method.
+- `{{PARTIAL_CONTENT_LIMITATIONS}}`: truncation or uncertainty.
+- `{{MADP_COMMAND_NAME}}`: MADP command name.
+- `{{COMMAND_ID}}`: command identifier.
+- `{{CONTEXT_PACKAGE_ID}}`: context package identifier.
+- `{{CONTEXT_PURPOSE}}`: context purpose.
+- `{{CONTEXT_GOAL}}`: context goal.
+- `{{REVIEW_REQUEST_ID}}`: review request identifier.
+- `{{REQUESTER_ID}}`: review requester.
+- `{{CONTEXT_PACKAGE_OR_NONE}}`: context package, reference, or `NONE`.
 
-## Short Usage Examples
-
-Load the protocol from a pinned commit:
+## Short example
 
 ```text
 Use bootstrap/load-protocol-from-github.md with:
-{{MADP_GITHUB_OWNER}} = example-owner
+{{MADP_GITHUB_OWNER}} = Eruhitsuji
 {{MADP_GITHUB_REPOSITORY}} = multi-ai-deliberation-protocol
-{{MADP_COMMIT_SHA}} = 0123456789abcdef0123456789abcdef01234567
-```
-
-Start a facilitator after a successful load report:
-
-```text
-Use bootstrap/start-facilitator.md with:
-{{PARTICIPANT_ID}} = facilitator
-{{SESSION_ID}} = MADP-SESSION-001
-{{TASK}} = Decide release readiness
-{{INITIAL_SESSION_STATE}} = NONE
-```
-
-Join a participant using a relay block:
-
-```text
-Use bootstrap/join-as-participant.md with:
-{{PARTICIPANT_ID}} = reviewer-1
-{{ROLE}} = REVIEWER
-{{ALLOWED_ACTIONS}} = PROPOSE_ONLY
-{{EXPECTED_RESPONSE}} = review_findings
-{{RELAY_BLOCK}} = <paste full RELAY_BLOCK here>
-```
-
-Use an alpha.2 draft command prompt:
-
-```text
-Use bootstrap/use-madp-commands.md with:
-{{MADP_COMMAND_NAME}} = todo-add
-{{COMMAND_ID}} = CMD-001
-```
-
-Share alpha.2 draft context with another AI:
-
-```text
-Use bootstrap/share-context-with-ai.md with:
-{{CONTEXT_PACKAGE_ID}} = CTX-001
-{{SESSION_ID}} = MADP-SESSION-001
-{{CONTEXT_PURPOSE}} = Share alpha.2 design context for review
-{{CONTEXT_GOAL}} = Review command, context, and TODO draft design
+{{MADP_COMMIT_SHA}} = <40-character commit SHA>
 ```
