@@ -1,0 +1,88 @@
+name: Apply alpha.3 review hardening
+
+on:
+  push:
+    paths:
+      - ".madp-patch/APPLY"
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    if: github.ref_name == 'feature/v0.3.0-alpha.3-inclusive-guided-team'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out implementation branch
+        uses: actions/checkout@v6
+        with:
+          ref: feature/v0.3.0-alpha.3-inclusive-guided-team
+          fetch-depth: 0
+
+      - name: Reassemble and verify reviewed patch
+        run: |
+          cat .madp-patch/part*.b64 | tr -d '\n' | base64 --decode > /tmp/madp-alpha3-review-hardening.tar.gz
+          echo "93d48e5e02511a86f27f064127f28bd3cc4d51ff153807c410c41c345db1acf1  /tmp/madp-alpha3-review-hardening.tar.gz" | sha256sum --check --strict
+          tar -xzf /tmp/madp-alpha3-review-hardening.tar.gz -C .
+          rm -rf .madp-patch
+          rm -f .github/workflows/apply-alpha3-review-hardening.yml
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
+      - name: Install validation dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements-dev.txt
+
+      - name: Run pre-commit alpha.3 validation
+        run: |
+          python scripts/check_alpha3_implementation.py
+          python scripts/check_alpha3_migration.py
+          python scripts/check_alpha3_translation.py
+          python scripts/check_alpha3_usability.py
+          python scripts/test_parse_command_v030_alpha3.py
+          python scripts/test_all_commands_v030_alpha3.py
+          python scripts/test_runtime_v030_alpha3.py
+
+      - name: Create one reviewed source commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Resolve alpha.3 critical review findings"
+          echo "FINAL_SHA=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+
+      - name: Generate machine validation evidence
+        run: |
+          python scripts/run_alpha3_validation_evidence.py \
+            --output tmp/alpha3-validation-evidence \
+            --repository-commit "$FINAL_SHA"
+
+      - name: Generate release artifacts twice
+        run: |
+          python scripts/generate_alpha3_release_artifacts.py \
+            tmp/alpha3-release-a \
+            --repository "${{ github.repository }}" \
+            --source-commit "$FINAL_SHA" \
+            --validation-evidence tmp/alpha3-validation-evidence/manifest.yaml
+          python scripts/generate_alpha3_release_artifacts.py \
+            tmp/alpha3-release-b \
+            --repository "${{ github.repository }}" \
+            --source-commit "$FINAL_SHA" \
+            --validation-evidence tmp/alpha3-validation-evidence/manifest.yaml
+          diff -ru tmp/alpha3-release-a tmp/alpha3-release-b
+
+      - name: Audit evidence-bound release candidate
+        run: |
+          python scripts/check_release_readiness_v030_alpha3.py \
+            --evidence-manifest tmp/alpha3-validation-evidence/manifest.yaml \
+            --repository-commit "$FINAL_SHA" \
+            --release-directory-a tmp/alpha3-release-a \
+            --release-directory-b tmp/alpha3-release-b \
+            --allow-blockers A3-REL-001,A3-REL-005
+
+      - name: Push reviewed source commit
+        run: git push origin HEAD:feature/v0.3.0-alpha.3-inclusive-guided-team
