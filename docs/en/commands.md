@@ -7,6 +7,8 @@ normative: false
 
 # Commands
 
+English | [日本語](../ja/commands.md)
+
 Alpha.2 defines 20 registry-backed commands. Exact arguments and authority boundaries are defined in [`registries/v0.3.0-alpha.2/commands.yaml`](../../registries/v0.3.0-alpha.2/commands.yaml).
 
 ## Syntax
