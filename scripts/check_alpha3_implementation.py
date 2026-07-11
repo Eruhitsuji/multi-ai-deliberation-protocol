@@ -19,6 +19,7 @@ REQUIRED=[
  'scripts/run_alpha3_validation_evidence.py','docs/planning/MADP-v0.3.0-alpha.3-implementation-status.yaml','docs/planning/MADP-v0.3.0-alpha.3-traceability.yaml']
 SKILLS=['madp-start','madp-facilitator','madp-participant','madp-recorder','madp-help']
 
+
 def semantic_errors(artifact):
     errors=[]
     plan=artifact.get('deliberation_plan') if isinstance(artifact,dict) else None
@@ -35,10 +36,12 @@ def semantic_errors(artifact):
                 if prior!=p.get('independence_group'):errors.append('SAME_MODEL_CHAT_DIFFERENT_INDEPENDENCE_GROUP')
     return errors
 
+
 def parse_skill_name(text):
     m=re.match(r'^---\n(.*?)\n---\n',text,re.S)
     if not m:return None
     data=yaml.safe_load(m.group(1));return data.get('name') if isinstance(data,dict) else None
+
 
 def main():
     problems=[]
@@ -96,6 +99,13 @@ def main():
         status=yaml.safe_load(statusp.read_text(encoding='utf-8'));policy=status.get('validation_policy',{})
         if policy.get('self_attestation_is_release_evidence') is not False or policy.get('machine_generated_evidence_manifest_required') is not True:problems.append('status validation evidence policy is unsafe')
         if 'automated_checks' in status:problems.append('handwritten automated_checks DONE map is prohibited')
+        integration=status.get('integration_status');evaluation=status.get('evaluation_status');release_ready=status.get('release_ready')
+        if integration=='IMPLEMENTATION_BRANCH':
+            if release_ready is not False:problems.append('implementation branch must not claim release_ready')
+        elif integration=='MERGED_TO_MAIN':
+            if release_ready is False and evaluation not in {'FIELD_TRIAL_IN_PROGRESS','FIELD_TRIAL_COMPLETE','FINAL_AUDIT_PENDING'}:problems.append('merged non-release state requires a field-trial or final-audit evaluation status')
+            if release_ready is True and evaluation!='COMPLETE':problems.append('release-ready main state requires evaluation_status COMPLETE')
+        else:problems.append('invalid integration_status')
     tracep=ROOT/'docs/planning/MADP-v0.3.0-alpha.3-traceability.yaml'
     if tracep.is_file():
         trace=yaml.safe_load(tracep.read_text(encoding='utf-8'));ids=[]

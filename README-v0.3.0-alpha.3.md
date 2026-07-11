@@ -1,6 +1,6 @@
 # MADP v0.3.0-alpha.3 — Inclusive, Guided, and Team-Aware Deliberation
 
-Status: release-candidate content under review; not tagged or published.
+Status: merged to `main` for experimental field use; not release-ready, tagged, or published.
 
 Alpha.3 extends the published alpha.2 core. It is an **additive compatible layer**, not a replacement command namespace.
 
@@ -34,9 +34,13 @@ Conflicts are defects and must be reported. The stricter authority boundary appl
 
 ```yaml
 implementation_status: RELEASE_CANDIDATE_CONTENT_READY
+integration_status: MERGED_TO_MAIN
+evaluation_status: FIELD_TRIAL_IN_PROGRESS
 release_ready: false
 tagged: false
 published: false
-manual_usability_sign_off: required
-final_main_audit: required_after_merge
+manual_usability_sign_off: collecting_practical_use_evidence
+final_main_audit: waiting_for_field_trial
 ```
+
+Practical-use observations and defects should identify the tested commit. Alpha.2 remains the current published bootstrap until field-trial evidence is signed off and the final-main audit passes.

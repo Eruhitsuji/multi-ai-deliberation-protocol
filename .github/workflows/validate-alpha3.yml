@@ -47,7 +47,7 @@ jobs:
     env:
       SOURCE_COMMIT: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
     steps:
-      - name: Check out release-candidate source commit
+      - name: Check out alpha.3 source commit
         uses: actions/checkout@v6
         with:
           ref: ${{ env.SOURCE_COMMIT }}
@@ -62,11 +62,48 @@ jobs:
           python -m pip install -r requirements-dev.txt
       - name: Verify checked-out commit
         run: test "$(git rev-parse HEAD)" = "${SOURCE_COMMIT}"
+      - name: Resolve lifecycle audit mode
+        shell: bash
+        run: |
+          python - <<'PY'
+          import os
+          from pathlib import Path
+          import yaml
+
+          status = yaml.safe_load(
+              Path('docs/planning/MADP-v0.3.0-alpha.3-implementation-status.yaml').read_text(encoding='utf-8')
+          )
+          integration = status.get('integration_status')
+          release_ready = status.get('release_ready')
+          if integration == 'IMPLEMENTATION_BRANCH':
+              mode = 'branch'
+          elif integration == 'MERGED_TO_MAIN' and release_ready is False:
+              mode = 'main-field-trial'
+          elif integration == 'MERGED_TO_MAIN' and release_ready is True:
+              mode = 'final-main'
+          else:
+              raise SystemExit(f'unsupported lifecycle state: integration={integration!r} release_ready={release_ready!r}')
+          active = sorted(
+              item['id']
+              for item in status.get('release_blockers', [])
+              if item.get('status') != 'DONE'
+          )
+          with open(os.environ['GITHUB_ENV'], 'a', encoding='utf-8') as env:
+              env.write(f'AUDIT_MODE={mode}\n')
+              env.write(f'ACTIVE_BLOCKERS={",".join(active)}\n')
+          print(f'audit mode: {mode}; active blockers: {active}')
+          PY
       - name: Run checks and generate evidence
-        run: >-
-          python scripts/run_alpha3_validation_evidence.py
-          --output tmp/alpha3-validation-evidence.yaml
-          --repository-commit "${SOURCE_COMMIT}"
+        shell: bash
+        run: |
+          args=(
+            --output tmp/alpha3-validation-evidence.yaml
+            --repository-commit "${SOURCE_COMMIT}"
+          )
+          if [ "${AUDIT_MODE}" = "final-main" ]; then
+            args+=(--release)
+          fi
+          python scripts/run_alpha3_validation_evidence.py "${args[@]}"
       - name: Generate release artifacts first pass
         run: >-
           python scripts/generate_alpha3_release_artifacts.py
@@ -88,14 +125,31 @@ jobs:
           python scripts/check_generated_alpha3_release_artifacts.py
           tmp/alpha3-release-a
           --source-commit "${SOURCE_COMMIT}"
-      - name: Audit branch release-candidate content
-        run: >-
-          python scripts/check_release_readiness_v030_alpha3.py
-          --evidence-manifest tmp/alpha3-validation-evidence.yaml
-          --repository-commit "${SOURCE_COMMIT}"
-          --release-directory-a tmp/alpha3-release-a
-          --release-directory-b tmp/alpha3-release-b
-          --allow-blockers A3-REL-001,A3-REL-005
+      - name: Audit alpha.3 lifecycle state
+        shell: bash
+        run: |
+          mode_args=()
+          case "${AUDIT_MODE}" in
+            branch)
+              ;;
+            main-field-trial)
+              mode_args+=(--main-field-trial)
+              ;;
+            final-main)
+              mode_args+=(--require-main)
+              ;;
+            *)
+              echo "Unknown audit mode: ${AUDIT_MODE}" >&2
+              exit 1
+              ;;
+          esac
+          python scripts/check_release_readiness_v030_alpha3.py \
+            --evidence-manifest tmp/alpha3-validation-evidence.yaml \
+            --repository-commit "${SOURCE_COMMIT}" \
+            --release-directory-a tmp/alpha3-release-a \
+            --release-directory-b tmp/alpha3-release-b \
+            --allow-blockers "${ACTIVE_BLOCKERS}" \
+            "${mode_args[@]}"
       - name: Upload validation evidence
         if: always()
         uses: actions/upload-artifact@v4
