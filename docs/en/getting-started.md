@@ -7,6 +7,8 @@ normative: false
 
 # Getting started with MADP
 
+English | [日本語](../ja/getting-started.md)
+
 MADP structures multi-AI deliberation while keeping the user as the sole final decision-maker.
 
 ## Minimal flow
