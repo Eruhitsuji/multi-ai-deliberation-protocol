@@ -1,0 +1,51 @@
+name: Validate alpha.3 implementation
+
+on:
+  push:
+    paths:
+      - "README-v0.3.0-alpha.3.md"
+      - "protocol/*alpha.3*"
+      - "schemas/v0.3.0-alpha.3/**"
+      - "registries/v0.3.0-alpha.3/**"
+      - "bootstrap/alpha3/**"
+      - "docs/profiles/*alpha.3*"
+      - "docs/planning/*alpha.3*"
+      - "skills/madp-*/**"
+      - "dist/chatgpt/madp-*"
+      - "tests/v0.3.0-alpha.3/**"
+      - "scripts/check_alpha3_implementation.py"
+      - ".github/workflows/validate-alpha3.yml"
+  pull_request:
+    paths:
+      - "README-v0.3.0-alpha.3.md"
+      - "protocol/*alpha.3*"
+      - "schemas/v0.3.0-alpha.3/**"
+      - "registries/v0.3.0-alpha.3/**"
+      - "bootstrap/alpha3/**"
+      - "docs/profiles/*alpha.3*"
+      - "docs/planning/*alpha.3*"
+      - "skills/madp-*/**"
+      - "dist/chatgpt/madp-*"
+      - "tests/v0.3.0-alpha.3/**"
+      - "scripts/check_alpha3_implementation.py"
+      - ".github/workflows/validate-alpha3.yml"
+
+jobs:
+  validate-alpha3:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
+      - name: Install validation dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements-dev.txt
+
+      - name: Validate MADP v0.3.0-alpha.3 implementation
+        run: python scripts/check_alpha3_implementation.py
