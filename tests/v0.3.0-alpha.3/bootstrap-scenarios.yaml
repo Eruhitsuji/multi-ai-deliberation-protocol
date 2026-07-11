@@ -1,0 +1,45 @@
+protocol_version: MADP-v0.3.0-alpha.3
+scenarios:
+- id: BOOT-LOAD-QUICK-001
+  input_condition: Commit-pinned repository access is available for every QUICK source.
+  required_features:
+  - profiled-source-inventory
+  - protocol-load-report-v2
+  - source-references
+  success_condition: One active COMPLETE QUICK report revision binds the repository, commit, QUICK digest, and every selected source before deliberation.
+- id: BOOT-LOAD-VERIFIED-001
+  input_condition: Commit-pinned access and SHA-256 validation are available for every VERIFIED source.
+  required_features:
+  - hash-verified-provenance
+  - executed-schema-validation
+  - verified-source-set
+  success_condition: The active VERIFIED report is HASH_VERIFIED, records executed schema validation, and authorizes the verified start profile.
+- id: BOOT-GATE-MISSING-001
+  input_condition: A start profile is supplied without an active PROTOCOL_LOAD_REPORT.
+  required_features:
+  - requires-protocol-load
+  - protocol-not-loaded
+  - fail-closed
+  success_condition: No session begins and the loader is identified as the next action.
+- id: BOOT-GATE-INCOMPLETE-001
+  input_condition: The active report has a missing, PARTIALLY_READ, FAILED, or hash-mismatched source.
+  required_features:
+  - exact-source-set
+  - no-unread-inference
+  - recovery-input
+  success_condition: No session begins and recovery of the exact source is requested.
+- id: BOOT-GATE-RECOVERY-001
+  input_condition: Revision 1 is INCOMPLETE and revision 2 supersedes it after recovery.
+  required_features:
+  - report-id
+  - revision
+  - supersedes
+  - single-active-revision
+  success_condition: Revision 1 remains evidence, revision 2 is the only active report, and only revision 2 may start the session.
+- id: BOOT-GATE-PROFILE-MISMATCH-001
+  input_condition: The start profile source repository or commit differs from the active report.
+  required_features:
+  - profile-source-binding
+  - repository-binding
+  - commit-binding
+  success_condition: The profile fails closed with PROFILE_SOURCE_MISMATCH and no session begins.

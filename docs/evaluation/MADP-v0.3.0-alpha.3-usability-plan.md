@@ -1,5 +1,15 @@
 # MADP v0.3.0-alpha.3 Usability Plan
 
+Manual protocol-conformance trials must begin with `bootstrap/alpha3/load-protocol-from-github.md` and retain the highest active, non-superseded `MADP-PROTOCOL-LOAD-REPORT-v2` revision bound to the tested commit.
+
+Release-signoff trials use the `FIELD_TRIAL` load profile. They require executed schema validation, `HASH_VERIFIED` provenance, an exact file inventory with SHA-256 values, and a matching `PROFILE_SOURCE_BINDING` for the selected start profile.
+
+A failed report may be retained and superseded by a later revision with the same `report_id`. Only the highest active revision is eligible for a session.
+
+A trial without a valid report may be retained as a negative bootstrap or degraded-mode observation, but it must not count toward protocol-conformance metrics or A3-REL-001 sign-off.
+
+Manual trials may contain multiple participants, models, and repeated runs. Every result needs a unique `trial_id`, participant, run index, scenario ID, tested commit, load report, profile binding, and raw observation reference.
+
 Manual trials must cover new-user startup, alpha.2 canonical `status`/`pause`/`resume`, detailed `session-status`, external relay recovery, limited participants, import confirmation, minutes review, team approval, and Help exit.
 
 Release thresholds:
@@ -11,4 +21,6 @@ Release thresholds:
 - critical unnecessary pauses = 0;
 - unnecessary pause rate <= 5% of eligible workflow transitions.
 
-An unnecessary pause is a user stop where no decision, missing information, external relay, safety/authority boundary, materially different path, or budget boundary required user action. Classification must identify the scenario, transition, reason, and reviewer; reclassifying a pause without recorded rationale is not permitted.
+Metrics are recalculated from scenario rows. Handwritten aggregate values must equal the calculated values.
+
+An unnecessary pause is a user stop where no decision, missing information, external relay, safety/authority boundary, materially different path, or budget boundary required user action. Classification must identify the trial, scenario, transition, reason, and reviewer; reclassifying a pause without recorded rationale is not permitted.

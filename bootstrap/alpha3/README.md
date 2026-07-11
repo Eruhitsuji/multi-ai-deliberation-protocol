@@ -2,7 +2,14 @@
 
 Alpha.3 bootstrap is release-candidate content and is not the current published bootstrap until release.
 
-Choose:
+Use the bootstrap in two phases:
+
+1. Load the protocol with `load-protocol-from-github.md` from one immutable commit and obtain a `COMPLETE` `PROTOCOL_LOAD_REPORT`.
+2. Apply one start or participation profile.
+
+Do not use a start profile as a substitute for protocol loading. `quick-start.md` and `verified-start.md` must return `PROTOCOL_NOT_LOADED` when the required load report is absent or incomplete.
+
+After loading, choose:
 
 - `quick-start.md` for low-risk or ordinary structured discussion.
 - `verified-start.md` for formal, high-risk, research, or development work.
