@@ -8,6 +8,8 @@ normative: false
 
 # 権限モデル
 
+[English](../en/authority-model.md) | 日本語
+
 MADPは、情報・承認・permissionを分離します。
 
 ## Authority boundary
