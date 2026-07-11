@@ -15,6 +15,7 @@ valid:
         goal_gate: REQUIRED
         goal_status: USER_CONFIRMED
         revision: 1
+        confirmed_revision: 1
         decision_authority: USER
         decision_method: SINGLE_DECISION_OWNER
         silence_counts_as_consent: false
@@ -216,12 +217,15 @@ valid:
         command_version: MADP-COMMAND-v0.2
         protocol_version: MADP-v0.3.0-alpha.3
         command: help
+        invoked_name: help
+        alias_used: false
         command_class: HELP_COMMAND
         issued_by: USER
         raw_input: "help: next action"
         parse_status: PARSED
         validation_status: SCHEMA_VALID
         authority_status: REFERENCE_ONLY
+        authority_boundary: REFERENCE_ONLY
         arguments: {question: next action}
         effects:
           intended: [Explain workflow]
