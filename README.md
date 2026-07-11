@@ -1,305 +1,156 @@
 # Multi-AI Deliberation Protocol (MADP)
 
-> Current published prerelease: **MADP-v0.3.0-alpha.1**
+English | [日本語](README.ja.md)
+
+> Current published prerelease: **MADP-v0.3.0-alpha.2**
 >
-> Historical compatibility release candidate: **MADP-v0.2.5-rc.2**
+> Release tag: `MADP-v0.3.0-alpha.2`
+>
+> Release commit: `207e24290e0a66bf0dd34e13f9b3525a42a5a6c9`
 
 MADP is a service-neutral protocol for structured deliberation with AI systems, role-separated instances, human validators, and execution agents. It supports research, design, review, software development, and everyday decisions while keeping the user as the sole final decision-maker.
 
-## Status and canonical files
+## Start here
 
-`MADP-v0.3.0-alpha.1` is a published alpha prerelease. It is not a final or stable release and may change incompatibly in later prereleases.
+1. Read the [English documentation index](docs/en/README.md) or [Japanese documentation index](docs/ja/README.md).
+2. Use [Basic usage and workflow selection](docs/en/basic-usage.md) to define the issue and choose a deliberation pattern.
+3. Select a practical workflow from the [Practical guide index](docs/en/practical-guides.md).
+
+For a first trial, use [one model in one chat](docs/en/single-model-single-chat.md). Use [one model across multiple chats](docs/en/single-model-multi-chat.md) for stronger role separation, or [multiple AI models](docs/en/multi-model-deliberation.md) when model diversity matters.
+
+## Current release status
 
 ```yaml
-current_published_prerelease: "MADP-v0.3.0-alpha.1"
-historical_compatibility_release_candidate: "MADP-v0.2.5-rc.2"
-current_release_candidate: "MADP-v0.2.5-rc.2"
-previous_release_candidate: "MADP-v0.2.5-rc.1"
-previous_draft: "MADP-v0.2.5-draft"
-status: "published alpha prerelease, not stable"
-release_merge_commit: "c3c80a9fa48a5f93b46f742f08d6617100a1eb60"
+current_published_prerelease: MADP-v0.3.0-alpha.2
+release_tag: MADP-v0.3.0-alpha.2
+release_commit: 207e24290e0a66bf0dd34e13f9b3525a42a5a6c9
+release_preparation_workflow_run: 29135177099
+release_preparation_workflow_result: success
+tagged: true
+published: true
+published_at: UNKNOWN
+previous_published_prerelease: MADP-v0.3.0-alpha.1
+historical_compatibility_release_candidate: MADP-v0.2.5-rc.2
+status: published unstable prerelease
 ```
 
-Canonical alpha.1 repository documents are English:
-
-- [`README-v0.3.0-alpha.1.md`](README-v0.3.0-alpha.1.md) - prerelease overview, validation, artifacts, and limitations
-- [`protocol/MADP-v0.3.0-alpha.1.md`](protocol/MADP-v0.3.0-alpha.1.md) - behavior, procedures, transitions, authorization, and migration
-- [`protocol/GLOSSARY-v0.3.0-alpha.1.md`](protocol/GLOSSARY-v0.3.0-alpha.1.md) - normative term meanings and distinctions
-- [`schemas/v0.3.0-alpha.1/session-state.schema.yaml`](schemas/v0.3.0-alpha.1/session-state.schema.yaml) - Session State root
-- [`schemas/v0.3.0-alpha.1/relay-block.schema.yaml`](schemas/v0.3.0-alpha.1/relay-block.schema.yaml) - Relay Block root
-- [`schemas/v0.3.0-alpha.1/definitions.schema.yaml`](schemas/v0.3.0-alpha.1/definitions.schema.yaml) - shared definitions
-- [`schemas/v0.3.0-alpha.1/migration-evidence.schema.yaml`](schemas/v0.3.0-alpha.1/migration-evidence.schema.yaml) - migration evidence
-- [`schemas/v0.3.0-alpha.1/migration-audit.schema.yaml`](schemas/v0.3.0-alpha.1/migration-audit.schema.yaml) - migration audit
-- [`LICENSE`](LICENSE) - MIT License
-
-Self-contained generated schema distributions:
-
-- [`schemas/generated/session-state-v0.3.0-alpha.1.bundle.schema.yaml`](schemas/generated/session-state-v0.3.0-alpha.1.bundle.schema.yaml)
-- [`schemas/generated/relay-block-v0.3.0-alpha.1.bundle.schema.yaml`](schemas/generated/relay-block-v0.3.0-alpha.1.bundle.schema.yaml)
-
-Historical rc.2 canonical files retained for compatibility testing:
-
-- [`protocol/MADP-v0.2.5-rc.2.md`](protocol/MADP-v0.2.5-rc.2.md)
-- [`protocol/GLOSSARY-v0.2.5-rc.2.md`](protocol/GLOSSARY-v0.2.5-rc.2.md)
-- [`schemas/session-state-v0.2.5-rc.2.schema.yaml`](schemas/session-state-v0.2.5-rc.2.schema.yaml)
-
-The `MADP-v0.2.5-rc.2` protocol, glossary, schema, examples, and bootstrap workflow remain retained for compatibility and historical testing. Published historical tags are immutable.
-
-Recorded alpha.1 validation status:
-
-- schema validation PASS
-- migration fixture validation PASS
-- migration semantic invariant validation PASS
-- generated artifact drift validation PASS
-- canonical/generated schema equivalence PASS
-- `MADP_JCS_V1` positive and adversarial vector validation PASS
-- self-contained upload bundle integrity validation PASS
-- release-readiness repository audit PASS
-- merge-commit validation workflow PASS (`28734219309`)
-- formal universal interoperability remains unclaimed
-
-The GitHub Pages bootstrap deployment is operationally separate from protocol conformance. A Pages deployment failure does not invalidate successful schema, migration, JCS, or bundle checks.
-
-README examples below are retained primarily as rc.2 compatibility examples. For alpha.1 implementation and migration work, use the versioned alpha.1 protocol, glossary, schemas, fixtures, and prerelease README listed above.
-
-README examples are informative. A conflict among authority domains is a specification defect and must be reported.
+The authoritative GitHub Release publication timestamp could not be retrieved through the available connector, so repository metadata records `published_at: UNKNOWN` rather than guessing. The release tag was independently verified to resolve exactly to the expected release commit.
 
 ## Core principles
 
 - The user is the sole final decision-maker.
-- Majority vote alone is insufficient.
+- A TODO is not a decision.
+- A decision is not approval.
+- Approval is not execution permission.
+- A review is not merge approval.
 - Agreement among AI systems is convergence, not evidence.
-- `SESSION_STATE` is the single logical source of truth.
-- Share operative current state, not full conversation history.
-- Separate deliberation outcome, user approval, and execution permission.
-- Bind approval to a specific decision revision.
-- AI participants may originate only unverified approval assertions.
-- Unknown actions, empty scopes, and stale relay states fail closed.
-- At most one facilitator may be active.
+- Context transfer does not transfer authority.
+- Unknown actions, empty scopes, stale states, and unsupported inputs fail closed.
+- External or irreversible actions require explicit action-specific user authorization.
 
-## Legacy rc.2 quick start
+## Alpha.2 highlights
 
-```text
-Use MADP v0.2.5-rc.2.
+- registry-backed command layer with 20 commands;
+- strict CLI and YAML parsing and normalization;
+- schema validation, authority evaluation, and bounded internal-state application;
+- trusted, scoped, single-use confirmation grants and replay protection;
+- TODO lifecycle enforcement with immutable terminal items;
+- context packages and receipts that transfer information without authority;
+- structured review requests and responses under proposal-only boundaries;
+- relay modes and conservative alpha.1-to-alpha.2 migration fixtures;
+- AI-driven development boundaries for edit, test, review, commit, push, PR, merge, tag, and release;
+- English and Japanese onboarding, practical guides, and translation-governance checks.
 
-Issue: Decide the minimum release contents for a small open-source project.
-Fixed requirements:
-- Keep the release small.
-- The user is the final decision-maker.
-Criteria:
-- Usability
-- Maintenance cost
-- Extensibility
+## Canonical alpha.2 sources
 
-Start in MINIMAL / COMPACT mode.
-Continue all non-blocked facilitator work in the same response.
-Ask me only when user input, unavailable evidence, external transfer, or execution permission is required.
-```
+The canonical normative sources are English:
 
-Before use, an AI should report which canonical files it actually read. A repository URL alone does not prove access. Raw file URLs pinned to a commit SHA are preferred for external review.
+- [MADP-v0.3.0-alpha.2 protocol](protocol/MADP-v0.3.0-alpha.2.md)
+- [MADP-v0.3.0-alpha.2 glossary](protocol/GLOSSARY-v0.3.0-alpha.2.md)
+- [Alpha.2 schemas](schemas/v0.3.0-alpha.2/)
+- [Alpha.2 command registry](registries/v0.3.0-alpha.2/commands.yaml)
+- [AI-driven development profile](docs/profiles/AI_DRIVEN_DEVELOPMENT-v0.3.0-alpha.2.md)
+- [Alpha.2 prerelease README](README-v0.3.0-alpha.2.md)
+- [Alpha.2 release notes](docs/releases/MADP-v0.3.0-alpha.2.md)
 
-```yaml
-protocol_load_status:
-  requested: true
-  confirmed_version: "0.2.5-rc.2"
-  files_actually_read:
-    - path: "protocol/MADP-v0.2.5-rc.2.md"
-      result: "READ"
-    - path: "protocol/GLOSSARY-v0.2.5-rc.2.md"
-      result: "READ"
-    - path: "schemas/session-state-v0.2.5-rc.2.schema.yaml"
-      result: "READ"
-  formal_schema_validation: false
-  unread_or_unavailable_sections: []
-```
+Japanese documents are non-normative explanatory translations. If a translation conflicts with the English protocol, schemas, or registries, the English normative source takes precedence.
 
-## Minimal Session State
+## Practical documentation
 
-```yaml
-session_state:
-  meta:
-    protocol: "MADP"
-    protocol_version: "0.2.5-rc.2"
-    schema_version: "0.2.5-rc.2"
-    session_id: "MADP-EXAMPLE-001"
-    state_version: 1
-    parent_version: 0
-    updated_at: "UNKNOWN"
-    updated_by: "facilitator"
+### Deliberation patterns
 
-  goal: "Select a minimum release structure"
+- [Multiple AI models](docs/en/multi-model-deliberation.md)
+- [One model across multiple chats](docs/en/single-model-multi-chat.md)
+- [One model in one chat](docs/en/single-model-single-chat.md)
 
-  current_issue:
-    id: "ISSUE-001"
-    status: "IN_PROGRESS"
-    question: "Which files are required?"
+### Applied workflows
 
-  participants:
-    - actor_id: "facilitator"
-      type: "FACILITATOR"
-      role: "FACILITATOR"
-      status: "ACTIVE"
+- [AI-driven development](docs/en/ai-development.md)
+- [Context sharing and relay](docs/en/context-relay.md)
+- [TODO lifecycle](docs/en/todo-lifecycle.md)
+- [Review workflow](docs/en/review-workflow.md)
+- [Authority model](docs/en/authority-model.md)
+- [Commands](docs/en/commands.md)
 
-  decisions:
-    - id: "DEC-001"
-      revision: 1
-      deliberation_outcome: "USER_DECISION_REQUIRED"
-      approval_status: "PENDING"
-      summary: "No release structure has been approved yet."
+## Command safety pipeline
 
-  next_step:
-    internal:
-      actor: "FACILITATOR"
-      task: "Evaluate the minimum structure"
-      blocking_input: null
-    user:
-      action_required: false
-      prompt_action: "NO_ACTION_REQUIRED"
-      task: null
-      response_format: null
-```
-
-Validate with the versioned schema. An LLM-only review is `STRUCTURAL_CHECK_ONLY`, not formal validation.
-
-## Condition example
-
-```yaml
-id: "COND-001"
-statement: "Required tests pass"
-applicability: "ACTIVE"
-satisfaction: "IN_PROGRESS"
-timing: "BEFORE_COMPLETION"
-```
-
-`SATISFIED` requires `basis`. `WAIVED_BY_USER` requires both `basis` and `user_confirmation`. `ACTIVE` to `NOT_APPLICABLE` changes require `applicability_basis`.
-
-## Approval example
-
-```yaml
-approval:
-  decision_id: "DEC-001"
-  decision_revision: 2
-  approver: "USER"
-  assurance_level: "USER_CONFIRMED"
-  assurance_origin: "USER_ACTION"
-  occurred_at: "UNKNOWN"
-  basis: "The user explicitly approved revision 2 in the current chat."
-```
-
-An AI may record only `UNVERIFIED_ASSERTION` on its own. Unverified assertions cannot authorize external, irreversible, privileged, or permission-escalated execution.
-
-## Manual relay
-
-The manual profile requires a marked `RELAY_BLOCK` containing metadata and `operative_session_state_snapshot`. The snapshot excludes full conversation history and obsolete detailed history, and is the operative source of truth for the receiving turn unless the receiver already holds newer official state.
-
-Relay identity invariants:
+Raw command text is never authoritative by itself.
 
 ```text
-relay_block.session_id = relay_block.operative_session_state_snapshot.meta.session_id
-relay_block.source_state_version = relay_block.operative_session_state_snapshot.meta.state_version
+Parse first.
+Normalize second.
+Validate third.
+Authorize fourth.
+Apply last.
 ```
 
-## Starting a new AI chat
-
-Use the bootstrap prompts when starting an AI chat that has not already loaded MADP:
-
-- [`bootstrap/README.md`](bootstrap/README.md) - overview, trust order, placeholders, and examples
-- [`bootstrap/load-protocol-from-github.md`](bootstrap/load-protocol-from-github.md) - load commit-pinned canonical files and emit `PROTOCOL_LOAD_REPORT`
-- [`bootstrap/start-facilitator.md`](bootstrap/start-facilitator.md) - initialize a facilitator safely
-- [`bootstrap/join-as-participant.md`](bootstrap/join-as-participant.md) - join from a supplied `RELAY_BLOCK`
-- [`bootstrap/recover-from-load-failure.md`](bootstrap/recover-from-load-failure.md) - recover when required files were not read
-
-For release work, prefer direct file upload or commit-pinned Raw URLs. Do not rely on a movable branch URL as proof that the receiving AI read the protocol.
-
-The repository `bootstrap/` files are templates. Generated bootstrap prompt files resolve only repository-specific placeholders (`{{MADP_GITHUB_OWNER}}`, `{{MADP_GITHUB_REPOSITORY}}`, and `{{MADP_COMMIT_SHA}}`) and keep session-specific placeholders for the user to fill at use time.
-
-When GitHub Pages is enabled for Actions deployments, the publish workflow deploys generated prompts without committing them back to `main`. The Pages URL is a movable latest deployment URL; repository Pages URLs usually follow `https://<owner>.github.io/<repository>/`, and the exact deployment URL is reported by the workflow. The generated prompt contents pin canonical Raw URLs to the recorded source commit. For high-assurance use, check the generated `bootstrap/manifest.yaml`, the complete bundle manifest, and the source commit before use.
-
-For AI environments that cannot retrieve external URLs directly, the Pages artifact also includes a generated complete-protocol bundle at `https://<owner>.github.io/<repository>/bootstrap/complete-protocol-bundle.txt`. This is not a static file committed in the repository; it is generated during the Pages workflow from the canonical source files. The bundle begins with `BEGIN_MADP_BUNDLE_METADATA`; its `source_commit` is the provenance source for uploaded-file recovery. The companion manifest records the final bundle hash and per-source-file hashes. The bundle URL is movable, so save the bundle or upload it directly when URL retrieval is unavailable. Pasted text is also an accepted fallback.
+The alpha.2 apply runtime operates only on its explicit internal runtime state model. It does not execute external actions.
 
 ## Validation
 
-### Alpha.1 checks
-
 ```bash
 python -m pip install -r requirements-dev.txt
-python scripts/check_traceability_v030.py
-python scripts/run_schema_fixture_checks.py all --json
-python scripts/check_migration_invariants_v030.py
-python scripts/generate_artifacts.py --check
-python scripts/check_schema_bundle_equivalence.py
-python scripts/verify_jcs_vectors.py all --json
-python scripts/check_release_readiness_v030.py
-python scripts/generate_text_bundles.py --check --output-dir tmp/generated-v030
-python scripts/check_complete_bundle_v030.py tmp/generated-v030/complete-protocol-bundle.full.txt tmp/generated-v030/complete-protocol-bundle.manifest.yaml
-```
-
-### Legacy rc.2 checks
-
-MADP v0.2.5-rc.2 validation uses Python 3.11 or newer with `jsonschema` and `PyYAML`.
-
-```bash
-python scripts/validate_schema.py
-python scripts/validate_examples.py
-python scripts/validate_semantics.py
-python scripts/validate_participant_response.py
 python scripts/check_markdown_links.py
 python scripts/check_document_consistency.py
-python scripts/check_bootstrap_prompts.py
-python scripts/test_generate_bootstrap_prompts.py
-python scripts/generate_bootstrap_prompts.py tmp/generated-bootstrap-validation --repository ExampleOwner/madp-fixture --commit-sha 0123456789abcdef0123456789abcdef01234567 --workflow-run-id RC2_LOCAL_TEST --generated-by LOCAL
-python scripts/check_generated_bootstrap.py tmp/generated-bootstrap-validation --expect tests/generated-bootstrap/local-generation.yaml
+python scripts/check_translation_docs.py
+python scripts/check_traceability_v030_alpha2.py
+python scripts/validate_alpha2_command_context_todo_fixtures.py
+python scripts/check_command_registry_v030_alpha2.py
+python scripts/test_command_parser_v030_alpha2.py
+python scripts/check_all_commands_v030_alpha2.py
+python scripts/test_command_runtime_v030_alpha2.py
+python scripts/check_todo_lifecycle_v030_alpha2.py
+python scripts/check_ai_development_profile_v030_alpha2.py
+python scripts/check_alpha2_implementation_status.py
+python scripts/check_migration_v030_alpha2.py
+python scripts/generate_alpha2_schema_bundles.py --output-dir tmp/generated-alpha2-schemas
+python scripts/generate_alpha2_schema_bundles.py --output-dir tmp/generated-alpha2-schemas --check
+python scripts/check_release_readiness_v030_alpha2.py
 ```
 
-On Windows PowerShell, using a local virtual environment:
+The release-preparation workflow passed as run `29135177099`. Post-publication verification confirmed that tag `MADP-v0.3.0-alpha.2` and commit `207e24290e0a66bf0dd34e13f9b3525a42a5a6c9` are identical.
 
-```powershell
-python -m venv .venv-validation
-.\.venv-validation\Scripts\python.exe -m pip install -r requirements-dev.txt
-.\.venv-validation\Scripts\python.exe scripts\validate_schema.py
-.\.venv-validation\Scripts\python.exe scripts\validate_examples.py
-.\.venv-validation\Scripts\python.exe scripts\validate_semantics.py
-.\.venv-validation\Scripts\python.exe scripts\validate_participant_response.py
-.\.venv-validation\Scripts\python.exe scripts\check_markdown_links.py
-.\.venv-validation\Scripts\python.exe scripts\check_document_consistency.py
-.\.venv-validation\Scripts\python.exe scripts\check_bootstrap_prompts.py
-.\.venv-validation\Scripts\python.exe scripts\test_generate_bootstrap_prompts.py
-.\.venv-validation\Scripts\python.exe scripts\generate_bootstrap_prompts.py tmp\generated-bootstrap-validation --repository ExampleOwner/madp-fixture --commit-sha 0123456789abcdef0123456789abcdef01234567 --workflow-run-id RC2_LOCAL_TEST --generated-by LOCAL
-.\.venv-validation\Scripts\python.exe scripts\check_generated_bootstrap.py tmp\generated-bootstrap-validation --expect tests\generated-bootstrap\local-generation.yaml
-```
+## Historical versions
 
-## Repository structure
+Published historical tags are immutable. Active sessions must not auto-upgrade.
 
-```text
-.
-|-- README.md
-|-- README-v0.3.0-alpha.1.md
-|-- LICENSE
-|-- protocol/
-|   |-- MADP-v0.3.0-alpha.1.md
-|   |-- GLOSSARY-v0.3.0-alpha.1.md
-|   |-- MADP-v0.2.5-rc.2.md
-|   `-- historical versioned protocol and glossary files
-|-- schemas/
-|   |-- v0.3.0-alpha.1/
-|   |-- generated/
-|   |-- session-state-v0.2.5-rc.2.schema.yaml
-|   `-- historical versioned schema files
-|-- tests/
-|   |-- migration/
-|   |-- canonicalization/
-|   `-- traceability/
-`-- reviews/
-```
+- [MADP-v0.3.0-alpha.1 prerelease README](README-v0.3.0-alpha.1.md)
+- [MADP-v0.3.0-alpha.1 protocol](protocol/MADP-v0.3.0-alpha.1.md)
+- [MADP-v0.3.0-alpha.1 glossary](protocol/GLOSSARY-v0.3.0-alpha.1.md)
+- [MADP-v0.2.5-rc.2 protocol](protocol/MADP-v0.2.5-rc.2.md)
+- [MADP-v0.2.5-rc.2 glossary](protocol/GLOSSARY-v0.2.5-rc.2.md)
+- [MADP-v0.2.5-rc.2 schema](schemas/session-state-v0.2.5-rc.2.schema.yaml)
 
-Future `profiles/` define reusable domain rules. Future `templates/` are starter kits built on Core and Profiles, such as software review, literature research, and everyday decision support.
+Migration from alpha.1 must be explicit and fail closed where authority cannot be verified.
 
-## Migration from v0.2.5-rc.2
+## Known limitations
 
-Migration to alpha.1 is explicit and fail-closed. Use the migration fixtures and versioned migration evidence/audit schemas. Do not preserve authority merely because a legacy document asserted it.
-
-Active sessions must not auto-upgrade.
+- alpha.2 is an unstable prerelease and may change incompatibly;
+- cryptographic issuer provenance is not implemented;
+- complete stale-parent and state-lineage enforcement remain future hardening work;
+- the runtime does not execute external operations;
+- formal universal interoperability is not claimed.
 
 ## License
 
-Licensed under the MIT License. See [`LICENSE`](LICENSE).
+Licensed under the [MIT License](LICENSE).
