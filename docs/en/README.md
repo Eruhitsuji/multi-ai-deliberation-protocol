@@ -14,9 +14,17 @@ English | [日本語](../ja/README.md)
 ## Start here
 
 - [Getting started](getting-started.md)
+- [Basic usage and workflow selection](basic-usage.md)
+- [Practical guide index](practical-guides.md)
 - [Core concepts](concepts.md)
 - [Explanatory glossary](glossary.md)
 - [Frequently asked questions](faq.md)
+
+## Deliberation patterns
+
+- [Multiple AI models](multi-model-deliberation.md)
+- [One model across multiple chats](single-model-multi-chat.md)
+- [One model in one chat](single-model-single-chat.md)
 
 ## Practical guides
 

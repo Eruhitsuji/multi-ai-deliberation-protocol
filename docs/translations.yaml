@@ -13,6 +13,16 @@ pairs:
     ja: docs/ja/README.md
   - en: docs/en/getting-started.md
     ja: docs/ja/getting-started.md
+  - en: docs/en/basic-usage.md
+    ja: docs/ja/basic-usage.md
+  - en: docs/en/practical-guides.md
+    ja: docs/ja/practical-guides.md
+  - en: docs/en/multi-model-deliberation.md
+    ja: docs/ja/multi-model-deliberation.md
+  - en: docs/en/single-model-multi-chat.md
+    ja: docs/ja/single-model-multi-chat.md
+  - en: docs/en/single-model-single-chat.md
+    ja: docs/ja/single-model-single-chat.md
   - en: docs/en/concepts.md
     ja: docs/ja/concepts.md
   - en: docs/en/authority-model.md
