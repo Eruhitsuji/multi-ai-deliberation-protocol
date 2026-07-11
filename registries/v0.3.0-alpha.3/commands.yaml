@@ -1,0 +1,158 @@
+registry_version: "MADP-COMMAND-REGISTRY-v0.2"
+protocol_version: "MADP-v0.3.0-alpha.3"
+status: "implementation-draft"
+commands:
+  - command: participant-add
+    command_class: USER_COMMAND
+    default_authority_boundary: USER_CONFIRMED
+    required_arguments: [participant_profile]
+    effect_summary: Register a participant without granting undeclared authority.
+    safety_notes: ["Participant registration is not an authority grant."]
+    prohibited_effects: ["Implicit approval.", "External execution."]
+  - command: participant-update-capability
+    command_class: AI_COMMAND
+    default_authority_boundary: PROPOSE_ONLY
+    required_arguments: [participant_id, capabilities]
+    effect_summary: Update observed capability metadata while preserving UNKNOWN values.
+    safety_notes: ["Capability observation does not grant authority."]
+    prohibited_effects: ["Inventing unsupported capabilities.", "External execution."]
+  - command: participant-set-mode
+    command_class: USER_COMMAND
+    default_authority_boundary: USER_CONFIRMED
+    required_arguments: [participant_id, participation_mode]
+    effect_summary: Set participation mode and enforce role restrictions.
+    safety_notes: ["OPINION_ONLY cannot become an authority role."]
+    prohibited_effects: ["Authority escalation.", "External execution."]
+  - command: goal-propose
+    command_class: AI_COMMAND
+    default_authority_boundary: PROPOSE_ONLY
+    required_arguments: [deliberation_plan]
+    effect_summary: Propose or amend a deliberation goal.
+    safety_notes: ["A proposed goal is not confirmed."]
+    prohibited_effects: ["Silent goal replacement.", "Implicit approval."]
+  - command: goal-confirm
+    command_class: USER_COMMAND
+    default_authority_boundary: USER_CONFIRMED
+    required_arguments: [plan_id, revision]
+    effect_summary: Confirm one specific goal revision.
+    safety_notes: ["Confirmation applies only to the referenced revision."]
+    prohibited_effects: ["Confirmation of a different revision.", "External execution."]
+  - command: role-assign
+    command_class: AI_COMMAND
+    default_authority_boundary: PROPOSE_ONLY
+    required_arguments: [role_assignment]
+    effect_summary: Assign an analytical role within the role budget.
+    safety_notes: ["Analytical roles do not change authority roles."]
+    prohibited_effects: ["Changing an approver or decision owner.", "External execution."]
+  - command: role-pause
+    command_class: AI_COMMAND
+    default_authority_boundary: PROPOSE_ONLY
+    required_arguments: [role_id]
+    effect_summary: Pause an analytical role without changing authority.
+    safety_notes: ["Pause preserves role history."]
+    prohibited_effects: ["Deleting role history.", "Authority escalation."]
+  - command: role-retire
+    command_class: AI_COMMAND
+    default_authority_boundary: PROPOSE_ONLY
+    required_arguments: [role_id, reason]
+    effect_summary: Retire an unnecessary analytical role.
+    safety_notes: ["Retirement does not remove prior findings."]
+    prohibited_effects: ["Deleting dissent.", "Changing authority roles."]
+  - command: relay-create-plain
+    command_class: AI_COMMAND
+    default_authority_boundary: PROPOSE_ONLY
+    required_arguments: [plain_relay_packet]
+    effect_summary: Create a natural-language relay for a limited participant.
+    safety_notes: ["Plain relay is not a permission grant."]
+    prohibited_effects: ["Implicit approval.", "Canonical state authority."]
+  - command: response-ingest
+    command_class: AI_COMMAND
+    default_authority_boundary: PROPOSE_ONLY
+    required_arguments: [raw_response_ref, participant_id]
+    effect_summary: Preserve and classify a received response.
+    safety_notes: ["The raw response must be retained."]
+    prohibited_effects: ["Silent rewriting.", "Authority escalation."]
+  - command: response-normalize
+    command_class: AI_COMMAND
+    default_authority_boundary: PROPOSE_ONLY
+    required_arguments: [ingest_id, normalization_record]
+    effect_summary: Create an auditable interpretation without adding authority.
+    safety_notes: ["Normalization must not invent evidence or confidence."]
+    prohibited_effects: ["Invented approval.", "Invented sources."]
+  - command: normalization-confirm
+    command_class: USER_COMMAND
+    default_authority_boundary: USER_CONFIRMED
+    required_arguments: [normalization_id, status]
+    effect_summary: Confirm or reject a proposed normalization.
+    safety_notes: ["Confirmation does not approve the underlying proposal."]
+    prohibited_effects: ["Decision approval.", "External execution."]
+  - command: claim-add
+    command_class: AI_COMMAND
+    default_authority_boundary: PROPOSE_ONLY
+    required_arguments: [claim]
+    effect_summary: Add a typed claim to the claim ledger.
+    safety_notes: ["Claim type and provenance must be explicit."]
+    prohibited_effects: ["Treating an unverified claim as verified.", "Implicit approval."]
+  - command: claim-verify
+    command_class: AI_COMMAND
+    default_authority_boundary: PROPOSE_ONLY
+    required_arguments: [claim_id, verification_status]
+    effect_summary: Record verification work without fabricating sources.
+    safety_notes: ["Verification must identify its basis."]
+    prohibited_effects: ["Fabricated evidence.", "External execution."]
+  - command: minutes-generate
+    command_class: RECORD_COMMAND
+    default_authority_boundary: PROPOSE_ONLY
+    required_arguments: [detail_level]
+    effect_summary: Generate draft minutes from recorded state.
+    safety_notes: ["Generated minutes are drafts."]
+    prohibited_effects: ["Automatic minutes approval.", "Disclosure of private input."]
+  - command: minutes-review
+    command_class: USER_COMMAND
+    default_authority_boundary: USER_CONFIRMED
+    required_arguments: [minutes_id, review_status]
+    effect_summary: Record human review of a minutes revision.
+    safety_notes: ["Review and approval are separate states."]
+    prohibited_effects: ["Approval of another revision.", "External execution."]
+  - command: minutes-approve
+    command_class: USER_COMMAND
+    default_authority_boundary: USER_CONFIRMED
+    required_arguments: [minutes_id, revision]
+    effect_summary: Approve a specific minutes revision as a record.
+    safety_notes: ["Minutes approval does not approve every proposal described."]
+    prohibited_effects: ["Decision inference.", "External execution."]
+  - command: minutes-redact
+    command_class: RECORD_COMMAND
+    default_authority_boundary: REQUIRES_USER_CONFIRMATION
+    required_arguments: [minutes_id, redactions]
+    effect_summary: Redact permitted content while preserving an audit note.
+    safety_notes: ["Redaction must not silently alter decisions."]
+    prohibited_effects: ["Erasing dissent history.", "Unauthorized disclosure."]
+  - command: help
+    command_class: HELP_COMMAND
+    default_authority_boundary: REFERENCE_ONLY
+    required_arguments: [question]
+    effect_summary: Enter protocol support without modifying deliberation state.
+    safety_notes: ["Help does not participate in substantive decisions."]
+    prohibited_effects: ["Canonical state mutation.", "Decision approval."]
+  - command: help-context-create
+    command_class: HELP_COMMAND
+    default_authority_boundary: REFERENCE_ONLY
+    required_arguments: [help_context_packet]
+    effect_summary: Create minimal context for a separate Help chat.
+    safety_notes: ["Share only necessary and permitted context."]
+    prohibited_effects: ["Private data disclosure.", "Authority transfer."]
+  - command: session-resume
+    command_class: USER_COMMAND
+    default_authority_boundary: USER_CONFIRMED
+    required_arguments: [session_id]
+    effect_summary: Resume the prior phase without creating new authority.
+    safety_notes: ["Resume restores prior boundaries only."]
+    prohibited_effects: ["New execution permission.", "Silent state replacement."]
+  - command: team-approval-record
+    command_class: TEAM_COMMAND
+    default_authority_boundary: REQUIRES_USER_CONFIRMATION
+    required_arguments: [decision_id, approver_id, decision_revision]
+    effect_summary: Record a named human approval under the selected team policy.
+    safety_notes: ["Silence never counts as consent."]
+    prohibited_effects: ["Fabricated approver identity.", "Approval of another revision."]
