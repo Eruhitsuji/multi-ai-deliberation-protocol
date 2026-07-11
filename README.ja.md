@@ -4,7 +4,7 @@
 
 > 現在公開中のプレリリース: **MADP-v0.3.0-alpha.1**
 >
-> mainに統合済みの次期版: **MADP-v0.3.0-alpha.2**（未タグ・未公開）
+> release candidate準備完了: **MADP-v0.3.0-alpha.2**（未タグ・未公開）
 
 MADPは、複数のAI、役割分離されたAIインスタンス、人間の検証者、実行エージェントによる熟議を、構造化して安全に進めるためのサービス非依存プロトコルです。最終決定者は常にユーザーです。
 
@@ -29,11 +29,11 @@ MADPは、複数のAI、役割分離されたAIインスタンス、人間の検
 
 ```yaml
 current_published_prerelease: MADP-v0.3.0-alpha.1
-current_main_development_version: MADP-v0.3.0-alpha.2
+release_candidate: MADP-v0.3.0-alpha.2
 alpha2_merged_to_main: true
+alpha2_release_ready: true
 alpha2_tagged: false
 alpha2_published: false
-alpha2_release_ready: false
 ```
 
 ## 日本語ガイド
@@ -63,6 +63,11 @@ alpha2_release_ready: false
 - [TODO lifecycle](docs/ja/todo-lifecycle.md)
 - [レビューワークフロー](docs/ja/review-workflow.md)
 
+## release候補資料
+
+- [alpha.2 prerelease README](README-v0.3.0-alpha.2.md)
+- [alpha.2 release notes](docs/releases/MADP-v0.3.0-alpha.2.md)
+
 ## 翻訳方針
 
 日本語文書は非規範的な説明資料です。翻訳のscope、同期方法、source commitの扱いは[翻訳ポリシー](docs/TRANSLATION_POLICY.md)を参照してください。
@@ -80,10 +85,9 @@ alpha2_release_ready: false
 
 ## Validation
 
-翻訳文書の整合性は次で確認できます。
-
 ```bash
 python scripts/check_translation_docs.py
+python scripts/check_release_readiness_v030_alpha2.py
 ```
 
 ## License
