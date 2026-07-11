@@ -123,12 +123,13 @@ def main() -> int:
 
     main_readme = (ROOT / "README.md").read_text(encoding="utf-8")
     main_readme_passed = (
-        "Current published prerelease: **MADP-v0.3.0-alpha.1**" in main_readme
+        "Current published prerelease: **MADP-v0.3.0-alpha.2**" in main_readme
+        and "previous_published_prerelease: MADP-v0.3.0-alpha.1" in main_readme
         and "MADP-v0.2.5-rc.2" in main_readme
     )
-    checks.append({"check": "main_readme_prerelease_promotion", "passed": main_readme_passed})
+    checks.append({"check": "main_readme_historical_alpha1", "passed": main_readme_passed})
     if not main_readme_passed:
-        errors.append("main README does not identify alpha.1 as the current published prerelease while retaining rc.2 history")
+        errors.append("main README must identify alpha.2 as current while retaining alpha.1 and rc.2 history")
 
     bootstrap_index = (ROOT / "bootstrap" / "complete-protocol-bundle.txt").read_text(encoding="utf-8")
     bootstrap_passed = (
@@ -141,15 +142,16 @@ def main() -> int:
         errors.append("bootstrap index published-prerelease labeling is incomplete")
 
     report = {
-        "report_version": "2",
+        "report_version": "3",
         "protocol_version": VERSION,
         "release_tag": RELEASE_TAG,
-        "repository_state": "PUBLISHED_PRERELEASE" if not errors else "INCONSISTENT",
+        "repository_state": "HISTORICAL_PUBLISHED_PRERELEASE" if not errors else "INCONSISTENT",
         "published_prerelease_documented": not errors,
         "checks": checks,
         "errors": errors,
         "limitations": [
-            "This audit checks repository content and does not query the GitHub Releases API.",
+            "This audit checks the retained alpha.1 release artifacts and does not query the GitHub Releases API.",
+            "Alpha.1 is historical; the current published prerelease is alpha.2.",
             "A passing audit does not claim production stability or universal interoperability.",
         ],
     }
