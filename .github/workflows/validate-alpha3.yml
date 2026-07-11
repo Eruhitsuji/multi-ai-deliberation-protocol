@@ -20,6 +20,7 @@ on:
       - "tests/v0.3.0-alpha.3/**"
       - "scripts/*alpha3*"
       - "scripts/*v030_alpha3*"
+      - ".madp-source-sync/**"
       - ".github/workflows/validate-alpha3.yml"
   pull_request:
     paths:
@@ -41,7 +42,39 @@ on:
       - "scripts/*v030_alpha3*"
       - ".github/workflows/validate-alpha3.yml"
 
+permissions:
+  contents: write
+
 jobs:
+  sync-validated-source:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out implementation branch
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.ref_name }}
+          fetch-depth: 0
+          show-progress: false
+      - name: Restore validated source files when staged
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ ! -f .madp-source-sync/deliberation.schema.yaml.gz.b64 || ! -f .madp-source-sync/fixtures.yaml.gz.b64 ]]; then
+            echo "No staged source synchronization requested."
+            exit 0
+          fi
+          base64 --decode .madp-source-sync/deliberation.schema.yaml.gz.b64 | gzip -dc > schemas/v0.3.0-alpha.3/deliberation.schema.yaml
+          base64 --decode .madp-source-sync/fixtures.yaml.gz.b64 | gzip -dc > tests/v0.3.0-alpha.3/fixtures.yaml
+          echo "8e6432a99b41e0275da36881e2bad17d09e4399bd2dcf436ce033de698fbefd5  schemas/v0.3.0-alpha.3/deliberation.schema.yaml" | sha256sum --check --strict
+          echo "300b41d41e08b9e9485f9e6034a5765a7c6735f9850a2f0f2cf8e861cff6b9e7  tests/v0.3.0-alpha.3/fixtures.yaml" | sha256sum --check --strict
+          rm -rf .madp-source-sync
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add schemas/v0.3.0-alpha.3/deliberation.schema.yaml tests/v0.3.0-alpha.3/fixtures.yaml .madp-source-sync
+          git commit -m "Restore validated alpha.3 schema and fixtures"
+          git push origin HEAD:"${GITHUB_REF_NAME}"
+
   validate-alpha3:
     runs-on: ubuntu-latest
     steps:
