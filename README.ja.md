@@ -8,6 +8,14 @@
 
 MADPは、複数のAI、役割分離されたAIインスタンス、人間の検証者、実行エージェントによる熟議を、構造化して安全に進めるためのサービス非依存プロトコルです。最終決定者は常にユーザーです。
 
+## 初めて使う場合
+
+1. [はじめに](docs/ja/getting-started.md)でMADPの全体像を確認します。
+2. [基本的な使用方法](docs/ja/basic-usage.md)で課題を定義し、議論方式を選びます。
+3. [実践ガイド一覧](docs/ja/practical-guides.md)から目的に合うworkflowへ進みます。
+
+最初の試行には[単体生成AIモデル・単一チャット](docs/ja/single-model-single-chat.md)が適しています。役割分離を強める場合は[単体生成AIモデル・複数チャット](docs/ja/single-model-multi-chat.md)、model diversityが必要な重要判断では[複数生成AIモデル](docs/ja/multi-model-deliberation.md)を使用します。
+
 ## 重要な原則
 
 - TODOは決定ではありません。
@@ -34,9 +42,17 @@ alpha2_release_ready: false
 
 - [日本語ドキュメント入口](docs/ja/README.md)
 - [はじめに](docs/ja/getting-started.md)
+- [基本的な使用方法](docs/ja/basic-usage.md)
+- [実践ガイド一覧](docs/ja/practical-guides.md)
 - [基本概念](docs/ja/concepts.md)
 - [説明用用語集](docs/ja/glossary.md)
 - [よくある質問](docs/ja/faq.md)
+
+### 議論方式
+
+- [複数生成AIモデルでの議論](docs/ja/multi-model-deliberation.md)
+- [単体生成AIモデル・複数チャットでの議論](docs/ja/single-model-multi-chat.md)
+- [単体生成AIモデル・単一チャットでの議論](docs/ja/single-model-single-chat.md)
 
 ### 実践利用
 
