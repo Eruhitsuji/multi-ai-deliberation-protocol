@@ -35,7 +35,9 @@ def main() -> int:
     parser.add_argument('--release-directory-a', required=True)
     parser.add_argument('--release-directory-b', required=True)
     parser.add_argument('--allow-blockers', default='')
-    parser.add_argument('--require-main', action='store_true')
+    modes = parser.add_mutually_exclusive_group()
+    modes.add_argument('--main-field-trial', action='store_true')
+    modes.add_argument('--require-main', action='store_true')
     args = parser.parse_args()
     problems = []
 
@@ -132,13 +134,29 @@ def main() -> int:
             problems.append('generated artifact validation failed: ' + (process.stderr.strip() or process.stdout.strip()))
 
     if args.require_main:
+        mode = 'final main'
         if status.get('integration_status') != 'MERGED_TO_MAIN':
             problems.append('final audit requires MERGED_TO_MAIN')
+        if status.get('evaluation_status') != 'COMPLETE':
+            problems.append('final audit requires evaluation_status COMPLETE')
         if active:
             problems.append('final audit cannot have blockers')
         if status.get('release_ready') is not True:
             problems.append('final audit requires release_ready true')
+    elif args.main_field_trial:
+        mode = 'main field trial'
+        if status.get('integration_status') != 'MERGED_TO_MAIN':
+            problems.append('field-trial audit requires MERGED_TO_MAIN')
+        if status.get('evaluation_status') != 'FIELD_TRIAL_IN_PROGRESS':
+            problems.append('field-trial audit requires FIELD_TRIAL_IN_PROGRESS')
+        if status.get('release_ready') is not False:
+            problems.append('field trial must not claim release_ready')
+        if blockers.get('A3-REL-001') != 'FIELD_TRIAL_IN_PROGRESS':
+            problems.append('A3-REL-001 must remain FIELD_TRIAL_IN_PROGRESS')
+        if blockers.get('A3-REL-005') != 'WAITING_FOR_FIELD_TRIAL':
+            problems.append('A3-REL-005 must wait for field trial completion')
     else:
+        mode = 'branch'
         if status.get('integration_status') != 'IMPLEMENTATION_BRANCH':
             problems.append('branch audit requires IMPLEMENTATION_BRANCH')
         if status.get('release_ready') is not False:
@@ -150,7 +168,7 @@ def main() -> int:
         return 1
     print(
         'MADP-v0.3.0-alpha.3 evidence-backed release audit: PASS'
-        + (' (final main)' if args.require_main else f' (branch; blockers={sorted(allowed)})')
+        + f' ({mode}; blockers={sorted(allowed)})'
     )
     return 0
 
