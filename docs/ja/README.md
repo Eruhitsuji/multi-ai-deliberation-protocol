@@ -12,18 +12,33 @@ normative: false
 
 > このディレクトリは日本語の非規範的ガイドです。規範的な仕様は英語版`protocol/`、`schemas/`、`registries/`を参照してください。不一致がある場合は英語版が優先されます。
 
-## ガイド
+## 最初に読む
 
 - [はじめに](getting-started.md)
 - [基本概念](concepts.md)
+- [説明用用語集](glossary.md)
+- [よくある質問](faq.md)
+
+## 実践ガイド
+
 - [権限モデル](authority-model.md)
 - [コマンド](commands.md)
+- [AI駆動開発](ai-development.md)
+- [コンテキスト共有とrelay](context-relay.md)
+- [TODO lifecycle](todo-lifecycle.md)
+- [レビューワークフロー](review-workflow.md)
+
+## 翻訳管理
+
+- [翻訳ポリシー](../TRANSLATION_POLICY.md)
+- [`docs/translations.yaml`](../translations.yaml)で日英ペアとsource commitを管理します。
+- `python scripts/check_translation_docs.py`でpairingとmetadataを検証します。
 
 ## バージョン状態
 
 - 公開中: `MADP-v0.3.0-alpha.1`
-- mainに統合済み・未公開: `MADP-v0.3.0-alpha.2`
-- alpha.2のtag・GitHub Releaseはまだ作成されていません。
+- mainに統合済み・未タグ・未公開: `MADP-v0.3.0-alpha.2`
+- `release_ready: false`は維持されています。
 
 ## 規範文書
 
