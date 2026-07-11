@@ -1,7 +1,11 @@
-status_version: "1"
+status_version: "2"
 protocol_version: "MADP-v0.3.0-alpha.2"
 implementation_status: "COMPLETE_FOR_DRAFT_REVIEW"
+integration_status: "MERGED_TO_MAIN"
+merge_commit: "a5d3d3877cbf5081bf82e0a476f6686cab6c350f"
 release_ready: false
+tagged: false
+published: false
 items:
   - todo_id: TODO-CMD-001
     status: DONE
@@ -31,6 +35,6 @@ items:
     status: DONE
     completion_basis: Relay mode schema and alpha.1-to-alpha.2 migration fixtures implemented.
 limitations:
-  - Completion means implemented for draft review, not merged, tagged, or published.
+  - Completion and merge do not mean tagged, published, or release-ready.
   - The alpha.2 apply runtime updates only its explicit internal runtime state model; it does not execute external actions.
   - Release governance actions remain separately user-authorized.
