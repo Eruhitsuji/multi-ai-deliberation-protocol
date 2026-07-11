@@ -45,8 +45,9 @@ normative: false
 ## バージョン状態
 
 - 公開中: `MADP-v0.3.0-alpha.1`
-- mainに統合済み・未タグ・未公開: `MADP-v0.3.0-alpha.2`
-- `release_ready: false`は維持されています。
+- release candidate準備完了・未タグ・未公開: `MADP-v0.3.0-alpha.2`
+- `release_ready: true`
+- tag作成とGitHub Release公開は別操作です。
 
 ## 規範文書
 
