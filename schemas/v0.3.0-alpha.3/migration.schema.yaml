@@ -1,0 +1,142 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: urn:madp:schema:migration:0.3.0-alpha.3
+title: MADP alpha.2 to alpha.3 Migration Record
+type: object
+additionalProperties: false
+required:
+- migration_record
+properties:
+  migration_record:
+    type: object
+    additionalProperties: false
+    required:
+    - migration_id
+    - source_protocol_version
+    - target_protocol_version
+    - source_state_ref
+    - migration_outcome
+    - source_raw_preserved
+    - rollback_available
+    - authority_invariant_status
+    - authority_escalated
+    - user_approval_inferred
+    - transformations
+    - target_artifact_refs
+    - validation_status
+    - limitations
+    properties:
+      migration_id:
+        type: string
+        minLength: 1
+        pattern: ^[A-Za-z0-9][A-Za-z0-9._:-]*$
+      source_protocol_version:
+        const: MADP-v0.3.0-alpha.2
+      target_protocol_version:
+        const: MADP-v0.3.0-alpha.3
+      source_state_ref:
+        type: string
+        minLength: 1
+      source_state_version:
+        type:
+        - integer
+        - 'null'
+        minimum: 0
+      migration_outcome:
+        enum:
+        - SUCCESS
+        - PARTIAL
+        - FAILED
+        - QUARANTINED
+      source_raw_preserved:
+        type: boolean
+      rollback_available:
+        type: boolean
+      authority_invariant_status:
+        enum:
+        - PASS
+        - FAIL
+        - NOT_VALIDATED
+      authority_escalated:
+        type: boolean
+      user_approval_inferred:
+        type: boolean
+      transformations:
+        type: array
+        items:
+          type: object
+          additionalProperties: false
+          required:
+          - source_type
+          - target_type
+          - mapping
+          - information_loss
+          properties:
+            source_type:
+              type: string
+              minLength: 1
+            target_type:
+              type: string
+              minLength: 1
+            mapping:
+              type: string
+              minLength: 1
+            information_loss:
+              type: boolean
+            limitations:
+              type: array
+              items:
+                type: string
+                minLength: 1
+      target_artifact_refs:
+        type: array
+        items:
+          type: string
+          minLength: 1
+      validation_status:
+        enum:
+        - PASS
+        - FAIL
+        - NOT_VALIDATED
+      failure_reasons:
+        type: array
+        items:
+          type: string
+          minLength: 1
+      limitations:
+        type: array
+        items:
+          type: string
+          minLength: 1
+    allOf:
+    - if:
+        properties:
+          migration_outcome:
+            const: SUCCESS
+        required:
+        - migration_outcome
+      then:
+        properties:
+          source_raw_preserved:
+            const: true
+          authority_invariant_status:
+            const: PASS
+          authority_escalated:
+            const: false
+          user_approval_inferred:
+            const: false
+          validation_status:
+            const: PASS
+    - if:
+        properties:
+          migration_outcome:
+            enum:
+            - FAILED
+            - QUARANTINED
+        required:
+        - migration_outcome
+      then:
+        required:
+        - failure_reasons
+        properties:
+          failure_reasons:
+            minItems: 1

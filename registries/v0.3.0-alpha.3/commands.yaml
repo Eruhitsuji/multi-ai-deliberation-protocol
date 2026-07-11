@@ -1,0 +1,951 @@
+registry_version: MADP-COMMAND-REGISTRY-v0.2
+protocol_version: MADP-v0.3.0-alpha.3
+status: release-candidate-content
+canonical_name_policy: lowercase-kebab-case
+composition:
+  policy: ALPHA2_CANONICAL_SUPERSET
+  inherited_registry_version: MADP-COMMAND-REGISTRY-v0.1
+  inherited_protocol_version: MADP-v0.3.0-alpha.2
+  inherited_alpha2_commands:
+  - share-context
+  - issue-relay
+  - request-review
+  - summarize-state
+  - check-authority
+  - propose-decision
+  - approve
+  - reject
+  - defer
+  - prioritize
+  - pause
+  - resume
+  - status
+  - todo-add
+  - todo-list
+  - todo-update
+  - todo-done
+  - todo-defer
+  - todo-promote
+  - external-action
+  added_alpha3_commands:
+  - session-start
+  - session-status
+  - session-checkpoint-create
+  - session-resume
+  - session-export
+  - session-import
+  - session-import-confirm
+  - session-end
+  - participant-add
+  - participant-update-capability
+  - participant-set-mode
+  - goal-propose
+  - goal-confirm
+  - role-assign
+  - role-pause
+  - role-retire
+  - relay-create-plain
+  - response-ingest
+  - response-normalize
+  - normalization-confirm
+  - claim-add
+  - claim-verify
+  - minutes-generate
+  - minutes-review
+  - minutes-approve
+  - minutes-redact
+  - minutes-export
+  - help
+  - help-context-create
+  - help-exit
+  - team-approval-record
+alias_policy:
+  aliases_are_input_convenience_only: true
+  canonical_command_must_be_recorded: true
+  canonical_names_take_precedence: true
+  aliases_must_not_change_authority: true
+  unknown_or_ambiguous_alias: DENY_AND_SHOW_HELP
+command_groups:
+- group: SESSION
+  purpose: Session lifecycle and state reporting.
+- group: CONTEXT
+  purpose: Context packaging.
+- group: RELAY
+  purpose: Bounded relays.
+- group: REVIEW
+  purpose: Review requests.
+- group: AUTHORITY
+  purpose: Authority classification.
+- group: DECISION
+  purpose: Decision proposals and human decisions.
+- group: TODO
+  purpose: TODO lifecycle.
+- group: EXTERNAL
+  purpose: External-action requests without execution.
+- group: PLANNING
+  purpose: Goal planning and confirmation.
+- group: PARTICIPANT
+  purpose: Participant and capability management.
+- group: ROLE
+  purpose: Analytical role lifecycle.
+- group: INGESTION
+  purpose: Response ingestion and normalization.
+- group: EVIDENCE
+  purpose: Claim ledger operations.
+- group: RECORDS
+  purpose: Minutes and records.
+- group: TEAM
+  purpose: Named team approvals.
+- group: HELP
+  purpose: Protocol help.
+- group: PORTABILITY
+  purpose: User-managed session files.
+aliases:
+- alias: start
+  command: session-start
+- alias: checkpoint
+  command: session-checkpoint-create
+- alias: save
+  command: session-export
+- alias: backup
+  command: session-export
+- alias: load
+  command: session-import
+- alias: restore
+  command: session-import
+- alias: end
+  command: session-end
+- alias: minutes
+  command: minutes-generate
+- alias: export-minutes
+  command: minutes-export
+commands:
+- command: share-context
+  group: CONTEXT
+  command_class: AI_COMMAND
+  default_authority_boundary: PROPOSE_ONLY
+  required_arguments:
+  - purpose
+  optional_arguments:
+  - target_role
+  - source_session_id
+  - include_files
+  - limitations
+  test_arguments:
+    purpose: handoff
+  effect_summary: Prepare a context package without granting authority.
+  safety_notes:
+  - Parsing or recording this command does not expand authority.
+  prohibited_effects:
+  - External execution without separate trusted permission.
+- command: issue-relay
+  group: RELAY
+  command_class: AI_COMMAND
+  default_authority_boundary: PROPOSE_ONLY
+  required_arguments:
+  - relay_mode
+  - target_role
+  optional_arguments:
+  - include_state
+  - include_evidence
+  - limitations
+  test_arguments:
+    relay_mode: PLAIN
+    target_role: reviewer
+  effect_summary: Prepare a bounded relay without granting authority.
+  safety_notes:
+  - Parsing or recording this command does not expand authority.
+  prohibited_effects:
+  - External execution without separate trusted permission.
+- command: request-review
+  group: REVIEW
+  command_class: AI_COMMAND
+  default_authority_boundary: PROPOSE_ONLY
+  required_arguments:
+  - review_focus
+  optional_arguments:
+  - artifacts
+  - target_role
+  - context_package
+  test_arguments:
+    review_focus: authority-boundary
+  effect_summary: Request bounded review findings.
+  safety_notes:
+  - Parsing or recording this command does not expand authority.
+  prohibited_effects:
+  - External execution without separate trusted permission.
+- command: summarize-state
+  group: SESSION
+  command_class: AI_COMMAND
+  default_authority_boundary: REFERENCE_ONLY
+  required_arguments: []
+  optional_arguments:
+  - focus
+  - since
+  - include_todos
+  test_arguments: {}
+  effect_summary: Summarize current state without mutation.
+  safety_notes:
+  - Parsing or recording this command does not expand authority.
+  prohibited_effects:
+  - External execution without separate trusted permission.
+- command: check-authority
+  group: AUTHORITY
+  command_class: AI_COMMAND
+  default_authority_boundary: REFERENCE_ONLY
+  required_arguments:
+  - action
+  optional_arguments:
+  - scope
+  - grant_ref
+  test_arguments:
+    action: write-file
+  effect_summary: Classify whether an action is allowed.
+  safety_notes:
+  - Parsing or recording this command does not expand authority.
+  prohibited_effects:
+  - External execution without separate trusted permission.
+- command: propose-decision
+  group: DECISION
+  command_class: AI_COMMAND
+  default_authority_boundary: PROPOSE_ONLY
+  required_arguments:
+  - decision
+  optional_arguments:
+  - rationale
+  - alternatives
+  - risks
+  test_arguments:
+    decision: DEC-001
+  effect_summary: Propose a decision candidate.
+  safety_notes:
+  - Parsing or recording this command does not expand authority.
+  prohibited_effects:
+  - External execution without separate trusted permission.
+- command: approve
+  group: DECISION
+  command_class: USER_COMMAND
+  default_authority_boundary: USER_CONFIRMED
+  required_arguments:
+  - decision
+  - revision
+  optional_arguments:
+  - scope
+  - conditions
+  test_arguments:
+    decision: DEC-001
+    revision: 1
+  effect_summary: Record approval for an exact decision revision.
+  safety_notes:
+  - Parsing or recording this command does not expand authority.
+  prohibited_effects:
+  - External execution without separate trusted permission.
+- command: reject
+  group: DECISION
+  command_class: USER_COMMAND
+  default_authority_boundary: USER_CONFIRMED
+  required_arguments:
+  - target
+  optional_arguments:
+  - reason
+  test_arguments:
+    target: DEC-001
+  effect_summary: Record explicit rejection.
+  safety_notes:
+  - Parsing or recording this command does not expand authority.
+  prohibited_effects:
+  - External execution without separate trusted permission.
+- command: defer
+  group: DECISION
+  command_class: USER_COMMAND
+  default_authority_boundary: USER_CONFIRMED
+  required_arguments:
+  - target
+  optional_arguments:
+  - until
+  - reason
+  test_arguments:
+    target: TODO-001
+  effect_summary: Record explicit deferral.
+  safety_notes:
+  - Parsing or recording this command does not expand authority.
+  prohibited_effects:
+  - External execution without separate trusted permission.
+- command: prioritize
+  group: DECISION
+  command_class: USER_COMMAND
+  default_authority_boundary: USER_CONFIRMED
+  required_arguments:
+  - target
+  - priority
+  optional_arguments:
+  - reason
+  test_arguments:
+    target: TODO-001
+    priority: HIGH
+  effect_summary: Set user-visible priority.
+  safety_notes:
+  - Parsing or recording this command does not expand authority.
+  prohibited_effects:
+  - External execution without separate trusted permission.
+- command: pause
+  group: SESSION
+  command_class: USER_COMMAND
+  default_authority_boundary: USER_CONFIRMED
+  required_arguments: []
+  optional_arguments:
+  - reason
+  test_arguments: {}
+  effect_summary: Pause workflow progression.
+  safety_notes:
+  - Parsing or recording this command does not expand authority.
+  prohibited_effects:
+  - External execution without separate trusted permission.
+- command: resume
+  group: SESSION
+  command_class: USER_COMMAND
+  default_authority_boundary: USER_CONFIRMED
+  required_arguments: []
+  optional_arguments:
+  - scope
+  test_arguments: {}
+  effect_summary: Resume a paused workflow within prior authority.
+  safety_notes:
+  - Parsing or recording this command does not expand authority.
+  prohibited_effects:
+  - External execution without separate trusted permission.
+- command: status
+  group: SESSION
+  command_class: USER_COMMAND
+  default_authority_boundary: REFERENCE_ONLY
+  required_arguments: []
+  optional_arguments:
+  - scope
+  test_arguments: {}
+  effect_summary: Report current workflow status.
+  safety_notes:
+  - Parsing or recording this command does not expand authority.
+  prohibited_effects:
+  - External execution without separate trusted permission.
+- command: todo-add
+  group: TODO
+  command_class: TODO_COMMAND
+  default_authority_boundary: PROPOSE_ONLY
+  required_arguments:
+  - title
+  optional_arguments:
+  - type
+  - priority
+  - owner
+  - related_issue
+  - related_decision
+  test_arguments:
+    title: Follow up
+  effect_summary: Add a TODO item.
+  safety_notes:
+  - Parsing or recording this command does not expand authority.
+  prohibited_effects:
+  - External execution without separate trusted permission.
+- command: todo-list
+  group: TODO
+  command_class: TODO_COMMAND
+  default_authority_boundary: REFERENCE_ONLY
+  required_arguments: []
+  optional_arguments:
+  - status
+  - owner
+  - priority
+  test_arguments: {}
+  effect_summary: List TODO items.
+  safety_notes:
+  - Parsing or recording this command does not expand authority.
+  prohibited_effects:
+  - External execution without separate trusted permission.
+- command: todo-update
+  group: TODO
+  command_class: TODO_COMMAND
+  default_authority_boundary: PROPOSE_ONLY
+  required_arguments:
+  - todo_id
+  optional_arguments:
+  - title
+  - status
+  - priority
+  - owner
+  - blocking_reason
+  test_arguments:
+    todo_id: TODO-001
+  effect_summary: Update TODO metadata.
+  safety_notes:
+  - Parsing or recording this command does not expand authority.
+  prohibited_effects:
+  - External execution without separate trusted permission.
+- command: todo-done
+  group: TODO
+  command_class: TODO_COMMAND
+  default_authority_boundary: PROPOSE_ONLY
+  required_arguments:
+  - todo_id
+  - completion_basis
+  optional_arguments:
+  - evidence
+  test_arguments:
+    todo_id: TODO-001
+    completion_basis: verified
+  effect_summary: Mark a TODO done with a basis.
+  safety_notes:
+  - Parsing or recording this command does not expand authority.
+  prohibited_effects:
+  - External execution without separate trusted permission.
+- command: todo-defer
+  group: TODO
+  command_class: TODO_COMMAND
+  default_authority_boundary: PROPOSE_ONLY
+  required_arguments:
+  - todo_id
+  optional_arguments:
+  - until
+  - reason
+  test_arguments:
+    todo_id: TODO-001
+  effect_summary: Defer a TODO.
+  safety_notes:
+  - Parsing or recording this command does not expand authority.
+  prohibited_effects:
+  - External execution without separate trusted permission.
+- command: todo-promote
+  group: TODO
+  command_class: TODO_COMMAND
+  default_authority_boundary: REQUIRES_USER_CONFIRMATION
+  required_arguments:
+  - todo_id
+  - target_type
+  optional_arguments:
+  - rationale
+  - confirmation_ref
+  test_arguments:
+    todo_id: TODO-001
+    target_type: PROPOSAL
+  effect_summary: Promote a TODO without approving it.
+  safety_notes:
+  - Parsing or recording this command does not expand authority.
+  prohibited_effects:
+  - External execution without separate trusted permission.
+- command: external-action
+  group: EXTERNAL
+  command_class: EXTERNAL_ACTION_COMMAND
+  default_authority_boundary: REQUIRES_USER_CONFIRMATION
+  required_arguments:
+  - action
+  - scope
+  optional_arguments:
+  - reason
+  - confirmation_ref
+  - dry_run
+  test_arguments:
+    action: write-file
+    scope: artifact.md
+  effect_summary: Request confirmation for an external action.
+  safety_notes:
+  - Parsing or recording this command does not expand authority.
+  prohibited_effects:
+  - External execution without separate trusted permission.
+- command: session-start
+  group: SESSION
+  command_class: USER_COMMAND
+  default_authority_boundary: USER_CONFIRMED
+  required_arguments:
+  - session_id
+  - deliberation_plan
+  optional_arguments: []
+  test_arguments:
+    session_id: SESSION-001
+    deliberation_plan: PLAN-001
+  effect_summary: Start a session from a confirmed plan.
+  safety_notes:
+  - Parsing or recording this command does not expand authority.
+  prohibited_effects:
+  - External execution without separate trusted permission.
+- command: session-status
+  group: SESSION
+  command_class: SESSION_COMMAND
+  default_authority_boundary: REFERENCE_ONLY
+  required_arguments:
+  - session_id
+  optional_arguments: []
+  test_arguments:
+    session_id: SESSION-001
+  effect_summary: Report alpha.3 session state.
+  safety_notes:
+  - Parsing or recording this command does not expand authority.
+  prohibited_effects:
+  - External execution without separate trusted permission.
+- command: session-checkpoint-create
+  group: SESSION
+  command_class: RECORD_COMMAND
+  default_authority_boundary: PROPOSE_ONLY
+  required_arguments:
+  - label
+  - source_state_version
+  optional_arguments: []
+  test_arguments:
+    label: before-review
+    source_state_version: 1
+  effect_summary: Create a revision-bound checkpoint.
+  safety_notes:
+  - Parsing or recording this command does not expand authority.
+  prohibited_effects:
+  - External execution without separate trusted permission.
+- command: session-resume
+  group: SESSION
+  command_class: USER_COMMAND
+  default_authority_boundary: USER_CONFIRMED
+  required_arguments:
+  - session_id
+  - expected_state_version
+  optional_arguments: []
+  test_arguments:
+    session_id: SESSION-001
+    expected_state_version: 1
+  effect_summary: Resume an exact session state.
+  safety_notes:
+  - Parsing or recording this command does not expand authority.
+  prohibited_effects:
+  - External execution without separate trusted permission.
+- command: session-export
+  group: PORTABILITY
+  command_class: RECORD_COMMAND
+  default_authority_boundary: REQUIRES_USER_CONFIRMATION
+  required_arguments:
+  - session_export_request
+  optional_arguments: []
+  test_arguments:
+    session_export_request: EXPORT-001
+  effect_summary: Prepare a portable session export.
+  safety_notes:
+  - Parsing or recording this command does not expand authority.
+  prohibited_effects:
+  - External execution without separate trusted permission.
+- command: session-import
+  group: PORTABILITY
+  command_class: PORTABILITY_COMMAND
+  default_authority_boundary: PROPOSE_ONLY
+  required_arguments:
+  - source_file
+  optional_arguments: []
+  test_arguments:
+    source_file: session.yaml
+  effect_summary: Validate a supplied session file without state replacement.
+  safety_notes:
+  - Parsing or recording this command does not expand authority.
+  prohibited_effects:
+  - External execution without separate trusted permission.
+- command: session-import-confirm
+  group: PORTABILITY
+  command_class: USER_COMMAND
+  default_authority_boundary: USER_CONFIRMED
+  required_arguments:
+  - import_id
+  - report_revision
+  - selected_action
+  optional_arguments: []
+  test_arguments:
+    import_id: IMPORT-001
+    report_revision: 1
+    selected_action: CREATE_NEW_SESSION
+  effect_summary: Confirm an exact import report revision.
+  safety_notes:
+  - Parsing or recording this command does not expand authority.
+  prohibited_effects:
+  - External execution without separate trusted permission.
+- command: session-end
+  group: SESSION
+  command_class: USER_COMMAND
+  default_authority_boundary: USER_CONFIRMED
+  required_arguments:
+  - session_id
+  - expected_state_version
+  - end_reason
+  optional_arguments: []
+  test_arguments:
+    session_id: SESSION-001
+    expected_state_version: 1
+    end_reason: complete
+  effect_summary: End an exact session state.
+  safety_notes:
+  - Parsing or recording this command does not expand authority.
+  prohibited_effects:
+  - External execution without separate trusted permission.
+- command: participant-add
+  group: PARTICIPANT
+  command_class: USER_COMMAND
+  default_authority_boundary: USER_CONFIRMED
+  required_arguments:
+  - participant_profile
+  optional_arguments: []
+  test_arguments:
+    participant_profile: PARTICIPANT-001
+  effect_summary: Register a participant profile.
+  safety_notes:
+  - Parsing or recording this command does not expand authority.
+  prohibited_effects:
+  - External execution without separate trusted permission.
+- command: participant-update-capability
+  group: PARTICIPANT
+  command_class: AI_COMMAND
+  default_authority_boundary: PROPOSE_ONLY
+  required_arguments:
+  - participant_id
+  - capabilities
+  optional_arguments: []
+  test_arguments:
+    participant_id: AI-001
+    capabilities: CAP-SET-001
+  effect_summary: Update observed capability metadata.
+  safety_notes:
+  - Parsing or recording this command does not expand authority.
+  prohibited_effects:
+  - External execution without separate trusted permission.
+- command: participant-set-mode
+  group: PARTICIPANT
+  command_class: USER_COMMAND
+  default_authority_boundary: USER_CONFIRMED
+  required_arguments:
+  - participant_id
+  - participation_mode
+  optional_arguments: []
+  test_arguments:
+    participant_id: AI-001
+    participation_mode: OPINION_ONLY
+  effect_summary: Set participation mode.
+  safety_notes:
+  - Parsing or recording this command does not expand authority.
+  prohibited_effects:
+  - External execution without separate trusted permission.
+- command: goal-propose
+  group: PLANNING
+  command_class: AI_COMMAND
+  default_authority_boundary: PROPOSE_ONLY
+  required_arguments:
+  - deliberation_plan
+  optional_arguments: []
+  test_arguments:
+    deliberation_plan: PLAN-001
+  effect_summary: Propose a deliberation goal revision.
+  safety_notes:
+  - Parsing or recording this command does not expand authority.
+  prohibited_effects:
+  - External execution without separate trusted permission.
+- command: goal-confirm
+  group: PLANNING
+  command_class: USER_COMMAND
+  default_authority_boundary: USER_CONFIRMED
+  required_arguments:
+  - plan_id
+  - revision
+  - source_state_version
+  optional_arguments: []
+  test_arguments:
+    plan_id: PLAN-001
+    revision: 1
+    source_state_version: 1
+  effect_summary: Confirm an exact goal revision.
+  safety_notes:
+  - Parsing or recording this command does not expand authority.
+  prohibited_effects:
+  - External execution without separate trusted permission.
+- command: role-assign
+  group: ROLE
+  command_class: AI_COMMAND
+  default_authority_boundary: PROPOSE_ONLY
+  required_arguments:
+  - role_assignment
+  optional_arguments: []
+  test_arguments:
+    role_assignment: ROLE-001
+  effect_summary: Assign a bounded analytical role.
+  safety_notes:
+  - Parsing or recording this command does not expand authority.
+  prohibited_effects:
+  - External execution without separate trusted permission.
+- command: role-pause
+  group: ROLE
+  command_class: AI_COMMAND
+  default_authority_boundary: PROPOSE_ONLY
+  required_arguments:
+  - role_id
+  optional_arguments:
+  - source_state_version
+  test_arguments:
+    role_id: ROLE-001
+  effect_summary: Pause an analytical role.
+  safety_notes:
+  - Parsing or recording this command does not expand authority.
+  prohibited_effects:
+  - External execution without separate trusted permission.
+- command: role-retire
+  group: ROLE
+  command_class: AI_COMMAND
+  default_authority_boundary: PROPOSE_ONLY
+  required_arguments:
+  - role_id
+  - reason
+  optional_arguments:
+  - source_state_version
+  test_arguments:
+    role_id: ROLE-001
+    reason: complete
+  effect_summary: Retire an analytical role.
+  safety_notes:
+  - Parsing or recording this command does not expand authority.
+  prohibited_effects:
+  - External execution without separate trusted permission.
+- command: relay-create-plain
+  group: RELAY
+  command_class: AI_COMMAND
+  default_authority_boundary: PROPOSE_ONLY
+  required_arguments:
+  - plain_relay_packet
+  optional_arguments: []
+  test_arguments:
+    plain_relay_packet: RELAY-001
+  effect_summary: Create a bounded plain-text relay.
+  safety_notes:
+  - Parsing or recording this command does not expand authority.
+  prohibited_effects:
+  - External execution without separate trusted permission.
+- command: response-ingest
+  group: INGESTION
+  command_class: AI_COMMAND
+  default_authority_boundary: PROPOSE_ONLY
+  required_arguments:
+  - session_id
+  - source_state_version
+  - raw_response_ref
+  - participant_id
+  optional_arguments: []
+  test_arguments:
+    session_id: SESSION-001
+    source_state_version: 1
+    raw_response_ref: artifact://raw/1
+    participant_id: AI-001
+  effect_summary: Preserve and classify a response.
+  safety_notes:
+  - Parsing or recording this command does not expand authority.
+  prohibited_effects:
+  - External execution without separate trusted permission.
+- command: response-normalize
+  group: INGESTION
+  command_class: AI_COMMAND
+  default_authority_boundary: PROPOSE_ONLY
+  required_arguments:
+  - ingest_id
+  - source_state_version
+  - normalization_record
+  optional_arguments: []
+  test_arguments:
+    ingest_id: ING-001
+    source_state_version: 1
+    normalization_record: NORM-001
+  effect_summary: Create an auditable normalization proposal.
+  safety_notes:
+  - Parsing or recording this command does not expand authority.
+  prohibited_effects:
+  - External execution without separate trusted permission.
+- command: normalization-confirm
+  group: INGESTION
+  command_class: USER_COMMAND
+  default_authority_boundary: USER_CONFIRMED
+  required_arguments:
+  - normalization_id
+  - source_state_version
+  - status
+  optional_arguments: []
+  test_arguments:
+    normalization_id: NORM-001
+    source_state_version: 1
+    status: CONFIRMED
+  effect_summary: Confirm an exact normalization.
+  safety_notes:
+  - Parsing or recording this command does not expand authority.
+  prohibited_effects:
+  - External execution without separate trusted permission.
+- command: claim-add
+  group: EVIDENCE
+  command_class: AI_COMMAND
+  default_authority_boundary: PROPOSE_ONLY
+  required_arguments:
+  - claim
+  optional_arguments: []
+  test_arguments:
+    claim: CLAIM-001
+  effect_summary: Add a typed claim.
+  safety_notes:
+  - Parsing or recording this command does not expand authority.
+  prohibited_effects:
+  - External execution without separate trusted permission.
+- command: claim-verify
+  group: EVIDENCE
+  command_class: AI_COMMAND
+  default_authority_boundary: PROPOSE_ONLY
+  required_arguments:
+  - claim_id
+  - verification_status
+  optional_arguments:
+  - source_state_version
+  test_arguments:
+    claim_id: CLAIM-001
+    verification_status: VERIFIED
+  effect_summary: Record claim verification.
+  safety_notes:
+  - Parsing or recording this command does not expand authority.
+  prohibited_effects:
+  - External execution without separate trusted permission.
+- command: minutes-generate
+  group: RECORDS
+  command_class: RECORD_COMMAND
+  default_authority_boundary: PROPOSE_ONLY
+  required_arguments:
+  - session_id
+  - source_state_version
+  - detail_level
+  optional_arguments: []
+  test_arguments:
+    session_id: SESSION-001
+    source_state_version: 1
+    detail_level: STANDARD
+  effect_summary: Generate draft minutes.
+  safety_notes:
+  - Parsing or recording this command does not expand authority.
+  prohibited_effects:
+  - External execution without separate trusted permission.
+- command: minutes-review
+  group: RECORDS
+  command_class: USER_COMMAND
+  default_authority_boundary: USER_CONFIRMED
+  required_arguments:
+  - minutes_id
+  - revision
+  - review_status
+  optional_arguments: []
+  test_arguments:
+    minutes_id: MIN-001
+    revision: 1
+    review_status: HUMAN_REVIEWED
+  effect_summary: Record human review of a minutes revision.
+  safety_notes:
+  - Parsing or recording this command does not expand authority.
+  prohibited_effects:
+  - External execution without separate trusted permission.
+- command: minutes-approve
+  group: RECORDS
+  command_class: USER_COMMAND
+  default_authority_boundary: USER_CONFIRMED
+  required_arguments:
+  - minutes_id
+  - revision
+  optional_arguments: []
+  test_arguments:
+    minutes_id: MIN-001
+    revision: 1
+  effect_summary: Approve an exact reviewed minutes revision.
+  safety_notes:
+  - Parsing or recording this command does not expand authority.
+  prohibited_effects:
+  - External execution without separate trusted permission.
+- command: minutes-redact
+  group: RECORDS
+  command_class: RECORD_COMMAND
+  default_authority_boundary: REQUIRES_USER_CONFIRMATION
+  required_arguments:
+  - minutes_id
+  - redactions
+  optional_arguments:
+  - revision
+  test_arguments:
+    minutes_id: MIN-001
+    redactions: REDACTION-001
+  effect_summary: Redact permitted content with an audit note.
+  safety_notes:
+  - Parsing or recording this command does not expand authority.
+  prohibited_effects:
+  - External execution without separate trusted permission.
+- command: minutes-export
+  group: RECORDS
+  command_class: RECORD_COMMAND
+  default_authority_boundary: REQUIRES_USER_CONFIRMATION
+  required_arguments:
+  - minutes_id
+  - format
+  optional_arguments:
+  - revision
+  test_arguments:
+    minutes_id: MIN-001
+    format: MARKDOWN
+  effect_summary: Export a selected minutes revision.
+  safety_notes:
+  - Parsing or recording this command does not expand authority.
+  prohibited_effects:
+  - External execution without separate trusted permission.
+- command: help
+  group: HELP
+  command_class: HELP_COMMAND
+  default_authority_boundary: REFERENCE_ONLY
+  required_arguments:
+  - question
+  optional_arguments: []
+  test_arguments:
+    question: next-action
+  effect_summary: Enter protocol help without substantive authority.
+  safety_notes:
+  - Parsing or recording this command does not expand authority.
+  prohibited_effects:
+  - External execution without separate trusted permission.
+- command: help-context-create
+  group: HELP
+  command_class: HELP_COMMAND
+  default_authority_boundary: REFERENCE_ONLY
+  required_arguments:
+  - help_context_packet
+  optional_arguments: []
+  test_arguments:
+    help_context_packet: HELP-CONTEXT-001
+  effect_summary: Create minimal context for a Help chat.
+  safety_notes:
+  - Parsing or recording this command does not expand authority.
+  prohibited_effects:
+  - External execution without separate trusted permission.
+- command: help-exit
+  group: HELP
+  command_class: USER_COMMAND
+  default_authority_boundary: USER_CONFIRMED
+  required_arguments:
+  - help_request_id
+  - source_state_version
+  optional_arguments: []
+  test_arguments:
+    help_request_id: HELP-001
+    source_state_version: 1
+  effect_summary: Exit Help and restore the recorded phase.
+  safety_notes:
+  - Parsing or recording this command does not expand authority.
+  prohibited_effects:
+  - External execution without separate trusted permission.
+- command: team-approval-record
+  group: TEAM
+  command_class: TEAM_COMMAND
+  default_authority_boundary: REQUIRES_USER_CONFIRMATION
+  required_arguments:
+  - decision_id
+  - approver_id
+  - decision_revision
+  optional_arguments: []
+  test_arguments:
+    decision_id: DEC-001
+    approver_id: USER-001
+    decision_revision: 1
+  effect_summary: Record a named human approval.
+  safety_notes:
+  - Parsing or recording this command does not expand authority.
+  prohibited_effects:
+  - External execution without separate trusted permission.

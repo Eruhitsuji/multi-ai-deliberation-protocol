@@ -1,0 +1,172 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: urn:madp:schema:command:0.3.0-alpha.3
+title: MADP Command Block v0.3.0-alpha.3
+type: object
+additionalProperties: false
+required:
+- command_block
+properties:
+  command_block:
+    type: object
+    additionalProperties: false
+    required:
+    - command_id
+    - command_version
+    - protocol_version
+    - command
+    - invoked_name
+    - alias_used
+    - command_class
+    - issued_by
+    - raw_input
+    - parse_status
+    - validation_status
+    - authority_status
+    - authority_boundary
+    - arguments
+    - effects
+    properties:
+      command_id:
+        type: string
+        minLength: 1
+        pattern: ^[A-Za-z0-9][A-Za-z0-9._:-]*$
+      command_version:
+        const: MADP-COMMAND-v0.2
+      protocol_version:
+        const: MADP-v0.3.0-alpha.3
+      command:
+        enum:
+        - share-context
+        - issue-relay
+        - request-review
+        - summarize-state
+        - check-authority
+        - propose-decision
+        - approve
+        - reject
+        - defer
+        - prioritize
+        - pause
+        - resume
+        - status
+        - todo-add
+        - todo-list
+        - todo-update
+        - todo-done
+        - todo-defer
+        - todo-promote
+        - external-action
+        - session-start
+        - session-status
+        - session-checkpoint-create
+        - session-resume
+        - session-export
+        - session-import
+        - session-import-confirm
+        - session-end
+        - participant-add
+        - participant-update-capability
+        - participant-set-mode
+        - goal-propose
+        - goal-confirm
+        - role-assign
+        - role-pause
+        - role-retire
+        - relay-create-plain
+        - response-ingest
+        - response-normalize
+        - normalization-confirm
+        - claim-add
+        - claim-verify
+        - minutes-generate
+        - minutes-review
+        - minutes-approve
+        - minutes-redact
+        - minutes-export
+        - help
+        - help-context-create
+        - help-exit
+        - team-approval-record
+      invoked_name:
+        type: string
+        minLength: 1
+        pattern: ^[a-z0-9][a-z0-9-]*$
+      alias_used:
+        type: boolean
+      command_class:
+        enum:
+        - AI_COMMAND
+        - AUTHORITY_COMMAND
+        - DECISION_COMMAND
+        - EXTERNAL_ACTION_COMMAND
+        - HELP_COMMAND
+        - PORTABILITY_COMMAND
+        - RECORD_COMMAND
+        - REVIEW_COMMAND
+        - SESSION_COMMAND
+        - TEAM_COMMAND
+        - TODO_COMMAND
+        - USER_COMMAND
+      issued_by:
+        enum:
+        - USER
+        - FACILITATOR
+        - PARTICIPANT
+        - HELP_ASSISTANT
+        - RECORDER
+        - SYSTEM
+      issued_at:
+        type: string
+      raw_input:
+        type: string
+        minLength: 1
+      parse_status:
+        enum:
+        - PARSED
+        - PARSE_ERROR
+        - NEEDS_ARGUMENTS
+      validation_status:
+        enum:
+        - SCHEMA_VALID
+        - SCHEMA_INVALID
+        - NOT_VALIDATED
+      authority_status:
+        enum:
+        - REFERENCE_ONLY
+        - USER_CONFIRMED
+        - PROPOSE_ONLY
+        - REQUIRES_USER_CONFIRMATION
+        - DENIED
+      arguments:
+        type: object
+        additionalProperties: true
+      effects:
+        type: object
+        additionalProperties: false
+        required:
+        - intended
+        - prohibited
+        properties:
+          intended:
+            type: array
+            items:
+              type: string
+              minLength: 1
+          prohibited:
+            type: array
+            minItems: 1
+            items:
+              type: string
+              minLength: 1
+      limitations:
+        type: array
+        items:
+          type: string
+          minLength: 1
+      authority_boundary:
+        enum:
+        - REFERENCE_ONLY
+        - USER_CONFIRMED
+        - PROPOSE_ONLY
+        - REQUIRES_USER_CONFIRMATION
+        - DENIED

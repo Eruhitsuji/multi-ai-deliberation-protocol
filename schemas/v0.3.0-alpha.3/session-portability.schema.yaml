@@ -1,0 +1,273 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: urn:madp:schema:session-portability:0.3.0-alpha.3
+title: MADP v0.3.0-alpha.3 Session Portability Artifacts
+type: object
+additionalProperties: false
+minProperties: 1
+maxProperties: 1
+oneOf:
+- required:
+  - session_export_request
+- required:
+  - portable_session_manifest
+- required:
+  - session_import_report
+- required:
+  - session_checkpoint
+properties:
+  session_export_request:
+    $ref: '#/$defs/exportRequest'
+  portable_session_manifest:
+    $ref: '#/$defs/manifest'
+  session_import_report:
+    $ref: '#/$defs/importReport'
+  session_checkpoint:
+    $ref: '#/$defs/checkpoint'
+$defs:
+  id:
+    type: string
+    minLength: 1
+    pattern: ^[A-Za-z0-9][A-Za-z0-9._:-]*$
+  nonEmpty:
+    type: string
+    minLength: 1
+  exportRequest:
+    type: object
+    additionalProperties: false
+    required:
+    - export_id
+    - protocol_version
+    - session_id
+    - source_state_version
+    - profile
+    - container_format
+    - include_private
+    - destination
+    - authority_boundary
+    properties:
+      export_id:
+        $ref: '#/$defs/id'
+      protocol_version:
+        const: MADP-v0.3.0-alpha.3
+      session_id:
+        $ref: '#/$defs/id'
+      source_state_version:
+        type: integer
+        minimum: 0
+      profile:
+        enum:
+        - MINIMAL
+        - STANDARD
+        - COMPLETE
+        - HANDOFF
+      container_format:
+        enum:
+        - DIRECTORY
+        - ZIP
+        - SINGLE_FILE_YAML
+        - SINGLE_FILE_JSON
+        - MARKDOWN_BUNDLE
+      include_private:
+        type: boolean
+      private_content_confirmation_ref:
+        type: string
+        minLength: 1
+      destination:
+        $ref: '#/$defs/nonEmpty'
+      authority_boundary:
+        const: REQUIRES_USER_CONFIRMATION
+    allOf:
+    - if:
+        properties:
+          include_private:
+            const: true
+        required:
+        - include_private
+      then:
+        required:
+        - private_content_confirmation_ref
+  manifest:
+    type: object
+    additionalProperties: false
+    required:
+    - manifest_version
+    - protocol_version
+    - session_id
+    - source_state_version
+    - profile
+    - created_by
+    - sensitivity
+    - redactions
+    - files
+    - authority_preserved
+    properties:
+      manifest_version:
+        const: MADP-PORTABLE-SESSION-v1
+      protocol_version:
+        const: MADP-v0.3.0-alpha.3
+      session_id:
+        $ref: '#/$defs/id'
+      source_state_version:
+        type: integer
+        minimum: 0
+      profile:
+        enum:
+        - MINIMAL
+        - STANDARD
+        - COMPLETE
+        - HANDOFF
+      created_by:
+        $ref: '#/$defs/id'
+      sensitivity:
+        enum:
+        - PUBLIC
+        - INTERNAL
+        - CONFIDENTIAL
+        - MIXED
+      redactions:
+        type: array
+        items:
+          type: string
+          minLength: 1
+      files:
+        type: array
+        minItems: 1
+        items:
+          type: object
+          additionalProperties: false
+          required:
+          - path
+          - sha256
+          - bytes
+          - artifact_type
+          properties:
+            path:
+              type: string
+              minLength: 1
+            sha256:
+              type: string
+              pattern: ^[0-9a-f]{64}$
+            bytes:
+              type: integer
+              minimum: 0
+            artifact_type:
+              type: string
+              minLength: 1
+      authority_preserved:
+        const: true
+  importReport:
+    type: object
+    additionalProperties: false
+    required:
+    - import_id
+    - report_revision
+    - protocol_version
+    - source_preserved
+    - detected_protocol_version
+    - manifest_status
+    - hash_status
+    - schema_status
+    - authority_status
+    - collision_status
+    - proposed_action
+    - canonical_state_modified
+    - may_replace_existing_state
+    - requires_human_confirmation
+    - warnings
+    - limitations
+    properties:
+      import_id:
+        $ref: '#/$defs/id'
+      report_revision:
+        type: integer
+        minimum: 1
+      protocol_version:
+        const: MADP-v0.3.0-alpha.3
+      source_preserved:
+        const: true
+      detected_protocol_version:
+        type: string
+        minLength: 1
+      manifest_status:
+        enum:
+        - PASS
+        - FAIL
+        - MISSING
+        - NOT_VALIDATED
+      hash_status:
+        enum:
+        - PASS
+        - FAIL
+        - NOT_VALIDATED
+      schema_status:
+        enum:
+        - PASS
+        - FAIL
+        - NOT_VALIDATED
+      authority_status:
+        enum:
+        - PASS
+        - FAIL
+        - NOT_VALIDATED
+      collision_status:
+        enum:
+        - NONE
+        - SAME_SESSION_SAME_VERSION
+        - SAME_SESSION_DIVERGED
+        - UNKNOWN
+      proposed_action:
+        enum:
+        - CREATE_NEW_SESSION
+        - RESUME_EXISTING
+        - MERGE_AS_PROPOSAL
+        - QUARANTINE
+        - REJECT
+      canonical_state_modified:
+        const: false
+      may_replace_existing_state:
+        const: false
+      requires_human_confirmation:
+        const: true
+      warnings:
+        type: array
+        items:
+          type: string
+          minLength: 1
+      limitations:
+        type: array
+        items:
+          type: string
+          minLength: 1
+  checkpoint:
+    type: object
+    additionalProperties: false
+    required:
+    - checkpoint_id
+    - protocol_version
+    - session_id
+    - source_state_version
+    - label
+    - artifact_refs
+    - export_ready
+    - canonical_state_replaced
+    properties:
+      checkpoint_id:
+        $ref: '#/$defs/id'
+      protocol_version:
+        const: MADP-v0.3.0-alpha.3
+      session_id:
+        $ref: '#/$defs/id'
+      source_state_version:
+        type: integer
+        minimum: 0
+      label:
+        $ref: '#/$defs/nonEmpty'
+      artifact_refs:
+        type: array
+        items:
+          type: string
+          minLength: 1
+      export_ready:
+        type: boolean
+      canonical_state_replaced:
+        const: false

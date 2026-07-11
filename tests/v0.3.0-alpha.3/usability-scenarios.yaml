@@ -1,0 +1,25 @@
+scenarios:
+  - id: USAB-QUICK-001
+    required_features: [session-start, goal-confirm, next-action-card]
+    success_condition: New user begins a bounded session without unnecessary confirmation loops.
+  - id: USAB-COMMAND-COMPAT-001
+    required_features: [status, pause, resume, session-status, session-resume, help-exit]
+    success_condition: User can distinguish inherited canonical commands from alpha.3-specific commands without ambiguity.
+  - id: USAB-RELAY-001
+    required_features: [relay-create-plain, response-ingest]
+    success_condition: External response returns to the correct session and revision.
+  - id: USAB-LIMITED-001
+    required_features: [participant-profile, opinion-only]
+    success_condition: Limited participant contributes without authority escalation.
+  - id: USAB-RECOVERY-001
+    required_features: [session-import, session-import-confirm]
+    success_condition: Import report is reviewed before any state effect.
+  - id: USAB-TEAM-001
+    required_features: [named-approvers, team-approval-record]
+    success_condition: Team approval binds named approver and decision revision.
+  - id: USAB-MINUTES-001
+    required_features: [minutes-generate, minutes-review, minutes-approve]
+    success_condition: Draft minutes cannot be approved before human review.
+  - id: USAB-HELP-001
+    required_features: [help, help-exit]
+    success_condition: Help returns to the exact prior phase and state boundary.

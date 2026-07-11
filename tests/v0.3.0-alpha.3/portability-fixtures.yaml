@@ -1,0 +1,80 @@
+valid:
+  - session_export_request:
+      export_id: EXPORT-001
+      protocol_version: MADP-v0.3.0-alpha.3
+      session_id: SESSION-001
+      source_state_version: 4
+      profile: HANDOFF
+      container_format: ZIP
+      include_private: false
+      destination: another AI
+      authority_boundary: REQUIRES_USER_CONFIRMATION
+  - portable_session_manifest:
+      manifest_version: MADP-PORTABLE-SESSION-v1
+      protocol_version: MADP-v0.3.0-alpha.3
+      session_id: SESSION-001
+      source_state_version: 4
+      profile: STANDARD
+      created_by: RECORDER-001
+      sensitivity: INTERNAL
+      redactions: [private input removed]
+      files:
+        - path: session.yaml
+          sha256: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+          bytes: 120
+          artifact_type: SESSION_STATE
+      authority_preserved: true
+  - session_import_report:
+      import_id: IMPORT-001
+      report_revision: 1
+      protocol_version: MADP-v0.3.0-alpha.3
+      source_preserved: true
+      detected_protocol_version: MADP-v0.3.0-alpha.3
+      manifest_status: PASS
+      hash_status: PASS
+      schema_status: PASS
+      authority_status: PASS
+      collision_status: NONE
+      proposed_action: CREATE_NEW_SESSION
+      canonical_state_modified: false
+      may_replace_existing_state: false
+      requires_human_confirmation: true
+      warnings: []
+      limitations: []
+  - session_checkpoint:
+      checkpoint_id: CHECKPOINT-001
+      protocol_version: MADP-v0.3.0-alpha.3
+      session_id: SESSION-001
+      source_state_version: 4
+      label: before external review
+      artifact_refs: [artifact://state/4]
+      export_ready: true
+      canonical_state_replaced: false
+invalid:
+  - session_export_request:
+      export_id: EXPORT-BAD
+      protocol_version: MADP-v0.3.0-alpha.3
+      session_id: SESSION-001
+      source_state_version: 4
+      profile: COMPLETE
+      container_format: ZIP
+      include_private: true
+      destination: another AI
+      authority_boundary: REQUIRES_USER_CONFIRMATION
+  - session_import_report:
+      import_id: IMPORT-BAD
+      report_revision: 1
+      protocol_version: MADP-v0.3.0-alpha.3
+      source_preserved: true
+      detected_protocol_version: MADP-v0.3.0-alpha.3
+      manifest_status: PASS
+      hash_status: PASS
+      schema_status: PASS
+      authority_status: PASS
+      collision_status: SAME_SESSION_DIVERGED
+      proposed_action: RESUME_EXISTING
+      canonical_state_modified: true
+      may_replace_existing_state: true
+      requires_human_confirmation: false
+      warnings: []
+      limitations: []

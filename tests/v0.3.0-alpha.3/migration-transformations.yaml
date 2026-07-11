@@ -1,0 +1,44 @@
+cases:
+  - id: MIG-TRANSFORM-SUCCESS-001
+    source_ref: artifact://fixtures/alpha2-success
+    source:
+      protocol_version: MADP-v0.3.0-alpha.2
+      session_id: SESSION-MIG-001
+      state_version: 7
+      workflow_status: PAUSED
+      decisions:
+        DEC-001:
+          revision: 3
+          status: APPROVED
+      command_history:
+        - command: status
+        - command: pause
+        - command: resume
+    expected:
+      outcome: SUCCESS
+      session_id: SESSION-MIG-001
+      source_state_version: 7
+      target_authority_boundary: PROPOSE_ONLY
+      decision_revision: 3
+      preserved_commands: [status, pause, resume]
+  - id: MIG-TRANSFORM-FAIL-WRONG-VERSION
+    source_ref: artifact://fixtures/wrong-version
+    source:
+      protocol_version: MADP-v0.3.0-alpha.1
+      session_id: SESSION-MIG-002
+      state_version: 2
+    expected:
+      outcome: FAILED
+      reason_contains: source protocol version mismatch
+      source_raw_preserved: true
+      rollback_available: true
+  - id: MIG-TRANSFORM-FAIL-NO-SESSION
+    source_ref: artifact://fixtures/no-session
+    source:
+      protocol_version: MADP-v0.3.0-alpha.2
+      state_version: 2
+    expected:
+      outcome: FAILED
+      reason_contains: source session_id missing
+      source_raw_preserved: true
+      rollback_available: true

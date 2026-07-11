@@ -1,0 +1,67 @@
+protocol_version: MADP-v0.3.0-alpha.3
+requirements:
+  - id: A3-REVIEW-CMD-001
+    title: Alpha.2-compatible command superset and collision-free aliases
+    status: IMPLEMENTED
+    artifact: registries/v0.3.0-alpha.3/commands.yaml
+    validation: scripts/check_all_commands_v030_alpha3.py
+  - id: A3-REVIEW-REV-001
+    title: Session and state revision binding for alpha.3 artifacts
+    status: IMPLEMENTED
+    artifact: schemas/v0.3.0-alpha.3/deliberation.schema.yaml
+    validation: scripts/check_alpha3_implementation.py
+  - id: A3-REVIEW-EVIDENCE-001
+    title: Machine-generated validation evidence for release readiness
+    status: IMPLEMENTED
+    artifact: scripts/run_alpha3_validation_evidence.py
+    validation: scripts/check_release_readiness_v030_alpha3.py
+  - id: A3-REVIEW-RUNTIME-001
+    title: Parser, all-command coverage, and sequencing runtime tests
+    status: IMPLEMENTED
+    artifact: scripts/apply_command_v030_alpha3.py
+    validation: scripts/test_command_runtime_v030_alpha3.py
+  - id: A3-REVIEW-SCHEMA-001
+    title: Encode decision-use, approver, team, and opinion-only invariants in schema
+    status: IMPLEMENTED
+    artifact: schemas/v0.3.0-alpha.3/deliberation.schema.yaml
+    validation: tests/v0.3.0-alpha.3/fixtures.yaml
+  - id: A3-REVIEW-CAP-001
+    title: Stable tri-state capability vocabulary with extensions
+    status: IMPLEMENTED
+    artifact: schemas/v0.3.0-alpha.3/deliberation.schema.yaml
+    validation: scripts/check_alpha3_implementation.py
+  - id: A3-REVIEW-MIG-001
+    title: Record failed migration and execute source-to-target transformation tests
+    status: IMPLEMENTED
+    artifact: scripts/migrate_v030_alpha2_to_alpha3.py
+    validation: scripts/check_alpha3_migration.py
+  - id: A3-REVIEW-HELP-001
+    title: Align Help actors and distinguish help-exit from resume
+    status: IMPLEMENTED
+    artifact: protocol/MADP-v0.3.0-alpha.3.md
+    validation: scripts/test_command_runtime_v030_alpha3.py
+  - id: A3-REVIEW-NORM-001
+    title: Define normative profile authority order
+    status: IMPLEMENTED
+    artifact: protocol/MADP-v0.3.0-alpha.3.md
+    validation: scripts/check_alpha3_implementation.py
+  - id: A3-REVIEW-SKILL-001
+    title: Five-adapter parity for ChatGPT and Claude distributions
+    status: IMPLEMENTED
+    artifact: skills/README.md
+    validation: scripts/check_alpha3_implementation.py
+  - id: A3-REVIEW-I18N-001
+    title: Honest translation audit scope and limitations
+    status: IMPLEMENTED
+    artifact: docs/ja/v0.3.0-alpha.3/translation-manifest.yaml
+    validation: scripts/check_alpha3_translation.py
+  - id: A3-REVIEW-USAB-001
+    title: Rate-based unnecessary pause metric with zero critical pauses
+    status: IMPLEMENTED
+    artifact: docs/evaluation/MADP-v0.3.0-alpha.3-usability-plan.md
+    validation: scripts/check_alpha3_usability.py
+  - id: A3-REVIEW-IND-001
+    title: Same model and chat must share one independence group
+    status: IMPLEMENTED
+    artifact: tests/v0.3.0-alpha.3/fixtures.yaml
+    validation: scripts/check_alpha3_implementation.py
