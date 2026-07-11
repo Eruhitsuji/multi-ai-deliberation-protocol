@@ -1,5 +1,9 @@
 # MADP v0.3.0-alpha.3 Usability Plan
 
+Manual protocol-conformance trials must begin with `bootstrap/alpha3/load-protocol-from-github.md` and retain a `COMPLETE` `MADP-PROTOCOL-LOAD-REPORT-v1` bound to the tested commit. `quick-start.md` and `verified-start.md` are post-load profiles, not protocol loaders.
+
+A trial without a complete load report may be retained as a negative bootstrap or degraded-mode observation, but it must not count toward protocol-conformance completion metrics or A3-REL-001 sign-off.
+
 Manual trials must cover new-user startup, alpha.2 canonical `status`/`pause`/`resume`, detailed `session-status`, external relay recovery, limited participants, import confirmation, minutes review, team approval, and Help exit.
 
 Release thresholds:
