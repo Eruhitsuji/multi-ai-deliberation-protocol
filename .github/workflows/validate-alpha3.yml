@@ -48,22 +48,4 @@ jobs:
           python -m pip install -r requirements-dev.txt
 
       - name: Validate MADP v0.3.0-alpha.3 implementation
-        id: validate
-        shell: bash
-        run: |
-          set +e
-          python scripts/check_alpha3_implementation.py > alpha3-check.log 2>&1
-          code=$?
-          cat alpha3-check.log
-          echo "$code" > alpha3-exit-code.txt
-          exit "$code"
-
-      - name: Upload alpha.3 validation diagnostics
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: alpha3-validation-diagnostics
-          path: |
-            alpha3-check.log
-            alpha3-exit-code.txt
-          if-no-files-found: error
+        run: python scripts/check_alpha3_implementation.py
