@@ -7,6 +7,8 @@ normative: false
 
 # Authority model
 
+English | [日本語](../ja/authority-model.md)
+
 MADP separates information, approval, and permission.
 
 ## Authority boundaries
