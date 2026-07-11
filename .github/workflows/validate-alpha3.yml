@@ -44,10 +44,13 @@ on:
 jobs:
   validate-alpha3:
     runs-on: ubuntu-latest
+    env:
+      SOURCE_COMMIT: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
     steps:
-      - name: Check out repository
+      - name: Check out release-candidate source commit
         uses: actions/checkout@v6
         with:
+          ref: ${{ env.SOURCE_COMMIT }}
           show-progress: false
       - name: Set up Python
         uses: actions/setup-python@v6
@@ -57,24 +60,26 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           python -m pip install -r requirements-dev.txt
+      - name: Verify checked-out commit
+        run: test "$(git rev-parse HEAD)" = "${SOURCE_COMMIT}"
       - name: Run checks and generate evidence
         run: >-
           python scripts/run_alpha3_validation_evidence.py
           --output tmp/alpha3-validation-evidence.yaml
-          --repository-commit "${{ github.sha }}"
+          --repository-commit "${SOURCE_COMMIT}"
       - name: Generate release artifacts first pass
         run: >-
           python scripts/generate_alpha3_release_artifacts.py
           tmp/alpha3-release-a
           --repository "${{ github.repository }}"
-          --source-commit "${{ github.sha }}"
+          --source-commit "${SOURCE_COMMIT}"
           --validation-evidence tmp/alpha3-validation-evidence.yaml
       - name: Generate release artifacts second pass
         run: >-
           python scripts/generate_alpha3_release_artifacts.py
           tmp/alpha3-release-b
           --repository "${{ github.repository }}"
-          --source-commit "${{ github.sha }}"
+          --source-commit "${SOURCE_COMMIT}"
           --validation-evidence tmp/alpha3-validation-evidence.yaml
       - name: Check release artifact reproducibility
         run: diff -ru tmp/alpha3-release-a tmp/alpha3-release-b
@@ -82,12 +87,12 @@ jobs:
         run: >-
           python scripts/check_generated_alpha3_release_artifacts.py
           tmp/alpha3-release-a
-          --source-commit "${{ github.sha }}"
+          --source-commit "${SOURCE_COMMIT}"
       - name: Audit branch release-candidate content
         run: >-
           python scripts/check_release_readiness_v030_alpha3.py
           --evidence-manifest tmp/alpha3-validation-evidence.yaml
-          --repository-commit "${{ github.sha }}"
+          --repository-commit "${SOURCE_COMMIT}"
           --release-directory-a tmp/alpha3-release-a
           --release-directory-b tmp/alpha3-release-b
           --allow-blockers A3-REL-001,A3-REL-005
