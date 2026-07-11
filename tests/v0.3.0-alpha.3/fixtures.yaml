@@ -58,7 +58,7 @@ valid:
         topic: Bootstrap usability
         assigned_role: USABILITY_REVIEWER
         context_summary: [Users may not know the next action]
-        questions: [What is confusing?]
+        questions: ["What is confusing?"]
         prohibited_inferences: [USER_APPROVAL, EXECUTION_PERMISSION, CANONICAL_STATE_AUTHORITY]
         requested_response_format: NUMBERED_LIST
         return_destination: FACILITATOR_CHAT
