@@ -1,27 +1,38 @@
-# Migration from MADP-v0.3.0-alpha.2 to alpha.3
+# Migration from MADP v0.3.0-alpha.2 to v0.3.0-alpha.3
 
-Migration is additive. The alpha.2 source state remains immutable evidence; alpha.3 artifacts are derived records.
+Status: normative migration profile.
 
-## Invariants
+## Command compatibility
 
-- Preserve the original alpha.2 state or artifact reference.
-- Do not infer user or team approval.
-- Do not increase participant authority.
-- Convert an alpha.2 role actor to an `AI_ROLE_ACTOR` participant with `independence_level: I0` unless stronger provenance is separately established.
-- Preserve TODO, decision, review, context, and relay identifiers.
-- Record unknown capability values as `UNKNOWN`; do not guess them.
-- Record information loss and limitations.
-- Keep rollback available by retaining the source artifact.
+Alpha.3 does not replace the alpha.2 command namespace. It imports all 20 alpha.2 canonical commands and adds 31 commands.
 
-## Suggested mapping
+| Alpha.2 input | Alpha.3 treatment |
+| --- | --- |
+| `status` | remains canonical broad status |
+| `resume` | remains canonical pause/resume workflow command |
+| `pause` | remains canonical workflow pause |
+| all other alpha.2 commands | remain canonical with inherited safety behavior |
 
-| alpha.2 concept | alpha.3 target |
-|---|---|
-| facilitator or participant actor | `participant_profile` |
-| role label | `role_assignment_plan` entry |
-| relay response | raw response plus `response_ingest_record` |
-| informal objective | `deliberation_plan` with `goal_status: PENDING` until confirmed |
-| review findings | claim ledger entries or normalized opinion |
-| TODO | unchanged TODO reference; not promoted to decision |
+`session-status`, `session-resume`, and `help-exit` are separate alpha.3 commands. No migration may rewrite `status` or `resume` merely because earlier alpha.3 draft aliases used those spellings.
 
-The migration record validates the process but does not itself prove that every target artifact is semantically correct. Human review is required for material ambiguity.
+## State transformation
+
+The reference migration script:
+
+1. verifies the source protocol version;
+2. preserves the source object;
+3. retains session ID and state version;
+4. wraps the source state as legacy evidence;
+5. marks the target as `MIGRATED_PROPOSAL_ONLY`;
+6. preserves or reduces authority;
+7. emits a migration record for success, partial, failed, or quarantined outcomes.
+
+A failed migration is still recordable. `source_raw_preserved` and `rollback_available` are factual booleans, not schema constants. A `SUCCESS` record, however, requires preserved source, passed authority invariants, no authority escalation, no inferred approval, and validation PASS.
+
+## Revision binding
+
+Migrated alpha.3 artifacts must carry session and source-state revision. Existing alpha.2 approvals remain bound to their original decision revision and are not broadened.
+
+## Rollback
+
+Rollback means retaining a usable source representation. When rollback is unavailable, record `rollback_available: false` and a failure reason; do not suppress the migration record.

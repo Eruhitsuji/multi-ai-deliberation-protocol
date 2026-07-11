@@ -1,28 +1,13 @@
-# MADP Agent Skills
+# MADP Agent Skills v0.3.0-alpha.3
 
-These folders are the shared Agent Skills source for ChatGPT, Claude Code, and other compatible agents.
+The five canonical Agent Skills are shared source for ChatGPT, Claude Code, and compatible clients:
 
-## Included skills
+- `madp-start`: start, inspect, import, or recover a session;
+- `madp-facilitator`: conduct deliberation and maintain revision-bound records;
+- `madp-participant`: contribute within a bounded role and authority;
+- `madp-recorder`: create checkpoints, minutes, exports, and import reports;
+- `madp-help`: explain or recover the workflow without state authority.
 
-- `madp-start`: choose a safe starting path and initialize a session.
-- `madp-facilitator`: run the deliberation workflow.
-- `madp-participant`: respond to a bounded relay without claiming extra authority.
-- `madp-recorder`: create checkpoints, minutes, and portable exports.
-- `madp-help`: diagnose onboarding, command, import, export, and recovery problems.
+Skills are informative adapters. They do not override protocol, schemas, the command registry, user instructions, or platform rules. The release generator produces the same five-skill set for ChatGPT ZIP upload and Claude `.claude/skills/` installation. CI rejects missing, extra, or version-divergent adapters.
 
-## ChatGPT
-
-ChatGPT Skills follow the Agent Skills open format. In ChatGPT, open **Skills**, choose **New skill**, and use the available upload or editor flow. Review every skill before installation. The generated alpha.3 release artifacts include upload-oriented skill packages.
-
-## Claude Code
-
-Copy the selected skill directory to either:
-
-- `~/.claude/skills/<skill-name>/` for personal use; or
-- `.claude/skills/<skill-name>/` inside a project.
-
-Then invoke `/madp-start` or ask Claude to begin a MADP discussion.
-
-## Generic fallback
-
-When Skills are unavailable, use `bootstrap/alpha3/quick-start.md` or the generated verified bootstrap. Skill availability never changes protocol authority.
+Canonical command names take precedence over aliases. In particular, `status`, `resume`, and `pause` retain their alpha.2 meanings. Use `session-status`, `session-resume`, and `help-exit` for the distinct alpha.3 operations.

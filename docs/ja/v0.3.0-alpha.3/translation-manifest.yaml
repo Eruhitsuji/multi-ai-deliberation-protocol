@@ -2,48 +2,96 @@ protocol_version: MADP-v0.3.0-alpha.3
 normative_language: en
 translation_language: ja
 hash_algorithm: git-blob-sha1
+audit_scope: SOURCE_FRESHNESS_AND_REQUIRED_MARKERS
+semantic_equivalence_verified: false
+coverage_scope: ALPHA3_NORMATIVE_AND_PRIMARY_GUIDANCE_SET
+limitations:
+- Hash equality proves only source freshness.
+- Required markers detect selected omissions but do not prove complete or semantically
+  equivalent translation.
+- Human bilingual review is recommended before stable release.
 entries:
 - source: README-v0.3.0-alpha.3.md
   translation: README-v0.3.0-alpha.3.ja.md
   status: COMPLETE
-  source_git_blob_sha1: 3dfb0733cd49378349eeef1beb92ca941ecb9abe
+  source_git_blob_sha1: c856173b1d03aafbb23e64d692ad7715ec3077db
+  required_markers:
+  - alpha.3
+  - 互換
 - source: protocol/MADP-v0.3.0-alpha.3.md
   translation: docs/ja/v0.3.0-alpha.3/protocol.md
   status: COMPLETE
-  source_git_blob_sha1: 182ceb8577197f564b022efa87758e8402b5f415
+  source_git_blob_sha1: 197d674c853d31a66df05615aafda656994c8d3a
+  required_markers:
+  - status
+  - revision
 - source: protocol/GLOSSARY-v0.3.0-alpha.3.md
   translation: docs/ja/v0.3.0-alpha.3/glossary.md
   status: COMPLETE
-  source_git_blob_sha1: a5343ba09462b77276a7d784ce3db3c8d8a89439
-- source: bootstrap/alpha3/README.md
-  translation: docs/ja/v0.3.0-alpha.3/bootstrap.md
+  source_git_blob_sha1: e2631705286cbf5b97691fee4fdab7eff17456c1
+  required_markers:
+  - Revision
+  - Capability
+- source: docs/profiles/COMMAND_SYSTEM-v0.3.0-alpha.3.md
+  translation: docs/ja/v0.3.0-alpha.3/command-system.md
   status: COMPLETE
-  source_git_blob_sha1: 92acea6066bd501f354379b37134c4395503e00e
+  source_git_blob_sha1: f524aa72dabbdde0ef3848147cb5c7b04fe57dc7
+  required_markers:
+  - '51'
+  - status
+- source: docs/profiles/SESSION_PORTABILITY-v0.3.0-alpha.3.md
+  translation: docs/ja/v0.3.0-alpha.3/session-portability.md
+  status: COMPLETE
+  source_git_blob_sha1: 6d8b43b0b8ac707e74cdaf018723ec969b0bffff
+  required_markers:
+  - import
+  - revision
+- source: docs/profiles/SKILL_ADAPTERS-v0.3.0-alpha.3.md
+  translation: docs/ja/v0.3.0-alpha.3/skill-adapters.md
+  status: COMPLETE
+  source_git_blob_sha1: 42bf2c124b94dd80f5d0b4895ad63f4b86756594
+  required_markers:
+  - ChatGPT
+  - Claude
+- source: skills/README.md
+  translation: docs/ja/v0.3.0-alpha.3/agent-skills.md
+  status: COMPLETE
+  source_git_blob_sha1: 4668e427bc43debfdb5c1d4c47caaa0c3355ea42
+  required_markers:
+  - '5'
+  - Skill
 - source: docs/profiles/TEAM_DELIBERATION-v0.3.0-alpha.3.md
   translation: docs/ja/v0.3.0-alpha.3/team-deliberation.md
   status: COMPLETE
   source_git_blob_sha1: 86a8b99f083a4c4e2b37e274a2bb24b6c6655456
+  required_markers:
+  - revision
+  - 沈黙
 - source: docs/profiles/MADP_HELP-v0.3.0-alpha.3.md
   translation: docs/ja/v0.3.0-alpha.3/help.md
   status: COMPLETE
-  source_git_blob_sha1: b1ddea7dd934a0a2c2dbb440da8e3cb468e1bc0f
+  source_git_blob_sha1: c370b5cf093071b8319d409981f81dbef455e563
+  required_markers:
+  - help-exit
+  - resume
 - source: docs/profiles/MODEL_RESPONSE_COMPARISON-v0.3.0-alpha.3.md
   translation: docs/ja/v0.3.0-alpha.3/model-response-comparison.md
   status: COMPLETE
   source_git_blob_sha1: a04b36eebbaf400d8f5f84da4f1312613832ef02
-- source: docs/profiles/SKILL_ADAPTERS-v0.3.0-alpha.3.md
-  translation: docs/ja/v0.3.0-alpha.3/skill-adapters.md
+  required_markers:
+  - run
+  - 独立
+- source: bootstrap/alpha3/README.md
+  translation: docs/ja/v0.3.0-alpha.3/bootstrap.md
   status: COMPLETE
-  source_git_blob_sha1: 001611dfc840df1ae0262dd63925dec3eeb7f25a
-- source: docs/profiles/SESSION_PORTABILITY-v0.3.0-alpha.3.md
-  translation: docs/ja/v0.3.0-alpha.3/session-portability.md
+  source_git_blob_sha1: ba60d3a4cb7835600b3fc53c9d5e768683f7dfe3
+  required_markers:
+  - Quick
+  - status
+- source: docs/migration/MADP-v0.3.0-alpha.2-to-alpha.3.md
+  translation: docs/ja/v0.3.0-alpha.3/migration.md
   status: COMPLETE
-  source_git_blob_sha1: c52b52463d64123f6851d08386039c98be513386
-- source: docs/profiles/COMMAND_SYSTEM-v0.3.0-alpha.3.md
-  translation: docs/ja/v0.3.0-alpha.3/command-system.md
-  status: COMPLETE
-  source_git_blob_sha1: e5f9a5b65816c58db37d66ec5f224f932042ebf1
-- source: skills/README.md
-  translation: docs/ja/v0.3.0-alpha.3/agent-skills.md
-  status: COMPLETE
-  source_git_blob_sha1: d0142e5735b2c4e7a49054f2ae486cd0dc044356
+  source_git_blob_sha1: 6b93f7f0558e21d83be2a1c800e4367e94d4c462
+  required_markers:
+  - FAILED
+  - revision

@@ -1,33 +1,49 @@
 # MADP Command System v0.3.0-alpha.3
 
-Status: normative implementation profile for command discovery and parsing.
+Status: normative implementation profile.
 
-## Design
+This profile specializes the command behavior defined by the alpha.3 protocol. It cannot override the protocol, command registry, command schema, or user authority.
 
-Commands use lowercase kebab-case canonical names and are organized by workflow group: `SESSION`, `PLANNING`, `PARTICIPANT`, `ROLE`, `RELAY`, `INGESTION`, `EVIDENCE`, `RECORDS`, `TEAM`, `HELP`, and `PORTABILITY`.
+## Registry composition
 
-The command registry is the source of truth for canonical names, arguments, authority boundaries, effects, and prohibited effects. A parser may accept a documented alias, but it must store both the original invocation and the canonical command. Aliases never change authority.
+`registries/v0.3.0-alpha.3/commands.yaml` is an `ALPHA2_CANONICAL_SUPERSET`:
 
-## Human-friendly core
+- inherited alpha.2 canonical commands: 20;
+- alpha.3 canonical additions: 31;
+- total canonical commands: 51;
+- registry version: `MADP-COMMAND-REGISTRY-v0.2`.
 
-A first-time user should be able to operate the common workflow with:
+All inherited alpha.2 commands remain representable by an alpha.3 command block.
 
-- `start`
-- `status`
-- `checkpoint`
-- `save` or `backup`
-- `load` or `restore`
-- `resume`
-- `minutes`
-- `help`
-- `end`
+## Collision policy
 
-These resolve to canonical registry commands. Unknown or ambiguous input is denied safely and routed to command help.
+Canonical names always win. An alias may not equal any canonical name.
 
-## Safety
+Therefore:
 
-- Read-only status and help commands cannot mutate canonical state.
-- Export and record commands cannot disclose private content without confirmation.
-- Import first creates a report and cannot silently merge or replace state.
-- A session command never grants approval or execution authority for a substantive decision.
-- Deprecated aliases remain documented until a migration note removes them.
+- `status` is the inherited broad workflow-status command;
+- `session-status` is the explicit alpha.3 session report;
+- `resume` resumes a workflow paused by `pause`;
+- `session-resume` resumes a specific interrupted or imported session at an expected state version;
+- `help-exit` exits Help;
+- bare `RESUME` is not a Help command.
+
+The previous alpha.3 aliases `status -> session-status` and `resume -> session-resume` are removed before release because they collided with inherited canonical commands.
+
+## Parser record
+
+A valid command block records:
+
+- `invoked_name`;
+- resolved canonical `command`;
+- `alias_used`;
+- command class and authority boundary;
+- raw input;
+- validation result;
+- intended and prohibited effects.
+
+Aliases never change authority or required arguments.
+
+## Runtime boundary
+
+The reference runtime is bounded internal-state validation. It never executes external actions. Safety-sensitive commands are applied only after exact sequencing and revision checks.

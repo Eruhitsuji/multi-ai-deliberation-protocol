@@ -1,186 +1,80 @@
 valid:
-- schema: portability
-  artifact:
-    session_export_request:
-      request_id: EXP-REQ-001
+  - session_export_request:
+      export_id: EXPORT-001
       protocol_version: MADP-v0.3.0-alpha.3
       session_id: SESSION-001
-      source_state_version: 7
-      export_profile: HANDOFF
-      preferred_container_formats:
-      - ZIP
-      - MARKDOWN_BUNDLE
-      include:
-        canonical_state: true
-        decisions: true
-        action_items: true
-        minutes: true
-        claim_ledger: true
-        raw_responses: false
-        attachments: false
-      privacy:
-        include_private: false
-        private_content_confirmed: false
-        redaction_mode: EXCLUDE_PRIVATE
-      destination: EXTERNAL_AI_HANDOFF
-      authority_boundary: PROPOSE_ONLY
-- schema: portability
-  artifact:
-    portable_session_manifest:
-      manifest_id: MAN-001
-      protocol_version: MADP-v0.3.0-alpha.3
-      portability_format_version: MADP-PORTABLE-SESSION-v1
-      session_id: SESSION-001
-      source_state_version: 7
-      created_at: '2026-07-11T12:00:00+09:00'
-      created_by: REC-001
-      export_profile: STANDARD
+      source_state_version: 4
+      profile: HANDOFF
       container_format: ZIP
-      content_inventory:
-      - path: state.yaml
-        artifact_type: CANONICAL_STATE
-        required: true
-        sha256: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-        bytes: 1200
-        sensitivity: INTERNAL
-      redaction_summary: []
-      integrity:
-        algorithm: SHA-256
-        content_hashes_complete: true
-        bundle_sha256: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-      import_policy:
-        preserve_source_file: true
-        may_replace_existing_state: false
-        requires_human_confirmation: true
-        default_import_action: RESUME_CANDIDATE
-- schema: portability
-  artifact:
-    session_import_report:
-      import_id: IMP-001
+      include_private: false
+      destination: another AI
+      authority_boundary: REQUIRES_USER_CONFIRMATION
+  - portable_session_manifest:
+      manifest_version: MADP-PORTABLE-SESSION-v1
       protocol_version: MADP-v0.3.0-alpha.3
-      source_file_name: session.zip
+      session_id: SESSION-001
+      source_state_version: 4
+      profile: STANDARD
+      created_by: RECORDER-001
+      sensitivity: INTERNAL
+      redactions: [private input removed]
+      files:
+        - path: session.yaml
+          sha256: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+          bytes: 120
+          artifact_type: SESSION_STATE
+      authority_preserved: true
+  - session_import_report:
+      import_id: IMPORT-001
+      report_revision: 1
+      protocol_version: MADP-v0.3.0-alpha.3
       source_preserved: true
-      detected_container_format: ZIP
       detected_protocol_version: MADP-v0.3.0-alpha.3
-      detected_session_id: SESSION-001
-      detected_state_version: 7
-      manifest_validation: PASS
-      hash_validation: PASS
-      schema_validation: PASS
-      authority_validation: PASS
-      collision_status: SAME_SESSION_NEWER_IMPORTED
-      proposed_action: RESUME_EXISTING
+      manifest_status: PASS
+      hash_status: PASS
+      schema_status: PASS
+      authority_status: PASS
+      collision_status: NONE
+      proposed_action: CREATE_NEW_SESSION
       canonical_state_modified: false
-      confirmation_required: true
-      authority_escalation_detected: false
+      may_replace_existing_state: false
+      requires_human_confirmation: true
       warnings: []
       limitations: []
-- schema: portability
-  artifact:
-    session_checkpoint:
-      checkpoint_id: CP-001
+  - session_checkpoint:
+      checkpoint_id: CHECKPOINT-001
       protocol_version: MADP-v0.3.0-alpha.3
       session_id: SESSION-001
-      state_version: 7
-      created_at: '2026-07-11T12:00:00+09:00'
-      created_by: REC-001
+      source_state_version: 4
       label: before external review
-      artifact_refs:
-      - state://7
-      - minutes://3
+      artifact_refs: [artifact://state/4]
       export_ready: true
-      canonical_state_modified: false
-- schema: command
-  artifact:
-    command_block:
-      command_id: CMD-PORT-001
-      command_version: MADP-COMMAND-v0.2
-      protocol_version: MADP-v0.3.0-alpha.3
-      command: session-export
-      invoked_as: save
-      command_group: PORTABILITY
-      command_class: RECORD_COMMAND
-      issued_by: USER
-      raw_input: save this session as a handoff file
-      parse_status: PARSED
-      validation_status: SCHEMA_VALID
-      authority_status: REQUIRES_USER_CONFIRMATION
-      arguments:
-        export_profile: HANDOFF
-      effects:
-        intended:
-        - Prepare a redacted portable export
-        prohibited:
-        - Disclose private content
+      canonical_state_replaced: false
 invalid:
-- schema: portability
-  artifact:
-    session_export_request:
-      request_id: BAD
+  - session_export_request:
+      export_id: EXPORT-BAD
       protocol_version: MADP-v0.3.0-alpha.3
-      session_id: S
-      source_state_version: 1
-      export_profile: COMPLETE
-      preferred_container_formats:
-      - ZIP
-      include:
-        canonical_state: true
-        decisions: true
-        action_items: true
-        minutes: true
-        claim_ledger: true
-        raw_responses: true
-        attachments: true
-      privacy:
-        include_private: true
-        private_content_confirmed: false
-        redaction_mode: NONE
-      destination: USER_DOWNLOAD
-      authority_boundary: PROPOSE_ONLY
-- schema: portability
-  artifact:
-    portable_session_manifest:
-      manifest_id: BAD
-      protocol_version: MADP-v0.3.0-alpha.3
-      portability_format_version: MADP-PORTABLE-SESSION-v1
-      session_id: S
-      source_state_version: 1
-      created_at: x
-      created_by: R
-      export_profile: STANDARD
+      session_id: SESSION-001
+      source_state_version: 4
+      profile: COMPLETE
       container_format: ZIP
-      content_inventory:
-      - path: state.yaml
-        artifact_type: CANONICAL_STATE
-        required: true
-        sha256: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-        bytes: 1
-        sensitivity: INTERNAL
-      redaction_summary: []
-      integrity:
-        algorithm: SHA-256
-        content_hashes_complete: true
-      import_policy:
-        preserve_source_file: true
-        may_replace_existing_state: true
-        requires_human_confirmation: false
-        default_import_action: RESUME_CANDIDATE
-- schema: portability
-  artifact:
-    session_import_report:
-      import_id: BAD
+      include_private: true
+      destination: another AI
+      authority_boundary: REQUIRES_USER_CONFIRMATION
+  - session_import_report:
+      import_id: IMPORT-BAD
+      report_revision: 1
       protocol_version: MADP-v0.3.0-alpha.3
-      source_file_name: bad.zip
-      source_preserved: false
-      detected_container_format: ZIP
-      detected_protocol_version: unknown
-      manifest_validation: FAIL
-      hash_validation: FAIL
-      schema_validation: FAIL
-      authority_validation: FAIL
-      collision_status: UNKNOWN
+      source_preserved: true
+      detected_protocol_version: MADP-v0.3.0-alpha.3
+      manifest_status: PASS
+      hash_status: PASS
+      schema_status: PASS
+      authority_status: PASS
+      collision_status: SAME_SESSION_DIVERGED
       proposed_action: RESUME_EXISTING
       canonical_state_modified: true
-      confirmation_required: false
-      authority_escalation_detected: true
+      may_replace_existing_state: true
+      requires_human_confirmation: false
       warnings: []
+      limitations: []

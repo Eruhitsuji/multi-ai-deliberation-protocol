@@ -1,5 +1,3 @@
-# MADP v0.3.0-alpha.3 — 同一prompt回答比較
+# モデル回答比較 v0.3.0-alpha.3（参考訳）
 
-比較ではprompt本文またはhash、provider、model label、product mode、Web利用状態、chat条件、run index、再生成の有無、response全文、refusal、clarificationを記録します。
-
-一回の回答からmodel全体の恒常的能力を断定してはいけません。複数run、順序randomization、可能な場合のblind evaluationを使用し、同一modelの複数runを独立modelとして数えません。
+prompt hash、provider、model label、tool状態、run index、raw output、評価条件を保存します。1 runからmodel全体を一般化せず、同一model/chatの出力を独立evidenceとして数えません。

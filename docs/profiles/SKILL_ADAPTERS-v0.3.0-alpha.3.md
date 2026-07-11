@@ -1,19 +1,15 @@
 # MADP Skill Adapter Profile v0.3.0-alpha.3
 
-MADP may be packaged as Claude Skills, ChatGPT instructions, or generic bootstrap prompts.
+Status: normative implementation profile for adapter parity; the skills themselves remain convenience adapters.
 
-Adapters are informative implementation aids. Normative protocol, schemas, registry, user instructions, and platform rules remain higher authority.
+The shared Agent Skills source defines exactly five roles:
 
-Shared requirements:
+- `madp-start`
+- `madp-facilitator`
+- `madp-participant`
+- `madp-recorder`
+- `madp-help`
 
-- state the MADP version;
-- expose tool and execution capabilities;
-- default to `PROPOSE_ONLY`;
-- preserve raw external responses;
-- provide next-action guidance;
-- distinguish Help, facilitator, participant, and recorder roles;
-- avoid treating multiple role actors in one chat as independent evidence;
-- work without a skill through generic prompts;
-- be tested for version drift.
+ChatGPT instruction adapters, ChatGPT skill archives, and Claude skill directories must all be generated or checked against the same five-role source set. A missing role is drift.
 
-A skill with file, network, or code execution ability must expose those capabilities and must not infer execution permission from deliberation participation.
+Adapters state the MADP version, expose tool limitations, default to `PROPOSE_ONLY`, preserve raw responses, and never infer file access, approval, execution permission, or independent evidence.

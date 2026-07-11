@@ -1,5 +1,3 @@
-# MADP v0.3.0-alpha.3 — ChatGPT・Claude Skills活用
+# MADP Skill Adapter v0.3.0-alpha.3（参考訳）
 
-vendor-neutralなsourceを正本とし、Claude向け`SKILL.md`、ChatGPT向けinstructions、generic bootstrapを生成します。adapterはprotocolの権限境界を変更しません。
-
-facilitator、participant、recorder、Helpを別skillとして扱います。Help skillは議論の決定者にならず、recorder skillは議事録を承認済みと主張しません。scriptや外部toolを使用するskillでは、file、network、code execution、send、commitなどのpermissionを個別に扱います。
+ChatGPTとClaude向け配布物は、`madp-start`、`madp-facilitator`、`madp-participant`、`madp-recorder`、`madp-help`の同一5 Skillから生成します。Skillはinformative adapterであり、protocol、schema、command registry、user instruction、platform ruleを上書きしません。

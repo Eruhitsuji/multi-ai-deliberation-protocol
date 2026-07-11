@@ -1,30 +1,14 @@
-# MADP-v0.3.0-alpha.3 Usability Evaluation Plan
+# MADP v0.3.0-alpha.3 Usability Plan
 
-This plan turns observed workflow problems into repeatable acceptance trials. It does not treat automated simulation as a substitute for human testing.
+Manual trials must cover new-user startup, alpha.2 canonical `status`/`pause`/`resume`, detailed `session-status`, external relay recovery, limited participants, import confirmation, minutes review, team approval, and Help exit.
 
-## Participants
+Release thresholds:
 
-At least one person unfamiliar with MADP and one person familiar with MADP should complete the manual set. A participant may complete more than one scenario, but results must identify the participant class.
+- task completion rate >= 90%;
+- next-action understood rate >= 90%;
+- median recovery attempts <= 1;
+- critical authority errors = 0;
+- critical unnecessary pauses = 0;
+- unnecessary pause rate <= 5% of eligible workflow transitions.
 
-## Required scenarios
-
-1. Start a simple single-chat discussion with Quick Bootstrap.
-2. Start a ChatGPT/Claude external review and return the response.
-3. Invite a limited-capability AI using Plain Relay.
-4. Recover from malformed or free-text output.
-5. Run a multi-human team decision with named approvers and dissent.
-6. Generate and review session minutes.
-7. Use a separate Help chat and return to the facilitator chat.
-
-## Acceptance criteria
-
-- Task completion rate is at least 90 percent.
-- Critical authority errors are zero.
-- Unnecessary round-boundary pauses are zero.
-- At least 90 percent of pauses communicate the next action correctly.
-- Median recovery attempts for format failure is at most one.
-- No participant mistakes AI opinion for user or team approval.
-
-## Recording
-
-Use `docs/evaluation/MADP-v0.3.0-alpha.3-usability-results.yaml`. Do not mark the manual gate PASS until observed results meet all mandatory thresholds. Automated walkthroughs may detect missing instructions and state transitions but cannot provide human comprehension evidence.
+An unnecessary pause is a user stop where no decision, missing information, external relay, safety/authority boundary, materially different path, or budget boundary required user action. Classification must identify the scenario, transition, reason, and reviewer; reclassifying a pause without recorded rationale is not permitted.

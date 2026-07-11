@@ -1,59 +1,71 @@
 valid:
   - migration_record:
-      migration_id: MIG-A2-A3-001
+      migration_id: MIG-SUCCESS-001
       source_protocol_version: MADP-v0.3.0-alpha.2
       target_protocol_version: MADP-v0.3.0-alpha.3
-      source_state_ref: artifact://alpha2/session-state-7
-      source_state_version: 7
+      source_state_ref: artifact://source/1
+      source_state_version: 4
+      migration_outcome: SUCCESS
       source_raw_preserved: true
+      rollback_available: true
+      authority_invariant_status: PASS
       authority_escalated: false
       user_approval_inferred: false
       transformations:
-        - source_type: ROLE_ACTOR
-          target_type: participant_profile
-          mapping: Preserve actor identity; classify as AI_ROLE_ACTOR and I0.
+        - source_type: ALPHA2_STATE
+          target_type: ALPHA3_STATE
+          mapping: preserve revision and reduce authority
           information_loss: false
-        - source_type: RELAY_RESPONSE
-          target_type: response_ingest_record
-          mapping: Preserve raw response and classify observed format.
-          information_loss: false
-      target_artifact_refs:
-        - artifact://alpha3/participant/actor-1
-        - artifact://alpha3/ingest/relay-7
+      target_artifact_refs: [artifact://target/1]
       validation_status: PASS
-      rollback_available: true
-      limitations:
-        - Capability fields not present in alpha.2 are UNKNOWN.
+      limitations: []
+  - migration_record:
+      migration_id: MIG-FAILED-001
+      source_protocol_version: MADP-v0.3.0-alpha.2
+      target_protocol_version: MADP-v0.3.0-alpha.3
+      source_state_ref: artifact://source/failed
+      source_state_version: null
+      migration_outcome: FAILED
+      source_raw_preserved: false
+      rollback_available: false
+      authority_invariant_status: NOT_VALIDATED
+      authority_escalated: false
+      user_approval_inferred: false
+      transformations: []
+      target_artifact_refs: []
+      validation_status: FAIL
+      failure_reasons: [source file was truncated before preservation]
+      limitations: [rollback unavailable]
 invalid:
   - migration_record:
-      migration_id: MIG-BAD-AUTH
+      migration_id: MIG-BAD-SUCCESS
       source_protocol_version: MADP-v0.3.0-alpha.2
       target_protocol_version: MADP-v0.3.0-alpha.3
-      source_state_ref: artifact://alpha2/session-state-7
-      source_raw_preserved: true
+      source_state_ref: artifact://source/bad
+      source_state_version: 1
+      migration_outcome: SUCCESS
+      source_raw_preserved: false
+      rollback_available: false
+      authority_invariant_status: FAIL
       authority_escalated: true
-      user_approval_inferred: false
-      transformations:
-        - source_type: ROLE_ACTOR
-          target_type: participant_profile
-          mapping: Add approval authority.
-          information_loss: false
-      target_artifact_refs: [artifact://alpha3/participant/actor-1]
+      user_approval_inferred: true
+      transformations: []
+      target_artifact_refs: []
       validation_status: PASS
-      rollback_available: true
+      limitations: []
   - migration_record:
-      migration_id: MIG-BAD-APPROVAL
+      migration_id: MIG-BAD-FAILED
       source_protocol_version: MADP-v0.3.0-alpha.2
       target_protocol_version: MADP-v0.3.0-alpha.3
-      source_state_ref: artifact://alpha2/session-state-7
+      source_state_ref: artifact://source/bad2
+      source_state_version: null
+      migration_outcome: FAILED
       source_raw_preserved: true
-      authority_escalated: false
-      user_approval_inferred: true
-      transformations:
-        - source_type: PROPOSAL
-          target_type: APPROVED_DECISION
-          mapping: Treat proposal as approval.
-          information_loss: false
-      target_artifact_refs: [artifact://alpha3/decision/1]
-      validation_status: PASS
       rollback_available: true
+      authority_invariant_status: NOT_VALIDATED
+      authority_escalated: false
+      user_approval_inferred: false
+      transformations: []
+      target_artifact_refs: []
+      validation_status: FAIL
+      limitations: []

@@ -1,141 +1,67 @@
 protocol_version: MADP-v0.3.0-alpha.3
 requirements:
-- id: A3-PLAN-001
-  title: Goal gate and deliberation plan
-  status: IMPLEMENTED
-  artifact: protocol/MADP-v0.3.0-alpha.3.md
-  validation: scripts/check_alpha3_implementation.py
-  fixture_type: deliberation_plan
-- id: A3-MODE-001
-  title: LIGHT STANDARD ASSURED modes
-  status: IMPLEMENTED
-  artifact: protocol/MADP-v0.3.0-alpha.3.md
-  validation: scripts/check_alpha3_implementation.py
-  fixture_type: deliberation_plan
-- id: A3-CAP-001
-  title: Capability-aware participant profiles
-  status: IMPLEMENTED
-  artifact: schemas/v0.3.0-alpha.3/deliberation.schema.yaml
-  validation: scripts/check_alpha3_implementation.py
-  fixture_type: participant_profile
-- id: A3-CAP-002
-  title: Opinion-only limited participation
-  status: IMPLEMENTED
-  artifact: bootstrap/alpha3/invite-limited-participant.md
-  validation: scripts/check_alpha3_implementation.py
-  fixture_type: participant_profile
-- id: A3-INGEST-001
-  title: Tolerant response ingestion
-  status: IMPLEMENTED
-  artifact: schemas/v0.3.0-alpha.3/deliberation.schema.yaml
-  validation: scripts/check_alpha3_implementation.py
-  fixture_type: response_ingest_record
-- id: A3-NORM-001
-  title: Audited normalization without authority escalation
-  status: IMPLEMENTED
-  artifact: schemas/v0.3.0-alpha.3/deliberation.schema.yaml
-  validation: scripts/check_alpha3_implementation.py
-  fixture_type: normalization_record
-- id: A3-ROLE-001
-  title: Adaptive role lifecycle
-  status: IMPLEMENTED
-  artifact: schemas/v0.3.0-alpha.3/deliberation.schema.yaml
-  validation: scripts/check_alpha3_implementation.py
-  fixture_type: role_assignment_plan
-- id: A3-CLAIM-001
-  title: Claim ledger and verification status
-  status: IMPLEMENTED
-  artifact: schemas/v0.3.0-alpha.3/deliberation.schema.yaml
-  validation: scripts/check_alpha3_implementation.py
-  fixture_type: claim_ledger
-- id: A3-TEAM-001
-  title: Multiple humans and explicit decision policy
-  status: IMPLEMENTED
-  artifact: docs/profiles/TEAM_DELIBERATION-v0.3.0-alpha.3.md
-  validation: scripts/check_alpha3_implementation.py
-  fixture_type: deliberation_plan
-- id: A3-MIN-001
-  title: Reviewable minutes
-  status: IMPLEMENTED
-  artifact: schemas/v0.3.0-alpha.3/deliberation.schema.yaml
-  validation: scripts/check_alpha3_implementation.py
-  fixture_type: session_minutes
-- id: A3-HELP-001
-  title: Separate and in-session Help
-  status: IMPLEMENTED
-  artifact: docs/profiles/MADP_HELP-v0.3.0-alpha.3.md
-  validation: scripts/check_alpha3_implementation.py
-  fixture_type: help_response
-- id: A3-UX-001
-  title: Mandatory Next Action Card
-  status: IMPLEMENTED
-  artifact: schemas/v0.3.0-alpha.3/deliberation.schema.yaml
-  validation: scripts/check_alpha3_implementation.py
-  fixture_type: next_action_card
-- id: A3-CMP-001
-  title: Controlled model response comparison
-  status: IMPLEMENTED
-  artifact: docs/profiles/MODEL_RESPONSE_COMPARISON-v0.3.0-alpha.3.md
-  validation: scripts/check_alpha3_implementation.py
-  fixture_type: profile
-- id: A3-SKILL-001
-  title: ChatGPT and Claude skill adapters
-  status: IMPLEMENTED
-  artifact: docs/profiles/SKILL_ADAPTERS-v0.3.0-alpha.3.md
-  validation: scripts/check_alpha3_implementation.py
-  fixture_type: skill
-- id: A3-CMD-001
-  title: Alpha.3 workflow commands
-  status: IMPLEMENTED
-  artifact: registries/v0.3.0-alpha.3/commands.yaml
-  validation: scripts/check_alpha3_implementation.py
-  fixture_type: command
-- id: A3-I18N-001
-  title: Japanese informative translations and source-hash audit
-  status: IMPLEMENTED
-  artifact: docs/ja/v0.3.0-alpha.3/translation-manifest.yaml
-  validation: scripts/check_alpha3_translation.py
-  fixture_type: translation_manifest
-- id: A3-DIST-001
-  title: Commit-pinned release bundle and standalone schema generation
-  status: IMPLEMENTED
-  artifact: scripts/generate_alpha3_release_artifacts.py
-  validation: scripts/check_generated_alpha3_release_artifacts.py
-  fixture_type: generated_distribution
-- id: A3-MIG-001
-  title: Alpha.2 to alpha.3 additive migration with authority invariants
-  status: IMPLEMENTED
-  artifact: schemas/v0.3.0-alpha.3/migration.schema.yaml
-  validation: scripts/check_alpha3_migration.py
-  fixture_type: migration_record
-- id: A3-USAB-001
-  title: Repeatable usability scenarios and human sign-off gate
-  status: IMPLEMENTED
-  artifact: docs/evaluation/MADP-v0.3.0-alpha.3-usability-plan.md
-  validation: scripts/check_alpha3_usability.py
-  fixture_type: usability_scenarios
-- id: A3-REL-001
-  title: Branch and final-main release readiness audits
-  status: IMPLEMENTED
-  artifact: scripts/check_release_readiness_v030_alpha3.py
-  validation: scripts/check_release_readiness_v030_alpha3.py
-  fixture_type: release_gate
-- id: A3-SKILL-002
-  title: Installable shared Agent Skills for start facilitator participant recorder
-    and help
-  status: IMPLEMENTED
-  artifact: skills/README.md
-  validation: scripts/check_alpha3_implementation.py
-  fixture_type: agent_skill_pack
-- id: A3-PORT-001
-  title: User-managed session file export import checkpoint and handoff
-  status: IMPLEMENTED
-  artifact: schemas/v0.3.0-alpha.3/session-portability.schema.yaml
-  validation: scripts/check_alpha3_implementation.py
-  fixture_type: portable_session
-- id: A3-CMD-002
-  title: Grouped canonical commands with safe human-friendly aliases
-  status: IMPLEMENTED
-  artifact: docs/profiles/COMMAND_SYSTEM-v0.3.0-alpha.3.md
-  validation: scripts/check_alpha3_implementation.py
-  fixture_type: command_alias
+  - id: A3-REVIEW-CMD-001
+    title: Alpha.2-compatible command superset and collision-free aliases
+    status: IMPLEMENTED
+    artifact: registries/v0.3.0-alpha.3/commands.yaml
+    validation: scripts/check_all_commands_v030_alpha3.py
+  - id: A3-REVIEW-REV-001
+    title: Session and state revision binding for alpha.3 artifacts
+    status: IMPLEMENTED
+    artifact: schemas/v0.3.0-alpha.3/deliberation.schema.yaml
+    validation: scripts/check_alpha3_implementation.py
+  - id: A3-REVIEW-EVIDENCE-001
+    title: Machine-generated validation evidence for release readiness
+    status: IMPLEMENTED
+    artifact: scripts/run_alpha3_validation_evidence.py
+    validation: scripts/check_release_readiness_v030_alpha3.py
+  - id: A3-REVIEW-RUNTIME-001
+    title: Parser, all-command coverage, and sequencing runtime tests
+    status: IMPLEMENTED
+    artifact: scripts/apply_command_v030_alpha3.py
+    validation: scripts/test_command_runtime_v030_alpha3.py
+  - id: A3-REVIEW-SCHEMA-001
+    title: Encode decision-use, approver, team, and opinion-only invariants in schema
+    status: IMPLEMENTED
+    artifact: schemas/v0.3.0-alpha.3/deliberation.schema.yaml
+    validation: tests/v0.3.0-alpha.3/fixtures.yaml
+  - id: A3-REVIEW-CAP-001
+    title: Stable tri-state capability vocabulary with extensions
+    status: IMPLEMENTED
+    artifact: schemas/v0.3.0-alpha.3/deliberation.schema.yaml
+    validation: scripts/check_alpha3_implementation.py
+  - id: A3-REVIEW-MIG-001
+    title: Record failed migration and execute source-to-target transformation tests
+    status: IMPLEMENTED
+    artifact: scripts/migrate_v030_alpha2_to_alpha3.py
+    validation: scripts/check_alpha3_migration.py
+  - id: A3-REVIEW-HELP-001
+    title: Align Help actors and distinguish help-exit from resume
+    status: IMPLEMENTED
+    artifact: protocol/MADP-v0.3.0-alpha.3.md
+    validation: scripts/test_command_runtime_v030_alpha3.py
+  - id: A3-REVIEW-NORM-001
+    title: Define normative profile authority order
+    status: IMPLEMENTED
+    artifact: protocol/MADP-v0.3.0-alpha.3.md
+    validation: scripts/check_alpha3_implementation.py
+  - id: A3-REVIEW-SKILL-001
+    title: Five-adapter parity for ChatGPT and Claude distributions
+    status: IMPLEMENTED
+    artifact: skills/README.md
+    validation: scripts/check_alpha3_implementation.py
+  - id: A3-REVIEW-I18N-001
+    title: Honest translation audit scope and limitations
+    status: IMPLEMENTED
+    artifact: docs/ja/v0.3.0-alpha.3/translation-manifest.yaml
+    validation: scripts/check_alpha3_translation.py
+  - id: A3-REVIEW-USAB-001
+    title: Rate-based unnecessary pause metric with zero critical pauses
+    status: IMPLEMENTED
+    artifact: docs/evaluation/MADP-v0.3.0-alpha.3-usability-plan.md
+    validation: scripts/check_alpha3_usability.py
+  - id: A3-REVIEW-IND-001
+    title: Same model and chat must share one independence group
+    status: IMPLEMENTED
+    artifact: tests/v0.3.0-alpha.3/fixtures.yaml
+    validation: scripts/check_alpha3_implementation.py

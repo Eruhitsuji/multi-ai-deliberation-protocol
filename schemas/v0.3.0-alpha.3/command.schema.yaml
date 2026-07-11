@@ -14,12 +14,15 @@ properties:
     - command_version
     - protocol_version
     - command
+    - invoked_name
+    - alias_used
     - command_class
     - issued_by
     - raw_input
     - parse_status
     - validation_status
     - authority_status
+    - authority_boundary
     - arguments
     - effects
     properties:
@@ -33,6 +36,26 @@ properties:
         const: MADP-v0.3.0-alpha.3
       command:
         enum:
+        - share-context
+        - issue-relay
+        - request-review
+        - summarize-state
+        - check-authority
+        - propose-decision
+        - approve
+        - reject
+        - defer
+        - prioritize
+        - pause
+        - resume
+        - status
+        - todo-add
+        - todo-list
+        - todo-update
+        - todo-done
+        - todo-defer
+        - todo-promote
+        - external-action
         - session-start
         - session-status
         - session-checkpoint-create
@@ -62,32 +85,28 @@ properties:
         - minutes-export
         - help
         - help-context-create
+        - help-exit
         - team-approval-record
-      invoked_as:
+      invoked_name:
         type: string
         minLength: 1
-      command_group:
-        enum:
-        - SESSION
-        - PLANNING
-        - PARTICIPANT
-        - ROLE
-        - RELAY
-        - INGESTION
-        - EVIDENCE
-        - RECORDS
-        - TEAM
-        - HELP
-        - PORTABILITY
+        pattern: ^[a-z0-9][a-z0-9-]*$
+      alias_used:
+        type: boolean
       command_class:
         enum:
         - AI_COMMAND
-        - USER_COMMAND
-        - TEAM_COMMAND
-        - RECORD_COMMAND
+        - AUTHORITY_COMMAND
+        - DECISION_COMMAND
+        - EXTERNAL_ACTION_COMMAND
         - HELP_COMMAND
-        - SESSION_COMMAND
         - PORTABILITY_COMMAND
+        - RECORD_COMMAND
+        - REVIEW_COMMAND
+        - SESSION_COMMAND
+        - TEAM_COMMAND
+        - TODO_COMMAND
+        - USER_COMMAND
       issued_by:
         enum:
         - USER
@@ -96,6 +115,8 @@ properties:
         - HELP_ASSISTANT
         - RECORDER
         - SYSTEM
+      issued_at:
+        type: string
       raw_input:
         type: string
         minLength: 1
@@ -142,3 +163,10 @@ properties:
         items:
           type: string
           minLength: 1
+      authority_boundary:
+        enum:
+        - REFERENCE_ONLY
+        - USER_CONFIRMED
+        - PROPOSE_ONLY
+        - REQUIRES_USER_CONFIRMATION
+        - DENIED
