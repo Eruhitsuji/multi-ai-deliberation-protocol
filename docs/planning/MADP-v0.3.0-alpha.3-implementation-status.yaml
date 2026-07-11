@@ -1,0 +1,31 @@
+status_version: 1
+protocol_version: MADP-v0.3.0-alpha.3
+implementation_status: DRAFT_IMPLEMENTED
+integration_status: IMPLEMENTATION_BRANCH
+release_ready: false
+tagged: false
+published: false
+theme: Inclusive, Guided, and Team-Aware Deliberation
+automated_checks:
+  schema_and_fixture_validation: DONE
+  authority_invariants: DONE
+  command_registry_coverage: DONE
+  document_presence: DONE
+  skill_adapter_presence: DONE
+  traceability: DONE
+release_blockers:
+  - id: A3-REL-001
+    status: PENDING
+    title: Complete manual usability trials
+  - id: A3-REL-002
+    status: PENDING
+    title: Complete Japanese translations and translation audit
+  - id: A3-REL-003
+    status: PENDING
+    title: Generate release bootstrap and standalone bundles
+  - id: A3-REL-004
+    status: PENDING
+    title: Implement alpha.2 to alpha.3 migration fixtures
+  - id: A3-REL-005
+    status: PENDING
+    title: Run release-candidate audit on final main commit
