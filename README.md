@@ -106,6 +106,54 @@ Apply last.
 
 The alpha.2 apply runtime operates only on its explicit internal runtime state model. It does not execute external actions.
 
+## Legacy compatibility example
+
+The following minimal `SESSION_STATE` remains in the root README so the retained rc.2 compatibility validator continues to exercise a schema-valid example. New alpha.2 work should use the versioned alpha.2 protocol, schemas, commands, and practical guides instead.
+
+```yaml
+session_state:
+  meta:
+    protocol: "MADP"
+    protocol_version: "0.2.5-rc.2"
+    schema_version: "0.2.5-rc.2"
+    session_id: "MADP-EXAMPLE-001"
+    state_version: 1
+    parent_version: 0
+    updated_at: "UNKNOWN"
+    updated_by: "facilitator"
+
+  goal: "Select a minimum release structure"
+
+  current_issue:
+    id: "ISSUE-001"
+    status: "IN_PROGRESS"
+    question: "Which files are required?"
+
+  participants:
+    - actor_id: "facilitator"
+      type: "FACILITATOR"
+      role: "FACILITATOR"
+      status: "ACTIVE"
+
+  decisions:
+    - id: "DEC-001"
+      revision: 1
+      deliberation_outcome: "USER_DECISION_REQUIRED"
+      approval_status: "PENDING"
+      summary: "No release structure has been approved yet."
+
+  next_step:
+    internal:
+      actor: "FACILITATOR"
+      task: "Evaluate the minimum structure"
+      blocking_input: null
+    user:
+      action_required: false
+      prompt_action: "NO_ACTION_REQUIRED"
+      task: null
+      response_format: null
+```
+
 ## Validation
 
 ```bash
