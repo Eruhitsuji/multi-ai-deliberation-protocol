@@ -132,19 +132,25 @@ def main() -> int:
             input_hashes[rel] = sha(path)
         stdout = process.stdout.strip()
         stderr = process.stderr.strip()
+        status = 'PASS' if process.returncode == 0 else 'FAIL'
         records.append({
             'id': check_id,
             'command': ' '.join([Path(command[0]).name, *[str(x) for x in command[1:]]]),
             'checker_path': script,
             'checker_sha256': sha(ROOT / script),
             'return_code': process.returncode,
-            'status': 'PASS' if process.returncode == 0 else 'FAIL',
+            'status': status,
             'input_sha256': input_hashes,
             'stdout': stdout,
             'stderr': stderr,
             'stdout_sha256': hashlib.sha256(stdout.encode('utf-8')).hexdigest(),
             'stderr_sha256': hashlib.sha256(stderr.encode('utf-8')).hexdigest(),
         })
+        print(f'{check_id}: {status}')
+        if stdout:
+            print(stdout)
+        if stderr:
+            print(stderr, file=sys.stderr)
         if process.returncode:
             failed = True
 
