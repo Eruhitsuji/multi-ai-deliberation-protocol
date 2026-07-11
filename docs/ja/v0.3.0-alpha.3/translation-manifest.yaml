@@ -84,7 +84,7 @@ entries:
 - source: bootstrap/alpha3/README.md
   translation: docs/ja/v0.3.0-alpha.3/bootstrap.md
   status: COMPLETE
-  source_git_blob_sha1: ba60d3a4cb7835600b3fc53c9d5e768683f7dfe3
+  source_git_blob_sha1: ab6ac8e2675b2ee88e72ca816a5f0eb0e03503ed
   required_markers:
   - Quick
   - status
