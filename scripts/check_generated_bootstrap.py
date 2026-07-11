@@ -6,17 +6,22 @@ from pathlib import Path
 import re
 import sys
 
-from madp_validation import ROOT, load_yaml_text
+from madp_validation import load_yaml_text
 
-VERSION = "MADP-v0.3.0-alpha.1"
+VERSION = "MADP-v0.3.0-alpha.2"
 FILES = [
-    "README-v0.3.0-alpha.1.md",
-    "protocol/MADP-v0.3.0-alpha.1.md",
-    "protocol/GLOSSARY-v0.3.0-alpha.1.md",
-    "schemas/generated/session-state-v0.3.0-alpha.1.bundle.schema.yaml",
-    "schemas/generated/relay-block-v0.3.0-alpha.1.bundle.schema.yaml",
-    "schemas/v0.3.0-alpha.1/migration-evidence.schema.yaml",
-    "schemas/v0.3.0-alpha.1/migration-audit.schema.yaml",
+    "README-v0.3.0-alpha.2.md",
+    "protocol/MADP-v0.3.0-alpha.2.md",
+    "protocol/GLOSSARY-v0.3.0-alpha.2.md",
+    "schemas/v0.3.0-alpha.2/command.schema.yaml",
+    "schemas/v0.3.0-alpha.2/command-registry.schema.yaml",
+    "schemas/v0.3.0-alpha.2/todo.schema.yaml",
+    "schemas/v0.3.0-alpha.2/context-package.schema.yaml",
+    "schemas/v0.3.0-alpha.2/context-package-receipt.schema.yaml",
+    "schemas/v0.3.0-alpha.2/review.schema.yaml",
+    "schemas/v0.3.0-alpha.2/relay.schema.yaml",
+    "registries/v0.3.0-alpha.2/commands.yaml",
+    "docs/profiles/AI_DRIVEN_DEVELOPMENT-v0.3.0-alpha.2.md",
 ]
 SHA_RE = re.compile(r"^[0-9a-f]{40}$")
 
@@ -33,17 +38,19 @@ def main() -> int:
     problems: list[str] = []
     bootstrap = args.site_dir / "bootstrap"
 
-    manifest_data = load_yaml_text((bootstrap / "manifest.yaml").read_text(encoding="utf-8"), "manifest")
-    manifest = manifest_data["generated_bootstrap"]
+    manifest = load_yaml_text((bootstrap / "manifest.yaml").read_text(encoding="utf-8"), "manifest")["generated_bootstrap"]
     repository = manifest.get("source_repository")
     commit = manifest.get("source_commit")
-
     if manifest.get("protocol_version") != VERSION:
         problems.append("manifest protocol_version mismatch")
     if not isinstance(commit, str) or not SHA_RE.fullmatch(commit):
         problems.append("manifest source_commit invalid")
+    if not isinstance(repository, str) or "/" not in repository:
+        problems.append("manifest source_repository invalid")
+        owner = repo = ""
+    else:
+        owner, repo = repository.split("/", 1)
 
-    owner, repo = repository.split("/", 1)
     load_text = (bootstrap / "load-protocol-from-github.md").read_text(encoding="utf-8")
     for name in FILES:
         expected_url = f"https://raw.githubusercontent.com/{owner}/{repo}/{commit}/{name}"
@@ -59,11 +66,7 @@ def main() -> int:
         if f"BEGIN_FILE: {name}" not in bundle or f"END_FILE: {name}" not in bundle:
             problems.append(f"bundle missing file boundary: {name}")
 
-    companion_data = load_yaml_text(
-        (bootstrap / "complete-protocol-bundle.manifest.yaml").read_text(encoding="utf-8"),
-        "bundle manifest",
-    )
-    companion = companion_data["complete_protocol_bundle"]
+    companion = load_yaml_text((bootstrap / "complete-protocol-bundle.manifest.yaml").read_text(encoding="utf-8"), "bundle manifest")["complete_protocol_bundle"]
     if companion.get("bundle_sha256") != sha256(bundle):
         problems.append("bundle digest mismatch")
     if [item.get("path") for item in companion.get("files", [])] != FILES:
@@ -77,7 +80,7 @@ def main() -> int:
         for problem in problems:
             print(problem, file=sys.stderr)
         return 1
-    print("generated bootstrap: MADP-v0.3.0-alpha.1 PASS")
+    print(f"generated bootstrap: {VERSION} PASS")
     return 0
 
 
