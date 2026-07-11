@@ -1,7 +1,8 @@
-status_version: 4
+status_version: 5
 protocol_version: MADP-v0.3.0-alpha.3
 implementation_status: RELEASE_CANDIDATE_CONTENT_READY
-integration_status: IMPLEMENTATION_BRANCH
+integration_status: MERGED_TO_MAIN
+evaluation_status: FIELD_TRIAL_IN_PROGRESS
 content_ready: true
 release_ready: false
 tagged: false
@@ -28,8 +29,8 @@ required_automated_checks:
     command: python scripts/test_command_runtime_v030_alpha3.py
 release_blockers:
   - id: A3-REL-001
-    status: MANUAL_ACTION_REQUIRED
-    title: Complete and sign off manual human usability trials
+    status: FIELD_TRIAL_IN_PROGRESS
+    title: Collect and sign off manual usability evidence from practical use
   - id: A3-REL-002
     status: DONE
     title: Complete Japanese source-freshness and marker audit
@@ -40,9 +41,11 @@ release_blockers:
     status: DONE
     title: Implement record fixtures and executable alpha.2-to-alpha.3 transformations
   - id: A3-REL-005
-    status: POST_MERGE_REQUIRED
-    title: Run evidence-backed release audit on the final main commit
+    status: WAITING_FOR_FIELD_TRIAL
+    title: Run evidence-backed final-main audit after A3-REL-001 is complete
 release_notes:
   - Automated evidence does not substitute for human usability evidence.
+  - Alpha.3 is available from main for experimental field use but is not release-ready.
+  - Practical-use observations and defects must be recorded against the tested commit.
   - Current published bootstrap remains alpha.2 until alpha.3 release authorization.
-  - No tag, release, or Pages promotion is authorized by this branch.
+  - No tag, release, or Pages promotion is authorized while field trial is in progress.
