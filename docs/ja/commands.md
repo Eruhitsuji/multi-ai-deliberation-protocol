@@ -8,6 +8,8 @@ normative: false
 
 # コマンド
 
+[English](../en/commands.md) | 日本語
+
 alpha.2では、registryに基づく20個のcommandを定義します。厳密なargumentとauthority boundaryは[`registries/v0.3.0-alpha.2/commands.yaml`](../../registries/v0.3.0-alpha.2/commands.yaml)を参照してください。
 
 ## 構文
