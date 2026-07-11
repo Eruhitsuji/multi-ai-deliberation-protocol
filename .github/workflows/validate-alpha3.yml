@@ -20,7 +20,6 @@ on:
       - "tests/v0.3.0-alpha.3/**"
       - "scripts/*alpha3*"
       - "scripts/*v030_alpha3*"
-      - ".madp-source-sync/**"
       - ".github/workflows/validate-alpha3.yml"
   pull_request:
     paths:
@@ -47,13 +46,13 @@ permissions:
 
 jobs:
   sync-validated-source:
-    if: github.event_name == 'push'
+    if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     steps:
       - name: Check out implementation branch
         uses: actions/checkout@v6
         with:
-          ref: ${{ github.ref_name }}
+          ref: ${{ github.event.pull_request.head.ref }}
           fetch-depth: 0
           show-progress: false
       - name: Restore validated source files when staged
@@ -73,7 +72,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add schemas/v0.3.0-alpha.3/deliberation.schema.yaml tests/v0.3.0-alpha.3/fixtures.yaml .madp-source-sync
           git commit -m "Restore validated alpha.3 schema and fixtures"
-          git push origin HEAD:"${GITHUB_REF_NAME}"
+          git push origin HEAD:"${{ github.event.pull_request.head.ref }}"
 
   validate-alpha3:
     runs-on: ubuntu-latest
