@@ -1,36 +1,37 @@
 protocol_version: MADP-v0.3.0-alpha.3
 normative_language: en
 translation_language: ja
+hash_algorithm: git-blob-sha1
 entries:
 - source: README-v0.3.0-alpha.3.md
   translation: README-v0.3.0-alpha.3.ja.md
   status: COMPLETE
-  source_sha256: 87253167e32e516f1196cd10dce63575667245865f65178250981d53875e2258
+  source_git_blob_sha1: 3dfb0733cd49378349eeef1beb92ca941ecb9abe
 - source: protocol/MADP-v0.3.0-alpha.3.md
   translation: docs/ja/v0.3.0-alpha.3/protocol.md
   status: COMPLETE
-  source_sha256: 658214c32f1544b80503cd92788677b3b453628d4caf60ae2486c1a41498f546
+  source_git_blob_sha1: 182ceb8577197f564b022efa87758e8402b5f415
 - source: protocol/GLOSSARY-v0.3.0-alpha.3.md
   translation: docs/ja/v0.3.0-alpha.3/glossary.md
   status: COMPLETE
-  source_sha256: f12a960734f10d796433528a2ce861acd56aa206edd48ee654f268166e63f597
+  source_git_blob_sha1: a5343ba09462b77276a7d784ce3db3c8d8a89439
 - source: bootstrap/alpha3/README.md
   translation: docs/ja/v0.3.0-alpha.3/bootstrap.md
   status: COMPLETE
-  source_sha256: 5836447b1d753d6d8cc6061d97f623405080829ef4ff06d709379f8ce7664c8b
+  source_git_blob_sha1: 92acea6066bd501f354379b37134c4395503e00e
 - source: docs/profiles/TEAM_DELIBERATION-v0.3.0-alpha.3.md
   translation: docs/ja/v0.3.0-alpha.3/team-deliberation.md
   status: COMPLETE
-  source_sha256: 318f84bc49c971b0aa8f8c6d64fa966d6b55b62f9a5909781ea25c46638ba5bc
+  source_git_blob_sha1: 86a8b99f083a4c4e2b37e274a2bb24b6c6655456
 - source: docs/profiles/MADP_HELP-v0.3.0-alpha.3.md
   translation: docs/ja/v0.3.0-alpha.3/help.md
   status: COMPLETE
-  source_sha256: b2ed9b8e8baaecbf2dc86f8c8223950b1d7a6e459b10351eed4c6054eb863741
+  source_git_blob_sha1: b1ddea7dd934a0a2c2dbb440da8e3cb468e1bc0f
 - source: docs/profiles/MODEL_RESPONSE_COMPARISON-v0.3.0-alpha.3.md
   translation: docs/ja/v0.3.0-alpha.3/model-response-comparison.md
   status: COMPLETE
-  source_sha256: fa12682d50fbdc2f6f44c74bc2afd5bc5b7a79baf0bb42eed3d0ea536e7d5fd9
+  source_git_blob_sha1: a04b36eebbaf400d8f5f84da4f1312613832ef02
 - source: docs/profiles/SKILL_ADAPTERS-v0.3.0-alpha.3.md
   translation: docs/ja/v0.3.0-alpha.3/skill-adapters.md
   status: COMPLETE
-  source_sha256: 5a230c4a4180eb2e85c64b5f91b8e7cc02f70178c701907ba9fb1a6fd15afb4c
+  source_git_blob_sha1: 001611dfc840df1ae0262dd63925dec3eeb7f25a
