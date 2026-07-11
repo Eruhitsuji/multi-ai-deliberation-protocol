@@ -35,3 +35,15 @@ entries:
   translation: docs/ja/v0.3.0-alpha.3/skill-adapters.md
   status: COMPLETE
   source_git_blob_sha1: 001611dfc840df1ae0262dd63925dec3eeb7f25a
+- source: docs/profiles/SESSION_PORTABILITY-v0.3.0-alpha.3.md
+  translation: docs/ja/v0.3.0-alpha.3/session-portability.md
+  status: COMPLETE
+  source_git_blob_sha1: c52b52463d64123f6851d08386039c98be513386
+- source: docs/profiles/COMMAND_SYSTEM-v0.3.0-alpha.3.md
+  translation: docs/ja/v0.3.0-alpha.3/command-system.md
+  status: COMPLETE
+  source_git_blob_sha1: e5f9a5b65816c58db37d66ec5f224f932042ebf1
+- source: skills/README.md
+  translation: docs/ja/v0.3.0-alpha.3/agent-skills.md
+  status: COMPLETE
+  source_git_blob_sha1: d0142e5735b2c4e7a49054f2ae486cd0dc044356

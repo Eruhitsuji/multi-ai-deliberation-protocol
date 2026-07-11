@@ -1,0 +1,231 @@
+$schema: "https://json-schema.org/draft/2020-12/schema"
+$id: "urn:madp:schema:session-portability:0.3.0-alpha.3"
+title: "MADP v0.3.0-alpha.3 Session Portability Artifacts"
+type: object
+additionalProperties: false
+minProperties: 1
+maxProperties: 1
+oneOf:
+  - required: [session_export_request]
+  - required: [portable_session_manifest]
+  - required: [session_import_report]
+  - required: [session_checkpoint]
+properties:
+  session_export_request: {$ref: "#/$defs/sessionExportRequest"}
+  portable_session_manifest: {$ref: "#/$defs/portableSessionManifest"}
+  session_import_report: {$ref: "#/$defs/sessionImportReport"}
+  session_checkpoint: {$ref: "#/$defs/sessionCheckpoint"}
+
+$defs:
+  id:
+    type: string
+    minLength: 1
+    pattern: "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+  nonEmpty:
+    type: string
+    minLength: 1
+  strings:
+    type: array
+    items: {$ref: "#/$defs/nonEmpty"}
+  protocolVersion:
+    const: "MADP-v0.3.0-alpha.3"
+  sha256:
+    type: string
+    pattern: "^[a-f0-9]{64}$"
+
+  sessionExportRequest:
+    type: object
+    additionalProperties: false
+    required:
+      - request_id
+      - protocol_version
+      - session_id
+      - source_state_version
+      - export_profile
+      - preferred_container_formats
+      - include
+      - privacy
+      - destination
+      - authority_boundary
+    properties:
+      request_id: {$ref: "#/$defs/id"}
+      protocol_version: {$ref: "#/$defs/protocolVersion"}
+      session_id: {$ref: "#/$defs/id"}
+      source_state_version: {type: integer, minimum: 0}
+      export_profile: {enum: [MINIMAL, STANDARD, COMPLETE, HANDOFF]}
+      preferred_container_formats:
+        type: array
+        minItems: 1
+        uniqueItems: true
+        items: {enum: [DIRECTORY, ZIP, SINGLE_FILE_YAML, SINGLE_FILE_JSON, MARKDOWN_BUNDLE]}
+      include:
+        type: object
+        additionalProperties: false
+        required: [canonical_state, decisions, action_items, minutes, claim_ledger, raw_responses, attachments]
+        properties:
+          canonical_state: {type: boolean}
+          decisions: {type: boolean}
+          action_items: {type: boolean}
+          minutes: {type: boolean}
+          claim_ledger: {type: boolean}
+          raw_responses: {type: boolean}
+          attachments: {type: boolean}
+      privacy:
+        type: object
+        additionalProperties: false
+        required: [include_private, private_content_confirmed, redaction_mode]
+        properties:
+          include_private: {type: boolean}
+          private_content_confirmed: {type: boolean}
+          redaction_mode: {enum: [EXCLUDE_PRIVATE, REDACT_IDENTIFIERS, USER_SPECIFIED, NONE]}
+        allOf:
+          - if:
+              properties:
+                include_private: {const: true}
+              required: [include_private]
+            then:
+              properties:
+                private_content_confirmed: {const: true}
+              required: [private_content_confirmed]
+      destination: {enum: [USER_DOWNLOAD, LOCAL_BACKUP, EXTERNAL_AI_HANDOFF, TEAM_ARCHIVE, UNSPECIFIED]}
+      authority_boundary: {const: PROPOSE_ONLY}
+
+  portableSessionManifest:
+    type: object
+    additionalProperties: false
+    required:
+      - manifest_id
+      - protocol_version
+      - portability_format_version
+      - session_id
+      - source_state_version
+      - created_at
+      - created_by
+      - export_profile
+      - container_format
+      - content_inventory
+      - redaction_summary
+      - integrity
+      - import_policy
+    properties:
+      manifest_id: {$ref: "#/$defs/id"}
+      protocol_version: {$ref: "#/$defs/protocolVersion"}
+      portability_format_version: {const: "MADP-PORTABLE-SESSION-v1"}
+      session_id: {$ref: "#/$defs/id"}
+      source_state_version: {type: integer, minimum: 0}
+      created_at: {type: string, minLength: 1}
+      created_by: {$ref: "#/$defs/id"}
+      export_profile: {enum: [MINIMAL, STANDARD, COMPLETE, HANDOFF]}
+      container_format: {enum: [DIRECTORY, ZIP, SINGLE_FILE_YAML, SINGLE_FILE_JSON, MARKDOWN_BUNDLE]}
+      content_inventory:
+        type: array
+        minItems: 1
+        items:
+          type: object
+          additionalProperties: false
+          required: [path, artifact_type, required, sha256, bytes, sensitivity]
+          properties:
+            path: {$ref: "#/$defs/nonEmpty"}
+            artifact_type:
+              enum:
+                - CANONICAL_STATE
+                - AUTHORITY_SNAPSHOT
+                - DELIBERATION_PLAN
+                - PARTICIPANT_PROFILES
+                - DECISION_LOG
+                - ACTION_ITEM_LOG
+                - CLAIM_LEDGER
+                - SESSION_MINUTES
+                - RAW_RESPONSE
+                - NORMALIZATION_RECORD
+                - ATTACHMENT
+                - README
+            required: {type: boolean}
+            sha256: {$ref: "#/$defs/sha256"}
+            bytes: {type: integer, minimum: 0}
+            sensitivity: {enum: [PUBLIC, INTERNAL, PRIVATE, REDACTED]}
+      redaction_summary: {$ref: "#/$defs/strings"}
+      integrity:
+        type: object
+        additionalProperties: false
+        required: [algorithm, content_hashes_complete]
+        properties:
+          algorithm: {const: SHA-256}
+          content_hashes_complete: {const: true}
+          bundle_sha256: {$ref: "#/$defs/sha256"}
+      import_policy:
+        type: object
+        additionalProperties: false
+        required: [preserve_source_file, may_replace_existing_state, requires_human_confirmation, default_import_action]
+        properties:
+          preserve_source_file: {const: true}
+          may_replace_existing_state: {const: false}
+          requires_human_confirmation: {const: true}
+          default_import_action: {enum: [CREATE_NEW_SESSION, RESUME_CANDIDATE, MERGE_AS_PROPOSAL]}
+
+  sessionImportReport:
+    type: object
+    additionalProperties: false
+    required:
+      - import_id
+      - protocol_version
+      - source_file_name
+      - source_preserved
+      - detected_container_format
+      - detected_protocol_version
+      - manifest_validation
+      - hash_validation
+      - schema_validation
+      - authority_validation
+      - collision_status
+      - proposed_action
+      - canonical_state_modified
+      - confirmation_required
+      - authority_escalation_detected
+      - warnings
+    properties:
+      import_id: {$ref: "#/$defs/id"}
+      protocol_version: {$ref: "#/$defs/protocolVersion"}
+      source_file_name: {$ref: "#/$defs/nonEmpty"}
+      source_preserved: {const: true}
+      detected_container_format: {enum: [DIRECTORY, ZIP, SINGLE_FILE_YAML, SINGLE_FILE_JSON, MARKDOWN_BUNDLE, UNKNOWN]}
+      detected_protocol_version: {type: string, minLength: 1}
+      detected_session_id: {type: [string, "null"]}
+      detected_state_version: {type: [integer, "null"], minimum: 0}
+      manifest_validation: {enum: [PASS, FAIL, MISSING, NOT_CHECKED]}
+      hash_validation: {enum: [PASS, FAIL, PARTIAL, NOT_AVAILABLE, NOT_CHECKED]}
+      schema_validation: {enum: [PASS, FAIL, PARTIAL, NOT_AVAILABLE, NOT_CHECKED]}
+      authority_validation: {enum: [PASS, FAIL, PARTIAL, NOT_AVAILABLE, NOT_CHECKED]}
+      collision_status: {enum: [NO_COLLISION, SAME_SESSION_SAME_VERSION, SAME_SESSION_NEWER_LOCAL, SAME_SESSION_NEWER_IMPORTED, DIFFERENT_SESSION, UNKNOWN]}
+      proposed_action: {enum: [CREATE_NEW_SESSION, RESUME_EXISTING, MERGE_AS_PROPOSAL, QUARANTINE, REJECT]}
+      canonical_state_modified: {const: false}
+      confirmation_required: {const: true}
+      authority_escalation_detected: {const: false}
+      warnings: {$ref: "#/$defs/strings"}
+      limitations: {$ref: "#/$defs/strings"}
+
+  sessionCheckpoint:
+    type: object
+    additionalProperties: false
+    required:
+      - checkpoint_id
+      - protocol_version
+      - session_id
+      - state_version
+      - created_at
+      - created_by
+      - label
+      - artifact_refs
+      - export_ready
+      - canonical_state_modified
+    properties:
+      checkpoint_id: {$ref: "#/$defs/id"}
+      protocol_version: {$ref: "#/$defs/protocolVersion"}
+      session_id: {$ref: "#/$defs/id"}
+      state_version: {type: integer, minimum: 0}
+      created_at: {type: string, minLength: 1}
+      created_by: {$ref: "#/$defs/id"}
+      label: {$ref: "#/$defs/nonEmpty"}
+      artifact_refs: {$ref: "#/$defs/strings"}
+      export_ready: {type: boolean}
+      canonical_state_modified: {const: false}

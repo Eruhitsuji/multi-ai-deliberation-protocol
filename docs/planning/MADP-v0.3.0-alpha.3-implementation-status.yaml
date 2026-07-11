@@ -1,4 +1,4 @@
-status_version: 2
+status_version: 3
 protocol_version: MADP-v0.3.0-alpha.3
 implementation_status: RELEASE_CANDIDATE_CONTENT_READY
 integration_status: IMPLEMENTATION_BRANCH
@@ -20,6 +20,9 @@ automated_checks:
   migration_fixtures: DONE
   automated_usability_walkthrough: DONE
   branch_release_audit: DONE
+  agent_skills_packaging: DONE
+  session_portability: DONE
+  command_reorganization: DONE
 release_blockers:
 - id: A3-REL-001
   status: MANUAL_ACTION_REQUIRED
@@ -40,3 +43,5 @@ release_notes:
 - Automated checks must not be treated as human usability evidence.
 - Current published bootstrap remains alpha.2 until alpha.3 release authorization.
 - No tag or release is created by this implementation branch.
+- Agent Skills are convenience adapters and do not change authority.
+- Session imports never modify canonical state before an explicit reviewed confirmation.

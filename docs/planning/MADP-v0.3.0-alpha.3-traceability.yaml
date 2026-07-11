@@ -120,3 +120,22 @@ requirements:
   artifact: scripts/check_release_readiness_v030_alpha3.py
   validation: scripts/check_release_readiness_v030_alpha3.py
   fixture_type: release_gate
+- id: A3-SKILL-002
+  title: Installable shared Agent Skills for start facilitator participant recorder
+    and help
+  status: IMPLEMENTED
+  artifact: skills/README.md
+  validation: scripts/check_alpha3_implementation.py
+  fixture_type: agent_skill_pack
+- id: A3-PORT-001
+  title: User-managed session file export import checkpoint and handoff
+  status: IMPLEMENTED
+  artifact: schemas/v0.3.0-alpha.3/session-portability.schema.yaml
+  validation: scripts/check_alpha3_implementation.py
+  fixture_type: portable_session
+- id: A3-CMD-002
+  title: Grouped canonical commands with safe human-friendly aliases
+  status: IMPLEMENTED
+  artifact: docs/profiles/COMMAND_SYSTEM-v0.3.0-alpha.3.md
+  validation: scripts/check_alpha3_implementation.py
+  fixture_type: command_alias
