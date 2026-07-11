@@ -1,0 +1,92 @@
+protocol_version: MADP-v0.3.0-alpha.3
+requirements:
+  - id: A3-PLAN-001
+    title: Goal gate and deliberation plan
+    status: IMPLEMENTED
+    artifact: protocol/MADP-v0.3.0-alpha.3.md
+    validation: scripts/check_alpha3_implementation.py
+    fixture_type: deliberation_plan
+  - id: A3-MODE-001
+    title: LIGHT STANDARD ASSURED modes
+    status: IMPLEMENTED
+    artifact: protocol/MADP-v0.3.0-alpha.3.md
+    validation: scripts/check_alpha3_implementation.py
+    fixture_type: deliberation_plan
+  - id: A3-CAP-001
+    title: Capability-aware participant profiles
+    status: IMPLEMENTED
+    artifact: schemas/v0.3.0-alpha.3/deliberation.schema.yaml
+    validation: scripts/check_alpha3_implementation.py
+    fixture_type: participant_profile
+  - id: A3-CAP-002
+    title: Opinion-only limited participation
+    status: IMPLEMENTED
+    artifact: bootstrap/alpha3/invite-limited-participant.md
+    validation: scripts/check_alpha3_implementation.py
+    fixture_type: participant_profile
+  - id: A3-INGEST-001
+    title: Tolerant response ingestion
+    status: IMPLEMENTED
+    artifact: schemas/v0.3.0-alpha.3/deliberation.schema.yaml
+    validation: scripts/check_alpha3_implementation.py
+    fixture_type: response_ingest_record
+  - id: A3-NORM-001
+    title: Audited normalization without authority escalation
+    status: IMPLEMENTED
+    artifact: schemas/v0.3.0-alpha.3/deliberation.schema.yaml
+    validation: scripts/check_alpha3_implementation.py
+    fixture_type: normalization_record
+  - id: A3-ROLE-001
+    title: Adaptive role lifecycle
+    status: IMPLEMENTED
+    artifact: schemas/v0.3.0-alpha.3/deliberation.schema.yaml
+    validation: scripts/check_alpha3_implementation.py
+    fixture_type: role_assignment_plan
+  - id: A3-CLAIM-001
+    title: Claim ledger and verification status
+    status: IMPLEMENTED
+    artifact: schemas/v0.3.0-alpha.3/deliberation.schema.yaml
+    validation: scripts/check_alpha3_implementation.py
+    fixture_type: claim_ledger
+  - id: A3-TEAM-001
+    title: Multiple humans and explicit decision policy
+    status: IMPLEMENTED
+    artifact: docs/profiles/TEAM_DELIBERATION-v0.3.0-alpha.3.md
+    validation: scripts/check_alpha3_implementation.py
+    fixture_type: deliberation_plan
+  - id: A3-MIN-001
+    title: Reviewable minutes
+    status: IMPLEMENTED
+    artifact: schemas/v0.3.0-alpha.3/deliberation.schema.yaml
+    validation: scripts/check_alpha3_implementation.py
+    fixture_type: session_minutes
+  - id: A3-HELP-001
+    title: Separate and in-session Help
+    status: IMPLEMENTED
+    artifact: docs/profiles/MADP_HELP-v0.3.0-alpha.3.md
+    validation: scripts/check_alpha3_implementation.py
+    fixture_type: help_response
+  - id: A3-UX-001
+    title: Mandatory Next Action Card
+    status: IMPLEMENTED
+    artifact: schemas/v0.3.0-alpha.3/deliberation.schema.yaml
+    validation: scripts/check_alpha3_implementation.py
+    fixture_type: next_action_card
+  - id: A3-CMP-001
+    title: Controlled model response comparison
+    status: IMPLEMENTED
+    artifact: docs/profiles/MODEL_RESPONSE_COMPARISON-v0.3.0-alpha.3.md
+    validation: scripts/check_alpha3_implementation.py
+    fixture_type: profile
+  - id: A3-SKILL-001
+    title: ChatGPT and Claude skill adapters
+    status: IMPLEMENTED
+    artifact: docs/profiles/SKILL_ADAPTERS-v0.3.0-alpha.3.md
+    validation: scripts/check_alpha3_implementation.py
+    fixture_type: skill
+  - id: A3-CMD-001
+    title: Alpha.3 workflow commands
+    status: IMPLEMENTED
+    artifact: registries/v0.3.0-alpha.3/commands.yaml
+    validation: scripts/check_alpha3_implementation.py
+    fixture_type: command
