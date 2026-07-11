@@ -1,0 +1,14 @@
+protocol_version: MADP-v0.3.0-alpha.3
+scenarios:
+  - id: BOOT-LOAD-001
+    input_condition: Commit-pinned repository access is available and every required source can be read.
+    required_features: [commit-pinned-loader, required-source-inventory, protocol-load-report]
+    success_condition: Exactly one COMPLETE PROTOCOL_LOAD_REPORT binds the repository, 40-character commit, and every required source as READ before deliberation.
+  - id: BOOT-GATE-MISSING-001
+    input_condition: quick-start.md or verified-start.md is provided without a PROTOCOL_LOAD_REPORT.
+    required_features: [requires-protocol-load, protocol-not-loaded, fail-closed]
+    success_condition: No MADP session begins and the profile returns PROTOCOL_NOT_LOADED with the alpha.3 loader as the next action.
+  - id: BOOT-GATE-INCOMPLETE-001
+    input_condition: A PROTOCOL_LOAD_REPORT is present but one or more sources are PARTIALLY_READ or FAILED.
+    required_features: [complete-load-report, no-unread-inference, recovery-input]
+    success_condition: No MADP session begins, unread rules are not inferred, and recovery of the exact source is requested.
