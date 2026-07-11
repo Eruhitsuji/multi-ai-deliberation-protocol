@@ -36,6 +36,24 @@ status: published unstable prerelease
 
 The authoritative GitHub Release publication timestamp could not be retrieved through the available connector, so repository metadata records `published_at: UNKNOWN` rather than guessing. The release tag was independently verified to resolve exactly to the expected release commit.
 
+## Status and canonical files
+
+This section is retained for the repository's rc.2 compatibility checks. It does not override the current published alpha.2 status above.
+
+```yaml
+current_release_candidate: "MADP-v0.2.5-rc.2"
+previous_release_candidate: "MADP-v0.2.5-rc.1"
+previous_draft: "MADP-v0.2.5-draft"
+```
+
+Historical rc.2 canonical files retained for compatibility testing:
+
+- [`protocol/MADP-v0.2.5-rc.2.md`](protocol/MADP-v0.2.5-rc.2.md)
+- [`protocol/GLOSSARY-v0.2.5-rc.2.md`](protocol/GLOSSARY-v0.2.5-rc.2.md)
+- [`schemas/session-state-v0.2.5-rc.2.schema.yaml`](schemas/session-state-v0.2.5-rc.2.schema.yaml)
+
+Published historical tags are immutable. The rc.2 compatibility marker is not the current published prerelease.
+
 ## Core principles
 
 - The user is the sole final decision-maker.
