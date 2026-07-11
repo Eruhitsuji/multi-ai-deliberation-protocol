@@ -65,3 +65,8 @@ requirements:
     status: IMPLEMENTED
     artifact: tests/v0.3.0-alpha.3/fixtures.yaml
     validation: scripts/check_alpha3_implementation.py
+  - id: A3-REVIEW-LOAD-001
+    title: Commit-pinned protocol loading precedes every alpha.3 start profile
+    status: IMPLEMENTED
+    artifact: bootstrap/alpha3/load-protocol-from-github.md
+    validation: scripts/check_alpha3_implementation.py
