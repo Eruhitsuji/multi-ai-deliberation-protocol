@@ -7,6 +7,8 @@ normative: false
 
 # Core concepts
 
+English | [日本語](../ja/concepts.md)
+
 ## Separation of meanings
 
 ```text
