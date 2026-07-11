@@ -11,6 +11,15 @@ English | [日本語](../ja/getting-started.md)
 
 MADP structures multi-AI deliberation while keeping the user as the sole final decision-maker.
 
+## Recommended first path
+
+1. Read [Basic usage](basic-usage.md).
+2. Choose one of the three discussion patterns.
+3. Run one deliberation cycle with a compact operative state.
+4. Use the domain guides for development, relay, TODO, and review.
+
+The [Practical guide index](practical-guides.md) compares each workflow by purpose, usage, output, and expected effect.
+
 ## Minimal flow
 
 1. State the issue, fixed requirements, and evaluation criteria.
@@ -29,7 +38,9 @@ Raw command text is never authoritative by itself. Use the versioned protocol an
 
 ## Start here
 
-- Read [Core concepts](concepts.md).
-- Read [Authority model](authority-model.md).
-- Review [Commands](commands.md).
+- [Basic usage and workflow selection](basic-usage.md)
+- [Practical guide index](practical-guides.md)
+- [Core concepts](concepts.md)
+- [Authority model](authority-model.md)
+- [Commands](commands.md)
 - For normative details, read [`protocol/MADP-v0.3.0-alpha.2.md`](../../protocol/MADP-v0.3.0-alpha.2.md).
