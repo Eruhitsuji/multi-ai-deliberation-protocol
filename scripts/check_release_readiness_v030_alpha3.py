@@ -13,7 +13,7 @@ REQUIRED_CHECKS = {
     'A3-CHECK-COMMAND-COVERAGE',
     'A3-CHECK-RUNTIME',
 }
-FORBIDDEN_STAGING_PATHS = ('.madp-finalize', '.madp-patch')
+FORBIDDEN_STAGING_PATHS = ('.madp-finalize', '.madp-patch', '.madp-source-sync')
 
 
 def sha(path: Path) -> str:
