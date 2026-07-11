@@ -44,8 +44,9 @@ English | [日本語](../ja/README.md)
 ## Version status
 
 - Published: `MADP-v0.3.0-alpha.1`
-- Merged to main, not tagged or published: `MADP-v0.3.0-alpha.2`
-- `release_ready: false` remains in force.
+- Release candidate ready, not yet tagged or published: `MADP-v0.3.0-alpha.2`
+- `release_ready: true`
+- Tagging and GitHub Release publication remain separate actions.
 
 ## Normative sources
 
