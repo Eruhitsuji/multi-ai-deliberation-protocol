@@ -39,6 +39,9 @@ jobs:
       - name: Check document consistency
         run: python scripts/check_document_consistency.py
 
+      - name: Check translation documentation
+        run: python scripts/check_translation_docs.py
+
       - name: Check bootstrap prompts
         run: python scripts/check_bootstrap_prompts.py
 
