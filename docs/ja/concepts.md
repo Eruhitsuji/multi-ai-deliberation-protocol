@@ -8,6 +8,8 @@ normative: false
 
 # 基本概念
 
+[English](../en/concepts.md) | 日本語
+
 ## 意味の分離
 
 ```text
