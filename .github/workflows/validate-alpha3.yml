@@ -66,10 +66,11 @@ jobs:
           HEAD_BRANCH: ${{ github.event.pull_request.head.ref }}
         run: |
           set -euo pipefail
-          test -f .madp-source-sync/deliberation.schema.yaml.gz.b64
+          test -f .madp-source-sync/deliberation.schema.yaml.gz.a.b64
+          test -f .madp-source-sync/deliberation.schema.yaml.gz.b.b64
           test -f .madp-source-sync/fixtures.yaml.gz.b64
           wc -c .madp-source-sync/*.b64
-          base64 --decode .madp-source-sync/deliberation.schema.yaml.gz.b64 | gzip -dc > schemas/v0.3.0-alpha.3/deliberation.schema.yaml
+          cat .madp-source-sync/deliberation.schema.yaml.gz.a.b64 .madp-source-sync/deliberation.schema.yaml.gz.b.b64 | base64 --decode | gzip -dc > schemas/v0.3.0-alpha.3/deliberation.schema.yaml
           base64 --decode .madp-source-sync/fixtures.yaml.gz.b64 | gzip -dc > tests/v0.3.0-alpha.3/fixtures.yaml
           sha256sum schemas/v0.3.0-alpha.3/deliberation.schema.yaml tests/v0.3.0-alpha.3/fixtures.yaml
           echo "8e6432a99b41e0275da36881e2bad17d09e4399bd2dcf436ce033de698fbefd5  schemas/v0.3.0-alpha.3/deliberation.schema.yaml" | sha256sum --check --strict
