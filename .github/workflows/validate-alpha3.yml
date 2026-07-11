@@ -14,17 +14,32 @@ jobs:
     if: github.event.pull_request.head.ref == 'feature/v0.3.0-alpha.3-inclusive-guided-team'
     runs-on: ubuntu-latest
     steps:
-      - name: Check out implementation branch
-        uses: actions/checkout@v6
-        with:
-          ref: feature/v0.3.0-alpha.3-inclusive-guided-team
-          fetch-depth: 0
-          show-progress: false
+      - name: Fetch implementation branch quietly
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          git init -q .
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git fetch -q --depth=1 origin feature/v0.3.0-alpha.3-inclusive-guided-team
+          git checkout -q -B feature/v0.3.0-alpha.3-inclusive-guided-team FETCH_HEAD
 
       - name: Reassemble and verify reviewed patch
         run: |
           set -euo pipefail
           test -f .madp-patch/APPLY
+          wc -c \
+            .madp-patch/part00.b64 \
+            .madp-patch/part01.b64 \
+            .madp-patch/part02.b64 \
+            .madp-patch/part03.b64 \
+            .madp-patch/part04.b64 \
+            .madp-patch/part05.b64 \
+            .madp-patch/part06.b64 \
+            .madp-patch/part07.b64 \
+            .madp-patch/part08.b64 \
+            .madp-patch/part09.b64 \
+            .madp-patch/part10.b64
           cat \
             .madp-patch/part00.b64 \
             .madp-patch/part01.b64 \
@@ -41,7 +56,7 @@ jobs:
             | base64 --decode \
             > /tmp/madp-alpha3-review-hardening.tar.gz
           sha256sum /tmp/madp-alpha3-review-hardening.tar.gz
-          tar -tzf /tmp/madp-alpha3-review-hardening.tar.gz >/dev/null
+          tar -tzf /tmp/madp-alpha3-review-hardening.tar.gz | head -20
           tar -xzf /tmp/madp-alpha3-review-hardening.tar.gz -C .
           rm -rf .madp-patch
           rm -f .github/workflows/apply-alpha3-review-hardening.yml
