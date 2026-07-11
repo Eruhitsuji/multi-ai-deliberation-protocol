@@ -2,7 +2,18 @@
 
 ## Status
 
-`MADP-v0.3.0-alpha.2` is an unstable prerelease. The repository contents are prepared for tagging after the release-preparation PR is merged and the exact main commit is verified.
+`MADP-v0.3.0-alpha.2` is a published unstable prerelease.
+
+```yaml
+release_tag: MADP-v0.3.0-alpha.2
+release_commit: 207e24290e0a66bf0dd34e13f9b3525a42a5a6c9
+release_preparation_workflow_run: 29135177099
+release_preparation_workflow_result: success
+post_publication_tag_verification: identical
+published_at: UNKNOWN
+```
+
+The user confirmed that the release operation completed. The tag was independently verified to resolve exactly to the expected release commit. The authoritative GitHub Release publication timestamp could not be retrieved through the available connector and is therefore recorded as `UNKNOWN` rather than guessed.
 
 ## Highlights
 
@@ -33,7 +44,7 @@ Malformed, unknown, stale, unsupported, or unauthorized inputs fail closed. The 
 
 ## Validation
 
-The release candidate is covered by:
+The published release candidate was covered by:
 
 - schema and semantic fixture validation;
 - strict parser and all-command coverage tests;
@@ -46,7 +57,7 @@ The release candidate is covered by:
 - English/Japanese translation-pair and metadata checks;
 - release-readiness audit.
 
-The exact workflow run and final release commit will be recorded when the release-preparation PR is merged and verified.
+The complete release-preparation workflow succeeded as run `29135177099`. After publication, tag `MADP-v0.3.0-alpha.2` was compared with commit `207e24290e0a66bf0dd34e13f9b3525a42a5a6c9` and reported `identical`, with no commits ahead or behind.
 
 ## Documentation
 
@@ -68,12 +79,13 @@ Published historical tags remain immutable. Active sessions must not auto-upgrad
 - Full stale-parent and state-lineage enforcement remain future hardening work.
 - The apply runtime operates only on its explicit internal runtime state and does not execute external operations.
 - Formal universal interoperability is not claimed.
+- The authoritative GitHub Release publication timestamp remains unrecorded in the repository.
 
-## Publication procedure
+## Publication verification
 
-1. Merge the release-preparation PR after all checks pass.
-2. Verify the resulting main commit and its CI evidence.
-3. Create tag `MADP-v0.3.0-alpha.2` at that exact commit.
-4. Create a GitHub prerelease using these notes.
-5. Verify the tag, release page, downloadable source archives, and canonical file links.
-6. Record the final release commit and publication timestamp in repository metadata in a follow-up maintenance change.
+1. Release-preparation PR #5 was merged.
+2. The release merge commit was verified as `207e24290e0a66bf0dd34e13f9b3525a42a5a6c9`.
+3. Tag `MADP-v0.3.0-alpha.2` was created.
+4. The user confirmed that the GitHub release operation completed.
+5. The tag and expected release commit were compared and found identical.
+6. This maintenance change records the publication state in repository metadata.
