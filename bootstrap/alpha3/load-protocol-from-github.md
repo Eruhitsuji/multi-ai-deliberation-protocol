@@ -173,6 +173,8 @@ The `files` array must contain exactly one entry for every selected required pat
 - only `quick-start.md` for a `QUICK` load;
 - `quick-start.md` and `verified-start.md` for `VERIFIED` or `FIELD_TRIAL`.
 
+When applying an authorized profile, the caller must provide a `PROFILE_SOURCE_BINDING` whose repository, commit, path, and source reference match the active report and the selected `authorized_start_profiles` entry.
+
 ## Completion conditions
 
 Set `status: COMPLETE` only when:
