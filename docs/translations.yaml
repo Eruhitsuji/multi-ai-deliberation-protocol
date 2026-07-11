@@ -1,0 +1,33 @@
+manifest_version: "1"
+source_language: en
+managed_translation_languages:
+  - ja
+normative_language: en
+normative_roots:
+  - protocol/
+  - schemas/
+  - registries/
+source_commit: a5d3d3877cbf5081bf82e0a476f6686cab6c350f
+pairs:
+  - en: docs/en/README.md
+    ja: docs/ja/README.md
+  - en: docs/en/getting-started.md
+    ja: docs/ja/getting-started.md
+  - en: docs/en/concepts.md
+    ja: docs/ja/concepts.md
+  - en: docs/en/authority-model.md
+    ja: docs/ja/authority-model.md
+  - en: docs/en/commands.md
+    ja: docs/ja/commands.md
+  - en: docs/en/ai-development.md
+    ja: docs/ja/ai-development.md
+  - en: docs/en/context-relay.md
+    ja: docs/ja/context-relay.md
+  - en: docs/en/todo-lifecycle.md
+    ja: docs/ja/todo-lifecycle.md
+  - en: docs/en/review-workflow.md
+    ja: docs/ja/review-workflow.md
+  - en: docs/en/faq.md
+    ja: docs/ja/faq.md
+  - en: docs/en/glossary.md
+    ja: docs/ja/glossary.md
