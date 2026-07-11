@@ -1,9 +1,9 @@
-status_version: "2"
+status_version: "3"
 protocol_version: "MADP-v0.3.0-alpha.2"
-implementation_status: "COMPLETE_FOR_DRAFT_REVIEW"
+implementation_status: "RELEASE_CANDIDATE_READY"
 integration_status: "MERGED_TO_MAIN"
-merge_commit: "a5d3d3877cbf5081bf82e0a476f6686cab6c350f"
-release_ready: false
+merge_commit: "839f137d315ba067b75e16c8742649885c7f3f83"
+release_ready: true
 tagged: false
 published: false
 items:
@@ -34,7 +34,11 @@ items:
   - todo_id: TODO-CMD-009
     status: DONE
     completion_basis: Relay mode schema and alpha.1-to-alpha.2 migration fixtures implemented.
+release_requirements:
+  - Final release-preparation CI must pass on the exact PR head.
+  - After merge, the exact verified main commit must be used for the tag.
+  - Tagging and GitHub Release publication remain separately authorized actions.
 limitations:
-  - Completion and merge do not mean tagged, published, or release-ready.
+  - Release readiness does not itself create a tag or publish a GitHub Release.
   - The alpha.2 apply runtime updates only its explicit internal runtime state model; it does not execute external actions.
-  - Release governance actions remain separately user-authorized.
+  - Post-publication metadata must record the final release commit, tag, and publication timestamp.
