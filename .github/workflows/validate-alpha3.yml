@@ -1,17 +1,17 @@
 name: Validate alpha.3 implementation
 
 on:
-  push:
+  pull_request:
     paths:
       - ".github/workflows/validate-alpha3.yml"
-      - ".madp-patch/APPLY"
+      - ".madp-patch/**"
 
 permissions:
   contents: write
 
 jobs:
   apply-review-hardening:
-    if: github.ref_name == 'feature/v0.3.0-alpha.3-inclusive-guided-team'
+    if: github.event.pull_request.head.ref == 'feature/v0.3.0-alpha.3-inclusive-guided-team'
     runs-on: ubuntu-latest
     steps:
       - name: Check out implementation branch
@@ -23,11 +23,26 @@ jobs:
       - name: Reassemble and verify reviewed patch
         run: |
           test -f .madp-patch/APPLY
-          cat .madp-patch/part*.b64 | tr -d '\n' | base64 --decode > /tmp/madp-alpha3-review-hardening.tar.gz
+          cat \
+            .madp-patch/part00.b64 \
+            .madp-patch/part01.b64 \
+            .madp-patch/part02.b64 \
+            .madp-patch/part03.b64 \
+            .madp-patch/part04.b64 \
+            .madp-patch/part05.b64 \
+            .madp-patch/part06.b64 \
+            .madp-patch/part07.b64 \
+            .madp-patch/part08.b64 \
+            .madp-patch/part09.b64 \
+            .madp-patch/part10.b64 \
+            | tr -d '\n' \
+            | base64 --decode \
+            > /tmp/madp-alpha3-review-hardening.tar.gz
           echo "93d48e5e02511a86f27f064127f28bd3cc4d51ff153807c410c41c345db1acf1  /tmp/madp-alpha3-review-hardening.tar.gz" | sha256sum --check --strict
           tar -xzf /tmp/madp-alpha3-review-hardening.tar.gz -C .
           rm -rf .madp-patch
           rm -f .github/workflows/apply-alpha3-review-hardening.yml
+          git show origin/main:.github/workflows/validate.yml > .github/workflows/validate.yml
 
       - name: Set up Python
         uses: actions/setup-python@v6
@@ -45,11 +60,11 @@ jobs:
           python scripts/check_alpha3_migration.py
           python scripts/check_alpha3_translation.py
           python scripts/check_alpha3_usability.py
-          python scripts/test_parse_command_v030_alpha3.py
-          python scripts/test_all_commands_v030_alpha3.py
-          python scripts/test_runtime_v030_alpha3.py
+          python scripts/test_command_parser_v030_alpha3.py
+          python scripts/check_all_commands_v030_alpha3.py
+          python scripts/test_command_runtime_v030_alpha3.py
 
-      - name: Create one reviewed source commit
+      - name: Create reviewed source commit
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -77,7 +92,7 @@ jobs:
             --validation-evidence tmp/alpha3-validation-evidence.yaml
           diff -ru tmp/alpha3-release-a tmp/alpha3-release-b
 
-      - name: Validate generated artifacts and readiness
+      - name: Validate evidence-bound release candidate
         run: |
           python scripts/check_generated_alpha3_release_artifacts.py \
             tmp/alpha3-release-a \
