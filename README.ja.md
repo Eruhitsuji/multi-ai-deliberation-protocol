@@ -30,11 +30,26 @@ alpha2_release_ready: false
 
 ## 日本語ガイド
 
+### 最初に読む
+
 - [日本語ドキュメント入口](docs/ja/README.md)
 - [はじめに](docs/ja/getting-started.md)
 - [基本概念](docs/ja/concepts.md)
+- [説明用用語集](docs/ja/glossary.md)
+- [よくある質問](docs/ja/faq.md)
+
+### 実践利用
+
 - [権限モデル](docs/ja/authority-model.md)
 - [コマンド](docs/ja/commands.md)
+- [AI駆動開発](docs/ja/ai-development.md)
+- [コンテキスト共有とrelay](docs/ja/context-relay.md)
+- [TODO lifecycle](docs/ja/todo-lifecycle.md)
+- [レビューワークフロー](docs/ja/review-workflow.md)
+
+## 翻訳方針
+
+日本語文書は非規範的な説明資料です。翻訳のscope、同期方法、source commitの扱いは[翻訳ポリシー](docs/TRANSLATION_POLICY.md)を参照してください。
 
 ## 規範的な仕様
 
@@ -46,6 +61,14 @@ alpha2_release_ready: false
 - [Command Registry](registries/v0.3.0-alpha.2/commands.yaml)
 
 日本語文書と英語の規範文書に差異がある場合、英語版が優先されます。
+
+## Validation
+
+翻訳文書の整合性は次で確認できます。
+
+```bash
+python scripts/check_translation_docs.py
+```
 
 ## License
 
