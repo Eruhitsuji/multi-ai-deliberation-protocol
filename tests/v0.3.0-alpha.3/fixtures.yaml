@@ -1,0 +1,307 @@
+valid:
+  - schema: deliberation
+    artifact:
+      deliberation_plan:
+        plan_id: PLAN-001
+        protocol_version: MADP-v0.3.0-alpha.3
+        mode: STANDARD
+        topic: Protocol update
+        primary_goal: Define alpha.3
+        central_question: What must be implemented?
+        final_outputs: [specification]
+        success_criteria: [validated]
+        in_scope: [workflow]
+        out_of_scope: [automatic execution]
+        goal_gate: REQUIRED
+        goal_status: USER_CONFIRMED
+        revision: 1
+        decision_authority: USER
+        decision_method: SINGLE_DECISION_OWNER
+        silence_counts_as_consent: false
+        preserve_material_dissent: true
+        stop_conditions: [requirements complete]
+        authority_boundary: PROPOSE_ONLY
+  - schema: deliberation
+    artifact:
+      participant_profile:
+        participant_id: COPILOT-001
+        protocol_version: MADP-v0.3.0-alpha.3
+        participant_type: AI_MODEL
+        participation_mode: OPINION_ONLY
+        participation_channel: RELAYED_BY_HUMAN
+        capabilities:
+          url_reading: false
+          file_upload: false
+          zip_reading: false
+          yaml_input: false
+          yaml_output: false
+          free_text_input: true
+          free_text_output: true
+        independence_group: IG-COPILOT-001
+        independence_level: I1
+        eligible_roles: [USABILITY_REVIEWER]
+        ineligible_roles: [FACILITATOR, STATE_MAINTAINER, APPROVER]
+        authority:
+          may_propose: true
+          may_approve: false
+          may_veto: false
+          may_execute: false
+          may_update_canonical_state: false
+  - schema: deliberation
+    artifact:
+      plain_relay_packet:
+        packet_id: PR-001
+        protocol_version: MADP-v0.3.0-alpha.3
+        source_state_version: 2
+        target_participant: COPILOT-001
+        participant_mode: OPINION_ONLY
+        topic: Bootstrap usability
+        assigned_role: USABILITY_REVIEWER
+        context_summary: [Users may not know the next action]
+        questions: [What is confusing?]
+        prohibited_inferences: [USER_APPROVAL, EXECUTION_PERMISSION, CANONICAL_STATE_AUTHORITY]
+        requested_response_format: NUMBERED_LIST
+        return_destination: FACILITATOR_CHAT
+        authority_boundary: PROPOSE_ONLY
+  - schema: deliberation
+    artifact:
+      response_ingest_record:
+        ingest_id: ING-001
+        protocol_version: MADP-v0.3.0-alpha.3
+        participant_id: COPILOT-001
+        source_state_version: 2
+        raw_response_ref: artifact://raw/1
+        requested_format: NUMBERED_LIST
+        observed_format: FREE_TEXT
+        exact_parse_status: NOT_APPLICABLE
+        validation_status: NOT_APPLICABLE
+        recovery_attempted: false
+        recovery_method: NONE
+        ambiguity_status: NONE
+        disposition: ACCEPTED_OPINION_ONLY
+        authority_preserved: true
+  - schema: deliberation
+    artifact:
+      normalization_record:
+        normalization_id: NOR-001
+        protocol_version: MADP-v0.3.0-alpha.3
+        source_participant: COPILOT-001
+        raw_response_ref: artifact://raw/1
+        normalized_by: FAC-001
+        transformations:
+          - source_text: The steps are hard to follow.
+            normalized_statement: The onboarding steps may be difficult to follow.
+            classification: OPINION
+        omitted_as_ambiguous: []
+        added_content: false
+        confirmation_status: UNCONFIRMED
+        authority_status_added: false
+  - schema: deliberation
+    artifact:
+      role_assignment_plan:
+        assignment_id: RA-001
+        protocol_version: MADP-v0.3.0-alpha.3
+        assignment_policy: ADAPTIVE
+        issue_id: ISSUE-001
+        role_budget:
+          preferred_active_roles: 3
+          maximum_active_roles: 7
+        roles:
+          - role_id: R-USABILITY
+            function: Review onboarding usability
+            participant_id: COPILOT-001
+            reason: User navigation is under review
+            status: ACTIVE
+            required_capabilities: [FREE_TEXT_OUTPUT]
+            retirement_condition: Usability findings recorded
+        authority_roles_changed: false
+  - schema: deliberation
+    artifact:
+      claim_ledger:
+        ledger_id: CL-001
+        protocol_version: MADP-v0.3.0-alpha.3
+        claims:
+          - claim_id: C-001
+            statement: The user did not know the next action.
+            claim_type: FACT
+            importance: HIGH
+            verification_status: VERIFIED
+            source_refs: [discussion-log]
+            checked_by: [FAC-001]
+            disagreements: []
+            usable_for_decision: true
+  - schema: deliberation
+    artifact:
+      next_action_card:
+        card_id: NAC-001
+        protocol_version: MADP-v0.3.0-alpha.3
+        state: WAITING_FOR_EXTERNAL_RESPONSE
+        pause_reason: EXTERNAL_RELAY_REQUIRED
+        action_required: true
+        actor: USER
+        current_location: External review
+        progress: 4/7
+        primary_action:
+          label: Paste the response
+          instruction: Paste the complete external response unchanged.
+        accepted_inputs: [PASTED_TEXT, UPLOADED_FILE]
+        after_completion: [Preserve raw response, Ingest response]
+        alternatives: [SKIP_EXTERNAL_REVIEW, ASK_HELP, END_SESSION]
+  - schema: deliberation
+    artifact:
+      session_minutes:
+        minutes_id: MIN-001
+        protocol_version: MADP-v0.3.0-alpha.3
+        session_id: SESSION-001
+        source_state_version: 4
+        generated_by: FAC-001
+        status: AUTO_GENERATED_DRAFT
+        detail_level: STANDARD
+        participants: [HUMAN-001, AI-001]
+        agenda: [Bootstrap usability]
+        executive_summary: [A plain relay is needed.]
+        discussion:
+          - issue_id: ISSUE-001
+            topic: Limited participants
+            main_positions: [Allow opinion-only participation]
+            evidence_refs: [C-001]
+        decisions:
+          - decision_id: D-001
+            statement: Implement plain relay
+            approval_status: PROPOSED
+            approved_by: []
+        dissent: []
+        action_items:
+          - action_id: A-001
+            description: Implement schema
+            owner: FAC-001
+            due_date: null
+            status: OPEN
+        unresolved_points: [Manual usability testing]
+        redactions: []
+        limitations: [AI-generated draft]
+  - schema: deliberation
+    artifact:
+      help_context_packet:
+        help_request_id: HELP-001
+        protocol_version: MADP-v0.3.0-alpha.3
+        usage_mode: MULTI_MODEL
+        current_phase: WAITING_FOR_EXTERNAL_REVIEW
+        current_state_version: 4
+        problem_category: NEXT_ACTION_UNKNOWN
+        problem_description: The user does not know where to paste a response.
+        available_information: [External response exists]
+        excluded_information: [Private discussion]
+        requested_help: [Explain next step]
+        authority_boundary: REFERENCE_ONLY
+  - schema: deliberation
+    artifact:
+      help_response:
+        help_response_id: HR-001
+        protocol_version: MADP-v0.3.0-alpha.3
+        diagnosis: External response is ready for ingestion
+        next_action:
+          actor: USER
+          action: PASTE_RAW_RESPONSE
+          destination: FACILITATOR_CHAT
+        warnings: [Do not rewrite the response]
+        alternatives: [Upload a text file]
+        canonical_state_modified: false
+        decision_authority_used: false
+        execution_authority_used: false
+  - schema: command
+    artifact:
+      command_block:
+        command_id: CMD-001
+        command_version: MADP-COMMAND-v0.2
+        protocol_version: MADP-v0.3.0-alpha.3
+        command: help
+        command_class: HELP_COMMAND
+        issued_by: USER
+        raw_input: "help: next action"
+        parse_status: PARSED
+        validation_status: SCHEMA_VALID
+        authority_status: REFERENCE_ONLY
+        arguments: {question: next action}
+        effects:
+          intended: [Explain workflow]
+          prohibited: [Modify canonical state]
+invalid:
+  - schema: deliberation
+    artifact:
+      deliberation_plan:
+        plan_id: BAD
+        protocol_version: MADP-v0.3.0-alpha.3
+        mode: STANDARD
+        topic: x
+        primary_goal: x
+        central_question: x
+        final_outputs: []
+        success_criteria: []
+        in_scope: []
+        out_of_scope: []
+        goal_gate: REQUIRED
+        goal_status: USER_CONFIRMED
+        decision_authority: USER
+        silence_counts_as_consent: true
+        preserve_material_dissent: false
+        stop_conditions: []
+        authority_boundary: PROPOSE_ONLY
+  - schema: deliberation
+    artifact:
+      plain_relay_packet:
+        packet_id: BAD
+        protocol_version: MADP-v0.3.0-alpha.3
+        target_participant: AI
+        participant_mode: OPINION_ONLY
+        topic: x
+        assigned_role: x
+        context_summary: []
+        questions: []
+        prohibited_inferences: [USER_APPROVAL]
+        requested_response_format: FREE_TEXT
+        return_destination: MAIN
+        authority_boundary: USER_CONFIRMED
+  - schema: deliberation
+    artifact:
+      normalization_record:
+        normalization_id: BAD
+        protocol_version: MADP-v0.3.0-alpha.3
+        source_participant: AI
+        raw_response_ref: raw
+        normalized_by: FAC
+        transformations:
+          - source_text: maybe
+            normalized_statement: approved
+            classification: FACT
+        omitted_as_ambiguous: []
+        added_content: true
+        confirmation_status: USER_CONFIRMED
+        authority_status_added: true
+  - schema: deliberation
+    artifact:
+      help_response:
+        help_response_id: BAD
+        protocol_version: MADP-v0.3.0-alpha.3
+        diagnosis: fixed
+        next_action: {actor: USER, action: none, destination: main}
+        warnings: []
+        alternatives: []
+        canonical_state_modified: true
+        decision_authority_used: true
+        execution_authority_used: false
+  - schema: command
+    artifact:
+      command_block:
+        command_id: BAD
+        command_version: MADP-COMMAND-v0.2
+        protocol_version: MADP-v0.3.0-alpha.3
+        command: unknown-command
+        command_class: AI_COMMAND
+        issued_by: FACILITATOR
+        raw_input: unknown
+        parse_status: PARSED
+        validation_status: SCHEMA_VALID
+        authority_status: USER_CONFIRMED
+        arguments: {}
+        effects: {intended: [], prohibited: []}
