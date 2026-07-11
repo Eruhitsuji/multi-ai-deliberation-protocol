@@ -8,6 +8,8 @@ normative: false
 
 # MADPを使い始める
 
+[English](../en/getting-started.md) | 日本語
+
 MADPは、ユーザーを唯一の最終決定者として維持しながら、複数AIによる熟議を構造化します。
 
 ## 最小の進め方
