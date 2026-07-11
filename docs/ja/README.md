@@ -44,10 +44,12 @@ normative: false
 
 ## バージョン状態
 
-- 公開中: `MADP-v0.3.0-alpha.1`
-- release candidate準備完了・未タグ・未公開: `MADP-v0.3.0-alpha.2`
-- `release_ready: true`
-- tag作成とGitHub Release公開は別操作です。
+- 現在公開中のプレリリース: `MADP-v0.3.0-alpha.2`
+- release tag: `MADP-v0.3.0-alpha.2`
+- release commit: `207e24290e0a66bf0dd34e13f9b3525a42a5a6c9`
+- release準備workflow: `29135177099`（`success`）
+- repository metadata上の公開日時: `UNKNOWN`
+- 以前の公開プレリリース: `MADP-v0.3.0-alpha.1`
 
 ## 規範文書
 
@@ -55,3 +57,4 @@ normative: false
 - [`protocol/GLOSSARY-v0.3.0-alpha.2.md`](../../protocol/GLOSSARY-v0.3.0-alpha.2.md)
 - [`schemas/v0.3.0-alpha.2/`](../../schemas/v0.3.0-alpha.2/)
 - [`registries/v0.3.0-alpha.2/commands.yaml`](../../registries/v0.3.0-alpha.2/commands.yaml)
+- [alpha.2 release notes](../releases/MADP-v0.3.0-alpha.2.md)

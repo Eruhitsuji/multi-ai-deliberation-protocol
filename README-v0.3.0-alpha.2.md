@@ -1,21 +1,24 @@
 # MADP v0.3.0-alpha.2 Prerelease README
 
-> Release candidate status for `MADP-v0.3.0-alpha.2`.
+> Published prerelease status for `MADP-v0.3.0-alpha.2`.
 >
-> This repository state is release-ready, but the tag and GitHub Release have not yet been created.
+> Tag `MADP-v0.3.0-alpha.2` points to release commit `207e24290e0a66bf0dd34e13f9b3525a42a5a6c9`.
 
 ## Status
 
 ```yaml
 protocol_version: MADP-v0.3.0-alpha.2
-implementation_status: RELEASE_CANDIDATE_READY
+implementation_status: PUBLISHED_PRERELEASE
 integration_status: MERGED_TO_MAIN
 release_ready: true
-tagged: false
-published: false
+tagged: true
+published: true
+release_tag: MADP-v0.3.0-alpha.2
+release_commit: 207e24290e0a66bf0dd34e13f9b3525a42a5a6c9
+published_at: UNKNOWN
 ```
 
-`MADP-v0.3.0-alpha.1` remains the currently published alpha until the separately authorized tag and GitHub Release actions complete.
+The publication timestamp remains `UNKNOWN` in repository metadata because the available connector could not independently retrieve the authoritative GitHub Release timestamp. The user confirmed that the release operation completed, and the tag target was independently verified against the expected release commit.
 
 ## What alpha.2 adds
 
@@ -91,7 +94,7 @@ python scripts/generate_alpha2_schema_bundles.py --output-dir tmp/generated-alph
 python scripts/check_release_readiness_v030_alpha2.py
 ```
 
-A passing audit means the repository contents are ready to be tagged from the exact verified main commit. It does not itself create the tag or publish the GitHub Release.
+The release-preparation PR head passed the complete repository validation workflow before merge. The published tag was then verified to resolve exactly to the release merge commit.
 
 ## Release notes
 
@@ -105,6 +108,13 @@ See `docs/releases/MADP-v0.3.0-alpha.2.md`.
 - stale-parent and full state-lineage enforcement remain future hardening work;
 - universal interoperability is not claimed.
 
-## Publication boundary
+## Publication record
 
-Tagging and GitHub Release publication remain separate user-authorized actions. After publication, repository metadata should record the final release commit, tag, publication timestamp, and successful post-publication verification.
+```yaml
+release_tag: MADP-v0.3.0-alpha.2
+release_commit: 207e24290e0a66bf0dd34e13f9b3525a42a5a6c9
+release_preparation_workflow_run: 29135177099
+release_preparation_workflow_result: success
+post_publication_tag_verification: identical
+published_at: UNKNOWN
+```

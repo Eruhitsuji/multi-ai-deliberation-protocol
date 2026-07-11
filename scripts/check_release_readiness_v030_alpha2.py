@@ -9,7 +9,8 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
 VERSION = "MADP-v0.3.0-alpha.2"
-REPOSITORY_STATE = "RELEASE_CANDIDATE_READY"
+REPOSITORY_STATE = "PUBLISHED_PRERELEASE"
+RELEASE_COMMIT = "207e24290e0a66bf0dd34e13f9b3525a42a5a6c9"
 STATUS_PATH = ROOT / "docs" / "planning" / "MADP-v0.3.0-alpha.2-implementation-status.yaml"
 RELEASE_NOTES = ROOT / "docs" / "releases" / "MADP-v0.3.0-alpha.2.md"
 
@@ -78,17 +79,25 @@ def main() -> int:
     status = load_yaml(STATUS_PATH) if STATUS_PATH.is_file() else {}
     expected_status = {
         "protocol_version": VERSION,
-        "implementation_status": "RELEASE_CANDIDATE_READY",
+        "implementation_status": "PUBLISHED_PRERELEASE",
         "integration_status": "MERGED_TO_MAIN",
         "release_ready": True,
-        "tagged": False,
-        "published": False,
+        "tagged": True,
+        "published": True,
+        "release_tag": VERSION,
+        "release_commit": RELEASE_COMMIT,
     }
     for key, expected in expected_status.items():
         passed = status.get(key) == expected
         checks.append({"check": "status_field", "target": key, "passed": passed})
         if not passed:
             errors.append(f"unexpected status field {key}: {status.get(key)!r}")
+
+    published_at = status.get("published_at")
+    published_at_ok = isinstance(published_at, str) and bool(published_at.strip())
+    checks.append({"check": "published_at_recorded", "passed": published_at_ok, "value": published_at})
+    if not published_at_ok:
+        errors.append("published_at must be recorded; UNKNOWN is allowed when the authoritative timestamp is unavailable")
 
     for relative, expected_id in EXPECTED_SCHEMA_IDS.items():
         path = ROOT / relative
@@ -107,33 +116,37 @@ def main() -> int:
         if missing:
             errors.append(f"alpha.2 protocol missing required phrases: {missing}")
 
-    readme = (ROOT / "README-v0.3.0-alpha.2.md").read_text(encoding="utf-8") if (ROOT / "README-v0.3.0-alpha.2.md").is_file() else ""
-    for phrase in ["Release candidate status", "release_ready: true", "tagged: false", "published: false"]:
+    readme_path = ROOT / "README-v0.3.0-alpha.2.md"
+    readme = readme_path.read_text(encoding="utf-8") if readme_path.is_file() else ""
+    for phrase in ["Published prerelease status", "release_ready: true", "tagged: true", "published: true", RELEASE_COMMIT]:
         passed = phrase in readme
         checks.append({"check": "release_readme_phrase", "target": phrase, "passed": passed})
         if not passed:
-            errors.append(f"alpha.2 README missing release phrase: {phrase}")
+            errors.append(f"alpha.2 README missing published phrase: {phrase}")
 
     if RELEASE_NOTES.is_file():
         notes = RELEASE_NOTES.read_text(encoding="utf-8")
-        for phrase in [VERSION, "Highlights", "Validation", "Known limitations"]:
+        for phrase in [VERSION, "Highlights", "Validation", "Known limitations", RELEASE_COMMIT, "Published"]:
             passed = phrase in notes
             checks.append({"check": "release_notes_phrase", "target": phrase, "passed": passed})
             if not passed:
                 errors.append(f"release notes missing phrase: {phrase}")
 
     report = {
-        "report_version": "2",
+        "report_version": "3",
         "protocol_version": VERSION,
-        "repository_state": REPOSITORY_STATE if not errors else "RELEASE_CANDIDATE_INCONSISTENT",
+        "repository_state": REPOSITORY_STATE if not errors else "PUBLISHED_PRERELEASE_INCONSISTENT",
         "release_ready": not errors,
-        "tagged": False,
-        "published": False,
+        "tagged": status.get("tagged"),
+        "published": status.get("published"),
+        "release_tag": status.get("release_tag"),
+        "release_commit": status.get("release_commit"),
+        "published_at": published_at,
         "checks": checks,
         "errors": errors,
         "limitations": [
-            "A passing audit verifies repository publication readiness but does not create a tag or GitHub Release.",
-            "The exact verified main commit must be used as the release tag target after merge.",
+            "This audit verifies repository metadata and release artifacts; it does not independently query the GitHub Releases API.",
+            "The publication timestamp may remain UNKNOWN until an authoritative timestamp is recorded.",
             "The internal apply runtime never performs external actions.",
         ],
     }

@@ -1,11 +1,18 @@
-status_version: "3"
+status_version: "4"
 protocol_version: "MADP-v0.3.0-alpha.2"
-implementation_status: "RELEASE_CANDIDATE_READY"
+implementation_status: "PUBLISHED_PRERELEASE"
 integration_status: "MERGED_TO_MAIN"
-merge_commit: "839f137d315ba067b75e16c8742649885c7f3f83"
+merge_commit: "207e24290e0a66bf0dd34e13f9b3525a42a5a6c9"
 release_ready: true
-tagged: false
-published: false
+tagged: true
+published: true
+release_tag: "MADP-v0.3.0-alpha.2"
+release_commit: "207e24290e0a66bf0dd34e13f9b3525a42a5a6c9"
+published_at: "UNKNOWN"
+publication_basis:
+  - User confirmed that the GitHub release operation completed.
+  - Tag MADP-v0.3.0-alpha.2 resolves exactly to release commit 207e24290e0a66bf0dd34e13f9b3525a42a5a6c9.
+  - The available connector could not independently retrieve the GitHub Release publication timestamp.
 items:
   - todo_id: TODO-CMD-001
     status: DONE
@@ -34,11 +41,7 @@ items:
   - todo_id: TODO-CMD-009
     status: DONE
     completion_basis: Relay mode schema and alpha.1-to-alpha.2 migration fixtures implemented.
-release_requirements:
-  - Final release-preparation CI must pass on the exact PR head.
-  - After merge, the exact verified main commit must be used for the tag.
-  - Tagging and GitHub Release publication remain separately authorized actions.
 limitations:
-  - Release readiness does not itself create a tag or publish a GitHub Release.
+  - MADP-v0.3.0-alpha.2 is an unstable prerelease and may change incompatibly.
   - The alpha.2 apply runtime updates only its explicit internal runtime state model; it does not execute external actions.
-  - Post-publication metadata must record the final release commit, tag, and publication timestamp.
+  - published_at remains UNKNOWN until an authoritative GitHub Release timestamp is recorded.

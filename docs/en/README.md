@@ -43,10 +43,12 @@ English | [日本語](../ja/README.md)
 
 ## Version status
 
-- Published: `MADP-v0.3.0-alpha.1`
-- Release candidate ready, not yet tagged or published: `MADP-v0.3.0-alpha.2`
-- `release_ready: true`
-- Tagging and GitHub Release publication remain separate actions.
+- Current published prerelease: `MADP-v0.3.0-alpha.2`
+- Release tag: `MADP-v0.3.0-alpha.2`
+- Release commit: `207e24290e0a66bf0dd34e13f9b3525a42a5a6c9`
+- Release-preparation workflow: `29135177099` (`success`)
+- Publication timestamp in repository metadata: `UNKNOWN`
+- Previous published prerelease: `MADP-v0.3.0-alpha.1`
 
 ## Normative sources
 
@@ -54,3 +56,4 @@ English | [日本語](../ja/README.md)
 - [`protocol/GLOSSARY-v0.3.0-alpha.2.md`](../../protocol/GLOSSARY-v0.3.0-alpha.2.md)
 - [`schemas/v0.3.0-alpha.2/`](../../schemas/v0.3.0-alpha.2/)
 - [`registries/v0.3.0-alpha.2/commands.yaml`](../../registries/v0.3.0-alpha.2/commands.yaml)
+- [Alpha.2 release notes](../releases/MADP-v0.3.0-alpha.2.md)
