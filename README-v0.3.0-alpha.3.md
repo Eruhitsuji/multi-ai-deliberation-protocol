@@ -18,6 +18,15 @@ Alpha.3 extends the published alpha.2 core. It is an **additive compatible layer
 - ChatGPT and Claude distributions contain the same five Agent Skills;
 - translation audit is explicitly a freshness/marker audit, not semantic-equivalence proof.
 
+## Bootstrap order
+
+Alpha.3 use has two separate phases:
+
+1. run `bootstrap/alpha3/load-protocol-from-github.md` against one immutable commit and obtain a `COMPLETE` `PROTOCOL_LOAD_REPORT`;
+2. apply `bootstrap/alpha3/quick-start.md` or `bootstrap/alpha3/verified-start.md`.
+
+Start profiles do not load the protocol. When the load report is missing or incomplete, they must fail closed with `PROTOCOL_NOT_LOADED` instead of inferring unread rules.
+
 ## Normative source order
 
 1. higher-priority user and platform rules;
