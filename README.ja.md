@@ -2,9 +2,11 @@
 
 [English](README.md) | 日本語
 
-> 現在公開中のプレリリース: **MADP-v0.3.0-alpha.1**
+> 現在公開中のプレリリース: **MADP-v0.3.0-alpha.2**
 >
-> release candidate準備完了: **MADP-v0.3.0-alpha.2**（未タグ・未公開）
+> release tag: `MADP-v0.3.0-alpha.2`
+>
+> release commit: `207e24290e0a66bf0dd34e13f9b3525a42a5a6c9`
 
 MADPは、複数のAI、役割分離されたAIインスタンス、人間の検証者、実行エージェントによる熟議を、構造化して安全に進めるためのサービス非依存プロトコルです。最終決定者は常にユーザーです。
 
@@ -28,13 +30,20 @@ MADPは、複数のAI、役割分離されたAIインスタンス、人間の検
 ## 現在の状態
 
 ```yaml
-current_published_prerelease: MADP-v0.3.0-alpha.1
-release_candidate: MADP-v0.3.0-alpha.2
+current_published_prerelease: MADP-v0.3.0-alpha.2
+release_tag: MADP-v0.3.0-alpha.2
+release_commit: 207e24290e0a66bf0dd34e13f9b3525a42a5a6c9
+release_preparation_workflow_run: 29135177099
+release_preparation_workflow_result: success
 alpha2_merged_to_main: true
 alpha2_release_ready: true
-alpha2_tagged: false
-alpha2_published: false
+alpha2_tagged: true
+alpha2_published: true
+published_at: UNKNOWN
+previous_published_prerelease: MADP-v0.3.0-alpha.1
 ```
+
+公開日時は、利用可能なconnectorからGitHub Release APIのauthoritative timestampを取得できなかったため、推測せず`UNKNOWN`として記録しています。tagとrelease commitが完全一致することは確認済みです。
 
 ## 日本語ガイド
 
@@ -63,7 +72,7 @@ alpha2_published: false
 - [TODO lifecycle](docs/ja/todo-lifecycle.md)
 - [レビューワークフロー](docs/ja/review-workflow.md)
 
-## release候補資料
+## release資料
 
 - [alpha.2 prerelease README](README-v0.3.0-alpha.2.md)
 - [alpha.2 release notes](docs/releases/MADP-v0.3.0-alpha.2.md)
