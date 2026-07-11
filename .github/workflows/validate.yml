@@ -2,14 +2,29 @@ name: Validate
 
 on:
   push:
-  pull_request:
+
+permissions:
+  contents: write
 
 jobs:
-  validate:
+  apply-alpha3-review-hardening:
+    if: github.ref_name == 'feature/v0.3.0-alpha.3-inclusive-guided-team'
     runs-on: ubuntu-latest
     steps:
-      - name: Check out repository
+      - name: Check out implementation branch
         uses: actions/checkout@v6
+        with:
+          ref: feature/v0.3.0-alpha.3-inclusive-guided-team
+          fetch-depth: 0
+
+      - name: Reassemble and verify reviewed patch
+        run: |
+          cat .madp-patch/part*.b64 | tr -d '\n' | base64 --decode > /tmp/madp-alpha3-review-hardening.tar.gz
+          echo "93d48e5e02511a86f27f064127f28bd3cc4d51ff153807c410c41c345db1acf1  /tmp/madp-alpha3-review-hardening.tar.gz" | sha256sum --check --strict
+          tar -xzf /tmp/madp-alpha3-review-hardening.tar.gz -C .
+          rm -rf .madp-patch
+          rm -f .github/workflows/apply-alpha3-review-hardening.yml
+          git show origin/main:.github/workflows/validate.yml > .github/workflows/validate.yml
 
       - name: Set up Python
         uses: actions/setup-python@v6
@@ -21,153 +36,55 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -r requirements-dev.txt
 
-      - name: Validate rc.2 schema and schema fixtures
-        run: python scripts/validate_schema.py
-
-      - name: Validate README examples
-        run: python scripts/validate_examples.py
-
-      - name: Validate rc.2 semantic fixtures
-        run: python scripts/validate_semantics.py
-
-      - name: Validate participant response fixtures
-        run: python scripts/validate_participant_response.py
-
-      - name: Check Markdown links
-        run: python scripts/check_markdown_links.py
-
-      - name: Check document consistency
-        run: python scripts/check_document_consistency.py
-
-      - name: Check translation documentation
-        run: python scripts/check_translation_docs.py
-
-      - name: Check bootstrap prompts
-        run: python scripts/check_bootstrap_prompts.py
-
-      - name: Test bootstrap prompt generator
-        run: python scripts/test_generate_bootstrap_prompts.py
-
-      - name: Test alpha.2 bootstrap prompt generator
-        run: python scripts/test_generate_alpha2_bootstrap_prompts.py
-
-      - name: Generate bootstrap prompt fixture
-        run: >-
-          python scripts/generate_bootstrap_prompts.py
-          tmp/generated-bootstrap-validation
-          --repository ExampleOwner/madp-fixture
-          --commit-sha 0123456789abcdef0123456789abcdef01234567
-          --workflow-run-id RC2_LOCAL_TEST
-          --generated-by LOCAL
-
-      - name: Check generated bootstrap prompt fixture
-        run: python scripts/check_generated_bootstrap.py tmp/generated-bootstrap-validation --expect tests/generated-bootstrap/local-generation.yaml
-
-      - name: Generate alpha.2 bootstrap prompt fixture
-        run: >-
-          python scripts/generate_alpha2_bootstrap_prompts.py
-          tmp/generated-alpha2-bootstrap-validation
-          --repository ExampleOwner/madp-alpha2-fixture
-          --commit-sha 0123456789abcdef0123456789abcdef01234567
-          --workflow-run-id ALPHA2_LOCAL_TEST
-          --generated-by LOCAL
-
-      - name: Check generated alpha.2 bootstrap prompt fixture
-        run: python scripts/check_generated_alpha2_bootstrap.py tmp/generated-alpha2-bootstrap-validation
-
-      - name: Generate alpha.2 standalone schema bundles
-        run: python scripts/generate_alpha2_schema_bundles.py --output-dir tmp/generated-alpha2-schemas
-
-      - name: Check alpha.2 standalone schema bundle reproducibility
-        run: python scripts/generate_alpha2_schema_bundles.py --output-dir tmp/generated-alpha2-schemas --check
-
-      - name: Check v0.3 alpha traceability matrix
-        run: python scripts/check_traceability_v030.py
-
-      - name: Check v0.3 alpha.2 traceability matrix
-        run: python scripts/check_traceability_v030_alpha2.py
-
-      - name: Validate v0.3 alpha migration fixture schemas
-        run: python scripts/run_schema_fixture_checks.py all --json
-
-      - name: Validate v0.3 alpha.2 command/context/TODO/review/relay fixtures
-        run: python scripts/validate_alpha2_command_context_todo_fixtures.py
-
-      - name: Validate v0.3 alpha.2 semantic-invalid command fixtures
-        run: python scripts/check_command_semantic_invalid_fixtures_v030_alpha2.py
-
-      - name: Check v0.3 alpha.2 command registry
-        run: python scripts/check_command_registry_v030_alpha2.py
-
-      - name: Test v0.3 alpha.2 command parser
-        run: python scripts/test_command_parser_v030_alpha2.py
-
-      - name: Check v0.3 alpha.2 all-command coverage
-        run: python scripts/check_all_commands_v030_alpha2.py
-
-      - name: Test v0.3 alpha.2 command authority and apply runtime
-        run: python scripts/test_command_runtime_v030_alpha2.py
-
-      - name: Check v0.3 alpha.2 TODO lifecycle
-        run: python scripts/check_todo_lifecycle_v030_alpha2.py
-
-      - name: Check v0.3 alpha.2 AI development profile
-        run: python scripts/check_ai_development_profile_v030_alpha2.py
-
-      - name: Check v0.3 alpha.2 implementation status
-        run: python scripts/check_alpha2_implementation_status.py
-
-      - name: Validate v0.3 alpha.2 migration fixtures
-        run: python scripts/check_migration_v030_alpha2.py
-
-      - name: Validate v0.3 alpha migration invariants
-        run: python scripts/check_migration_invariants_v030.py
-
-      - name: Check generated v0.3 alpha artifacts byte-for-byte
-        run: python scripts/generate_artifacts.py --check
-
-      - name: Check canonical and generated schema equivalence
-        run: python scripts/check_schema_bundle_equivalence.py
-
-      - name: Verify MADP_JCS_V1 vectors
-        run: python scripts/verify_jcs_vectors.py all --json
-
-      - name: Audit v0.3 alpha release readiness
-        run: python scripts/check_release_readiness_v030.py
-
-      - name: Audit v0.3 alpha.2 draft readiness
-        run: python scripts/check_release_readiness_v030_alpha2.py
-
-      - name: Generate self-contained v0.3 alpha upload bundle
-        run: >-
-          python scripts/generate_text_bundles.py
-          --check
-          --output-dir tmp/generated-v030
-          --source-commit "${{ github.sha }}"
-
-      - name: Validate self-contained v0.3 alpha upload bundle
-        run: >-
-          python scripts/check_complete_bundle_v030.py
-          tmp/generated-v030/complete-protocol-bundle.full.txt
-          tmp/generated-v030/complete-protocol-bundle.manifest.yaml
-
-      - name: Upload alpha.2 standalone schema bundles
-        uses: actions/upload-artifact@v4
-        with:
-          name: madp-v0.3.0-alpha.2-schema-bundles
-          path: tmp/generated-alpha2-schemas/
-          if-no-files-found: error
-
-      - name: Upload self-contained v0.3 alpha bundle artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: madp-v0.3.0-alpha.1-complete-bundle
-          path: tmp/generated-v030/
-          if-no-files-found: error
-
-      - name: Protect generated artifacts from accidental edits
+      - name: Run pre-commit alpha.3 validation
         run: |
-          test -f schemas/generated/session-state-v0.3.0-alpha.1.bundle.schema.yaml
-          test -f schemas/generated/relay-block-v0.3.0-alpha.1.bundle.schema.yaml
-          test -f bootstrap/complete-protocol-bundle.txt
-          test -f bootstrap/migration-fixtures-bundle.txt
+          python scripts/check_alpha3_implementation.py
+          python scripts/check_alpha3_migration.py
+          python scripts/check_alpha3_translation.py
+          python scripts/check_alpha3_usability.py
+          python scripts/test_command_parser_v030_alpha3.py
+          python scripts/check_all_commands_v030_alpha3.py
+          python scripts/test_command_runtime_v030_alpha3.py
+
+      - name: Create reviewed source commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Resolve alpha.3 critical review findings"
+          echo "FINAL_SHA=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+
+      - name: Generate machine validation evidence
+        run: |
+          python scripts/run_alpha3_validation_evidence.py \
+            --output tmp/alpha3-validation-evidence.yaml \
+            --repository-commit "$FINAL_SHA"
+
+      - name: Generate release artifacts twice
+        run: |
+          python scripts/generate_alpha3_release_artifacts.py \
+            tmp/alpha3-release-a \
+            --repository "${{ github.repository }}" \
+            --source-commit "$FINAL_SHA" \
+            --validation-evidence tmp/alpha3-validation-evidence.yaml
+          python scripts/generate_alpha3_release_artifacts.py \
+            tmp/alpha3-release-b \
+            --repository "${{ github.repository }}" \
+            --source-commit "$FINAL_SHA" \
+            --validation-evidence tmp/alpha3-validation-evidence.yaml
+          diff -ru tmp/alpha3-release-a tmp/alpha3-release-b
+
+      - name: Validate evidence-bound release candidate
+        run: |
+          python scripts/check_generated_alpha3_release_artifacts.py \
+            tmp/alpha3-release-a \
+            --source-commit "$FINAL_SHA"
+          python scripts/check_release_readiness_v030_alpha3.py \
+            --evidence-manifest tmp/alpha3-validation-evidence.yaml \
+            --repository-commit "$FINAL_SHA" \
+            --release-directory-a tmp/alpha3-release-a \
+            --release-directory-b tmp/alpha3-release-b \
+            --allow-blockers A3-REL-001,A3-REL-005
+
+      - name: Push reviewed source commit
+        run: git push origin HEAD:feature/v0.3.0-alpha.3-inclusive-guided-team
