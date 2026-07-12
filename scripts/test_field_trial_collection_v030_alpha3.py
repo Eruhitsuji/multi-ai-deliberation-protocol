@@ -25,6 +25,13 @@ def run(*args: str) -> subprocess.CompletedProcess[str]:
     )
 
 
+def write_yaml(path: Path, value: dict) -> None:
+    path.write_text(
+        yaml.safe_dump(value, sort_keys=False, allow_unicode=True),
+        encoding="utf-8",
+    )
+
+
 def scenario_rows(observation_id: str) -> list[dict]:
     ids = [
         "USAB-QUICK-001",
@@ -56,6 +63,18 @@ def scenario_rows(observation_id: str) -> list[dict]:
     ]
 
 
+def expect_check_failure(
+    package: dict,
+    name: str,
+    expected: str,
+) -> None:
+    path = WORK / f"{name}.yaml"
+    write_yaml(path, package)
+    process = run("check", "--package", str(path), "--require-ready")
+    assert process.returncode != 0, process.stdout
+    assert expected in process.stderr, process.stderr
+
+
 def main() -> int:
     raw_existed = RAW.exists()
     raw_original = RAW.read_bytes() if raw_existed else None
@@ -72,12 +91,9 @@ def main() -> int:
         source_run = source_manual["run_evidence"][0]
 
         report_path = WORK / "load-report.yaml"
-        report_path.write_text(
-            yaml.safe_dump(
-                {"PROTOCOL_LOAD_REPORT": source_run["protocol_load_report"]},
-                sort_keys=False,
-            ),
-            encoding="utf-8",
+        write_yaml(
+            report_path,
+            {"PROTOCOL_LOAD_REPORT": source_run["protocol_load_report"]},
         )
         observation_source = WORK / "primary-chat.md"
         observation_source.write_text(
@@ -113,10 +129,8 @@ def main() -> int:
             "scenario_results": scenario_rows("OBS-PRIMARY"),
         }
         config_path = WORK / "collection-config.yaml"
-        config_path.write_text(
-            yaml.safe_dump(config, sort_keys=False),
-            encoding="utf-8",
-        )
+        write_yaml(config_path, config)
+
         package_path = WORK / "package.yaml"
         prepared = run(
             "prepare",
@@ -182,14 +196,82 @@ def main() -> int:
         assert "observation hash mismatch" in tampered.stderr
         observation_path.write_bytes(original_observation)
 
+        receipt_tampered = copy.deepcopy(package)
+        receipt_tampered["validation_receipts"][0]["VALIDATION_RECEIPT"][
+            "artifact_ref"
+        ]["artifact_sha256"] = "0" * 64
+        expect_check_failure(
+            receipt_tampered,
+            "receipt-tampered-package",
+            "artifact hash mismatch",
+        )
+
+        binding_tampered = copy.deepcopy(package)
+        binding_tampered["run_evidence"]["start_profile_binding"][
+            "content_sha256"
+        ] = "0" * 64
+        expect_check_failure(
+            binding_tampered,
+            "binding-tampered-package",
+            "start profile binding hash mismatch",
+        )
+
+        run_ref_tampered = copy.deepcopy(package)
+        run_ref_tampered["scenario_results"][0]["run_id"] = "OTHER-RUN"
+        expect_check_failure(
+            run_ref_tampered,
+            "run-ref-tampered-package",
+            "scenario run_id mismatch",
+        )
+
+        duplicate_destination_config = copy.deepcopy(config)
+        duplicate_destination_config["run"]["run_id"] = "COLLECTOR-RUN-DEST"
+        duplicate_destination_config["observations"].append(
+            {
+                "observation_id": "OBS-SECOND",
+                "kind": "OTHER",
+                "source_file": str(observation_source),
+                "destination_name": "primary-chat.md",
+            }
+        )
+        duplicate_destination_path = WORK / "duplicate-destination-config.yaml"
+        write_yaml(duplicate_destination_path, duplicate_destination_config)
+        duplicate_destination_package = WORK / "duplicate-destination-package.yaml"
+        duplicate_destination = run(
+            "prepare",
+            "--config",
+            str(duplicate_destination_path),
+            "--output",
+            str(duplicate_destination_package),
+        )
+        assert duplicate_destination.returncode != 0
+        assert "duplicate observation destination" in duplicate_destination.stderr
+
+        signed_base = yaml.safe_load(BASE_RESULTS.read_text(encoding="utf-8"))
+        signed_base["manual_trials"]["status"] = "PASS"
+        signed_base["manual_trials"]["sign_off"] = {
+            "approved_by": ["HUMAN-REVIEWER"],
+            "approved_at": "2026-07-12T00:00:00Z",
+        }
+        signed_base_path = WORK / "signed-base.yaml"
+        write_yaml(signed_base_path, signed_base)
+        signed_merge = run(
+            "merge",
+            "--base-results",
+            str(signed_base_path),
+            "--package",
+            str(package_path),
+            "--output",
+            str(WORK / "signed-merge.yaml"),
+        )
+        assert signed_merge.returncode != 0
+        assert "signed or PASS" in signed_merge.stderr
+
         draft_config = copy.deepcopy(config)
         draft_config["run"]["run_id"] = "COLLECTOR-RUN-DRAFT"
         draft_config["scenario_results"] = []
         draft_path = WORK / "draft-config.yaml"
-        draft_path.write_text(
-            yaml.safe_dump(draft_config, sort_keys=False),
-            encoding="utf-8",
-        )
+        write_yaml(draft_path, draft_config)
         draft_package = WORK / "draft-package.yaml"
         draft = run(
             "prepare",
