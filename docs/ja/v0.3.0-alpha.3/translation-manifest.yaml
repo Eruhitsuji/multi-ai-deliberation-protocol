@@ -182,8 +182,10 @@ entries:
 - source: docs/profiles/FIELD_TRIAL_COLLECTION-v0.3.0-alpha.3.md
   translation: docs/ja/v0.3.0-alpha.3/field-trial-collection.md
   status: COMPLETE
-  source_git_blob_sha1: 75ef74df1a6c693daf4f0c594ad4918e21b82555
+  source_git_blob_sha1: 9a4644bf4312a3c5eafcbec1b1525bed515eb6c8
   required_markers:
   - MADP-FIELD-TRIAL-COLLECTION-v1
   - DRAFT
   - READY
+  - evidence chain
+  - sign-off
