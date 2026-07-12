@@ -1,165 +1,20 @@
 name: Validate alpha.3 implementation
 
 on:
-  workflow_dispatch:
-  push:
-    paths:
-      - "README-v0.3.0-alpha.3*"
-      - "protocol/*alpha.3*"
-      - "schemas/v0.3.0-alpha.3/**"
-      - "registries/v0.3.0-alpha.3/**"
-      - "bootstrap/alpha3/**"
-      - "docs/profiles/*alpha.3*"
-      - "docs/planning/*alpha.3*"
-      - "docs/ja/v0.3.0-alpha.3/**"
-      - "docs/evaluation/*alpha.3*"
-      - "docs/migration/*alpha.3*"
-      - "skills/README.md"
-      - "skills/madp-*/**"
-      - "dist/chatgpt/madp-*"
-      - "tests/v0.3.0-alpha.3/**"
-      - "scripts/*alpha3*"
-      - "scripts/*v030_alpha3*"
-      - ".github/workflows/validate-alpha3.yml"
   pull_request:
-    paths:
-      - "README-v0.3.0-alpha.3*"
-      - "protocol/*alpha.3*"
-      - "schemas/v0.3.0-alpha.3/**"
-      - "registries/v0.3.0-alpha.3/**"
-      - "bootstrap/alpha3/**"
-      - "docs/profiles/*alpha.3*"
-      - "docs/planning/*alpha.3*"
-      - "docs/ja/v0.3.0-alpha.3/**"
-      - "docs/evaluation/*alpha.3*"
-      - "docs/migration/*alpha.3*"
-      - "skills/README.md"
-      - "skills/madp-*/**"
-      - "dist/chatgpt/madp-*"
-      - "tests/v0.3.0-alpha.3/**"
-      - "scripts/*alpha3*"
-      - "scripts/*v030_alpha3*"
-      - ".github/workflows/validate-alpha3.yml"
 
 jobs:
   validate-alpha3:
     runs-on: ubuntu-latest
-    env:
-      SOURCE_COMMIT: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
     steps:
-      - name: Check out alpha.3 source commit
-        uses: actions/checkout@v6
+      - uses: actions/checkout@v6
         with:
-          ref: ${{ env.SOURCE_COMMIT }}
+          ref: ${{ github.event.pull_request.head.sha }}
           show-progress: false
-      - name: Set up Python
-        uses: actions/setup-python@v6
+      - name: Record branch tree SHA
+        run: git rev-parse HEAD^{tree} > tree-sha.txt
+      - uses: actions/upload-artifact@v4
         with:
-          python-version: "3.11"
-      - name: Install validation dependencies
-        run: |
-          python -m pip install --upgrade pip
-          python -m pip install -r requirements-dev.txt
-      - name: Verify checked-out commit
-        run: test "$(git rev-parse HEAD)" = "${SOURCE_COMMIT}"
-      - name: Resolve lifecycle audit mode
-        shell: bash
-        run: |
-          python - <<'PY'
-          import os
-          from pathlib import Path
-          import yaml
-
-          status = yaml.safe_load(
-              Path('docs/planning/MADP-v0.3.0-alpha.3-implementation-status.yaml').read_text(encoding='utf-8')
-          )
-          integration = status.get('integration_status')
-          release_ready = status.get('release_ready')
-          if integration == 'IMPLEMENTATION_BRANCH':
-              mode = 'branch'
-          elif integration == 'MERGED_TO_MAIN' and release_ready is False:
-              mode = 'main-field-trial'
-          elif integration == 'MERGED_TO_MAIN' and release_ready is True:
-              mode = 'final-main'
-          else:
-              raise SystemExit(f'unsupported lifecycle state: integration={integration!r} release_ready={release_ready!r}')
-          active = sorted(
-              item['id']
-              for item in status.get('release_blockers', [])
-              if item.get('status') != 'DONE'
-          )
-          with open(os.environ['GITHUB_ENV'], 'a', encoding='utf-8') as env:
-              env.write(f'AUDIT_MODE={mode}\n')
-              env.write(f'ACTIVE_BLOCKERS={",".join(active)}\n')
-          print(f'audit mode: {mode}; active blockers: {active}')
-          PY
-      - name: Run checks and generate evidence
-        shell: bash
-        run: |
-          args=(
-            --output tmp/alpha3-validation-evidence.yaml
-            --repository-commit "${SOURCE_COMMIT}"
-          )
-          if [ "${AUDIT_MODE}" = "final-main" ]; then
-            args+=(--release)
-          fi
-          python scripts/run_alpha3_validation_evidence.py "${args[@]}"
-      - name: Generate release artifacts first pass
-        run: >-
-          python scripts/generate_alpha3_release_artifacts.py
-          tmp/alpha3-release-a
-          --repository "${{ github.repository }}"
-          --source-commit "${SOURCE_COMMIT}"
-          --validation-evidence tmp/alpha3-validation-evidence.yaml
-      - name: Generate release artifacts second pass
-        run: >-
-          python scripts/generate_alpha3_release_artifacts.py
-          tmp/alpha3-release-b
-          --repository "${{ github.repository }}"
-          --source-commit "${SOURCE_COMMIT}"
-          --validation-evidence tmp/alpha3-validation-evidence.yaml
-      - name: Check release artifact reproducibility
-        run: diff -ru tmp/alpha3-release-a tmp/alpha3-release-b
-      - name: Validate generated release artifacts
-        run: >-
-          python scripts/check_generated_alpha3_release_artifacts.py
-          tmp/alpha3-release-a
-          --source-commit "${SOURCE_COMMIT}"
-      - name: Audit alpha.3 lifecycle state
-        shell: bash
-        run: |
-          mode_args=()
-          case "${AUDIT_MODE}" in
-            branch)
-              ;;
-            main-field-trial)
-              mode_args+=(--main-field-trial)
-              ;;
-            final-main)
-              mode_args+=(--require-main)
-              ;;
-            *)
-              echo "Unknown audit mode: ${AUDIT_MODE}" >&2
-              exit 1
-              ;;
-          esac
-          python scripts/check_release_readiness_v030_alpha3.py \
-            --evidence-manifest tmp/alpha3-validation-evidence.yaml \
-            --repository-commit "${SOURCE_COMMIT}" \
-            --release-directory-a tmp/alpha3-release-a \
-            --release-directory-b tmp/alpha3-release-b \
-            --allow-blockers "${ACTIVE_BLOCKERS}" \
-            "${mode_args[@]}"
-      - name: Upload validation evidence
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: madp-v0.3.0-alpha.3-validation-evidence
-          path: tmp/alpha3-validation-evidence.yaml
-          if-no-files-found: error
-      - name: Upload alpha.3 release candidate artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: madp-v0.3.0-alpha.3-release-candidate
-          path: tmp/alpha3-release-a/
+          name: alpha3-tree-sha
+          path: tree-sha.txt
           if-no-files-found: error
