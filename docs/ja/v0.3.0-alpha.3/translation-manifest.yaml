@@ -10,28 +10,32 @@ limitations:
 - Required markers detect selected omissions but do not prove complete or semantically
   equivalent translation.
 - Human bilingual review is recommended before stable release.
+- New optional advanced profiles are not yet included in the Japanese translation
+  coverage set.
 entries:
 - source: README-v0.3.0-alpha.3.md
   translation: README-v0.3.0-alpha.3.ja.md
   status: COMPLETE
-  source_git_blob_sha1: 20aeac02d45cf3566c1e97c0fbd3b05a1eb7cfdc
+  source_git_blob_sha1: 9ab93c3650c0269520772809ef5f93ee5b40d770
   required_markers:
   - alpha.3
   - 互換
 - source: protocol/MADP-v0.3.0-alpha.3.md
   translation: docs/ja/v0.3.0-alpha.3/protocol.md
   status: COMPLETE
-  source_git_blob_sha1: 197d674c853d31a66df05615aafda656994c8d3a
+  source_git_blob_sha1: f844ccd800dd6095ffe456acb3e9ed208ee16eeb
   required_markers:
-  - status
+  - session-start
   - revision
+  - VALIDATION_RECEIPT
 - source: protocol/GLOSSARY-v0.3.0-alpha.3.md
   translation: docs/ja/v0.3.0-alpha.3/glossary.md
   status: COMPLETE
-  source_git_blob_sha1: e2631705286cbf5b97691fee4fdab7eff17456c1
+  source_git_blob_sha1: d9cabcff9c8a5e72a3347c7ee4201ad9a74cb133
   required_markers:
   - Revision
   - Capability
+  - Validation Receipt
 - source: docs/profiles/COMMAND_SYSTEM-v0.3.0-alpha.3.md
   translation: docs/ja/v0.3.0-alpha.3/command-system.md
   status: COMPLETE
