@@ -84,7 +84,12 @@ requirements:
     title: Formal field-trial release evidence is independently recomputed from report, receipts, repository files, schemas, start profile, and raw observation
     status: IMPLEMENTED
     artifact: scripts/check_alpha3_usability.py
-    validation: scripts/check_alpha3_hardening.py
+    validation: scripts/test_alpha3_usability_release_evidence.py
+  - id: A3-REVIEW-TAMPER-001
+    title: Release-path evidence testing accepts a complete receipt chain and rejects raw-observation hash tampering
+    status: IMPLEMENTED
+    artifact: scripts/test_alpha3_usability_release_evidence.py
+    validation: scripts/test_alpha3_usability_release_evidence.py
   - id: A3-REVIEW-ADVANCED-001
     title: Optional advanced profiles remain non-authority-expanding and schema-backed
     status: IMPLEMENTED
