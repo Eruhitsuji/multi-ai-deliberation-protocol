@@ -6,7 +6,7 @@ alpha.3はalpha.2を置換せず、互換supersetとして拡張します。alph
 
 artifactはsession ID、source state version、artifact revisionへbindされます。`goal-confirm`はplan statusだけを変更し、実質的transitionの前に別の正確な`session-start`が必要です。
 
-protocol-load report、command registry、validation receipt、advanced-profile artifactには専用schemaがあります。release readinessは手書きの`DONE`や自由文の`VALID`ではなく、report、repository target、schema、start profile、raw observationのhashを独立再計算できるmachine-generated evidenceとreceipt chainを要求します。
+protocol-load report、command registry、validation receipt、field-trial evidence、collection package、advanced-profile artifactには専用schemaがあります。release readinessは手書きの`DONE`や自由文の`VALID`ではなく、report、repository target、schema、start profile、raw observationのhashを独立再計算できるmachine-generated evidenceとreceipt chainを要求します。
 
 ## Bootstrapの順序
 
@@ -20,6 +20,10 @@ start profileはprotocolを読み込みません。load reportが存在しない
 ## 任意のadvanced profile
 
 source/participant independence、blind first-round review、生成AI governance、AI開発task contract、communication alignment、assurance mode、opinion mapping、dissent lifecycle、session retention/recoveryの任意profileを提供します。これらはcore authorityやrelease gateを弱めません。
+
+## Field-trial collection
+
+正式なtrial evidenceは`MADP-FIELD-TRIAL-EVIDENCE-v2`を使用し、loader provenance、receipt、profile binding、raw observationをrunごとに1回保存します。`docs/evaluation/MADP-v0.3.0-alpha.3-field-trial-collection-config.yaml`と`scripts/collect_field_trial_evidence_v030_alpha3.py`を使い、observationのcopyとhash計算を行い、`DRAFT`または`READY`のrun packageを作成します。collectorはmetricsを再計算しますが、sign-offやrelease state変更を行いません。
 
 現在は実用を通じてA3-REL-001のusability evidenceを収集中です。問題を報告する場合は、使用commit、client、scenario、期待動作、実動作、回復回数、不要pause、authority error、raw observation hashを記録してください。alpha.2はfield-trial sign-offとfinal-main auditが完了するまで現在の公開bootstrapです。
 
