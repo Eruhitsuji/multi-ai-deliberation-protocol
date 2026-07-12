@@ -1,7 +1,17 @@
 protocol_version: MADP-v0.3.0-alpha.3
-results_version: 5
+results_version: 6
+automated_walkthrough:
+  status: PASS
+  scenario_count: 8
+  checks:
+    all_scenarios_have_success_condition: PASS
+    all_scenarios_map_required_features: PASS
+    next_action_coverage: PASS
+    authority_invariant_coverage: PASS
+    alpha2_command_compatibility_coverage: PASS
 manual_trials:
   status: IN_PROGRESS
+  field_trial_evidence_version: MADP-FIELD-TRIAL-EVIDENCE-v2
   protocol_load_report_required: true
   required_load_report_version: MADP-PROTOCOL-LOAD-REPORT-v2
   required_load_profile: FIELD_TRIAL
@@ -13,6 +23,7 @@ manual_trials:
       client: <client>
       displayed_model_label: <model>
       reasoning_mode: <mode>
+      tool_notes: ""
   validation_receipts:
     - VALIDATION_RECEIPT:
         receipt_id: VAL-REGISTRY-A2
@@ -57,12 +68,12 @@ manual_trials:
         errors: []
         limitations: []
     - VALIDATION_RECEIPT:
-        receipt_id: VAL-TRIAL-001-REPORT
+        receipt_id: VAL-RUN-001-REPORT
         protocol_version: MADP-v0.3.0-alpha.3
         artifact_ref:
           artifact_type: PROTOCOL_LOAD_REPORT
           artifact_id: PLR-001
-          artifact_locator: trial://TRIAL-001/protocol-load-report
+          artifact_locator: trial://RUN-001/protocol-load-report
           artifact_revision: 1
           canonicalization: MADP_CANONICAL_JSON_V1
           artifact_sha256: <sha256>
@@ -77,11 +88,10 @@ manual_trials:
         result: PASS
         errors: []
         limitations: []
-  scenario_results:
-    - trial_id: TRIAL-001
+  run_evidence:
+    - run_id: RUN-001
       participant_id: MODEL-001
       run_index: 1
-      scenario_id: USAB-QUICK-001
       tested_commit: <40-character-commit>
       protocol_load_report:
         report_version: MADP-PROTOCOL-LOAD-REPORT-v2
@@ -112,43 +122,20 @@ manual_trials:
         schemas_executed:
           - schemas/v0.3.0-alpha.2/command-registry.schema.yaml
           - schemas/v0.3.0-alpha.3/command-registry.schema.yaml
-        schema_validation_records:
-          - target_ref: repo://registries/v0.3.0-alpha.2/commands.yaml
-            target_sha256: <sha256>
-            artifact_type: COMMAND_REGISTRY
-            artifact_id: COMMANDS-A2
-            artifact_version: MADP-COMMAND-REGISTRY-v0.1
-            schema_path: schemas/v0.3.0-alpha.2/command-registry.schema.yaml
-            schema_sha256: <sha256>
-            receipt_ref: VAL-REGISTRY-A2
-            result: PASS
-          - target_ref: repo://registries/v0.3.0-alpha.3/commands.yaml
-            target_sha256: <sha256>
-            artifact_type: COMMAND_REGISTRY
-            artifact_id: COMMANDS-A3
-            artifact_version: MADP-COMMAND-REGISTRY-v0.2
-            schema_path: schemas/v0.3.0-alpha.3/command-registry.schema.yaml
-            schema_sha256: <sha256>
-            receipt_ref: VAL-REGISTRY-A3
-            result: PASS
+        schema_validation_records: []
         unvalidated_structured_sources: []
         inferred_unread_content: false
         provenance_level: HASH_VERIFIED
-        authorized_start_profiles:
-          - path: bootstrap/alpha3/quick-start.md
-            repository: Eruhitsuji/multi-ai-deliberation-protocol
-            repository_commit: <40-character-commit>
-            source_ref: <commit-pinned-reference>
-            content_sha256: <sha256>
+        authorized_start_profiles: []
         validation_receipt_refs:
           - VAL-REGISTRY-A2
           - VAL-REGISTRY-A3
-          - VAL-TRIAL-001-REPORT
+          - VAL-RUN-001-REPORT
         limitations: []
         next_action:
           command: APPLY_START_PROFILE
           accepted_input: bootstrap/alpha3/quick-start.md
-      protocol_load_report_receipt_id: VAL-TRIAL-001-REPORT
+      protocol_load_report_receipt_id: VAL-RUN-001-REPORT
       start_profile_binding:
         repository: Eruhitsuji/multi-ai-deliberation-protocol
         repository_commit: <40-character-commit>
@@ -156,8 +143,21 @@ manual_trials:
         source_ref: <commit-pinned-reference>
         source_inventory_digest: <sha256>
         content_sha256: <sha256>
-      raw_observation_ref: docs/evaluation/evidence/v0.3.0-alpha.3/TRIAL-001/primary-chat.md
-      raw_observation_sha256: <sha256>
+      observations:
+        - observation_id: OBS-RUN-001-PRIMARY
+          kind: PRIMARY_CHAT
+          path: docs/evaluation/evidence/v0.3.0-alpha.3/RUN-001/primary-chat.md
+          sha256: <sha256>
+        - observation_id: OBS-RUN-001-RELAY
+          kind: RELAY_RAW_RESPONSE
+          path: docs/evaluation/evidence/v0.3.0-alpha.3/RUN-001/relay-raw-response.md
+          sha256: <sha256>
+  scenario_results:
+    - trial_id: RUN-001-USAB-QUICK-001
+      run_id: RUN-001
+      scenario_id: USAB-QUICK-001
+      observation_refs:
+        - OBS-RUN-001-PRIMARY
       task_completed: false
       next_action_understood: false
       recovery_attempts: 0
@@ -169,3 +169,19 @@ manual_trials:
       actual_behavior: <text>
       reviewer: <name>
       notes: ""
+  metrics:
+    trial_count: null
+    task_completion_rate: null
+    critical_authority_errors: null
+    eligible_workflow_transitions: null
+    unnecessary_user_pauses: null
+    unnecessary_pause_rate: null
+    critical_unnecessary_pauses: null
+    next_action_understood_rate: null
+    median_recovery_attempts: null
+  pause_classification_records: []
+  sign_off:
+    approved_by: []
+    approved_at: null
+limitations:
+  - Complete every required file, receipt, and observation hash before release sign-off.
