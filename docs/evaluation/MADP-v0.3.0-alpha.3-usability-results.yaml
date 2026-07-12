@@ -1,5 +1,5 @@
 protocol_version: MADP-v0.3.0-alpha.3
-results_version: 5
+results_version: 6
 automated_walkthrough:
   status: PASS
   scenario_count: 8
@@ -11,6 +11,7 @@ automated_walkthrough:
     alpha2_command_compatibility_coverage: PASS
 manual_trials:
   status: NOT_RUN
+  field_trial_evidence_version: MADP-FIELD-TRIAL-EVIDENCE-v2
   protocol_load_report_required: true
   required_load_report_version: MADP-PROTOCOL-LOAD-REPORT-v2
   required_load_profile: FIELD_TRIAL
@@ -19,6 +20,7 @@ manual_trials:
   evidence_root: docs/evaluation/evidence/v0.3.0-alpha.3
   participants: []
   validation_receipts: []
+  run_evidence: []
   scenario_results: []
   metrics:
     trial_count: null
@@ -39,3 +41,4 @@ limitations:
   - Manual trial evidence is required before release_ready may become true.
   - Trials without the latest active, hash-verified, commit-bound load report are negative bootstrap observations, not protocol-conformance evidence.
   - A receipt reference without a schema-valid receipt whose artifact, schema, and observation hashes can be recomputed is not release evidence.
+  - Run-level evidence and scenario-level outcomes must use MADP-FIELD-TRIAL-EVIDENCE-v2.
