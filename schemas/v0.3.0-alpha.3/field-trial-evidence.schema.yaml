@@ -1,0 +1,225 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: urn:madp:schema:field-trial-evidence:0.3.0-alpha.3
+title: MADP v0.3.0-alpha.3 Field-Trial Evidence
+type: object
+additionalProperties: false
+required: [protocol_version, results_version, automated_walkthrough, manual_trials, limitations]
+properties:
+  protocol_version: {const: MADP-v0.3.0-alpha.3}
+  results_version: {const: 6}
+  automated_walkthrough:
+    type: object
+    additionalProperties: false
+    required: [status, scenario_count, checks]
+    properties:
+      status: {enum: [PASS, FAIL]}
+      scenario_count: {type: integer, minimum: 0}
+      checks:
+        type: object
+        additionalProperties: {enum: [PASS, FAIL]}
+  manual_trials:
+    type: object
+    additionalProperties: false
+    required:
+      - status
+      - field_trial_evidence_version
+      - protocol_load_report_required
+      - required_load_report_version
+      - required_load_profile
+      - required_provenance
+      - required_receipt_schema
+      - evidence_root
+      - participants
+      - validation_receipts
+      - run_evidence
+      - scenario_results
+      - metrics
+      - pause_classification_records
+      - sign_off
+    properties:
+      status: {enum: [NOT_RUN, IN_PROGRESS, PASS, FAIL]}
+      field_trial_evidence_version: {const: MADP-FIELD-TRIAL-EVIDENCE-v2}
+      protocol_load_report_required: {const: true}
+      required_load_report_version: {const: MADP-PROTOCOL-LOAD-REPORT-v2}
+      required_load_profile: {const: FIELD_TRIAL}
+      required_provenance: {const: HASH_VERIFIED}
+      required_receipt_schema: {const: schemas/v0.3.0-alpha.3/validation-receipt.schema.yaml}
+      evidence_root: {$ref: '#/$defs/nonEmpty'}
+      participants:
+        type: array
+        items: {$ref: '#/$defs/participant'}
+      validation_receipts:
+        type: array
+        items:
+          type: object
+          required: [VALIDATION_RECEIPT]
+      run_evidence:
+        type: array
+        items: {$ref: '#/$defs/runEvidence'}
+      scenario_results:
+        type: array
+        items: {$ref: '#/$defs/scenarioResult'}
+      metrics: {$ref: '#/$defs/metrics'}
+      pause_classification_records:
+        type: array
+        items:
+          type: object
+          additionalProperties: true
+          required: [trial_id, scenario_id, transition, reason, reviewer]
+      sign_off:
+        type: object
+        additionalProperties: false
+        required: [approved_by, approved_at]
+        properties:
+          approved_by:
+            type: array
+            items: {$ref: '#/$defs/nonEmpty'}
+          approved_at:
+            oneOf:
+              - {type: string, format: date-time}
+              - {type: 'null'}
+  limitations:
+    type: array
+    items: {$ref: '#/$defs/nonEmpty'}
+$defs:
+  id:
+    type: string
+    minLength: 1
+    pattern: '^[A-Za-z0-9][A-Za-z0-9._:-]*$'
+  nonEmpty: {type: string, minLength: 1}
+  sha40: {type: string, pattern: '^[0-9a-f]{40}$'}
+  sha256: {type: string, pattern: '^[0-9a-f]{64}$'}
+  participant:
+    type: object
+    additionalProperties: false
+    required: [participant_id, client, displayed_model_label, reasoning_mode]
+    properties:
+      participant_id: {$ref: '#/$defs/id'}
+      client: {$ref: '#/$defs/nonEmpty'}
+      displayed_model_label: {$ref: '#/$defs/nonEmpty'}
+      reasoning_mode: {$ref: '#/$defs/nonEmpty'}
+      tool_notes: {type: string}
+  observation:
+    type: object
+    additionalProperties: false
+    required: [observation_id, kind, path, sha256]
+    properties:
+      observation_id: {$ref: '#/$defs/id'}
+      kind:
+        enum:
+          - PRIMARY_CHAT
+          - RELAY_PACKET
+          - RELAY_RAW_RESPONSE
+          - SESSION_EXPORT
+          - IMPORT_CHAT
+          - LOAD_REPORT
+          - OTHER
+      path: {$ref: '#/$defs/nonEmpty'}
+      sha256: {$ref: '#/$defs/sha256'}
+  startProfileBinding:
+    type: object
+    additionalProperties: false
+    required: [repository, repository_commit, path, source_ref, source_inventory_digest, content_sha256]
+    properties:
+      repository: {const: Eruhitsuji/multi-ai-deliberation-protocol}
+      repository_commit: {$ref: '#/$defs/sha40'}
+      path: {enum: [bootstrap/alpha3/quick-start.md, bootstrap/alpha3/verified-start.md]}
+      source_ref: {$ref: '#/$defs/nonEmpty'}
+      source_inventory_digest: {$ref: '#/$defs/sha256'}
+      content_sha256: {$ref: '#/$defs/sha256'}
+  runEvidence:
+    type: object
+    additionalProperties: false
+    required:
+      - run_id
+      - participant_id
+      - run_index
+      - tested_commit
+      - protocol_load_report
+      - protocol_load_report_receipt_id
+      - start_profile_binding
+      - observations
+    properties:
+      run_id: {$ref: '#/$defs/id'}
+      participant_id: {$ref: '#/$defs/id'}
+      run_index: {type: integer, minimum: 1}
+      tested_commit: {$ref: '#/$defs/sha40'}
+      protocol_load_report:
+        type: object
+        minProperties: 1
+      protocol_load_report_receipt_id: {$ref: '#/$defs/id'}
+      start_profile_binding: {$ref: '#/$defs/startProfileBinding'}
+      observations:
+        type: array
+        minItems: 1
+        items: {$ref: '#/$defs/observation'}
+  scenarioResult:
+    type: object
+    additionalProperties: false
+    required:
+      - trial_id
+      - run_id
+      - scenario_id
+      - observation_refs
+      - task_completed
+      - next_action_understood
+      - recovery_attempts
+      - eligible_workflow_transitions
+      - unnecessary_user_pauses
+      - critical_authority_errors
+      - critical_unnecessary_pauses
+      - expected_behavior
+      - actual_behavior
+      - reviewer
+      - notes
+    properties:
+      trial_id: {$ref: '#/$defs/id'}
+      run_id: {$ref: '#/$defs/id'}
+      scenario_id: {$ref: '#/$defs/id'}
+      observation_refs:
+        type: array
+        minItems: 1
+        uniqueItems: true
+        items: {$ref: '#/$defs/id'}
+      task_completed: {type: boolean}
+      next_action_understood: {type: boolean}
+      recovery_attempts: {type: integer, minimum: 0}
+      eligible_workflow_transitions: {type: integer, minimum: 0}
+      unnecessary_user_pauses: {type: integer, minimum: 0}
+      critical_authority_errors: {type: integer, minimum: 0}
+      critical_unnecessary_pauses: {type: integer, minimum: 0}
+      expected_behavior: {$ref: '#/$defs/nonEmpty'}
+      actual_behavior: {$ref: '#/$defs/nonEmpty'}
+      reviewer: {$ref: '#/$defs/nonEmpty'}
+      notes: {type: string}
+  nullableNumber:
+    oneOf:
+      - {type: number}
+      - {type: 'null'}
+  nullableInteger:
+    oneOf:
+      - {type: integer, minimum: 0}
+      - {type: 'null'}
+  metrics:
+    type: object
+    additionalProperties: false
+    required:
+      - trial_count
+      - task_completion_rate
+      - critical_authority_errors
+      - eligible_workflow_transitions
+      - unnecessary_user_pauses
+      - unnecessary_pause_rate
+      - critical_unnecessary_pauses
+      - next_action_understood_rate
+      - median_recovery_attempts
+    properties:
+      trial_count: {$ref: '#/$defs/nullableInteger'}
+      task_completion_rate: {$ref: '#/$defs/nullableNumber'}
+      critical_authority_errors: {$ref: '#/$defs/nullableInteger'}
+      eligible_workflow_transitions: {$ref: '#/$defs/nullableInteger'}
+      unnecessary_user_pauses: {$ref: '#/$defs/nullableInteger'}
+      unnecessary_pause_rate: {$ref: '#/$defs/nullableNumber'}
+      critical_unnecessary_pauses: {$ref: '#/$defs/nullableInteger'}
+      next_action_understood_rate: {$ref: '#/$defs/nullableNumber'}
+      median_recovery_attempts: {$ref: '#/$defs/nullableNumber'}
