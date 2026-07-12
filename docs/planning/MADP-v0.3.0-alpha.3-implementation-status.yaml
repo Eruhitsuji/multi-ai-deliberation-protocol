@@ -1,4 +1,4 @@
-status_version: 5
+status_version: 6
 protocol_version: MADP-v0.3.0-alpha.3
 implementation_status: RELEASE_CANDIDATE_CONTENT_READY
 integration_status: MERGED_TO_MAIN
@@ -7,14 +7,17 @@ content_ready: true
 release_ready: false
 tagged: false
 published: false
-theme: Inclusive, Guided, and Team-Aware Deliberation
+theme: Field-Trial Hardening and Advanced Profiles
 validation_policy:
   self_attestation_is_release_evidence: false
   machine_generated_evidence_manifest_required: true
   evidence_must_match_current_checker_and_input_hashes: true
+  artifact_validation_receipt_required: true
 required_automated_checks:
   - id: A3-CHECK-IMPLEMENTATION
     command: python scripts/check_alpha3_implementation.py
+  - id: A3-CHECK-HARDENING
+    command: python scripts/check_alpha3_hardening.py
   - id: A3-CHECK-MIGRATION
     command: python scripts/check_alpha3_migration.py
   - id: A3-CHECK-TRANSLATION
@@ -45,6 +48,8 @@ release_blockers:
     title: Run evidence-backed final-main audit after A3-REL-001 is complete
 release_notes:
   - Automated evidence does not substitute for human usability evidence.
+  - Field-trial defects now require explicit session-start, exact authority-sensitive arguments, and machine validation receipts.
+  - Advanced profiles are optional and do not weaken core authority or release gates.
   - Alpha.3 is available from main for experimental field use but is not release-ready.
   - Practical-use observations and defects must be recorded against the tested commit.
   - Current published bootstrap remains alpha.2 until alpha.3 release authorization.
