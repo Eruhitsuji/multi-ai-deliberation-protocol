@@ -12,9 +12,11 @@ Alpha.3 extends the published alpha.2 core. It is an **additive compatible layer
 - `session-status`, `session-resume`, and `help-exit` are distinct;
 - plans, roles, claims, responses, Help, and records are bound to session and state revision;
 - parser and bounded runtime tests exercise all command names and critical sequencing;
+- `goal-confirm` changes only plan status; a separate exact `session-start` is required before substantive transitions;
 - schema rejects important unverified factual claims used for decisions, approval records without approvers/revision, missing named approvers, and OPINION_ONLY authority escalation;
 - migration tests transform actual alpha.2 inputs and record failures as well as success;
-- release readiness requires machine-generated validation evidence, not handwritten `DONE` claims;
+- protocol-load reports, command registries, validation receipts, and advanced profile artifacts have dedicated schemas;
+- release readiness requires machine-generated validation evidence and artifact-bound validation receipts, not handwritten `DONE` or free-text `VALID` claims;
 - ChatGPT and Claude distributions contain the same five Agent Skills;
 - translation audit is explicitly a freshness/marker audit, not semantic-equivalence proof.
 
@@ -26,6 +28,10 @@ Alpha.3 use has two separate phases:
 2. apply `bootstrap/alpha3/quick-start.md` or `bootstrap/alpha3/verified-start.md`.
 
 Start profiles do not load the protocol. When the load report is missing or incomplete, they must fail closed with `PROTOCOL_NOT_LOADED` instead of inferring unread rules.
+
+## Optional advanced profiles
+
+Alpha.3 includes optional, non-authority-expanding profiles for source and participant independence, blind first-round review, generative-AI governance, AI-development task contracts, communication alignment, assurance modes, opinion mapping, dissent lifecycle, and session retention/recovery. These profiles are loaded through the `ADVANCED_PROFILES` feature source set and do not change the core release gate.
 
 ## Normative source order
 
