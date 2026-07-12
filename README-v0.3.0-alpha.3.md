@@ -1,4 +1,3 @@
-
 # MADP v0.3.0-alpha.3 — Inclusive, Guided, and Team-Aware Deliberation
 
 Status: merged to `main` for experimental field use; not release-ready, tagged, or published.
@@ -16,7 +15,7 @@ Alpha.3 extends the published alpha.2 core. It is an **additive compatible layer
 - `goal-confirm` changes only plan status; a separate exact `session-start` is required before substantive transitions;
 - schema rejects important unverified factual claims used for decisions, approval records without approvers/revision, missing named approvers, and OPINION_ONLY authority escalation;
 - migration tests transform actual alpha.2 inputs and record failures as well as success;
-- protocol-load reports, command registries, validation receipts, and advanced profile artifacts have dedicated schemas;
+- protocol-load reports, command registries, validation receipts, field-trial evidence, collection packages, and advanced profile artifacts have dedicated schemas;
 - release readiness requires machine-generated validation evidence and receipt chains whose report, repository target, schema, start-profile, and raw-observation hashes are independently recomputed, not handwritten `DONE` or free-text `VALID` claims;
 - ChatGPT and Claude distributions contain the same five Agent Skills;
 - translation audit is explicitly a freshness/marker audit, not semantic-equivalence proof.
@@ -33,6 +32,10 @@ Start profiles do not load the protocol. When the load report is missing or inco
 ## Optional advanced profiles
 
 Alpha.3 includes optional, non-authority-expanding profiles for source and participant independence, blind first-round review, generative-AI governance, AI-development task contracts, communication alignment, assurance modes, opinion mapping, dissent lifecycle, and session retention/recovery. These profiles are loaded through the `ADVANCED_PROFILES` feature source set and do not change the core release gate.
+
+## Field-trial collection
+
+Formal trial evidence uses `MADP-FIELD-TRIAL-EVIDENCE-v2` and stores loader provenance, receipts, profile binding, and raw observations once per run. Use `docs/evaluation/MADP-v0.3.0-alpha.3-field-trial-collection-config.yaml` with `scripts/collect_field_trial_evidence_v030_alpha3.py` to prepare `DRAFT` or `READY` run packages, copy and hash observations, and merge only completed packages into the results document. The collector recomputes metrics but never signs off or changes release state.
 
 ## Normative source order
 
