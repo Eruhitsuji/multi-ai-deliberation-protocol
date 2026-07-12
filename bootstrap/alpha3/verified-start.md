@@ -6,8 +6,8 @@ requires_protocol_load: true
 required_load_report: PROTOCOL_LOAD_REPORT
 required_load_report_version: MADP-PROTOCOL-LOAD-REPORT-v2
 accepted_load_profiles:
-  VERIFIED: eccf10a42c1c629a0cd25d17aa0cec305708757c9ec959e35bcbf96dddcf78f4
-  FIELD_TRIAL: eccf10a42c1c629a0cd25d17aa0cec305708757c9ec959e35bcbf96dddcf78f4
+  VERIFIED: 7a4d1cb37d9e4ba3e8a305084009da563fdbcf7985e19156e24bf37f5a459a13
+  FIELD_TRIAL: 7a4d1cb37d9e4ba3e8a305084009da563fdbcf7985e19156e24bf37f5a459a13
 required_repository: Eruhitsuji/multi-ai-deliberation-protocol
 profile_source_binding_required: true
 required_schema_validation: EXECUTED
@@ -32,6 +32,7 @@ The load report must:
 - be `COMPLETE` with every selected source recorded once as `READ`;
 - have `all_required_files_read: true` and `inferred_unread_content: false`;
 - have `schema_validation_capability: EXECUTED` and `schema_validation_executed: true`;
+- list every applicable schema in `schemas_executed`, have no `unvalidated_structured_sources`, and reference machine-generated validation receipts;
 - have `provenance_level: HASH_VERIFIED` and one valid `content_sha256` per selected source;
 - authorize `bootstrap/alpha3/verified-start.md` from the same repository and commit.
 
@@ -40,10 +41,13 @@ If any condition fails, do not infer protocol behavior and do not start a sessio
 After the gate passes, do not begin substantive deliberation unless:
 
 - the `DELIBERATION_PLAN` exact revision is confirmed;
+- a separate exact `session-start` command binds the session ID to that confirmed plan and succeeds;
 - participant capability and authority profiles are recorded;
 - privacy and team decision policy are explicit;
 - a claim ledger is initialized;
 - external relays preserve state version and raw responses;
 - all legitimate pauses have a Next Action Card.
 
-Default authority is `PROPOSE_ONLY`. File, network, command, commit, push, send, approval, and external execution permissions remain separate.
+Goal confirmation alone must leave the session in planning state. Authority-sensitive natural language is converted only into a canonical-command preview; missing IDs, revisions, approvers, selected actions, and expected state versions are never inferred.
+
+Default authority is `PROPOSE_ONLY`. File, network, command, commit, push, send, approval, and external execution permissions remain separate. Any schema-validity claim must be backed by a `VALIDATION_RECEIPT`; model self-assessment is not evidence.
