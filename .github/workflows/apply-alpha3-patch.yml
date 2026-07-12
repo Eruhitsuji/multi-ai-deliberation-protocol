@@ -1,9 +1,7 @@
 name: Apply alpha.3 final patch
 
 on:
-  push:
-    branches:
-      - agent/alpha3-field-trial-hardening
+  pull_request:
     paths:
       - ".github/workflows/apply-alpha3-patch.yml"
 
