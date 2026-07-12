@@ -16,12 +16,18 @@ SCHEMAS = {
     "registry": ROOT / "schemas/v0.3.0-alpha.3/command-registry.schema.yaml",
     "validation_receipt": ROOT / "schemas/v0.3.0-alpha.3/validation-receipt.schema.yaml",
     "advanced_profiles": ROOT / "schemas/v0.3.0-alpha.3/advanced-profiles.schema.yaml",
+    "field_trial_evidence": ROOT / "schemas/v0.3.0-alpha.3/field-trial-evidence.schema.yaml",
 }
 PROFILE_MARKERS = {
     "docs/profiles/VALIDATION_EVIDENCE-v0.3.0-alpha.3.md": [
         "MADP_CANONICAL_JSON_V1",
         "schema_validation_records",
         "receipt ID without a corresponding receipt artifact",
+    ],
+    "docs/profiles/FIELD_TRIAL_EVIDENCE-v0.3.0-alpha.3.md": [
+        "run_evidence",
+        "observation_refs",
+        "fail closed",
     ],
     "docs/profiles/SOURCE_AND_PARTICIPANT_INDEPENDENCE-v0.3.0-alpha.3.md": [
         "independence group",
@@ -169,7 +175,7 @@ def main() -> int:
     fixture_path = ROOT / "tests/v0.3.0-alpha.3/hardening-fixtures.yaml"
     if not fixture_path.is_file():
         problems.append("missing hardening fixtures")
-    elif len(validators) == len(SCHEMAS):
+    elif all(name in validators for name in ("load_report", "validation_receipt", "advanced_profiles")):
         fixtures = load(fixture_path)
         mapping = {
             "protocol_load_report": "load_report",
@@ -189,6 +195,12 @@ def main() -> int:
                 artifact = case.get("artifact")
                 if first_error(validator, artifact) is None:
                     problems.append(f"invalid fixture unexpectedly passed: {case.get('id')}")
+
+    results_path = ROOT / "docs/evaluation/MADP-v0.3.0-alpha.3-usability-results.yaml"
+    if "field_trial_evidence" in validators and results_path.is_file():
+        error = first_error(validators["field_trial_evidence"], load(results_path))
+        if error:
+            problems.append(f"field-trial evidence schema failure: {error}")
 
     loader_path = ROOT / "bootstrap/alpha3/load-protocol-from-github.md"
     if loader_path.is_file():
@@ -265,6 +277,9 @@ def main() -> int:
     for required in [
         "scripts/generate_validation_receipt_v030_alpha3.py",
         "scripts/test_validation_receipt_v030_alpha3.py",
+        "scripts/check_alpha3_field_trial.py",
+        "scripts/migrate_field_trial_results_v5_to_v6.py",
+        "scripts/test_field_trial_evidence_v030_alpha3.py",
         "docs/evaluation/MADP-v0.3.0-alpha.3-field-trial-template.yaml",
     ]:
         if not (ROOT / required).is_file():
@@ -276,7 +291,7 @@ def main() -> int:
         return 1
     print(
         "alpha.3 field-trial hardening: PASS "
-        "(4 schemas, receipt-bound release evidence, explicit session start, 9 advanced profiles)"
+        "(5 schemas, run-normalized receipt-bound release evidence, explicit session start, 9 advanced profiles)"
     )
     return 0
 
