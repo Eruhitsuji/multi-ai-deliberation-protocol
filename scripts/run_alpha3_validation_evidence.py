@@ -13,9 +13,10 @@ CHECKS = [
     ('A3-CHECK-IMPLEMENTATION', 'scripts/check_alpha3_implementation.py', []),
     ('A3-CHECK-HARDENING', 'scripts/check_alpha3_hardening.py', []),
     ('A3-CHECK-RECEIPT', 'scripts/test_validation_receipt_v030_alpha3.py', []),
+    ('A3-CHECK-FIELD-TRIAL-FORMAT', 'scripts/test_field_trial_evidence_v030_alpha3.py', []),
     ('A3-CHECK-MIGRATION', 'scripts/check_alpha3_migration.py', []),
     ('A3-CHECK-TRANSLATION', 'scripts/check_alpha3_translation.py', []),
-    ('A3-CHECK-USABILITY', 'scripts/check_alpha3_usability.py', []),
+    ('A3-CHECK-USABILITY', 'scripts/check_alpha3_field_trial.py', []),
     ('A3-CHECK-USABILITY-RELEASE', 'scripts/test_alpha3_usability_release_evidence.py', []),
     ('A3-CHECK-PARSER', 'scripts/test_command_parser_v030_alpha3.py', []),
     ('A3-CHECK-COMMAND-COVERAGE', 'scripts/check_all_commands_v030_alpha3.py', []),
@@ -63,6 +64,13 @@ STATIC_INPUTS = {
         'schemas/v0.3.0-alpha.3/command-registry.schema.yaml',
         'registries/v0.3.0-alpha.3/commands.yaml',
     ],
+    'A3-CHECK-FIELD-TRIAL-FORMAT': [
+        'schemas/v0.3.0-alpha.3/field-trial-evidence.schema.yaml',
+        'scripts/migrate_field_trial_results_v5_to_v6.py',
+        'scripts/test_field_trial_evidence_v030_alpha3.py',
+        'docs/profiles/FIELD_TRIAL_EVIDENCE-v0.3.0-alpha.3.md',
+        'docs/evaluation/MADP-v0.3.0-alpha.3-field-trial-template.yaml',
+    ],
     'A3-CHECK-MIGRATION': [
         'schemas/v0.3.0-alpha.3/migration.schema.yaml',
         'tests/v0.3.0-alpha.3/migration-fixtures.yaml',
@@ -71,21 +79,24 @@ STATIC_INPUTS = {
     ],
     'A3-CHECK-TRANSLATION': ['docs/ja/v0.3.0-alpha.3/translation-manifest.yaml'],
     'A3-CHECK-USABILITY': [
+        'scripts/check_alpha3_field_trial.py',
         'tests/v0.3.0-alpha.3/usability-scenarios.yaml',
         'docs/evaluation/MADP-v0.3.0-alpha.3-usability-results.yaml',
         'docs/evaluation/MADP-v0.3.0-alpha.3-usability-plan.md',
         'docs/evaluation/MADP-v0.3.0-alpha.3-field-trial-template.yaml',
+        'schemas/v0.3.0-alpha.3/field-trial-evidence.schema.yaml',
         'schemas/v0.3.0-alpha.3/protocol-load-report.schema.yaml',
         'schemas/v0.3.0-alpha.3/validation-receipt.schema.yaml',
         'scripts/generate_validation_receipt_v030_alpha3.py',
     ],
     'A3-CHECK-USABILITY-RELEASE': [
         'scripts/test_alpha3_usability_release_evidence.py',
-        'scripts/check_alpha3_usability.py',
+        'scripts/check_alpha3_field_trial.py',
         'scripts/generate_validation_receipt_v030_alpha3.py',
         'bootstrap/alpha3/load-protocol-from-github.md',
         'bootstrap/alpha3/quick-start.md',
         'bootstrap/alpha3/verified-start.md',
+        'schemas/v0.3.0-alpha.3/field-trial-evidence.schema.yaml',
         'schemas/v0.3.0-alpha.3/protocol-load-report.schema.yaml',
         'schemas/v0.3.0-alpha.3/validation-receipt.schema.yaml',
         'schemas/v0.3.0-alpha.3/command-registry.schema.yaml',
@@ -143,7 +154,7 @@ def scope_files() -> list[str]:
             or (rel.startswith('docs/planning/') and 'alpha.3' in rel)
             or (rel.startswith('docs/evaluation/') and 'alpha.3' in rel)
             or (rel.startswith('docs/migration/') and 'alpha.3' in rel)
-            or (rel.startswith('scripts/') and ('alpha3' in rel or 'v030_alpha3' in rel))
+            or (rel.startswith('scripts/') and ('alpha3' in rel or 'v030_alpha3' in rel or 'field_trial' in rel))
         ):
             files.append(rel)
     return sorted(files)
@@ -213,12 +224,13 @@ def main() -> int:
             failed = True
 
     manifest = {
-        'evidence_version': 'MADP-ALPHA3-VALIDATION-EVIDENCE-v3',
+        'evidence_version': 'MADP-ALPHA3-VALIDATION-EVIDENCE-v4',
         'protocol_version': 'MADP-v0.3.0-alpha.3',
         'repository_commit': args.repository_commit,
         'release_mode': args.release,
         'self_attested': False,
         'receipt_check_required': True,
+        'run_normalized_field_trial_evidence': True,
         'scope_sha256': {rel: sha(ROOT / rel) for rel in scope_files()},
         'checks': records,
     }
