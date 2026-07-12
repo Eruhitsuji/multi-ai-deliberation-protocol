@@ -1,4 +1,4 @@
-status_version: 9
+status_version: 10
 protocol_version: MADP-v0.3.0-alpha.3
 implementation_status: RELEASE_CANDIDATE_CONTENT_READY
 integration_status: MERGED_TO_MAIN
@@ -56,7 +56,7 @@ release_notes:
   - Automated evidence does not substitute for human usability evidence.
   - Field-trial defects now require explicit session-start, exact authority-sensitive arguments, and machine validation receipts.
   - Receipt IDs alone are not evidence; release checking recomputes report, artifact, schema, start-profile, and raw-observation hashes.
-  - The release-only usability path is exercised with synthetic valid evidence and a deliberate raw-observation hash tamper.
+  - The release-only usability path is exercised with synthetic valid evidence and a deliberate raw-observation hash tamper; both expected outcomes passed in CI.
   - Existing field-trial observations remain historical evidence, but release metrics must be recollected against the receipt-hardened commit.
   - Advanced profiles are optional and do not weaken core authority or release gates.
   - Alpha.3 is available from main for experimental field use but is not release-ready.
