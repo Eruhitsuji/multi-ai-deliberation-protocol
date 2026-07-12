@@ -22,7 +22,7 @@ validation_policy:
   field_trial_collection_package_schema_required: true
   collection_tool_must_not_sign_off_or_change_release_state: true
   collection_check_must_revalidate_full_receipt_chain: true
-  collection_merge_must_reject_signed_or_finalized_results: true
+  collection_merge_must_reject_signed_or_pass_results: true
 required_automated_checks:
   - id: A3-CHECK-IMPLEMENTATION
     command: python scripts/check_alpha3_implementation.py
@@ -71,7 +71,7 @@ release_notes:
   - Load reports, profile bindings, receipts, and raw-observation inventories are stored once per run; scenario rows reference run and observation IDs.
   - MADP-FIELD-TRIAL-COLLECTION-v1 prepares DRAFT or READY run packages, copies and hashes observations, rebuilds receipts, and merges READY packages without sign-off.
   - Collection package check and merge revalidate the complete report, receipt, schema, profile, commit, observation, run, and scenario reference chain.
-  - Collection merge rejects signed or finalized PASS results, duplicate participant/run identities, duplicate destinations, and conflicting run, trial, participant, or receipt records.
+  - Collection merge rejects signed or PASS results, duplicate participant/run identities, duplicate destinations, and conflicting run, trial, participant, or receipt records.
   - Collection-package tests cover successful preparation and merge, receipt/profile/run-reference tampering, duplicate-run and duplicate-destination rejection, raw-observation tampering, signed-base rejection, and DRAFT rejection.
   - Results-version 5 evidence remains historical input and must be migrated before release use; conflicting run-level evidence fails closed.
   - The release-only usability path exercises a valid run-normalized chain, raw-observation hash tampering, and unknown-observation rejection in CI.
