@@ -16,6 +16,7 @@ BOOTSTRAP_FILES = ['load-protocol-from-github.md', 'quick-start.md', 'verified-s
 SCHEMAS = [
     'deliberation', 'command', 'migration', 'session-portability',
     'protocol-load-report', 'command-registry', 'validation-receipt', 'advanced-profiles',
+    'field-trial-evidence',
 ]
 SKILLS = ['madp-start', 'madp-facilitator', 'madp-participant', 'madp-recorder', 'madp-help']
 
@@ -98,12 +99,13 @@ def generate(out: Path, repository: str, commit: str, evidence: Path):
         raise FileNotFoundError('validation evidence manifest missing')
     ev = yaml.safe_load(evidence.read_text(encoding='utf-8'))
     if (
-        ev.get('evidence_version') != 'MADP-ALPHA3-VALIDATION-EVIDENCE-v3'
+        ev.get('evidence_version') != 'MADP-ALPHA3-VALIDATION-EVIDENCE-v4'
         or ev.get('repository_commit') != commit
         or ev.get('receipt_check_required') is not True
+        or ev.get('run_normalized_field_trial_evidence') is not True
         or any(item.get('status') != 'PASS' for item in ev.get('checks', []))
     ):
-        raise ValueError('validation evidence does not prove this commit and receipt contract')
+        raise ValueError('validation evidence does not prove this commit and run-normalized receipt contract')
 
     owner, repo = repository.split('/', 1)
     out.mkdir(parents=True, exist_ok=True)
@@ -137,11 +139,12 @@ def generate(out: Path, repository: str, commit: str, evidence: Path):
         for name in BOOTSTRAP_FILES
     ]
     manifest = {
-        'bundle_version': 'MADP-ALPHA3-BUNDLE-v6',
+        'bundle_version': 'MADP-ALPHA3-BUNDLE-v7',
         'protocol_version': VERSION,
         'repository': repository,
         'source_commit': commit,
         'protocol_load_report_version': 'MADP-PROTOCOL-LOAD-REPORT-v2',
+        'field_trial_evidence_version': 'MADP-FIELD-TRIAL-EVIDENCE-v2',
         'inventory_digest_algorithm': 'sha256-newline-paths-v1',
         'source_sets': SOURCE_SETS,
         'load_profiles': LOAD_PROFILES,
@@ -152,8 +155,10 @@ def generate(out: Path, repository: str, commit: str, evidence: Path):
         'explicit_session_start_required': True,
         'validation_receipt_required_for_verified_evidence': True,
         'receipt_bound_field_trial_evidence': True,
+        'run_normalized_field_trial_evidence': True,
         'validation_receipt_generator_path': 'scripts/generate_validation_receipt_v030_alpha3.py',
         'formal_field_trial_receipt_schema': 'schemas/v0.3.0-alpha.3/validation-receipt.schema.yaml',
+        'formal_field_trial_evidence_schema': 'schemas/v0.3.0-alpha.3/field-trial-evidence.schema.yaml',
         'schema_bundle_count': len(SCHEMAS),
         'advanced_profile_count': len(SOURCE_SETS.get('ADVANCED_PROFILES', [])) - 1,
         'validation_evidence_version': ev.get('evidence_version'),
@@ -224,7 +229,7 @@ def main():
     print(
         f'alpha.3 release artifacts generated: {len(manifest["files"])} packaged sources, '
         f'3 load profiles, 5 bootstrap files, 5 Skills, {manifest["schema_bundle_count"]} schemas, '
-        'receipt-bound field-trial evidence'
+        'run-normalized receipt-bound field-trial evidence'
     )
     return 0
 
