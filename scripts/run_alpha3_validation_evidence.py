@@ -1,12 +1,18 @@
 #!/usr/bin/env python3
 from __future__ import annotations
+
 from pathlib import Path
-import argparse, hashlib, subprocess, sys, yaml
+import argparse
+import hashlib
+import subprocess
+import sys
+import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
 CHECKS = [
     ('A3-CHECK-IMPLEMENTATION', 'scripts/check_alpha3_implementation.py', []),
     ('A3-CHECK-HARDENING', 'scripts/check_alpha3_hardening.py', []),
+    ('A3-CHECK-RECEIPT', 'scripts/test_validation_receipt_v030_alpha3.py', []),
     ('A3-CHECK-MIGRATION', 'scripts/check_alpha3_migration.py', []),
     ('A3-CHECK-TRANSLATION', 'scripts/check_alpha3_translation.py', []),
     ('A3-CHECK-USABILITY', 'scripts/check_alpha3_usability.py', []),
@@ -35,6 +41,10 @@ STATIC_INPUTS = {
         'schemas/v0.3.0-alpha.3/advanced-profiles.schema.yaml',
         'registries/v0.3.0-alpha.3/commands.yaml',
         'tests/v0.3.0-alpha.3/hardening-fixtures.yaml',
+        'scripts/generate_validation_receipt_v030_alpha3.py',
+        'scripts/test_validation_receipt_v030_alpha3.py',
+        'docs/evaluation/MADP-v0.3.0-alpha.3-field-trial-template.yaml',
+        'docs/profiles/VALIDATION_EVIDENCE-v0.3.0-alpha.3.md',
         'docs/profiles/SOURCE_AND_PARTICIPANT_INDEPENDENCE-v0.3.0-alpha.3.md',
         'docs/profiles/BLIND_FIRST_ROUND_REVIEW-v0.3.0-alpha.3.md',
         'docs/profiles/GENAI_USE_GOVERNANCE-v0.3.0-alpha.3.md',
@@ -44,6 +54,13 @@ STATIC_INPUTS = {
         'docs/profiles/OPINION_MAPPING_EXTENSION-v0.3.0-alpha.3.md',
         'docs/profiles/DISSENT_LIFECYCLE-v0.3.0-alpha.3.md',
         'docs/profiles/SESSION_RETENTION_AND_RECOVERY-v0.3.0-alpha.3.md',
+    ],
+    'A3-CHECK-RECEIPT': [
+        'scripts/generate_validation_receipt_v030_alpha3.py',
+        'scripts/test_validation_receipt_v030_alpha3.py',
+        'schemas/v0.3.0-alpha.3/validation-receipt.schema.yaml',
+        'schemas/v0.3.0-alpha.3/command-registry.schema.yaml',
+        'registries/v0.3.0-alpha.3/commands.yaml',
     ],
     'A3-CHECK-MIGRATION': [
         'schemas/v0.3.0-alpha.3/migration.schema.yaml',
@@ -56,6 +73,10 @@ STATIC_INPUTS = {
         'tests/v0.3.0-alpha.3/usability-scenarios.yaml',
         'docs/evaluation/MADP-v0.3.0-alpha.3-usability-results.yaml',
         'docs/evaluation/MADP-v0.3.0-alpha.3-usability-plan.md',
+        'docs/evaluation/MADP-v0.3.0-alpha.3-field-trial-template.yaml',
+        'schemas/v0.3.0-alpha.3/protocol-load-report.schema.yaml',
+        'schemas/v0.3.0-alpha.3/validation-receipt.schema.yaml',
+        'scripts/generate_validation_receipt_v030_alpha3.py',
     ],
     'A3-CHECK-PARSER': [
         'scripts/parse_command_v030_alpha3.py',
@@ -84,8 +105,13 @@ def sha(path: Path) -> str:
 
 def scope_files() -> list[str]:
     prefixes = [
-        'schemas/v0.3.0-alpha.3/', 'registries/v0.3.0-alpha.3/', 'bootstrap/alpha3/',
-        'docs/ja/v0.3.0-alpha.3/', 'tests/v0.3.0-alpha.3/', 'skills/madp-', 'dist/chatgpt/madp-',
+        'schemas/v0.3.0-alpha.3/',
+        'registries/v0.3.0-alpha.3/',
+        'bootstrap/alpha3/',
+        'docs/ja/v0.3.0-alpha.3/',
+        'tests/v0.3.0-alpha.3/',
+        'skills/madp-',
+        'dist/chatgpt/madp-',
     ]
     files = []
     for path in ROOT.rglob('*'):
@@ -95,7 +121,7 @@ def scope_files() -> list[str]:
         if (
             rel.startswith('README-v0.3.0-alpha.3')
             or rel in {'.github/workflows/validate-alpha3.yml', 'skills/README.md'}
-            or any(rel.startswith(x) for x in prefixes)
+            or any(rel.startswith(prefix) for prefix in prefixes)
             or (rel.startswith('protocol/') and 'alpha.3' in rel)
             or (rel.startswith('docs/profiles/') and 'alpha.3' in rel)
             or (rel.startswith('docs/planning/') and 'alpha.3' in rel)
@@ -108,7 +134,9 @@ def scope_files() -> list[str]:
 
 
 def translation_inputs() -> list[str]:
-    document = yaml.safe_load((ROOT / 'docs/ja/v0.3.0-alpha.3/translation-manifest.yaml').read_text(encoding='utf-8'))
+    document = yaml.safe_load(
+        (ROOT / 'docs/ja/v0.3.0-alpha.3/translation-manifest.yaml').read_text(encoding='utf-8')
+    )
     output = []
     for entry in document.get('entries', []):
         output.extend([entry['source'], entry['translation']])
@@ -136,7 +164,12 @@ def main() -> int:
         for rel in sorted(set(inputs)):
             path = ROOT / rel
             if not path.is_file():
-                process = subprocess.CompletedProcess(process.args, 1, process.stdout, (process.stderr + f'\nmissing evidence input: {rel}').strip())
+                process = subprocess.CompletedProcess(
+                    process.args,
+                    1,
+                    process.stdout,
+                    (process.stderr + f'\nmissing evidence input: {rel}').strip(),
+                )
                 break
             input_hashes[rel] = sha(path)
         stdout = process.stdout.strip()
@@ -144,7 +177,7 @@ def main() -> int:
         status = 'PASS' if process.returncode == 0 else 'FAIL'
         records.append({
             'id': check_id,
-            'command': ' '.join([Path(command[0]).name, *[str(x) for x in command[1:]]]),
+            'command': ' '.join([Path(command[0]).name, *[str(item) for item in command[1:]]]),
             'checker_path': script,
             'checker_sha256': sha(ROOT / script),
             'return_code': process.returncode,
@@ -156,16 +189,20 @@ def main() -> int:
             'stderr_sha256': hashlib.sha256(stderr.encode('utf-8')).hexdigest(),
         })
         print(f'{check_id}: {status}')
-        if stdout: print(stdout)
-        if stderr: print(stderr, file=sys.stderr)
-        if process.returncode: failed = True
+        if stdout:
+            print(stdout)
+        if stderr:
+            print(stderr, file=sys.stderr)
+        if process.returncode:
+            failed = True
 
     manifest = {
-        'evidence_version': 'MADP-ALPHA3-VALIDATION-EVIDENCE-v2',
+        'evidence_version': 'MADP-ALPHA3-VALIDATION-EVIDENCE-v3',
         'protocol_version': 'MADP-v0.3.0-alpha.3',
         'repository_commit': args.repository_commit,
         'release_mode': args.release,
         'self_attested': False,
+        'receipt_check_required': True,
         'scope_sha256': {rel: sha(ROOT / rel) for rel in scope_files()},
         'checks': records,
     }
@@ -176,4 +213,5 @@ def main() -> int:
     return 1 if failed else 0
 
 
-if __name__ == '__main__': raise SystemExit(main())
+if __name__ == '__main__':
+    raise SystemExit(main())

@@ -4,38 +4,40 @@ translation_language: ja
 hash_algorithm: git-blob-sha1
 audit_scope: SOURCE_FRESHNESS_AND_REQUIRED_MARKERS
 semantic_equivalence_verified: false
-coverage_scope: ALPHA3_NORMATIVE_AND_PRIMARY_GUIDANCE_SET
+coverage_scope: ALPHA3_NORMATIVE_PRIMARY_GUIDANCE_AND_ADVANCED_PROFILE_SET
 limitations:
 - Hash equality proves only source freshness.
 - Required markers detect selected omissions but do not prove complete or semantically
   equivalent translation.
 - Human bilingual review is recommended before stable release.
-- New optional advanced profiles are not yet included in the Japanese translation
-  coverage set.
+- The Japanese documents are informative; normative English sources retain authority.
 entries:
 - source: README-v0.3.0-alpha.3.md
   translation: README-v0.3.0-alpha.3.ja.md
   status: COMPLETE
-  source_git_blob_sha1: 9ab93c3650c0269520772809ef5f93ee5b40d770
+  source_git_blob_sha1: b0ab5e7d8eaf63c474a744a3c3dfc63a7fe05041
   required_markers:
   - alpha.3
   - 互換
+  - receipt
 - source: protocol/MADP-v0.3.0-alpha.3.md
   translation: docs/ja/v0.3.0-alpha.3/protocol.md
   status: COMPLETE
-  source_git_blob_sha1: f844ccd800dd6095ffe456acb3e9ed208ee16eeb
+  source_git_blob_sha1: bc30d9addb50a4a53d050791c1c0948244b04a60
   required_markers:
   - session-start
   - revision
   - VALIDATION_RECEIPT
+  - MADP_CANONICAL_JSON_V1
 - source: protocol/GLOSSARY-v0.3.0-alpha.3.md
   translation: docs/ja/v0.3.0-alpha.3/glossary.md
   status: COMPLETE
-  source_git_blob_sha1: d9cabcff9c8a5e72a3347c7ee4201ad9a74cb133
+  source_git_blob_sha1: 2a0c19f1c4bad7d4d5095e0a072b43f61a74d6f2
   required_markers:
   - Revision
   - Capability
   - Validation Receipt
+  - Canonical JSON
 - source: docs/profiles/COMMAND_SYSTEM-v0.3.0-alpha.3.md
   translation: docs/ja/v0.3.0-alpha.3/command-system.md
   status: COMPLETE
@@ -99,3 +101,73 @@ entries:
   required_markers:
   - FAILED
   - revision
+- source: docs/profiles/SOURCE_AND_PARTICIPANT_INDEPENDENCE-v0.3.0-alpha.3.md
+  translation: docs/ja/v0.3.0-alpha.3/source-participant-independence.md
+  status: COMPLETE
+  source_git_blob_sha1: 1fc539967fbbff59bdcbe144c53b69a57a058a39
+  required_markers:
+  - independence group
+  - 多数派
+- source: docs/profiles/BLIND_FIRST_ROUND_REVIEW-v0.3.0-alpha.3.md
+  translation: docs/ja/v0.3.0-alpha.3/blind-first-round-review.md
+  status: COMPLETE
+  source_git_blob_sha1: 24ee9931e00389628ca41bd21a835df5140c4c0f
+  required_markers:
+  - BLIND_INITIAL_POSITION
+  - ANCHORING_EXPOSED
+- source: docs/profiles/GENAI_USE_GOVERNANCE-v0.3.0-alpha.3.md
+  translation: docs/ja/v0.3.0-alpha.3/genai-use-governance.md
+  status: COMPLETE
+  source_git_blob_sha1: 92f8a5398fa7226d672c34ceceeb4a4e544879e5
+  required_markers:
+  - information classification
+  - incident
+- source: docs/profiles/AI_DEV_TASK_CONTRACT-v0.3.0-alpha.3.md
+  translation: docs/ja/v0.3.0-alpha.3/ai-dev-task-contract.md
+  status: COMPLETE
+  source_git_blob_sha1: 2c881b29325aa3f2c4ee22d962e21eb3877b75b1
+  required_markers:
+  - A-CORE
+  - test
+- source: docs/profiles/COMMUNICATION_ALIGNMENT-v0.3.0-alpha.3.md
+  translation: docs/ja/v0.3.0-alpha.3/communication-alignment.md
+  status: COMPLETE
+  source_git_blob_sha1: 4942c5322979133f4062ba2f98943241d70c7be2
+  required_markers:
+  - scope_check
+  - QUESTION_REQUIRED
+- source: docs/profiles/ASSURANCE_MODES-v0.3.0-alpha.3.md
+  translation: docs/ja/v0.3.0-alpha.3/assurance-modes.md
+  status: COMPLETE
+  source_git_blob_sha1: e7311c1e20b5c8992b6395006eb3bcbff16e9eed
+  required_markers:
+  - REVIEW_REQUIRED
+  - OVERRIDDEN_WITH_DISSENT
+- source: docs/profiles/OPINION_MAPPING_EXTENSION-v0.3.0-alpha.3.md
+  translation: docs/ja/v0.3.0-alpha.3/opinion-mapping-extension.md
+  status: COMPLETE
+  source_git_blob_sha1: 76cb65a376c49f7e8d1b252f3dfe287810524f9d
+  required_markers:
+  - AGREE
+  - ADVISORY_ONLY
+- source: docs/profiles/DISSENT_LIFECYCLE-v0.3.0-alpha.3.md
+  translation: docs/ja/v0.3.0-alpha.3/dissent-lifecycle.md
+  status: COMPLETE
+  source_git_blob_sha1: 48ae907bc0a7ead636a69383c7ca1892dfc8b454
+  required_markers:
+  - REDACTED
+  - silent deletion
+- source: docs/profiles/SESSION_RETENTION_AND_RECOVERY-v0.3.0-alpha.3.md
+  translation: docs/ja/v0.3.0-alpha.3/session-retention-recovery.md
+  status: COMPLETE
+  source_git_blob_sha1: 18d5c50b660dd7cfecae8d185ffda23461295b6a
+  required_markers:
+  - restore test
+  - key succession
+- source: docs/profiles/VALIDATION_EVIDENCE-v0.3.0-alpha.3.md
+  translation: docs/ja/v0.3.0-alpha.3/validation-evidence.md
+  status: COMPLETE
+  source_git_blob_sha1: 28cbf42f614f82e15ef8745a32dfe31cb791aa1f
+  required_markers:
+  - MADP_CANONICAL_JSON_V1
+  - receipt

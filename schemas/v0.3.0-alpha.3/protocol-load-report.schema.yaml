@@ -28,6 +28,7 @@ properties:
       - schema_validation_executed
       - schemas_applicable
       - schemas_executed
+      - schema_validation_records
       - unvalidated_structured_sources
       - inferred_unread_content
       - provenance_level
@@ -67,6 +68,9 @@ properties:
         type: array
         uniqueItems: true
         items: {$ref: '#/$defs/nonEmpty'}
+      schema_validation_records:
+        type: array
+        items: {$ref: '#/$defs/schemaValidationRecord'}
       unvalidated_structured_sources:
         type: array
         uniqueItems: true
@@ -80,7 +84,7 @@ properties:
       validation_receipt_refs:
         type: array
         uniqueItems: true
-        items: {$ref: '#/$defs/nonEmpty'}
+        items: {$ref: '#/$defs/id'}
       limitations:
         type: array
         items: {$ref: '#/$defs/nonEmpty'}
@@ -96,6 +100,14 @@ properties:
           required: [revision]
         then:
           properties: {supersedes: {$ref: '#/$defs/supersedes'}}
+      - if:
+          properties:
+            capability_preflight:
+              properties: {selected_source_mode: {const: NONE}}
+              required: [selected_source_mode]
+          required: [capability_preflight]
+        then:
+          properties: {status: {const: INCOMPLETE}}
       - if:
           properties: {status: {const: INCOMPLETE}}
           required: [status]
@@ -127,6 +139,10 @@ properties:
               required: [command, accepted_input]
               properties:
                 command: {const: APPLY_START_PROFILE}
+            capability_preflight:
+              properties:
+                selected_source_mode:
+                  enum: [RAW_FILES, GITHUB_CONNECTOR, PROVIDED_TEXT, COMPLETE_BUNDLE]
       - if:
           allOf:
             - properties: {load_profile: {enum: [VERIFIED, FIELD_TRIAL]}}
@@ -137,6 +153,14 @@ properties:
           properties:
             schema_validation_capability: {const: EXECUTED}
             schema_validation_executed: {const: true}
+            schemas_applicable: {minItems: 1}
+            schemas_executed: {minItems: 1}
+            schema_validation_records:
+              minItems: 1
+              items:
+                allOf:
+                  - {$ref: '#/$defs/schemaValidationRecord'}
+                  - properties: {result: {const: PASS}}
             provenance_level: {const: HASH_VERIFIED}
             unvalidated_structured_sources: {maxItems: 0}
             validation_receipt_refs: {minItems: 1}
@@ -144,8 +168,7 @@ properties:
               items:
                 allOf:
                   - {$ref: '#/$defs/file'}
-                  - required: [content_sha256]
-                    properties:
+                  - properties:
                       content_sha256: {$ref: '#/$defs/sha256'}
 $defs:
   id: {type: string, minLength: 1, pattern: '^[A-Za-z0-9][A-Za-z0-9._:-]*$'}
@@ -182,15 +205,30 @@ $defs:
         oneOf:
           - {$ref: '#/$defs/sha256'}
           - {type: 'null'}
+  schemaValidationRecord:
+    type: object
+    additionalProperties: false
+    required: [target_ref, target_sha256, artifact_type, artifact_id, artifact_version, schema_path, schema_sha256, receipt_ref, result]
+    properties:
+      target_ref: {$ref: '#/$defs/nonEmpty'}
+      target_sha256: {$ref: '#/$defs/sha256'}
+      artifact_type: {$ref: '#/$defs/nonEmpty'}
+      artifact_id: {$ref: '#/$defs/id'}
+      artifact_version: {$ref: '#/$defs/nonEmpty'}
+      schema_path: {$ref: '#/$defs/nonEmpty'}
+      schema_sha256: {$ref: '#/$defs/sha256'}
+      receipt_ref: {$ref: '#/$defs/id'}
+      result: {enum: [PASS, FAIL]}
   startProfile:
     type: object
     additionalProperties: false
-    required: [path, repository, repository_commit, source_ref]
+    required: [path, repository, repository_commit, source_ref, content_sha256]
     properties:
       path: {enum: [bootstrap/alpha3/quick-start.md, bootstrap/alpha3/verified-start.md]}
       repository: {type: string, pattern: '^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$'}
       repository_commit: {$ref: '#/$defs/sha40'}
       source_ref: {$ref: '#/$defs/nonEmpty'}
+      content_sha256: {$ref: '#/$defs/sha256'}
   nextAction:
     type: object
     additionalProperties: false

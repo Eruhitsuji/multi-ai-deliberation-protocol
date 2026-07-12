@@ -1,3 +1,4 @@
+
 # MADP v0.3.0-alpha.3 — Inclusive, Guided, and Team-Aware Deliberation
 
 Status: merged to `main` for experimental field use; not release-ready, tagged, or published.
@@ -16,7 +17,7 @@ Alpha.3 extends the published alpha.2 core. It is an **additive compatible layer
 - schema rejects important unverified factual claims used for decisions, approval records without approvers/revision, missing named approvers, and OPINION_ONLY authority escalation;
 - migration tests transform actual alpha.2 inputs and record failures as well as success;
 - protocol-load reports, command registries, validation receipts, and advanced profile artifacts have dedicated schemas;
-- release readiness requires machine-generated validation evidence and artifact-bound validation receipts, not handwritten `DONE` or free-text `VALID` claims;
+- release readiness requires machine-generated validation evidence and receipt chains whose report, repository target, schema, start-profile, and raw-observation hashes are independently recomputed, not handwritten `DONE` or free-text `VALID` claims;
 - ChatGPT and Claude distributions contain the same five Agent Skills;
 - translation audit is explicitly a freshness/marker audit, not semantic-equivalence proof.
 
@@ -27,7 +28,7 @@ Alpha.3 use has two separate phases:
 1. run `bootstrap/alpha3/load-protocol-from-github.md` against one immutable commit and obtain a `COMPLETE` `PROTOCOL_LOAD_REPORT`;
 2. apply `bootstrap/alpha3/quick-start.md` or `bootstrap/alpha3/verified-start.md`.
 
-Start profiles do not load the protocol. When the load report is missing or incomplete, they must fail closed with `PROTOCOL_NOT_LOADED` instead of inferring unread rules.
+Start profiles do not load the protocol. When the load report is missing or incomplete, they must fail closed with `PROTOCOL_NOT_LOADED` instead of inferring unread rules. VERIFIED and FIELD_TRIAL loads include deterministic validation tools and receipt-bound registry validation.
 
 ## Optional advanced profiles
 

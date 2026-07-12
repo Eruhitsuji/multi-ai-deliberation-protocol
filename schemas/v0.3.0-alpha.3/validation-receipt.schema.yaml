@@ -15,12 +15,18 @@ properties:
       artifact_ref:
         type: object
         additionalProperties: false
-        required: [artifact_type, artifact_id, artifact_revision, artifact_sha256]
+        required: [artifact_type, artifact_id, artifact_locator, canonicalization, artifact_sha256]
         properties:
           artifact_type: {$ref: '#/$defs/nonEmpty'}
           artifact_id: {$ref: '#/$defs/id'}
+          artifact_locator: {$ref: '#/$defs/nonEmpty'}
           artifact_revision: {type: integer, minimum: 1}
+          artifact_version: {$ref: '#/$defs/nonEmpty'}
+          canonicalization: {enum: [RAW_BYTES, MADP_CANONICAL_JSON_V1]}
           artifact_sha256: {$ref: '#/$defs/sha256'}
+        oneOf:
+          - required: [artifact_revision]
+          - required: [artifact_version]
       schema_ref:
         type: object
         additionalProperties: false

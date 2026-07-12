@@ -1,3 +1,4 @@
+
 # Multi-AI Deliberation Protocol v0.3.0-alpha.3
 
 Status: normative release-candidate content; not tagged or published.
@@ -144,7 +145,13 @@ The reference parser must resolve all canonical commands and aliases without nam
 
 A hand-written `DONE` field, free-text `VALID` statement, or model self-assessment is not machine evidence. Displaying an abbreviated artifact is allowed only when it is clearly marked as a view; the abbreviated view must not be claimed schema-valid unless the complete artifact bytes are separately identified.
 
-Artifact validation uses `VALIDATION_RECEIPT` from `schemas/v0.3.0-alpha.3/validation-receipt.schema.yaml`. A receipt binds the complete artifact hash, schema hash, executor type and version, result, and structured errors. Only a tool, deterministic runtime, or CI workflow may be the receipt executor.
+Artifact validation uses `VALIDATION_RECEIPT` from `schemas/v0.3.0-alpha.3/validation-receipt.schema.yaml`. A receipt binds an artifact locator, exact revision or version, canonicalization method, complete artifact hash, schema hash, executor type and version, result, and structured errors. Only a tool, deterministic runtime, or CI workflow may be the receipt executor.
+
+`RAW_BYTES` hashes exact bytes. `MADP_CANONICAL_JSON_V1` hashes UTF-8 JSON with lexicographically sorted keys, no insignificant whitespace, preserved Unicode, and no non-finite numbers. The canonicalization choice is part of the receipt and cannot be inferred after hashing.
+
+A VERIFIED or FIELD_TRIAL load report carries `schema_validation_records`. Each record binds one loaded repository target, target hash, artifact identity and version, schema path and hash, receipt ID, and result. `schemas_applicable`, `schemas_executed`, the validation records, `unvalidated_structured_sources`, and `validation_receipt_refs` must agree. A receipt reference without the corresponding receipt artifact is not evidence.
+
+Formal usability evidence additionally binds the complete load report to its report schema, the selected start profile to its exact bytes, and the raw observation to a repository-relative file hash. The release checker recomputes these links; a structurally plausible but unbound receipt fails closed.
 
 Each required validation command is executed by the evidence runner. It emits a validation evidence manifest containing the command, result, return code, checker hash, input hashes, and output hashes. The release audit verifies that manifest against the current scripts.
 
@@ -166,5 +173,5 @@ Alpha.3 conformance requires:
 - capability-aware and independence-aware participation;
 - schema-enforced material-claim, load-report, validation-receipt, registry, and approval invariants;
 - runtime-tested `goal-confirm` to `session-start` sequencing and fail-closed pre-start behavior;
-- machine-executed validation receipts and evidence-backed release audits;
+- receipt-bound and independently recomputed validation evidence, plus evidence-backed release audits;
 - explicit limitations when validation, tools, files, or translations were not fully verified.

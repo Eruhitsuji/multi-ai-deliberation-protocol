@@ -1,7 +1,13 @@
 #!/usr/bin/env python3
 from __future__ import annotations
+
 from pathlib import Path
-import argparse, hashlib, re, shutil, zipfile, yaml
+import argparse
+import hashlib
+import re
+import shutil
+import zipfile
+import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
 VERSION = 'MADP-v0.3.0-alpha.3'
@@ -78,21 +84,26 @@ def generate(out: Path, repository: str, commit: str, evidence: Path):
         raise ValueError('repository must be owner/name')
     if not SOURCE_SETS or not LOAD_PROFILES:
         raise ValueError('loader source sets or profiles missing')
-    flattened = [x for values in SOURCE_SETS.values() for x in values]
+    flattened = [item for values in SOURCE_SETS.values() for item in values]
     if len(flattened) != len(set(flattened)):
         raise ValueError('source paths must belong to exactly one source set')
     for profile in LOAD_PROFILES:
         paths = sources_for_profile(profile)
         if PROFILE_DIGESTS.get(profile) != inventory_digest(paths):
             raise ValueError(f'profile inventory digest mismatch: {profile}')
-    missing = [x for x in ALL_SOURCES if not (ROOT / x).is_file()]
+    missing = [item for item in ALL_SOURCES if not (ROOT / item).is_file()]
     if missing:
         raise FileNotFoundError('missing packaged source files: ' + ', '.join(missing))
     if not evidence.is_file():
         raise FileNotFoundError('validation evidence manifest missing')
     ev = yaml.safe_load(evidence.read_text(encoding='utf-8'))
-    if ev.get('repository_commit') != commit or any(x.get('status') != 'PASS' for x in ev.get('checks', [])):
-        raise ValueError('validation evidence does not prove this commit')
+    if (
+        ev.get('evidence_version') != 'MADP-ALPHA3-VALIDATION-EVIDENCE-v3'
+        or ev.get('repository_commit') != commit
+        or ev.get('receipt_check_required') is not True
+        or any(item.get('status') != 'PASS' for item in ev.get('checks', []))
+    ):
+        raise ValueError('validation evidence does not prove this commit and receipt contract')
 
     owner, repo = repository.split('/', 1)
     out.mkdir(parents=True, exist_ok=True)
@@ -112,10 +123,21 @@ def generate(out: Path, repository: str, commit: str, evidence: Path):
     for name in ['quick-start.md', 'verified-start.md', 'invite-limited-participant.md', 'help.md']:
         shutil.copy2(ROOT / f'bootstrap/alpha3/{name}', out / name)
 
-    files = [{'path': rel, 'sha256': digest(ROOT / rel), 'bytes': (ROOT / rel).stat().st_size} for rel in ALL_SOURCES]
-    bootstrap_files = [{'path': name, 'sha256': digest(out / name), 'bytes': (out / name).stat().st_size, 'source_commit': commit} for name in BOOTSTRAP_FILES]
+    files = [
+        {'path': rel, 'sha256': digest(ROOT / rel), 'bytes': (ROOT / rel).stat().st_size}
+        for rel in ALL_SOURCES
+    ]
+    bootstrap_files = [
+        {
+            'path': name,
+            'sha256': digest(out / name),
+            'bytes': (out / name).stat().st_size,
+            'source_commit': commit,
+        }
+        for name in BOOTSTRAP_FILES
+    ]
     manifest = {
-        'bundle_version': 'MADP-ALPHA3-BUNDLE-v5',
+        'bundle_version': 'MADP-ALPHA3-BUNDLE-v6',
         'protocol_version': VERSION,
         'repository': repository,
         'source_commit': commit,
@@ -129,22 +151,37 @@ def generate(out: Path, repository: str, commit: str, evidence: Path):
         'canonical_command_count': 51,
         'explicit_session_start_required': True,
         'validation_receipt_required_for_verified_evidence': True,
+        'receipt_bound_field_trial_evidence': True,
+        'validation_receipt_generator_path': 'scripts/generate_validation_receipt_v030_alpha3.py',
+        'formal_field_trial_receipt_schema': 'schemas/v0.3.0-alpha.3/validation-receipt.schema.yaml',
         'schema_bundle_count': len(SCHEMAS),
         'advanced_profile_count': len(SOURCE_SETS.get('ADVANCED_PROFILES', [])) - 1,
+        'validation_evidence_version': ev.get('evidence_version'),
         'validation_evidence_sha256': digest(evidence),
         'files': files,
         'bootstrap_files': bootstrap_files,
     }
-    (out / 'manifest.yaml').write_text(yaml.safe_dump(manifest, sort_keys=False, allow_unicode=True), encoding='utf-8')
+    (out / 'manifest.yaml').write_text(
+        yaml.safe_dump(manifest, sort_keys=False, allow_unicode=True), encoding='utf-8'
+    )
     shutil.copy2(evidence, out / 'validation-evidence.yaml')
-    parts = ['BEGIN_MADP_BUNDLE_METADATA', yaml.safe_dump(manifest, sort_keys=False, allow_unicode=True).rstrip(), 'END_MADP_BUNDLE_METADATA']
+    parts = [
+        'BEGIN_MADP_BUNDLE_METADATA',
+        yaml.safe_dump(manifest, sort_keys=False, allow_unicode=True).rstrip(),
+        'END_MADP_BUNDLE_METADATA',
+    ]
     for rel in ALL_SOURCES:
-        parts += [f'BEGIN_FILE path={rel}', (ROOT / rel).read_text(encoding='utf-8').rstrip(), f'END_FILE path={rel}']
+        parts += [
+            f'BEGIN_FILE path={rel}',
+            (ROOT / rel).read_text(encoding='utf-8').rstrip(),
+            f'END_FILE path={rel}',
+        ]
     (out / 'complete-protocol-bundle.txt').write_text('\n\n'.join(parts) + '\n', encoding='utf-8')
 
     for name in SCHEMAS:
         src = ROOT / f'schemas/v0.3.0-alpha.3/{name}.schema.yaml'
         data = yaml.safe_load(src.read_text(encoding='utf-8'))
+
         def walk(value):
             if isinstance(value, dict):
                 for key, item in value.items():
@@ -154,8 +191,11 @@ def generate(out: Path, repository: str, commit: str, evidence: Path):
             elif isinstance(value, list):
                 for item in value:
                     walk(item)
+
         walk(data)
-        (out / f'schemas/{name}.bundle.schema.yaml').write_text(yaml.safe_dump(data, sort_keys=False, allow_unicode=True), encoding='utf-8')
+        (out / f'schemas/{name}.bundle.schema.yaml').write_text(
+            yaml.safe_dump(data, sort_keys=False, allow_unicode=True), encoding='utf-8'
+        )
 
     pack = []
     for name in SKILLS:
@@ -181,7 +221,11 @@ def main():
     except Exception as exc:
         print('FAIL:', exc)
         return 1
-    print(f'alpha.3 release artifacts generated: {len(manifest["files"])} packaged sources, 3 load profiles, 5 bootstrap files, 5 Skills, {manifest["schema_bundle_count"]} schemas')
+    print(
+        f'alpha.3 release artifacts generated: {len(manifest["files"])} packaged sources, '
+        f'3 load profiles, 5 bootstrap files, 5 Skills, {manifest["schema_bundle_count"]} schemas, '
+        'receipt-bound field-trial evidence'
+    )
     return 0
 
 

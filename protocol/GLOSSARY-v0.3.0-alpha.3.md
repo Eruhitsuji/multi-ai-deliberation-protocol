@@ -1,3 +1,4 @@
+
 # MADP v0.3.0-alpha.3 Glossary
 
 Status: normative additions to the alpha.2 glossary.
@@ -17,7 +18,9 @@ Status: normative additions to the alpha.2 glossary.
 - **Plain Relay**: A bounded natural-language relay for limited-capability participants.
 - **Session Import Report**: A non-mutating report produced before any imported session action can be confirmed.
 - **Tolerant Ingestion / Strict Canonicalization**: Many input formats may be ingested, while only validated and auditable interpretations enter canonical records.
-- **Validation Receipt**: A machine-executed record binding complete artifact bytes, schema bytes, executor, result, and structured errors. Model self-assessment is not a validation receipt.
+- **Validation Receipt**: A machine-executed record binding an artifact locator, exact revision or version, canonicalization method, artifact hash, schema hash, executor, result, and structured errors. Model self-assessment is not a validation receipt.
+- **MADP Canonical JSON v1**: UTF-8 JSON with lexicographically sorted keys, no insignificant whitespace, preserved Unicode, and non-finite numbers forbidden; identified as `MADP_CANONICAL_JSON_V1`.
+- **Schema Validation Record**: A load-report entry binding one repository target and hash to one schema and hash, one receipt ID, and one validation result.
 - **Transition Validation Authority**: The deterministic authority to attest whether a state transition satisfies protocol conditions; distinct from human decision authority.
 - **Independence Group**: Sources or participants that share material provider, model, retrieval, data, context, or prompt lineage and therefore must not be counted as fully independent without evidence.
 - **Scope Check**: A revision-bound classification of the current topic as `IN_SCOPE`, `SCOPE_EXPANSION`, or `OUT_OF_SCOPE`.

@@ -1,4 +1,4 @@
-status_version: 6
+status_version: 7
 protocol_version: MADP-v0.3.0-alpha.3
 implementation_status: RELEASE_CANDIDATE_CONTENT_READY
 integration_status: MERGED_TO_MAIN
@@ -7,17 +7,21 @@ content_ready: true
 release_ready: false
 tagged: false
 published: false
-theme: Field-Trial Hardening and Advanced Profiles
+theme: Field-Trial Hardening, Receipt-Bound Evidence, and Advanced Profiles
 validation_policy:
   self_attestation_is_release_evidence: false
   machine_generated_evidence_manifest_required: true
   evidence_must_match_current_checker_and_input_hashes: true
   artifact_validation_receipt_required: true
+  receipt_chain_must_be_recomputed: true
+  raw_observation_hash_required_for_release_trials: true
 required_automated_checks:
   - id: A3-CHECK-IMPLEMENTATION
     command: python scripts/check_alpha3_implementation.py
   - id: A3-CHECK-HARDENING
     command: python scripts/check_alpha3_hardening.py
+  - id: A3-CHECK-RECEIPT
+    command: python scripts/test_validation_receipt_v030_alpha3.py
   - id: A3-CHECK-MIGRATION
     command: python scripts/check_alpha3_migration.py
   - id: A3-CHECK-TRANSLATION
@@ -49,6 +53,7 @@ release_blockers:
 release_notes:
   - Automated evidence does not substitute for human usability evidence.
   - Field-trial defects now require explicit session-start, exact authority-sensitive arguments, and machine validation receipts.
+  - Receipt IDs alone are not evidence; release checking recomputes report, artifact, schema, start-profile, and raw-observation hashes.
   - Advanced profiles are optional and do not weaken core authority or release gates.
   - Alpha.3 is available from main for experimental field use but is not release-ready.
   - Practical-use observations and defects must be recorded against the tested commit.

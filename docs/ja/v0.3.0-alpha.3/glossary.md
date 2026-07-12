@@ -5,8 +5,10 @@
 - **Validation Evidence Manifest**: 実行したchecker、終了code、checker/input hashを機械生成した証拠。
 - **Capability Status**: `SUPPORTED`、`UNSUPPORTED`、`UNKNOWN`の三値。
 - **Help Exit**: `help-exit`により記録済みのprior phaseへ戻る操作。alpha.2の`resume`とは異なる。
-- **Validation Receipt**: 完全なartifact bytes、schema bytes、executor、結果、構造化errorを結び付ける機械実行記録。modelの自己評価はvalidation receiptではない。
-- **Transition Validation Authority**: state transitionがprotocol条件を満たすかを認証する決定論的権限。人間のdecision authorityとは別。
-- **Independence Group**: provider、model、retrieval、data、context、prompt lineageを実質的に共有し、証拠なしには完全に独立と数えないsourceまたはparticipant群。
-- **Scope Check**: 現在のtopicを`IN_SCOPE`、`SCOPE_EXPANSION`、`OUT_OF_SCOPE`へ分類するrevision-bound artifact。
-- **Assurance Mode**: `NORMAL`、`REVIEW_REQUIRED`、`STRICT`。証拠不足やauthority未解決時のtransition validation強度を示す。
+- **Validation Receipt**: artifact locator、正確なrevisionまたはversion、canonicalization、artifact/schema hash、executor、result、structured errorをbindするmachine-executed record。model自己評価はValidation Receiptではありません。
+- **MADP Canonical JSON v1**: keyを辞書順にsortし、不要な空白を含まず、Unicodeを保持し、非有限数を禁止したUTF-8 JSON。識別子は`MADP_CANONICAL_JSON_V1`。
+- **Schema Validation Record**: 1つのrepository targetとhashを、1つのschemaとhash、receipt ID、validation resultへbindするload-report entry。
+- **Transition Validation Authority**: state transitionがprotocol条件を満たすかをattestする決定論的authority。human decision authorityとは別です。
+- **Independence Group**: provider、model、retrieval、data、context、prompt lineageをmaterialに共有し、evidenceなしには完全独立として数えないsourceまたはparticipantのgroup。
+- **Scope Check**: 現在topicを`IN_SCOPE`、`SCOPE_EXPANSION`、`OUT_OF_SCOPE`に分類するrevision-bound artifact。
+- **Assurance Mode**: evidence不足や未解決authorityがtransition validationへ与える影響を示す`NORMAL`、`REVIEW_REQUIRED`、`STRICT`。

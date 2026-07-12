@@ -1,5 +1,5 @@
 protocol_version: MADP-v0.3.0-alpha.3
-results_version: 4
+results_version: 5
 automated_walkthrough:
   status: PASS
   scenario_count: 8
@@ -15,7 +15,10 @@ manual_trials:
   required_load_report_version: MADP-PROTOCOL-LOAD-REPORT-v2
   required_load_profile: FIELD_TRIAL
   required_provenance: HASH_VERIFIED
+  required_receipt_schema: schemas/v0.3.0-alpha.3/validation-receipt.schema.yaml
+  evidence_root: docs/evaluation/evidence/v0.3.0-alpha.3
   participants: []
+  validation_receipts: []
   scenario_results: []
   metrics:
     trial_count: null
@@ -32,6 +35,7 @@ manual_trials:
     approved_by: []
     approved_at: null
 limitations:
-- Automated walkthroughs do not prove human comprehension.
-- Manual trial evidence is required before release_ready may become true.
-- Trials without the latest active, hash-verified, commit-bound load report are negative bootstrap observations, not protocol-conformance evidence.
+  - Automated walkthroughs do not prove human comprehension.
+  - Manual trial evidence is required before release_ready may become true.
+  - Trials without the latest active, hash-verified, commit-bound load report are negative bootstrap observations, not protocol-conformance evidence.
+  - A receipt reference without a schema-valid receipt whose artifact, schema, and observation hashes can be recomputed is not release evidence.
