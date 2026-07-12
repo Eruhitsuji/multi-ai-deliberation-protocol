@@ -2,6 +2,8 @@
 from __future__ import annotations
 
 from pathlib import Path
+import subprocess
+import sys
 import yaml
 
 from jsonschema import Draft202012Validator
@@ -10,6 +12,7 @@ from migrate_field_trial_results_v5_to_v6 import migrate_v5_to_v6
 
 ROOT = Path(__file__).resolve().parents[1]
 SCHEMA = ROOT / "schemas/v0.3.0-alpha.3/field-trial-evidence.schema.yaml"
+COLLECTION_TEST = ROOT / "scripts/test_field_trial_collection_v030_alpha3.py"
 
 
 def legacy_row(trial_id: str, scenario_id: str, raw_ref: str, raw_sha: str) -> dict:
@@ -75,8 +78,18 @@ def legacy_document() -> dict:
             ],
             "validation_receipts": [],
             "scenario_results": [
-                legacy_row("TRIAL-001", "USAB-QUICK-001", "evidence/primary.md", "4" * 64),
-                legacy_row("TRIAL-002", "USAB-RELAY-001", "evidence/relay.md", "5" * 64),
+                legacy_row(
+                    "TRIAL-001",
+                    "USAB-QUICK-001",
+                    "evidence/primary.md",
+                    "4" * 64,
+                ),
+                legacy_row(
+                    "TRIAL-002",
+                    "USAB-RELAY-001",
+                    "evidence/relay.md",
+                    "5" * 64,
+                ),
             ],
             "metrics": {
                 "trial_count": None,
@@ -104,17 +117,23 @@ def main() -> int:
     assert len(manual["run_evidence"]) == 1
     assert len(manual["run_evidence"][0]["observations"]) == 2
     assert len(manual["scenario_results"]) == 2
-    assert all(row["run_id"] == "MODEL-001-R01" for row in manual["scenario_results"])
-    assert all(len(row["observation_refs"]) == 1 for row in manual["scenario_results"])
+    assert all(
+        row["run_id"] == "MODEL-001-R01"
+        for row in manual["scenario_results"]
+    )
+    assert all(
+        len(row["observation_refs"]) == 1
+        for row in manual["scenario_results"]
+    )
 
     schema = yaml.safe_load(SCHEMA.read_text(encoding="utf-8"))
     errors = list(Draft202012Validator(schema).iter_errors(migrated))
     assert not errors, errors[0].message if errors else ""
 
     conflicting = legacy_document()
-    conflicting["manual_trials"]["scenario_results"][1]["start_profile_binding"]["path"] = (
-        "bootstrap/alpha3/verified-start.md"
-    )
+    conflicting["manual_trials"]["scenario_results"][1]["start_profile_binding"][
+        "path"
+    ] = "bootstrap/alpha3/verified-start.md"
     try:
         migrate_v5_to_v6(conflicting)
     except ValueError as exc:
@@ -124,7 +143,19 @@ def main() -> int:
 
     already = migrate_v5_to_v6(migrated)
     assert already == migrated
-    print("MADP-v0.3.0-alpha.3 field-trial evidence migration: PASS")
+
+    collection = subprocess.run(
+        [sys.executable, str(COLLECTION_TEST)],
+        cwd=ROOT,
+        text=True,
+        capture_output=True,
+    )
+    assert collection.returncode == 0, collection.stderr or collection.stdout
+    assert "field-trial collection tooling: PASS" in collection.stdout
+
+    print(
+        "MADP-v0.3.0-alpha.3 field-trial evidence migration and collection: PASS"
+    )
     return 0
 
 
