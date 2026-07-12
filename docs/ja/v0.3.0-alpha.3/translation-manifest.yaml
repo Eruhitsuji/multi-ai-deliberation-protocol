@@ -174,7 +174,16 @@ entries:
 - source: docs/profiles/FIELD_TRIAL_EVIDENCE-v0.3.0-alpha.3.md
   translation: docs/ja/v0.3.0-alpha.3/field-trial-evidence.md
   status: COMPLETE
-  source_git_blob_sha1: 85465adbf2549feb5dd717783bb9a3a56c48b29e
+  source_git_blob_sha1: f24743abe54d3d973f54bf34cc5b914e8ed634da
   required_markers:
   - run_evidence
   - fail closed
+  - collection
+- source: docs/profiles/FIELD_TRIAL_COLLECTION-v0.3.0-alpha.3.md
+  translation: docs/ja/v0.3.0-alpha.3/field-trial-collection.md
+  status: COMPLETE
+  source_git_blob_sha1: 75ef74df1a6c693daf4f0c594ad4918e21b82555
+  required_markers:
+  - MADP-FIELD-TRIAL-COLLECTION-v1
+  - DRAFT
+  - READY
