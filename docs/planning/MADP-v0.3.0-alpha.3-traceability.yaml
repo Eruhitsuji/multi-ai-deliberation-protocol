@@ -70,3 +70,28 @@ requirements:
     status: IMPLEMENTED
     artifact: bootstrap/alpha3/load-protocol-from-github.md
     validation: scripts/check_alpha3_implementation.py
+  - id: A3-HARDEN-START-001
+    title: Goal confirmation cannot activate a session without explicit session-start
+    status: IMPLEMENTED
+    artifact: scripts/apply_command_v030_alpha3.py
+    validation: scripts/test_command_runtime_v030_alpha3.py
+  - id: A3-HARDEN-LOAD-001
+    title: Loader failure reports cannot authorize start profiles and provide concrete bundle recovery
+    status: IMPLEMENTED
+    artifact: schemas/v0.3.0-alpha.3/protocol-load-report.schema.yaml
+    validation: scripts/check_alpha3_hardening.py
+  - id: A3-HARDEN-VALIDATION-001
+    title: Artifact validity claims require machine-executed validation receipts
+    status: IMPLEMENTED
+    artifact: schemas/v0.3.0-alpha.3/validation-receipt.schema.yaml
+    validation: scripts/check_alpha3_hardening.py
+  - id: A3-HARDEN-REGISTRY-001
+    title: Alpha.3 command registry has a dedicated schema
+    status: IMPLEMENTED
+    artifact: schemas/v0.3.0-alpha.3/command-registry.schema.yaml
+    validation: scripts/check_alpha3_hardening.py
+  - id: A3-ADV-PROFILES-001
+    title: Optional independence, alignment, assurance, governance, opinion mapping, dissent, retention, and AI-development profiles
+    status: IMPLEMENTED
+    artifact: schemas/v0.3.0-alpha.3/advanced-profiles.schema.yaml
+    validation: scripts/check_alpha3_hardening.py
