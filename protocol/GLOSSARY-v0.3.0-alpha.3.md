@@ -12,9 +12,13 @@ Status: normative additions to the alpha.2 glossary.
 - **Capability Profile**: A record of supported, unsupported, unknown, and extension capabilities.
 - **Claim Ledger**: Revision-bound claims with type, importance, provenance, verification, contradiction, and decision usability.
 - **Help Exit**: Revision-bound restoration of the phase recorded when Help began; represented by `help-exit`.
-- **Independence Group**: Outputs that must not be counted as independent because they share a model, chat, source, or controlling context.
 - **Normalization Record**: An auditable, revision-bound mapping from preserved raw text to a proposed interpretation.
 - **Opinion-Only Participation**: Contribution without approval, execution, or direct canonical-state authority.
 - **Plain Relay**: A bounded natural-language relay for limited-capability participants.
 - **Session Import Report**: A non-mutating report produced before any imported session action can be confirmed.
 - **Tolerant Ingestion / Strict Canonicalization**: Many input formats may be ingested, while only validated and auditable interpretations enter canonical records.
+- **Validation Receipt**: A machine-executed record binding complete artifact bytes, schema bytes, executor, result, and structured errors. Model self-assessment is not a validation receipt.
+- **Transition Validation Authority**: The deterministic authority to attest whether a state transition satisfies protocol conditions; distinct from human decision authority.
+- **Independence Group**: Sources or participants that share material provider, model, retrieval, data, context, or prompt lineage and therefore must not be counted as fully independent without evidence.
+- **Scope Check**: A revision-bound classification of the current topic as `IN_SCOPE`, `SCOPE_EXPANSION`, or `OUT_OF_SCOPE`.
+- **Assurance Mode**: `NORMAL`, `REVIEW_REQUIRED`, or `STRICT`, describing how missing evidence or unresolved authority affects transition validation.
