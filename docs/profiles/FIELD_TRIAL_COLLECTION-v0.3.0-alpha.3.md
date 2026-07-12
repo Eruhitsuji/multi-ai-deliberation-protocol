@@ -28,10 +28,11 @@ The output must remain inside the repository so observation paths can be reposit
 4. creates a receipt for the normalized load report;
 5. verifies the selected start profile is authorized and hash-matched;
 6. copies observation files into the package directory and records SHA-256 values;
-7. creates all eight scenario rows;
-8. marks the package `READY` only when every scenario has observation references and complete review fields.
+7. rejects duplicate observation IDs and duplicate destination names;
+8. creates all eight scenario rows;
+9. marks the package `READY` only when every scenario has valid observation references and correctly typed complete review fields.
 
-A package with missing scenario assessments is `DRAFT`. `DRAFT` is valid collection work but cannot be merged as formal trial evidence.
+A package with missing or incorrectly typed scenario assessments is `DRAFT`. `DRAFT` is valid collection work but cannot be merged as formal trial evidence.
 
 ## Check and merge
 
@@ -41,6 +42,17 @@ python scripts/collect_field_trial_evidence_v030_alpha3.py check \
   --require-ready
 ```
 
+`check` does not trust the package merely because it matches the package schema. It revalidates:
+
+- the checked-out commit and tested commit;
+- the complete FIELD_TRIAL source inventory and source hashes;
+- the protocol-load-report schema and report receipt;
+- every repository validation target, schema, receipt, and hash;
+- the selected start-profile authorization and hash;
+- every raw-observation path and hash;
+- participant/run binding, exact eight-scenario coverage, unique IDs, run references, and observation references;
+- the inferred `DRAFT` or `READY` status.
+
 ```text
 python scripts/collect_field_trial_evidence_v030_alpha3.py merge \
   --base-results docs/evaluation/MADP-v0.3.0-alpha.3-usability-results.yaml \
@@ -49,7 +61,7 @@ python scripts/collect_field_trial_evidence_v030_alpha3.py merge \
   --output combined-results.yaml
 ```
 
-`merge` rejects conflicting participants, receipts, run IDs, and trial IDs. It recomputes aggregate metrics and leaves the combined document `IN_PROGRESS` with no sign-off. Human sign-off and release-state changes remain separate authority-sensitive actions.
+`merge` revalidates both the base results and every package. It rejects signed or `PASS` results, conflicting participants or receipts, duplicate run IDs, duplicate participant/run identities, duplicate trial IDs, and duplicate run/scenario pairs. It recomputes aggregate metrics and leaves the combined document `IN_PROGRESS` with no sign-off. Human sign-off and release-state changes remain separate authority-sensitive actions.
 
 ## Normalization boundary
 
@@ -59,6 +71,8 @@ The collector may rebuild `validation_receipt_refs` so they contain exactly the 
 
 - The collector does not fabricate missing source hashes or unread protocol content.
 - It does not mark a `DRAFT` package `READY`.
+- Editing a prepared package does not bypass full evidence-chain revalidation.
+- It does not overwrite signed or `PASS` trial results.
 - It does not approve trial results, complete A3-REL-001, set `release_ready`, tag, release, publish, or promote Pages.
 - Raw observation bytes remain authoritative; later hash mismatch fails closed.
 - Collection packages use `MADP-FIELD-TRIAL-COLLECTION-v1` and `schemas/v0.3.0-alpha.3/field-trial-collection.schema.yaml`.
