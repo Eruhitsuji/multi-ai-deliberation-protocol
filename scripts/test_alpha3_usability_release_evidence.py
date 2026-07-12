@@ -15,7 +15,7 @@ ROOT = Path(__file__).resolve().parents[1]
 RESULTS = ROOT / "docs/evaluation/MADP-v0.3.0-alpha.3-usability-results.yaml"
 RAW_REL = "docs/evaluation/evidence/v0.3.0-alpha.3/.synthetic-release-observation.md"
 RAW = ROOT / RAW_REL
-CHECKER = ROOT / "scripts/check_alpha3_usability.py"
+CHECKER = ROOT / "scripts/check_alpha3_field_trial.py"
 REPORT_SCHEMA_REL = "schemas/v0.3.0-alpha.3/protocol-load-report.schema.yaml"
 SCENARIOS = [
     "USAB-QUICK-001",
@@ -55,7 +55,7 @@ def loader_config() -> dict:
 
 
 def sources_for(profile: str, config: dict) -> list[str]:
-    output = []
+    output: list[str] = []
     for set_name in config["load_profiles"][profile]["required_sets"]:
         output.extend(config["source_sets"][set_name])
     return output
@@ -83,7 +83,7 @@ def receipt_for_target(target: dict) -> dict:
         receipt_id=f"VAL-REGISTRY-{suffix}",
         executor_type="CI_WORKFLOW",
         executor_name="synthetic-field-trial-release-test",
-        executor_version="1",
+        executor_version="2",
     )
 
 
@@ -94,18 +94,14 @@ def build_results() -> dict:
     digest = hashlib.sha256(("\n".join(sources) + "\n").encode("utf-8")).hexdigest()
     quick = "bootstrap/alpha3/quick-start.md"
     verified = "bootstrap/alpha3/verified-start.md"
-    report_schema_path = ROOT / REPORT_SCHEMA_REL
-    report_schema_bytes = report_schema_path.read_bytes()
-    report_schema = yaml.safe_load(report_schema_bytes)
+    run_id = "SYNTHETIC-RUN-001"
+    report_id = "PLR-SYNTH-001"
+    report_receipt_id = "VAL-SYNTH-REPORT"
 
     target_receipts = [receipt_for_target(target) for target in VALIDATION_TARGETS]
-    receipt_documents = list(target_receipts)
-    rows = []
-
     records = []
     for target, receipt_document in zip(VALIDATION_TARGETS, target_receipts):
         artifact = yaml.safe_load((ROOT / target["target_path"]).read_text(encoding="utf-8"))
-        receipt_id = receipt_document["VALIDATION_RECEIPT"]["receipt_id"]
         records.append(
             {
                 "target_ref": f"repo://{target['target_path']}",
@@ -115,136 +111,117 @@ def build_results() -> dict:
                 "artifact_version": artifact["registry_version"],
                 "schema_path": target["schema_path"],
                 "schema_sha256": sha(ROOT / target["schema_path"]),
-                "receipt_ref": receipt_id,
+                "receipt_ref": receipt_document["VALIDATION_RECEIPT"]["receipt_id"],
                 "result": "PASS",
             }
         )
 
-    for index, scenario_id in enumerate(SCENARIOS, 1):
-        trial_id = f"SYNTHETIC-R01-{scenario_id}"
-        report_id = f"PLR-SYNTH-{index:02d}"
-        report_receipt_id = f"VAL-SYNTH-{index:02d}-REPORT"
-        report = {
-            "report_version": "MADP-PROTOCOL-LOAD-REPORT-v2",
-            "report_id": report_id,
-            "revision": 1,
-            "supersedes": None,
-            "active": True,
-            "protocol_version": "MADP-v0.3.0-alpha.3",
-            "load_profile": "FIELD_TRIAL",
-            "repository": "Eruhitsuji/multi-ai-deliberation-protocol",
-            "repository_commit": commit,
-            "inventory_digest_algorithm": "sha256-newline-paths-v1",
-            "source_inventory_digest": digest,
-            "capability_preflight": {
-                "exact_byte_retrieval": True,
-                "sha256_available": True,
-                "schema_validator_available": True,
-                "complete_bundle_available": True,
-                "selected_source_mode": "GITHUB_CONNECTOR",
-            },
-            "status": "COMPLETE",
-            "files": [
-                {
-                    "path": path,
-                    "status": "READ",
-                    "access_method": "GITHUB_CONNECTOR",
-                    "source_ref": f"repo://{commit}/{path}",
-                    "content_sha256": sha(ROOT / path),
-                }
-                for path in sources
-            ],
-            "all_required_files_read": True,
-            "schema_validation_capability": "EXECUTED",
-            "schema_validation_executed": True,
-            "schemas_applicable": [target["schema_path"] for target in VALIDATION_TARGETS],
-            "schemas_executed": [target["schema_path"] for target in VALIDATION_TARGETS],
-            "schema_validation_records": copy.deepcopy(records),
-            "unvalidated_structured_sources": [],
-            "inferred_unread_content": False,
-            "provenance_level": "HASH_VERIFIED",
-            "authorized_start_profiles": [
-                {
-                    "path": quick,
-                    "repository": "Eruhitsuji/multi-ai-deliberation-protocol",
-                    "repository_commit": commit,
-                    "source_ref": f"repo://{commit}/{quick}",
-                    "content_sha256": sha(ROOT / quick),
-                },
-                {
-                    "path": verified,
-                    "repository": "Eruhitsuji/multi-ai-deliberation-protocol",
-                    "repository_commit": commit,
-                    "source_ref": f"repo://{commit}/{verified}",
-                    "content_sha256": sha(ROOT / verified),
-                },
-            ],
-            "validation_receipt_refs": [
-                target_receipts[0]["VALIDATION_RECEIPT"]["receipt_id"],
-                target_receipts[1]["VALIDATION_RECEIPT"]["receipt_id"],
-                report_receipt_id,
-            ],
-            "limitations": [],
-            "next_action": {
-                "command": "APPLY_START_PROFILE",
-                "accepted_input": quick,
-            },
-        }
-        report_document = {"PROTOCOL_LOAD_REPORT": report}
-        report_receipt = build_receipt(
-            artifact_value=report_document,
-            artifact_bytes=yaml.safe_dump(report_document, sort_keys=False, allow_unicode=True).encode("utf-8"),
-            artifact_type="PROTOCOL_LOAD_REPORT",
-            artifact_id=report_id,
-            artifact_locator=f"trial://{trial_id}/protocol-load-report",
-            artifact_revision=1,
-            canonicalization="MADP_CANONICAL_JSON_V1",
-            schema_value=report_schema,
-            schema_bytes=report_schema_bytes,
-            schema_path=REPORT_SCHEMA_REL,
-            receipt_id=report_receipt_id,
-            executor_type="CI_WORKFLOW",
-            executor_name="synthetic-field-trial-release-test",
-            executor_version="1",
-        )
-        assert report_receipt["VALIDATION_RECEIPT"]["result"] == "PASS"
-        receipt_documents.append(report_receipt)
-        rows.append(
+    report = {
+        "report_version": "MADP-PROTOCOL-LOAD-REPORT-v2",
+        "report_id": report_id,
+        "revision": 1,
+        "supersedes": None,
+        "active": True,
+        "protocol_version": "MADP-v0.3.0-alpha.3",
+        "load_profile": "FIELD_TRIAL",
+        "repository": "Eruhitsuji/multi-ai-deliberation-protocol",
+        "repository_commit": commit,
+        "inventory_digest_algorithm": "sha256-newline-paths-v1",
+        "source_inventory_digest": digest,
+        "capability_preflight": {
+            "exact_byte_retrieval": True,
+            "sha256_available": True,
+            "schema_validator_available": True,
+            "complete_bundle_available": True,
+            "selected_source_mode": "GITHUB_CONNECTOR",
+        },
+        "status": "COMPLETE",
+        "files": [
             {
-                "trial_id": trial_id,
-                "participant_id": "SYNTHETIC-MODEL",
-                "run_index": 1,
-                "scenario_id": scenario_id,
-                "tested_commit": commit,
-                "protocol_load_report": report,
-                "protocol_load_report_receipt_id": report_receipt_id,
-                "start_profile_binding": {
-                    "repository": "Eruhitsuji/multi-ai-deliberation-protocol",
-                    "repository_commit": commit,
-                    "path": quick,
-                    "source_ref": f"repo://{commit}/{quick}",
-                    "source_inventory_digest": digest,
-                    "content_sha256": sha(ROOT / quick),
-                },
-                "raw_observation_ref": RAW_REL,
-                "raw_observation_sha256": sha(RAW),
-                "task_completed": True,
-                "next_action_understood": True,
-                "recovery_attempts": 0,
-                "eligible_workflow_transitions": 1,
-                "unnecessary_user_pauses": 0,
-                "critical_authority_errors": 0,
-                "critical_unnecessary_pauses": 0,
-                "expected_behavior": "Synthetic release-path conformance fixture.",
-                "actual_behavior": "All receipt-bound checks passed.",
-                "reviewer": "CI",
-                "notes": "Synthetic data; not human field-trial evidence.",
+                "path": path,
+                "status": "READ",
+                "access_method": "GITHUB_CONNECTOR",
+                "source_ref": f"repo://{commit}/{path}",
+                "content_sha256": sha(ROOT / path),
             }
-        )
+            for path in sources
+        ],
+        "all_required_files_read": True,
+        "schema_validation_capability": "EXECUTED",
+        "schema_validation_executed": True,
+        "schemas_applicable": [target["schema_path"] for target in VALIDATION_TARGETS],
+        "schemas_executed": [target["schema_path"] for target in VALIDATION_TARGETS],
+        "schema_validation_records": records,
+        "unvalidated_structured_sources": [],
+        "inferred_unread_content": False,
+        "provenance_level": "HASH_VERIFIED",
+        "authorized_start_profiles": [
+            {
+                "path": quick,
+                "repository": "Eruhitsuji/multi-ai-deliberation-protocol",
+                "repository_commit": commit,
+                "source_ref": f"repo://{commit}/{quick}",
+                "content_sha256": sha(ROOT / quick),
+            },
+            {
+                "path": verified,
+                "repository": "Eruhitsuji/multi-ai-deliberation-protocol",
+                "repository_commit": commit,
+                "source_ref": f"repo://{commit}/{verified}",
+                "content_sha256": sha(ROOT / verified),
+            },
+        ],
+        "validation_receipt_refs": [
+            target_receipts[0]["VALIDATION_RECEIPT"]["receipt_id"],
+            target_receipts[1]["VALIDATION_RECEIPT"]["receipt_id"],
+            report_receipt_id,
+        ],
+        "limitations": [],
+        "next_action": {"command": "APPLY_START_PROFILE", "accepted_input": quick},
+    }
+    report_document = {"PROTOCOL_LOAD_REPORT": report}
+    report_schema_path = ROOT / REPORT_SCHEMA_REL
+    report_receipt = build_receipt(
+        artifact_value=report_document,
+        artifact_bytes=yaml.safe_dump(report_document, sort_keys=False, allow_unicode=True).encode("utf-8"),
+        artifact_type="PROTOCOL_LOAD_REPORT",
+        artifact_id=report_id,
+        artifact_locator=f"trial://{run_id}/protocol-load-report",
+        artifact_revision=1,
+        canonicalization="MADP_CANONICAL_JSON_V1",
+        schema_value=yaml.safe_load(report_schema_path.read_bytes()),
+        schema_bytes=report_schema_path.read_bytes(),
+        schema_path=REPORT_SCHEMA_REL,
+        receipt_id=report_receipt_id,
+        executor_type="CI_WORKFLOW",
+        executor_name="synthetic-field-trial-release-test",
+        executor_version="2",
+    )
+    assert report_receipt["VALIDATION_RECEIPT"]["result"] == "PASS"
 
+    rows = [
+        {
+            "trial_id": f"{run_id}-{scenario_id}",
+            "run_id": run_id,
+            "scenario_id": scenario_id,
+            "observation_refs": ["OBS-SYNTH-PRIMARY"],
+            "task_completed": True,
+            "next_action_understood": True,
+            "recovery_attempts": 0,
+            "eligible_workflow_transitions": 1,
+            "unnecessary_user_pauses": 0,
+            "critical_authority_errors": 0,
+            "critical_unnecessary_pauses": 0,
+            "expected_behavior": "Synthetic release-path conformance fixture.",
+            "actual_behavior": "All run-normalized receipt-bound checks passed.",
+            "reviewer": "CI",
+            "notes": "Synthetic data; not human field-trial evidence.",
+        }
+        for scenario_id in SCENARIOS
+    ]
     return {
         "protocol_version": "MADP-v0.3.0-alpha.3",
-        "results_version": 5,
+        "results_version": 6,
         "automated_walkthrough": {
             "status": "PASS",
             "scenario_count": 8,
@@ -258,6 +235,7 @@ def build_results() -> dict:
         },
         "manual_trials": {
             "status": "PASS",
+            "field_trial_evidence_version": "MADP-FIELD-TRIAL-EVIDENCE-v2",
             "protocol_load_report_required": True,
             "required_load_report_version": "MADP-PROTOCOL-LOAD-REPORT-v2",
             "required_load_profile": "FIELD_TRIAL",
@@ -272,7 +250,33 @@ def build_results() -> dict:
                     "reasoning_mode": "deterministic",
                 }
             ],
-            "validation_receipts": receipt_documents,
+            "validation_receipts": [*target_receipts, report_receipt],
+            "run_evidence": [
+                {
+                    "run_id": run_id,
+                    "participant_id": "SYNTHETIC-MODEL",
+                    "run_index": 1,
+                    "tested_commit": commit,
+                    "protocol_load_report": report,
+                    "protocol_load_report_receipt_id": report_receipt_id,
+                    "start_profile_binding": {
+                        "repository": "Eruhitsuji/multi-ai-deliberation-protocol",
+                        "repository_commit": commit,
+                        "path": quick,
+                        "source_ref": f"repo://{commit}/{quick}",
+                        "source_inventory_digest": digest,
+                        "content_sha256": sha(ROOT / quick),
+                    },
+                    "observations": [
+                        {
+                            "observation_id": "OBS-SYNTH-PRIMARY",
+                            "kind": "PRIMARY_CHAT",
+                            "path": RAW_REL,
+                            "sha256": sha(RAW),
+                        }
+                    ],
+                }
+            ],
             "scenario_results": rows,
             "metrics": {
                 "trial_count": 8,
@@ -291,9 +295,7 @@ def build_results() -> dict:
                 "approved_at": "2000-01-01T00:00:00Z",
             },
         },
-        "limitations": [
-            "Synthetic release-path fixture; it does not replace human field-trial evidence."
-        ],
+        "limitations": ["Synthetic release-path fixture; it does not replace human field-trial evidence."],
     }
 
 
@@ -322,17 +324,25 @@ def main() -> int:
         assert success.returncode == 0, success.stderr or success.stdout
 
         tampered = copy.deepcopy(document)
-        tampered["manual_trials"]["scenario_results"][0]["raw_observation_sha256"] = "0" * 64
+        tampered["manual_trials"]["run_evidence"][0]["observations"][0]["sha256"] = "0" * 64
         RESULTS.write_text(yaml.safe_dump(tampered, sort_keys=False, allow_unicode=True), encoding="utf-8")
         failure = run_checker()
         assert failure.returncode != 0
         assert "raw observation hash mismatch" in failure.stderr
 
-        print("MADP-v0.3.0-alpha.3 release usability evidence path: PASS (valid chain accepted; tamper rejected)")
+        unknown = copy.deepcopy(document)
+        unknown["manual_trials"]["scenario_results"][0]["observation_refs"] = ["OBS-NOT-FOUND"]
+        RESULTS.write_text(yaml.safe_dump(unknown, sort_keys=False, allow_unicode=True), encoding="utf-8")
+        failure = run_checker()
+        assert failure.returncode != 0
+        assert "unknown observation reference" in failure.stderr
+
+        print("MADP-v0.3.0-alpha.3 run-normalized release evidence: PASS")
         return 0
     finally:
         RESULTS.write_bytes(original)
         if raw_existed:
+            assert raw_original is not None
             RAW.write_bytes(raw_original)
         elif RAW.exists():
             RAW.unlink()
