@@ -4,7 +4,7 @@
 
 alpha.3はalpha.2を置換せず、互換supersetとして拡張します。alpha.2の20 canonical commandを保持し、alpha.3の31 commandを追加します。`status`、`pause`、`resume`はalpha.2の意味を維持し、詳細なsession操作には`session-status`、`session-resume`、Help復帰には`help-exit`を使用します。
 
-artifactはsession ID、source state version、artifact revisionへ束縛されます。release readinessは手書きのDONE宣言ではなく、現在のcheckerと入力hashに一致する機械生成evidence manifestを要求します。
+artifactはsession ID、source state version、artifact revisionへ束縛されます。`goal-confirm`はplan statusだけを変更し、実質的な遷移の前に別の正確な`session-start`が必要です。protocol-load report、command registry、validation receipt、advanced profile artifactには専用schemaがあります。release readinessは手書きの`DONE`や自由文の`VALID`ではなく、現在のcheckerと入力hashに一致する機械生成evidence manifestとartifact-bound validation receiptを要求します。
 
 ## Bootstrapの順序
 
@@ -14,6 +14,10 @@ alpha.3の利用は2段階です。
 2. `bootstrap/alpha3/quick-start.md`または`bootstrap/alpha3/verified-start.md`を適用します。
 
 start profileはprotocolを読み込みません。load reportが存在しない、または不完全な場合、未読ルールを推測せず`PROTOCOL_NOT_LOADED`で停止しなければなりません。
+
+## 任意のadvanced profile
+
+source/participant independence、blind first-round review、生成AI governance、AI開発task contract、communication alignment、assurance mode、opinion mapping、dissent lifecycle、session retention/recoveryの任意profileを提供します。これらはcore authorityやrelease gateを弱めません。
 
 現在は実用を通じてA3-REL-001のusability evidenceを収集中です。問題を報告する場合は、使用したcommit、client、scenario、期待した動作、実際の動作、回復回数、不要pause、authority errorの有無を記録してください。alpha.2は、field trialのsign-offとfinal-main auditが完了するまで現在の公開bootstrapです。
 
