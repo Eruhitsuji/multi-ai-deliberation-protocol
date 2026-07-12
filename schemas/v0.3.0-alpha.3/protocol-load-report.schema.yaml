@@ -1,0 +1,200 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: urn:madp:schema:protocol-load-report:0.3.0-alpha.3
+title: MADP v0.3.0-alpha.3 Protocol Load Report
+type: object
+additionalProperties: false
+required: [PROTOCOL_LOAD_REPORT]
+properties:
+  PROTOCOL_LOAD_REPORT:
+    type: object
+    additionalProperties: false
+    required:
+      - report_version
+      - report_id
+      - revision
+      - supersedes
+      - active
+      - protocol_version
+      - load_profile
+      - repository
+      - repository_commit
+      - inventory_digest_algorithm
+      - source_inventory_digest
+      - capability_preflight
+      - status
+      - files
+      - all_required_files_read
+      - schema_validation_capability
+      - schema_validation_executed
+      - schemas_applicable
+      - schemas_executed
+      - unvalidated_structured_sources
+      - inferred_unread_content
+      - provenance_level
+      - authorized_start_profiles
+      - validation_receipt_refs
+      - limitations
+      - next_action
+    properties:
+      report_version: {const: MADP-PROTOCOL-LOAD-REPORT-v2}
+      report_id: {$ref: '#/$defs/id'}
+      revision: {type: integer, minimum: 1}
+      supersedes:
+        oneOf:
+          - {type: 'null'}
+          - {$ref: '#/$defs/supersedes'}
+      active: {type: boolean}
+      protocol_version: {const: MADP-v0.3.0-alpha.3}
+      load_profile: {enum: [QUICK, VERIFIED, FIELD_TRIAL]}
+      repository: {type: string, pattern: '^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$'}
+      repository_commit: {$ref: '#/$defs/sha40'}
+      inventory_digest_algorithm: {const: sha256-newline-paths-v1}
+      source_inventory_digest: {$ref: '#/$defs/sha256'}
+      capability_preflight: {$ref: '#/$defs/preflight'}
+      status: {enum: [COMPLETE, INCOMPLETE]}
+      files:
+        type: array
+        minItems: 1
+        items: {$ref: '#/$defs/file'}
+      all_required_files_read: {type: boolean}
+      schema_validation_capability: {enum: [EXECUTED, AVAILABLE_NOT_EXECUTED, UNAVAILABLE]}
+      schema_validation_executed: {type: boolean}
+      schemas_applicable:
+        type: array
+        uniqueItems: true
+        items: {$ref: '#/$defs/nonEmpty'}
+      schemas_executed:
+        type: array
+        uniqueItems: true
+        items: {$ref: '#/$defs/nonEmpty'}
+      unvalidated_structured_sources:
+        type: array
+        uniqueItems: true
+        items: {$ref: '#/$defs/nonEmpty'}
+      inferred_unread_content: {const: false}
+      provenance_level: {enum: [HASH_VERIFIED, SOURCE_REFERENCED, SELF_ATTESTED]}
+      authorized_start_profiles:
+        type: array
+        uniqueItems: true
+        items: {$ref: '#/$defs/startProfile'}
+      validation_receipt_refs:
+        type: array
+        uniqueItems: true
+        items: {$ref: '#/$defs/nonEmpty'}
+      limitations:
+        type: array
+        items: {$ref: '#/$defs/nonEmpty'}
+      next_action: {$ref: '#/$defs/nextAction'}
+    allOf:
+      - if:
+          properties: {revision: {const: 1}}
+          required: [revision]
+        then:
+          properties: {supersedes: {type: 'null'}}
+      - if:
+          properties: {revision: {minimum: 2}}
+          required: [revision]
+        then:
+          properties: {supersedes: {$ref: '#/$defs/supersedes'}}
+      - if:
+          properties: {status: {const: INCOMPLETE}}
+          required: [status]
+        then:
+          properties:
+            all_required_files_read: {const: false}
+            authorized_start_profiles: {maxItems: 0}
+            limitations: {minItems: 1}
+            next_action:
+              type: object
+              required: [command, accepted_input]
+              properties:
+                command: {const: RECOVER_PROTOCOL_SOURCE}
+      - if:
+          properties: {status: {const: COMPLETE}}
+          required: [status]
+        then:
+          properties:
+            active: {const: true}
+            all_required_files_read: {const: true}
+            authorized_start_profiles: {minItems: 1}
+            files:
+              items:
+                allOf:
+                  - {$ref: '#/$defs/file'}
+                  - properties: {status: {const: READ}}
+            next_action:
+              type: object
+              required: [command, accepted_input]
+              properties:
+                command: {const: APPLY_START_PROFILE}
+      - if:
+          allOf:
+            - properties: {load_profile: {enum: [VERIFIED, FIELD_TRIAL]}}
+              required: [load_profile]
+            - properties: {status: {const: COMPLETE}}
+              required: [status]
+        then:
+          properties:
+            schema_validation_capability: {const: EXECUTED}
+            schema_validation_executed: {const: true}
+            provenance_level: {const: HASH_VERIFIED}
+            unvalidated_structured_sources: {maxItems: 0}
+            validation_receipt_refs: {minItems: 1}
+            files:
+              items:
+                allOf:
+                  - {$ref: '#/$defs/file'}
+                  - required: [content_sha256]
+                    properties:
+                      content_sha256: {$ref: '#/$defs/sha256'}
+$defs:
+  id: {type: string, minLength: 1, pattern: '^[A-Za-z0-9][A-Za-z0-9._:-]*$'}
+  nonEmpty: {type: string, minLength: 1}
+  sha40: {type: string, pattern: '^[0-9a-f]{40}$'}
+  sha256: {type: string, pattern: '^[0-9a-f]{64}$'}
+  supersedes:
+    type: object
+    additionalProperties: false
+    required: [report_id, revision]
+    properties:
+      report_id: {$ref: '#/$defs/id'}
+      revision: {type: integer, minimum: 1}
+  preflight:
+    type: object
+    additionalProperties: false
+    required: [exact_byte_retrieval, sha256_available, schema_validator_available, complete_bundle_available, selected_source_mode]
+    properties:
+      exact_byte_retrieval: {type: boolean}
+      sha256_available: {type: boolean}
+      schema_validator_available: {type: boolean}
+      complete_bundle_available: {type: boolean}
+      selected_source_mode: {enum: [RAW_FILES, GITHUB_CONNECTOR, PROVIDED_TEXT, COMPLETE_BUNDLE, NONE]}
+  file:
+    type: object
+    additionalProperties: false
+    required: [path, status, access_method, source_ref, content_sha256]
+    properties:
+      path: {$ref: '#/$defs/nonEmpty'}
+      status: {enum: [READ, PARTIALLY_READ, FAILED]}
+      access_method: {enum: [RAW_URL, GITHUB_CONNECTOR, PROVIDED_TEXT, COMPLETE_BUNDLE, OTHER]}
+      source_ref: {$ref: '#/$defs/nonEmpty'}
+      content_sha256:
+        oneOf:
+          - {$ref: '#/$defs/sha256'}
+          - {type: 'null'}
+  startProfile:
+    type: object
+    additionalProperties: false
+    required: [path, repository, repository_commit, source_ref]
+    properties:
+      path: {enum: [bootstrap/alpha3/quick-start.md, bootstrap/alpha3/verified-start.md]}
+      repository: {type: string, pattern: '^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$'}
+      repository_commit: {$ref: '#/$defs/sha40'}
+      source_ref: {$ref: '#/$defs/nonEmpty'}
+  nextAction:
+    type: object
+    additionalProperties: false
+    required: [command, accepted_input]
+    properties:
+      command: {enum: [APPLY_START_PROFILE, RECOVER_PROTOCOL_SOURCE]}
+      accepted_input: {$ref: '#/$defs/nonEmpty'}
