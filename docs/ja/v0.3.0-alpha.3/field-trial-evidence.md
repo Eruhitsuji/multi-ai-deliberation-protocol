@@ -27,6 +27,27 @@ loader provenance、validation receipt、start-profile binding、raw observation
 7. metricsはscenario rowから再計算し、手書きaggregateを権威ある値として扱いません。
 8. results-version 5の既存証拠は歴史的inputであり、release利用前にmigrationが必要です。
 
+## Collection tooling
+
+`docs/evaluation/MADP-v0.3.0-alpha.3-field-trial-collection-config.yaml`をinput templateとして使用し、`scripts/collect_field_trial_evidence_v030_alpha3.py`で1件のrun packageを作成します。
+
+```text
+python scripts/collect_field_trial_evidence_v030_alpha3.py prepare \
+  --config collection-config.yaml \
+  --output docs/evaluation/evidence/v0.3.0-alpha.3/RUN-001/package.yaml
+```
+
+collectorはobservation fileをcopyし、hashを再計算し、repository validation receiptとrun-bound protocol-load-report receiptを生成し、8つのscenario rowを出力します。scenario評価またはobservation referenceが不足している間は`DRAFT`です。正式統合には`READY` packageだけを使用します。
+
+```text
+python scripts/collect_field_trial_evidence_v030_alpha3.py merge \
+  --base-results docs/evaluation/MADP-v0.3.0-alpha.3-usability-results.yaml \
+  --package RUN-001/package.yaml \
+  --output combined-results.yaml
+```
+
+mergeはmetricsを再計算しますが、結果を`IN_PROGRESS`のまま保持し、sign-offやrelease state変更を行いません。
+
 ## Migration
 
 ```text
@@ -39,4 +60,6 @@ migrationは同一runのrun-level evidenceをdeduplicateし、legacy raw observa
 
 ## Release boundary
 
-このprofileが変更するのは証拠表現だけです。usability thresholdを緩和せず、歴史的観察を合格証拠へ変換せず、releaseを承認せず、decision authorityも変更しません。
+このprofileが変更するのは証拠表現と収集操作だけです。usability thresholdを緩和せず、歴史的観察を合格証拠へ変換せず、releaseを承認せず、decision authorityも変更しません。
+
+この日本語文書はinformative translationです。矛盾する場合は英語の規範sourceを優先します。
