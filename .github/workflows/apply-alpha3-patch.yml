@@ -20,6 +20,7 @@ jobs:
       - name: Reconstruct and verify patch
         shell: bash
         run: |
+          rm -f .alpha3-patch/chunk-081.b64
           cat .alpha3-patch/chunk-*.b64 > /tmp/alpha3-patch.b64
           base64 -d /tmp/alpha3-patch.b64 > /tmp/alpha3-final-patch.tar.gz
           echo "24e641c672d1400acc10ef92e5e70235b7d783a891ec993c8a8c528927c687b3  /tmp/alpha3-final-patch.tar.gz" | sha256sum -c -
