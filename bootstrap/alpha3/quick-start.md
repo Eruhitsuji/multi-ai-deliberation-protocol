@@ -6,9 +6,9 @@ requires_protocol_load: true
 required_load_report: PROTOCOL_LOAD_REPORT
 required_load_report_version: MADP-PROTOCOL-LOAD-REPORT-v2
 accepted_load_profiles:
-  QUICK: fe6b4f0685aa36088bcaca13f49bea1abdc6daa7f647339db2df34636e73f242
-  VERIFIED: eccf10a42c1c629a0cd25d17aa0cec305708757c9ec959e35bcbf96dddcf78f4
-  FIELD_TRIAL: eccf10a42c1c629a0cd25d17aa0cec305708757c9ec959e35bcbf96dddcf78f4
+  QUICK: ba8c4b88c55de4d73ea82292fcaa38d2825096f3e08df041985bdab57be692c0
+  VERIFIED: 7a4d1cb37d9e4ba3e8a305084009da563fdbcf7985e19156e24bf37f5a459a13
+  FIELD_TRIAL: 7a4d1cb37d9e4ba3e8a305084009da563fdbcf7985e19156e24bf37f5a459a13
 required_repository: Eruhitsuji/multi-ai-deliberation-protocol
 profile_source_binding_required: true
 required_loader: bootstrap/alpha3/load-protocol-from-github.md
@@ -31,7 +31,9 @@ The load report must:
 - be `COMPLETE` with every selected source recorded once as `READ`;
 - have `all_required_files_read: true` and `inferred_unread_content: false`;
 - have `SOURCE_REFERENCED` or `HASH_VERIFIED` provenance;
-- authorize `bootstrap/alpha3/quick-start.md` from the same repository and commit.
+- authorize `bootstrap/alpha3/quick-start.md` from the same repository and commit;
+- satisfy `schemas/v0.3.0-alpha.3/protocol-load-report.schema.yaml` when validation is available;
+- have `authorized_start_profiles: []` whenever the report is `INCOMPLETE`.
 
 If the report or profile binding is missing, stale, self-attested, mismatched, or incomplete, do not infer protocol behavior and do not start a session. Return:
 
@@ -46,6 +48,8 @@ MADP_BOOTSTRAP_STATUS:
 
 After the gate passes, start a LIGHT or STANDARD MADP discussion. Preserve alpha.2 canonical commands: `status`, `pause`, and `resume` are not aliases. Use `session-status`, `session-resume`, and `help-exit` for their explicit alpha.3 operations.
 
-Before substantive work, establish session ID, current state version, a revisioned deliberation plan, human decision authority, and the smallest useful set of roles. Every accepted artifact must be bound to the session and source state revision. Default authority is `PROPOSE_ONLY`.
+Before substantive work, establish session ID, current state version, a revisioned deliberation plan, human decision authority, and the smallest useful set of roles. Confirming the plan with `goal-confirm` does not start the session. Emit or request the exact `session-start` command with `session_id` and the confirmed `deliberation_plan`; only after it succeeds may the session become `ACTIVE`.
+
+For any authority-sensitive natural-language request, show the canonical command and exact IDs, revisions, selected action, approver, or expected state version before mutation. Do not infer missing values. Every accepted artifact must be bound to the session and source state revision. Default authority is `PROPOSE_ONLY`.
 
 If schema validation was not executed, preserve that limitation in session state and do not describe the session as VERIFIED or ASSURED.
