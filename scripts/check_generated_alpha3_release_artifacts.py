@@ -11,7 +11,7 @@ SKILLS = ['madp-start', 'madp-facilitator', 'madp-participant', 'madp-recorder',
 SCHEMAS = [
     'deliberation', 'command', 'migration', 'session-portability',
     'protocol-load-report', 'command-registry', 'validation-receipt', 'advanced-profiles',
-    'field-trial-evidence',
+    'field-trial-evidence', 'field-trial-collection',
 ]
 BOOTSTRAPS = ['load-protocol-from-github.md', 'quick-start.md', 'verified-start.md', 'invite-limited-participant.md', 'help.md']
 
@@ -59,7 +59,7 @@ def main():
     manifest = {}
     if (directory / 'manifest.yaml').is_file():
         manifest = yaml.safe_load((directory / 'manifest.yaml').read_text(encoding='utf-8')) or {}
-        if manifest.get('bundle_version') != 'MADP-ALPHA3-BUNDLE-v7':
+        if manifest.get('bundle_version') != 'MADP-ALPHA3-BUNDLE-v8':
             problems.append('manifest bundle version mismatch')
         if manifest.get('protocol_version') != 'MADP-v0.3.0-alpha.3' or manifest.get('source_commit') != args.source_commit:
             problems.append('manifest provenance mismatch')
@@ -67,6 +67,8 @@ def main():
             problems.append('manifest load report version mismatch')
         if manifest.get('field_trial_evidence_version') != 'MADP-FIELD-TRIAL-EVIDENCE-v2':
             problems.append('manifest field-trial evidence version mismatch')
+        if manifest.get('field_trial_collection_version') != 'MADP-FIELD-TRIAL-COLLECTION-v1':
+            problems.append('manifest field-trial collection version mismatch')
         if manifest.get('validation_evidence_version') != 'MADP-ALPHA3-VALIDATION-EVIDENCE-v4':
             problems.append('manifest validation evidence version mismatch')
         if manifest.get('receipt_bound_field_trial_evidence') is not True:
@@ -75,10 +77,16 @@ def main():
             problems.append('run-normalized field-trial evidence marker missing')
         if manifest.get('validation_receipt_generator_path') != 'scripts/generate_validation_receipt_v030_alpha3.py':
             problems.append('validation receipt generator path mismatch')
+        if manifest.get('field_trial_collector_path') != 'scripts/collect_field_trial_evidence_v030_alpha3.py':
+            problems.append('field-trial collector path mismatch')
+        if manifest.get('field_trial_collection_config_path') != 'docs/evaluation/MADP-v0.3.0-alpha.3-field-trial-collection-config.yaml':
+            problems.append('field-trial collection config path mismatch')
         if manifest.get('formal_field_trial_receipt_schema') != 'schemas/v0.3.0-alpha.3/validation-receipt.schema.yaml':
             problems.append('formal field-trial receipt schema mismatch')
         if manifest.get('formal_field_trial_evidence_schema') != 'schemas/v0.3.0-alpha.3/field-trial-evidence.schema.yaml':
             problems.append('formal field-trial evidence schema mismatch')
+        if manifest.get('formal_field_trial_collection_schema') != 'schemas/v0.3.0-alpha.3/field-trial-collection.schema.yaml':
+            problems.append('formal field-trial collection schema mismatch')
 
         source_sets = manifest.get('source_sets', {})
         load_profiles = manifest.get('load_profiles', {})
@@ -206,7 +214,7 @@ def main():
         return 1
     print(
         'generated alpha.3 release artifacts: PASS '
-        '(profiled commit-pinned loader, v2 report, v4 validation evidence, 9 schemas, run-normalized receipt-bound field trials, 5 symmetric Skills)'
+        '(profiled commit-pinned loader, v2 report, v4 validation evidence, 10 schemas, run-normalized receipt-bound field trials, collection contract, 5 symmetric Skills)'
     )
     return 0
 
