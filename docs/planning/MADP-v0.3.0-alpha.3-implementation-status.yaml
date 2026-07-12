@@ -1,7 +1,10 @@
-status_version: 12
+status_version: 13
 protocol_version: MADP-v0.3.0-alpha.3
 implementation_status: RELEASE_CANDIDATE_CONTENT_READY
 integration_status: MERGED_TO_MAIN
+integration_status_scope: ALPHA3_BASELINE
+current_change_integration_status: PENDING_PR_11
+current_change_branch: agent/alpha3-field-trial-hardening
 evaluation_status: FIELD_TRIAL_IN_PROGRESS
 content_ready: true
 release_ready: false
@@ -18,6 +21,8 @@ validation_policy:
   run_normalized_field_trial_evidence_required: true
   field_trial_collection_package_schema_required: true
   collection_tool_must_not_sign_off_or_change_release_state: true
+  collection_check_must_revalidate_full_receipt_chain: true
+  collection_merge_must_reject_signed_or_finalized_results: true
 required_automated_checks:
   - id: A3-CHECK-IMPLEMENTATION
     command: python scripts/check_alpha3_implementation.py
@@ -59,12 +64,15 @@ release_blockers:
     title: Run evidence-backed final-main audit after A3-REL-001 is complete
 release_notes:
   - Automated evidence does not substitute for human usability evidence.
+  - integration_status describes the alpha.3 baseline already on main; the hardening and collection changes in this file remain pending in PR #11.
   - Field-trial defects now require explicit session-start, exact authority-sensitive arguments, and machine validation receipts.
   - Receipt IDs alone are not evidence; release checking recomputes report, artifact, schema, start-profile, and raw-observation hashes.
   - Formal evidence uses results_version 6 and MADP-FIELD-TRIAL-EVIDENCE-v2.
   - Load reports, profile bindings, receipts, and raw-observation inventories are stored once per run; scenario rows reference run and observation IDs.
   - MADP-FIELD-TRIAL-COLLECTION-v1 prepares DRAFT or READY run packages, copies and hashes observations, rebuilds receipts, and merges READY packages without sign-off.
-  - Collection-package tests cover successful preparation and merge, duplicate-run rejection, raw-observation tamper rejection, and DRAFT rejection.
+  - Collection package check and merge revalidate the complete report, receipt, schema, profile, commit, observation, run, and scenario reference chain.
+  - Collection merge rejects signed or finalized PASS results, duplicate participant/run identities, duplicate destinations, and conflicting run, trial, participant, or receipt records.
+  - Collection-package tests cover successful preparation and merge, receipt/profile/run-reference tampering, duplicate-run and duplicate-destination rejection, raw-observation tampering, signed-base rejection, and DRAFT rejection.
   - Results-version 5 evidence remains historical input and must be migrated before release use; conflicting run-level evidence fails closed.
   - The release-only usability path exercises a valid run-normalized chain, raw-observation hash tampering, and unknown-observation rejection in CI.
   - Existing field-trial observations remain historical evidence, but release metrics must be recollected against the run-normalized receipt-hardened commit.
