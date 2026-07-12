@@ -1,9 +1,7 @@
 name: Export alpha.3 tree SHA
 
 on:
-  push:
-    branches:
-      - agent/alpha3-field-trial-hardening
+  pull_request:
 
 jobs:
   export-tree:
@@ -11,6 +9,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
         with:
+          ref: ${{ github.event.pull_request.head.sha }}
           show-progress: false
       - name: Record tree SHA
         run: git rev-parse HEAD^{tree} > tree-sha.txt
