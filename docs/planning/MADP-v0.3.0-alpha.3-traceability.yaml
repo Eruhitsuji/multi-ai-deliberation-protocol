@@ -95,6 +95,11 @@ requirements:
     status: IMPLEMENTED
     artifact: scripts/collect_field_trial_evidence_v030_alpha3.py
     validation: scripts/test_field_trial_collection_v030_alpha3.py
+  - id: A3-REVIEW-FIELD-COLLECTION-INTEGRITY-001
+    title: Collection check and merge revalidate the full evidence chain and reject signed or PASS result mutation
+    status: IMPLEMENTED
+    artifact: scripts/collect_field_trial_evidence_v030_alpha3.py
+    validation: scripts/test_field_trial_collection_v030_alpha3.py
   - id: A3-REVIEW-FIELD-EVIDENCE-001
     title: Formal field-trial release evidence is independently recomputed from run reports, receipts, repository files, schemas, start profiles, and raw observations
     status: IMPLEMENTED
