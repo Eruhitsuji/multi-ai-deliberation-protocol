@@ -16,7 +16,7 @@ BOOTSTRAP_FILES = ['load-protocol-from-github.md', 'quick-start.md', 'verified-s
 SCHEMAS = [
     'deliberation', 'command', 'migration', 'session-portability',
     'protocol-load-report', 'command-registry', 'validation-receipt', 'advanced-profiles',
-    'field-trial-evidence',
+    'field-trial-evidence', 'field-trial-collection',
 ]
 SKILLS = ['madp-start', 'madp-facilitator', 'madp-participant', 'madp-recorder', 'madp-help']
 
@@ -139,12 +139,13 @@ def generate(out: Path, repository: str, commit: str, evidence: Path):
         for name in BOOTSTRAP_FILES
     ]
     manifest = {
-        'bundle_version': 'MADP-ALPHA3-BUNDLE-v7',
+        'bundle_version': 'MADP-ALPHA3-BUNDLE-v8',
         'protocol_version': VERSION,
         'repository': repository,
         'source_commit': commit,
         'protocol_load_report_version': 'MADP-PROTOCOL-LOAD-REPORT-v2',
         'field_trial_evidence_version': 'MADP-FIELD-TRIAL-EVIDENCE-v2',
+        'field_trial_collection_version': 'MADP-FIELD-TRIAL-COLLECTION-v1',
         'inventory_digest_algorithm': 'sha256-newline-paths-v1',
         'source_sets': SOURCE_SETS,
         'load_profiles': LOAD_PROFILES,
@@ -157,8 +158,11 @@ def generate(out: Path, repository: str, commit: str, evidence: Path):
         'receipt_bound_field_trial_evidence': True,
         'run_normalized_field_trial_evidence': True,
         'validation_receipt_generator_path': 'scripts/generate_validation_receipt_v030_alpha3.py',
+        'field_trial_collector_path': 'scripts/collect_field_trial_evidence_v030_alpha3.py',
+        'field_trial_collection_config_path': 'docs/evaluation/MADP-v0.3.0-alpha.3-field-trial-collection-config.yaml',
         'formal_field_trial_receipt_schema': 'schemas/v0.3.0-alpha.3/validation-receipt.schema.yaml',
         'formal_field_trial_evidence_schema': 'schemas/v0.3.0-alpha.3/field-trial-evidence.schema.yaml',
+        'formal_field_trial_collection_schema': 'schemas/v0.3.0-alpha.3/field-trial-collection.schema.yaml',
         'schema_bundle_count': len(SCHEMAS),
         'advanced_profile_count': len(SOURCE_SETS.get('ADVANCED_PROFILES', [])) - 1,
         'validation_evidence_version': ev.get('evidence_version'),
@@ -229,7 +233,7 @@ def main():
     print(
         f'alpha.3 release artifacts generated: {len(manifest["files"])} packaged sources, '
         f'3 load profiles, 5 bootstrap files, 5 Skills, {manifest["schema_bundle_count"]} schemas, '
-        'run-normalized receipt-bound field-trial evidence'
+        'run-normalized receipt-bound field-trial evidence and collection contract'
     )
     return 0
 
