@@ -27,6 +27,27 @@ Use `schemas/v0.3.0-alpha.3/field-trial-evidence.schema.yaml`.
 7. Metrics are recomputed from scenario rows; handwritten aggregate values are not authoritative.
 8. Existing results-version 5 evidence is historical input and must be migrated before release use.
 
+## Collection tooling
+
+Use `docs/evaluation/MADP-v0.3.0-alpha.3-field-trial-collection-config.yaml` as the input template and `scripts/collect_field_trial_evidence_v030_alpha3.py` to prepare one run package.
+
+```text
+python scripts/collect_field_trial_evidence_v030_alpha3.py prepare \
+  --config collection-config.yaml \
+  --output docs/evaluation/evidence/v0.3.0-alpha.3/RUN-001/package.yaml
+```
+
+The collector copies observation files, recomputes hashes, rebuilds repository validation receipts, creates the run-bound protocol-load-report receipt, and emits all eight scenario rows. A package remains `DRAFT` until all scenario assessments and observation references are complete. Only `READY` packages may be merged.
+
+```text
+python scripts/collect_field_trial_evidence_v030_alpha3.py merge \
+  --base-results docs/evaluation/MADP-v0.3.0-alpha.3-usability-results.yaml \
+  --package RUN-001/package.yaml \
+  --output combined-results.yaml
+```
+
+Merge recomputes metrics and leaves the result `IN_PROGRESS`; it never signs off or changes release state.
+
 ## Migration
 
 Use:
@@ -41,4 +62,4 @@ Migration deduplicates identical run-level evidence and turns each legacy raw ob
 
 ## Release boundary
 
-This profile changes evidence representation only. It does not lower usability thresholds, convert historical observations into passing evidence, authorize release, or change decision authority.
+This profile changes evidence representation and collection ergonomics only. It does not lower usability thresholds, convert historical observations into passing evidence, authorize release, or change decision authority.
