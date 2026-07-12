@@ -6,6 +6,7 @@ import argparse, hashlib, subprocess, sys, yaml
 ROOT = Path(__file__).resolve().parents[1]
 CHECKS = [
     ('A3-CHECK-IMPLEMENTATION', 'scripts/check_alpha3_implementation.py', []),
+    ('A3-CHECK-HARDENING', 'scripts/check_alpha3_hardening.py', []),
     ('A3-CHECK-MIGRATION', 'scripts/check_alpha3_migration.py', []),
     ('A3-CHECK-TRANSLATION', 'scripts/check_alpha3_translation.py', []),
     ('A3-CHECK-USABILITY', 'scripts/check_alpha3_usability.py', []),
@@ -24,6 +25,25 @@ STATIC_INPUTS = {
         'tests/v0.3.0-alpha.3/portability-fixtures.yaml',
         'docs/planning/MADP-v0.3.0-alpha.3-implementation-status.yaml',
         'docs/planning/MADP-v0.3.0-alpha.3-traceability.yaml',
+    ],
+    'A3-CHECK-HARDENING': [
+        'protocol/MADP-v0.3.0-alpha.3.md',
+        'bootstrap/alpha3/load-protocol-from-github.md',
+        'schemas/v0.3.0-alpha.3/protocol-load-report.schema.yaml',
+        'schemas/v0.3.0-alpha.3/command-registry.schema.yaml',
+        'schemas/v0.3.0-alpha.3/validation-receipt.schema.yaml',
+        'schemas/v0.3.0-alpha.3/advanced-profiles.schema.yaml',
+        'registries/v0.3.0-alpha.3/commands.yaml',
+        'tests/v0.3.0-alpha.3/hardening-fixtures.yaml',
+        'docs/profiles/SOURCE_AND_PARTICIPANT_INDEPENDENCE-v0.3.0-alpha.3.md',
+        'docs/profiles/BLIND_FIRST_ROUND_REVIEW-v0.3.0-alpha.3.md',
+        'docs/profiles/GENAI_USE_GOVERNANCE-v0.3.0-alpha.3.md',
+        'docs/profiles/AI_DEV_TASK_CONTRACT-v0.3.0-alpha.3.md',
+        'docs/profiles/COMMUNICATION_ALIGNMENT-v0.3.0-alpha.3.md',
+        'docs/profiles/ASSURANCE_MODES-v0.3.0-alpha.3.md',
+        'docs/profiles/OPINION_MAPPING_EXTENSION-v0.3.0-alpha.3.md',
+        'docs/profiles/DISSENT_LIFECYCLE-v0.3.0-alpha.3.md',
+        'docs/profiles/SESSION_RETENTION_AND_RECOVERY-v0.3.0-alpha.3.md',
     ],
     'A3-CHECK-MIGRATION': [
         'schemas/v0.3.0-alpha.3/migration.schema.yaml',
@@ -51,6 +71,7 @@ STATIC_INPUTS = {
     'A3-CHECK-RUNTIME': [
         'scripts/parse_command_v030_alpha3.py',
         'scripts/apply_command_v030_alpha3.py',
+        'scripts/test_command_runtime_v030_alpha3.py',
         'schemas/v0.3.0-alpha.3/command.schema.yaml',
         'registries/v0.3.0-alpha.3/commands.yaml',
     ],
@@ -63,13 +84,8 @@ def sha(path: Path) -> str:
 
 def scope_files() -> list[str]:
     prefixes = [
-        'schemas/v0.3.0-alpha.3/',
-        'registries/v0.3.0-alpha.3/',
-        'bootstrap/alpha3/',
-        'docs/ja/v0.3.0-alpha.3/',
-        'tests/v0.3.0-alpha.3/',
-        'skills/madp-',
-        'dist/chatgpt/madp-',
+        'schemas/v0.3.0-alpha.3/', 'registries/v0.3.0-alpha.3/', 'bootstrap/alpha3/',
+        'docs/ja/v0.3.0-alpha.3/', 'tests/v0.3.0-alpha.3/', 'skills/madp-', 'dist/chatgpt/madp-',
     ]
     files = []
     for path in ROOT.rglob('*'):
@@ -92,9 +108,7 @@ def scope_files() -> list[str]:
 
 
 def translation_inputs() -> list[str]:
-    document = yaml.safe_load(
-        (ROOT / 'docs/ja/v0.3.0-alpha.3/translation-manifest.yaml').read_text(encoding='utf-8')
-    )
+    document = yaml.safe_load((ROOT / 'docs/ja/v0.3.0-alpha.3/translation-manifest.yaml').read_text(encoding='utf-8'))
     output = []
     for entry in document.get('entries', []):
         output.extend([entry['source'], entry['translation']])
@@ -122,12 +136,7 @@ def main() -> int:
         for rel in sorted(set(inputs)):
             path = ROOT / rel
             if not path.is_file():
-                process = subprocess.CompletedProcess(
-                    process.args,
-                    1,
-                    process.stdout,
-                    (process.stderr + f'\nmissing evidence input: {rel}').strip(),
-                )
+                process = subprocess.CompletedProcess(process.args, 1, process.stdout, (process.stderr + f'\nmissing evidence input: {rel}').strip())
                 break
             input_hashes[rel] = sha(path)
         stdout = process.stdout.strip()
@@ -147,15 +156,12 @@ def main() -> int:
             'stderr_sha256': hashlib.sha256(stderr.encode('utf-8')).hexdigest(),
         })
         print(f'{check_id}: {status}')
-        if stdout:
-            print(stdout)
-        if stderr:
-            print(stderr, file=sys.stderr)
-        if process.returncode:
-            failed = True
+        if stdout: print(stdout)
+        if stderr: print(stderr, file=sys.stderr)
+        if process.returncode: failed = True
 
     manifest = {
-        'evidence_version': 'MADP-ALPHA3-VALIDATION-EVIDENCE-v1',
+        'evidence_version': 'MADP-ALPHA3-VALIDATION-EVIDENCE-v2',
         'protocol_version': 'MADP-v0.3.0-alpha.3',
         'repository_commit': args.repository_commit,
         'release_mode': args.release,
@@ -170,5 +176,4 @@ def main() -> int:
     return 1 if failed else 0
 
 
-if __name__ == '__main__':
-    raise SystemExit(main())
+if __name__ == '__main__': raise SystemExit(main())
