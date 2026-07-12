@@ -1,0 +1,99 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: urn:madp:schema:command-registry:0.3.0-alpha.3
+title: MADP v0.3.0-alpha.3 Command Registry
+type: object
+additionalProperties: false
+required: [registry_version, protocol_version, status, canonical_name_policy, composition, alias_policy, command_groups, aliases, commands]
+properties:
+  registry_version: {const: MADP-COMMAND-REGISTRY-v0.2}
+  protocol_version: {const: MADP-v0.3.0-alpha.3}
+  status: {const: release-candidate-content}
+  canonical_name_policy: {const: lowercase-kebab-case}
+  composition:
+    type: object
+    additionalProperties: false
+    required: [policy, inherited_registry_version, inherited_protocol_version, inherited_alpha2_commands, added_alpha3_commands]
+    properties:
+      policy: {const: ALPHA2_CANONICAL_SUPERSET}
+      inherited_registry_version: {const: MADP-COMMAND-REGISTRY-v0.1}
+      inherited_protocol_version: {const: MADP-v0.3.0-alpha.2}
+      inherited_alpha2_commands:
+        type: array
+        minItems: 20
+        maxItems: 20
+        uniqueItems: true
+        items: {$ref: '#/$defs/name'}
+      added_alpha3_commands:
+        type: array
+        minItems: 31
+        maxItems: 31
+        uniqueItems: true
+        items: {$ref: '#/$defs/name'}
+  alias_policy:
+    type: object
+    additionalProperties: false
+    required: [aliases_are_input_convenience_only, canonical_command_must_be_recorded, canonical_names_take_precedence, aliases_must_not_change_authority, unknown_or_ambiguous_alias]
+    properties:
+      aliases_are_input_convenience_only: {const: true}
+      canonical_command_must_be_recorded: {const: true}
+      canonical_names_take_precedence: {const: true}
+      aliases_must_not_change_authority: {const: true}
+      unknown_or_ambiguous_alias: {const: DENY_AND_SHOW_HELP}
+  command_groups:
+    type: array
+    minItems: 1
+    items:
+      type: object
+      additionalProperties: false
+      required: [group, purpose]
+      properties:
+        group: {$ref: '#/$defs/group'}
+        purpose: {$ref: '#/$defs/nonEmpty'}
+  aliases:
+    type: array
+    items:
+      type: object
+      additionalProperties: false
+      required: [alias, command]
+      properties:
+        alias: {$ref: '#/$defs/name'}
+        command: {$ref: '#/$defs/name'}
+  commands:
+    type: array
+    minItems: 51
+    maxItems: 51
+    items: {$ref: '#/$defs/command'}
+$defs:
+  nonEmpty: {type: string, minLength: 1}
+  name: {type: string, pattern: '^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$'}
+  group:
+    enum: [SESSION, CONTEXT, RELAY, REVIEW, AUTHORITY, DECISION, TODO, EXTERNAL, PLANNING, PARTICIPANT, ROLE, INGESTION, EVIDENCE, RECORDS, TEAM, HELP, PORTABILITY]
+  command:
+    type: object
+    additionalProperties: false
+    required: [command, group, command_class, default_authority_boundary, required_arguments, optional_arguments, test_arguments, effect_summary, safety_notes, prohibited_effects]
+    properties:
+      command: {$ref: '#/$defs/name'}
+      group: {$ref: '#/$defs/group'}
+      command_class:
+        enum: [AI_COMMAND, USER_COMMAND, TODO_COMMAND, EXTERNAL_ACTION_COMMAND, SESSION_COMMAND, RECORD_COMMAND, PORTABILITY_COMMAND, HELP_COMMAND, TEAM_COMMAND]
+      default_authority_boundary:
+        enum: [REFERENCE_ONLY, PROPOSE_ONLY, REQUIRES_USER_CONFIRMATION, USER_CONFIRMED, DENIED]
+      required_arguments:
+        type: array
+        uniqueItems: true
+        items: {type: string, pattern: '^[a-z][a-z0-9_]*$'}
+      optional_arguments:
+        type: array
+        uniqueItems: true
+        items: {type: string, pattern: '^[a-z][a-z0-9_]*$'}
+      test_arguments: {type: object}
+      effect_summary: {$ref: '#/$defs/nonEmpty'}
+      safety_notes:
+        type: array
+        minItems: 1
+        items: {$ref: '#/$defs/nonEmpty'}
+      prohibited_effects:
+        type: array
+        minItems: 1
+        items: {$ref: '#/$defs/nonEmpty'}

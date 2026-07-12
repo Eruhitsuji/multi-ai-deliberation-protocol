@@ -59,7 +59,7 @@ requirements:
     title: Rate-based unnecessary pause metric with zero critical pauses
     status: IMPLEMENTED
     artifact: docs/evaluation/MADP-v0.3.0-alpha.3-usability-plan.md
-    validation: scripts/check_alpha3_usability.py
+    validation: scripts/check_alpha3_field_trial.py
   - id: A3-REVIEW-IND-001
     title: Same model and chat must share one independence group
     status: IMPLEMENTED
@@ -69,4 +69,49 @@ requirements:
     title: Commit-pinned protocol loading precedes every alpha.3 start profile
     status: IMPLEMENTED
     artifact: bootstrap/alpha3/load-protocol-from-github.md
-    validation: scripts/check_alpha3_implementation.py
+    validation: scripts/check_alpha3_hardening.py
+  - id: A3-REVIEW-START-001
+    title: Goal confirmation and session activation are separate exact transitions
+    status: IMPLEMENTED
+    artifact: scripts/apply_command_v030_alpha3.py
+    validation: scripts/test_command_runtime_v030_alpha3.py
+  - id: A3-REVIEW-RECEIPT-001
+    title: Artifact validation receipts bind locator, revision or version, canonicalization, artifact hash, and schema hash
+    status: IMPLEMENTED
+    artifact: schemas/v0.3.0-alpha.3/validation-receipt.schema.yaml
+    validation: scripts/test_validation_receipt_v030_alpha3.py
+  - id: A3-REVIEW-FIELD-FORMAT-001
+    title: Run-level evidence is stored once and scenario results reference run and observation IDs
+    status: IMPLEMENTED
+    artifact: schemas/v0.3.0-alpha.3/field-trial-evidence.schema.yaml
+    validation: scripts/test_field_trial_evidence_v030_alpha3.py
+  - id: A3-REVIEW-FIELD-MIGRATION-001
+    title: Results-version 5 field-trial evidence migrates to run-normalized version 6 and conflicts fail closed
+    status: IMPLEMENTED
+    artifact: scripts/migrate_field_trial_results_v5_to_v6.py
+    validation: scripts/test_field_trial_evidence_v030_alpha3.py
+  - id: A3-REVIEW-FIELD-COLLECTION-001
+    title: Practical run logs are copied, hashed, receipt-bound, packaged as DRAFT or READY, and merged without automatic sign-off
+    status: IMPLEMENTED
+    artifact: scripts/collect_field_trial_evidence_v030_alpha3.py
+    validation: scripts/test_field_trial_collection_v030_alpha3.py
+  - id: A3-REVIEW-FIELD-COLLECTION-INTEGRITY-001
+    title: Collection check and merge revalidate the full evidence chain and reject signed or PASS result mutation
+    status: IMPLEMENTED
+    artifact: scripts/collect_field_trial_evidence_v030_alpha3.py
+    validation: scripts/test_field_trial_collection_v030_alpha3.py
+  - id: A3-REVIEW-FIELD-EVIDENCE-001
+    title: Formal field-trial release evidence is independently recomputed from run reports, receipts, repository files, schemas, start profiles, and raw observations
+    status: IMPLEMENTED
+    artifact: scripts/check_alpha3_field_trial.py
+    validation: scripts/test_alpha3_usability_release_evidence.py
+  - id: A3-REVIEW-TAMPER-001
+    title: Release-path evidence testing accepts a complete run-normalized receipt chain and rejects hash tampering and unknown observation references
+    status: IMPLEMENTED
+    artifact: scripts/test_alpha3_usability_release_evidence.py
+    validation: scripts/test_alpha3_usability_release_evidence.py
+  - id: A3-REVIEW-ADVANCED-001
+    title: Optional advanced profiles remain non-authority-expanding and schema-backed
+    status: IMPLEMENTED
+    artifact: schemas/v0.3.0-alpha.3/advanced-profiles.schema.yaml
+    validation: scripts/check_alpha3_hardening.py

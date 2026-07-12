@@ -1,14 +1,22 @@
 #!/usr/bin/env python3
 from pathlib import Path
-import argparse, hashlib, subprocess, sys, yaml
+import argparse
+import hashlib
+import subprocess
+import sys
+import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
 KNOWN = {'A3-REL-001', 'A3-REL-002', 'A3-REL-003', 'A3-REL-004', 'A3-REL-005'}
 REQUIRED_CHECKS = {
     'A3-CHECK-IMPLEMENTATION',
+    'A3-CHECK-HARDENING',
+    'A3-CHECK-RECEIPT',
+    'A3-CHECK-FIELD-TRIAL-FORMAT',
     'A3-CHECK-MIGRATION',
     'A3-CHECK-TRANSLATION',
     'A3-CHECK-USABILITY',
+    'A3-CHECK-USABILITY-RELEASE',
     'A3-CHECK-PARSER',
     'A3-CHECK-COMMAND-COVERAGE',
     'A3-CHECK-RUNTIME',
@@ -57,6 +65,9 @@ def main() -> int:
     if (
         policy.get('self_attestation_is_release_evidence') is not False
         or policy.get('machine_generated_evidence_manifest_required') is not True
+        or policy.get('artifact_validation_receipt_required') is not True
+        or policy.get('receipt_chain_must_be_recomputed') is not True
+        or policy.get('run_normalized_field_trial_evidence_required') is not True
     ):
         problems.append('unsafe validation evidence policy')
     if 'automated_checks' in status:
@@ -75,8 +86,10 @@ def main() -> int:
     else:
         evidence = yaml.safe_load(evidence_path.read_text(encoding='utf-8'))
         if (
-            evidence.get('evidence_version') != 'MADP-ALPHA3-VALIDATION-EVIDENCE-v1'
+            evidence.get('evidence_version') != 'MADP-ALPHA3-VALIDATION-EVIDENCE-v4'
             or evidence.get('self_attested') is not False
+            or evidence.get('receipt_check_required') is not True
+            or evidence.get('run_normalized_field_trial_evidence') is not True
         ):
             problems.append('invalid evidence format')
         if evidence.get('repository_commit') != args.repository_commit:
@@ -168,7 +181,7 @@ def main() -> int:
         return 1
     print(
         'MADP-v0.3.0-alpha.3 evidence-backed release audit: PASS'
-        + f' ({mode}; blockers={sorted(allowed)})'
+        + f' ({mode}; blockers={sorted(allowed)}; checks={len(REQUIRED_CHECKS)})'
     )
     return 0
 

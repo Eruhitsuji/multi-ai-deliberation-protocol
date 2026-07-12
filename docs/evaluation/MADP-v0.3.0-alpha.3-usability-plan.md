@@ -8,7 +8,63 @@ A failed report may be retained and superseded by a later revision with the same
 
 A trial without a valid report may be retained as a negative bootstrap or degraded-mode observation, but it must not count toward protocol-conformance metrics or A3-REL-001 sign-off.
 
-Manual trials may contain multiple participants, models, and repeated runs. Every result needs a unique `trial_id`, participant, run index, scenario ID, tested commit, load report, profile binding, and raw observation reference.
+Manual trials use `MADP-FIELD-TRIAL-EVIDENCE-v2` and `results_version: 6`. One participant/run pair creates one `run_evidence` record containing the tested commit, protocol load report, report receipt ID, start-profile binding, and raw observation inventory. Scenario rows contain only scenario outcomes, one `run_id`, and the required `observation_refs`.
+
+## Run-normalized evidence
+
+- `run_id` is unique.
+- participant ID plus run index is unique.
+- a run must support at least one scenario result.
+- a scenario must reference an existing run and existing observation IDs.
+- loader reports, profile bindings, and raw observation hashes are not copied into every scenario row.
+- the canonical report locator is `trial://<run_id>/protocol-load-report`.
+- repository validation targets use `repo://<repository-relative-path>`.
+
+Existing results-version 5 evidence may be preserved as historical input. Use `scripts/migrate_field_trial_results_v5_to_v6.py` before attempting release sign-off. Migration fails closed when rows assigned to one participant/run pair contain conflicting loader reports or profile bindings.
+
+## Collection workflow
+
+Start from `docs/evaluation/MADP-v0.3.0-alpha.3-field-trial-collection-config.yaml`. Keep the checked-out repository at the exact tested commit, then prepare one package per participant/run pair.
+
+```text
+python scripts/collect_field_trial_evidence_v030_alpha3.py prepare \
+  --config collection-config.yaml \
+  --output docs/evaluation/evidence/v0.3.0-alpha.3/RUN-001/package.yaml
+```
+
+`prepare` verifies the load report against the checked-out repository, rebuilds repository validation receipts, creates the run-bound report receipt, verifies the selected start profile, copies raw observations, hashes them, and creates all eight scenario rows.
+
+A package is `DRAFT` while any scenario review field or observation reference is missing. Check completed packages with:
+
+```text
+python scripts/collect_field_trial_evidence_v030_alpha3.py check \
+  --package docs/evaluation/evidence/v0.3.0-alpha.3/RUN-001/package.yaml \
+  --require-ready
+```
+
+Merge only `READY` packages:
+
+```text
+python scripts/collect_field_trial_evidence_v030_alpha3.py merge \
+  --base-results docs/evaluation/MADP-v0.3.0-alpha.3-usability-results.yaml \
+  --package RUN-001/package.yaml \
+  --package RUN-002/package.yaml \
+  --output combined-results.yaml
+```
+
+Merge rejects duplicate or conflicting participant, receipt, run, and trial identities. It recomputes metrics but leaves the combined document `IN_PROGRESS` and unsigned. Sign-off remains a separate human authority action.
+
+## Receipt-bound evidence
+
+`manual_trials.validation_receipts` stores complete `VALIDATION_RECEIPT` documents. A release-signoff run must reference:
+
+- one receipt that validates the complete `PROTOCOL_LOAD_REPORT` using `MADP_CANONICAL_JSON_V1`;
+- every receipt named by the report's `schema_validation_records`;
+- repository-bound validation records for both the inherited alpha.2 command registry and the alpha.3 command registry;
+- the exact selected start-profile SHA-256;
+- repository-relative raw observation files and matching SHA-256 values.
+
+The release checker validates the field-trial evidence schema and receipt schemas, then recomputes artifact hashes, schema hashes, JSON Schema results, profile hashes, and every raw-observation hash. Unresolved, unused, self-reported, hash-mismatched, unknown-run, or unknown-observation references do not count as evidence.
 
 Manual trials must cover new-user startup, alpha.2 canonical `status`/`pause`/`resume`, detailed `session-status`, external relay recovery, limited participants, import confirmation, minutes review, team approval, and Help exit.
 

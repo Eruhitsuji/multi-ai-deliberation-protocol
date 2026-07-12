@@ -1,0 +1,332 @@
+protocol_load_report:
+  valid:
+  - PROTOCOL_LOAD_REPORT:
+      report_version: MADP-PROTOCOL-LOAD-REPORT-v2
+      report_id: PLR-001
+      revision: 1
+      supersedes: null
+      active: true
+      protocol_version: MADP-v0.3.0-alpha.3
+      load_profile: FIELD_TRIAL
+      repository: Eruhitsuji/multi-ai-deliberation-protocol
+      repository_commit: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+      inventory_digest_algorithm: sha256-newline-paths-v1
+      source_inventory_digest: bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+      capability_preflight:
+        exact_byte_retrieval: true
+        sha256_available: true
+        schema_validator_available: true
+        complete_bundle_available: true
+        selected_source_mode: COMPLETE_BUNDLE
+      status: COMPLETE
+      files:
+      - path: registries/v0.3.0-alpha.3/commands.yaml
+        status: READ
+        access_method: COMPLETE_BUNDLE
+        source_ref: bundle://registries/v0.3.0-alpha.3/commands.yaml
+        content_sha256: cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+      all_required_files_read: true
+      schema_validation_capability: EXECUTED
+      schema_validation_executed: true
+      schemas_applicable:
+      - schemas/v0.3.0-alpha.3/command-registry.schema.yaml
+      schemas_executed:
+      - schemas/v0.3.0-alpha.3/command-registry.schema.yaml
+      schema_validation_records:
+      - target_ref: repo://registries/v0.3.0-alpha.3/commands.yaml
+        target_sha256: cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+        schema_path: schemas/v0.3.0-alpha.3/command-registry.schema.yaml
+        schema_sha256: dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+        receipt_ref: VAL-REG-A3
+        result: PASS
+        artifact_type: COMMAND_REGISTRY
+        artifact_id: COMMANDS-A3
+        artifact_version: MADP-COMMAND-REGISTRY-v0.2
+      unvalidated_structured_sources: []
+      inferred_unread_content: false
+      provenance_level: HASH_VERIFIED
+      authorized_start_profiles:
+      - path: bootstrap/alpha3/quick-start.md
+        repository: Eruhitsuji/multi-ai-deliberation-protocol
+        repository_commit: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+        source_ref: bundle://bootstrap/alpha3/quick-start.md
+        content_sha256: eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+      validation_receipt_refs:
+      - VAL-REG-A3
+      limitations: []
+      next_action:
+        command: APPLY_START_PROFILE
+        accepted_input: bootstrap/alpha3/quick-start.md
+  - PROTOCOL_LOAD_REPORT:
+      report_version: MADP-PROTOCOL-LOAD-REPORT-v2
+      report_id: PLR-FAIL
+      revision: 1
+      supersedes: null
+      active: true
+      protocol_version: MADP-v0.3.0-alpha.3
+      load_profile: FIELD_TRIAL
+      repository: Eruhitsuji/multi-ai-deliberation-protocol
+      repository_commit: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+      inventory_digest_algorithm: sha256-newline-paths-v1
+      source_inventory_digest: bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+      capability_preflight:
+        exact_byte_retrieval: false
+        sha256_available: false
+        schema_validator_available: false
+        complete_bundle_available: false
+        selected_source_mode: NONE
+      status: INCOMPLETE
+      files:
+      - path: protocol/MADP-v0.3.0-alpha.3.md
+        status: FAILED
+        access_method: OTHER
+        source_ref: unavailable://protocol/MADP-v0.3.0-alpha.3.md
+        content_sha256: null
+      all_required_files_read: false
+      schema_validation_capability: UNAVAILABLE
+      schema_validation_executed: false
+      schemas_applicable: []
+      schemas_executed: []
+      schema_validation_records: []
+      unvalidated_structured_sources:
+      - protocol/MADP-v0.3.0-alpha.3.md
+      inferred_unread_content: false
+      provenance_level: SELF_ATTESTED
+      authorized_start_profiles: []
+      validation_receipt_refs: []
+      limitations:
+      - Exact source retrieval is unavailable; upload the complete protocol bundle.
+      next_action:
+        command: RECOVER_PROTOCOL_SOURCE
+        accepted_input: complete protocol bundle upload
+  invalid:
+  - id: INCOMPLETE_WITH_AUTHORIZED_PROFILE
+    artifact:
+      PROTOCOL_LOAD_REPORT:
+        active: true
+        all_required_files_read: false
+        authorized_start_profiles:
+        - path: bootstrap/alpha3/quick-start.md
+          repository: Eruhitsuji/multi-ai-deliberation-protocol
+          repository_commit: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+          source_ref: unavailable://profile
+          content_sha256: eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+        capability_preflight:
+          complete_bundle_available: false
+          exact_byte_retrieval: false
+          schema_validator_available: false
+          selected_source_mode: NONE
+          sha256_available: false
+        files:
+        - access_method: OTHER
+          content_sha256: null
+          path: protocol/MADP-v0.3.0-alpha.3.md
+          source_ref: unavailable://protocol/MADP-v0.3.0-alpha.3.md
+          status: FAILED
+        inferred_unread_content: false
+        inventory_digest_algorithm: sha256-newline-paths-v1
+        limitations: []
+        load_profile: FIELD_TRIAL
+        next_action:
+          accepted_input: complete protocol bundle upload
+          command: RECOVER_PROTOCOL_SOURCE
+        protocol_version: MADP-v0.3.0-alpha.3
+        provenance_level: SELF_ATTESTED
+        report_id: PLR-FAIL
+        report_version: MADP-PROTOCOL-LOAD-REPORT-v2
+        repository: Eruhitsuji/multi-ai-deliberation-protocol
+        repository_commit: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+        revision: 1
+        schema_validation_capability: UNAVAILABLE
+        schema_validation_executed: false
+        schema_validation_records: []
+        schemas_applicable: []
+        schemas_executed: []
+        source_inventory_digest: bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+        status: INCOMPLETE
+        supersedes: null
+        unvalidated_structured_sources:
+        - protocol/MADP-v0.3.0-alpha.3.md
+        validation_receipt_refs: []
+validation_receipt:
+  valid:
+  - VALIDATION_RECEIPT:
+      receipt_id: VAL-REPORT-001
+      protocol_version: MADP-v0.3.0-alpha.3
+      artifact_ref:
+        artifact_type: PROTOCOL_LOAD_REPORT
+        artifact_id: PLR-001
+        artifact_locator: trial://TRIAL-001/protocol-load-report
+        artifact_revision: 1
+        canonicalization: MADP_CANONICAL_JSON_V1
+        artifact_sha256: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+      schema_ref:
+        path: schemas/v0.3.0-alpha.3/protocol-load-report.schema.yaml
+        sha256: bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+      executor:
+        type: DETERMINISTIC_RUNTIME
+        name: madp-jsonschema-receipt
+        version: '1.0'
+      executed: true
+      result: PASS
+      errors: []
+      limitations: []
+  - VALIDATION_RECEIPT:
+      artifact_ref:
+        artifact_id: COMMANDS-A3
+        artifact_locator: repo://registries/v0.3.0-alpha.3/commands.yaml
+        artifact_sha256: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+        artifact_type: COMMAND_REGISTRY
+        canonicalization: RAW_BYTES
+        artifact_version: MADP-COMMAND-REGISTRY-v0.2
+      errors: []
+      executed: true
+      executor:
+        name: madp-jsonschema-receipt
+        type: DETERMINISTIC_RUNTIME
+        version: '1.0'
+      limitations: []
+      protocol_version: MADP-v0.3.0-alpha.3
+      receipt_id: VAL-REG-A3
+      result: PASS
+      schema_ref:
+        path: schemas/v0.3.0-alpha.3/command-registry.schema.yaml
+        sha256: bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+  invalid:
+  - id: MODEL_SELF_REPORT_EXECUTOR
+    artifact:
+      VALIDATION_RECEIPT:
+        artifact_ref:
+          artifact_id: PLR-001
+          artifact_locator: trial://TRIAL-001/protocol-load-report
+          artifact_revision: 1
+          artifact_sha256: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+          artifact_type: PROTOCOL_LOAD_REPORT
+          canonicalization: MADP_CANONICAL_JSON_V1
+        errors: []
+        executed: true
+        executor:
+          name: madp-jsonschema-receipt
+          type: MODEL_SELF_REPORT
+          version: '1.0'
+        limitations: []
+        protocol_version: MADP-v0.3.0-alpha.3
+        receipt_id: VAL-BAD
+        result: PASS
+        schema_ref:
+          path: schemas/v0.3.0-alpha.3/protocol-load-report.schema.yaml
+          sha256: bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+advanced_profiles:
+  valid:
+  - independence_record:
+      record_id: IND-001
+      protocol_version: MADP-v0.3.0-alpha.3
+      subject_id: AI-001
+      subject_type: PARTICIPANT
+      provider: OpenAI
+      model_family: GPT-5
+      data_origin: mixed
+      retrieval_provider: none
+      context_origin: CHAT-001
+      prompt_lineage: PROMPT-001
+      independence_group: IG-001
+      unknowns: []
+  - alignment_contract:
+      contract_id: ALIGN-001
+      protocol_version: MADP-v0.3.0-alpha.3
+      session_id: SESSION-001
+      source_state_version: 4
+      revision: 1
+      purpose_statement: Compare candidate policies without scope drift.
+      assumptions:
+      - id: A-001
+        statement: The listed policies are current.
+        status: QUESTION_REQUIRED
+      in_scope:
+      - policy comparison
+      out_of_scope:
+      - implementation
+      claim_label_required: true
+      acceptance_criteria:
+      - material assumptions resolved
+      scope_checkpoint_policy:
+        interval_revisions: 3
+        trigger_on_new_policy_family: true
+  - scope_check:
+      check_id: SCOPE-001
+      protocol_version: MADP-v0.3.0-alpha.3
+      session_id: SESSION-001
+      source_state_version: 7
+      confirmed_plan_revision: 1
+      current_topic: STRICT assurance design
+      classification: SCOPE_EXPANSION
+      rationale: A new policy family was introduced.
+      next_action: GOAL_REVISION_REQUIRED
+  - assurance_state:
+      state_id: ASSURE-001
+      protocol_version: MADP-v0.3.0-alpha.3
+      session_id: SESSION-001
+      source_state_version: 8
+      mode: REVIEW_REQUIRED
+      escalation_source: RUNTIME
+      deescalation_requires_independent_validation: true
+      user_override_status: NONE
+  - dissent_record:
+      dissent_id: DISS-001
+      protocol_version: MADP-v0.3.0-alpha.3
+      session_id: SESSION-001
+      source_state_version: 8
+      revision: 1
+      status: OPEN
+      statement: The evidence is insufficient for the proposed conclusion.
+      original_record_sha256: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+      resolver_id: ''
+      evidence_refs: []
+      redaction_reason: ''
+  - opinion_map_report:
+      report_id: OPMAP-001
+      protocol_version: MADP-v0.3.0-alpha.3
+      session_id: SESSION-001
+      source_state_version: 8
+      snapshot_revision: 1
+      semantic_digest: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+      raw_byte_digest: bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+      participant_count: 5
+      independence_group_count: 3
+      statements:
+      - statement_id: STMT-001
+        text: Require independent review for high-impact use.
+        agree: 3
+        disagree: 1
+        pass: 0
+        not_seen: 0
+        no_response: 1
+        invalidated: 0
+      minority_dissent_refs:
+      - DISS-001
+      authority_boundary: ADVISORY_ONLY
+  invalid:
+  - id: OPINION_MAP_CLAIMS_AUTHORITY
+    artifact:
+      opinion_map_report:
+        authority_boundary: USER_CONFIRMED
+        independence_group_count: 3
+        minority_dissent_refs:
+        - DISS-001
+        participant_count: 5
+        protocol_version: MADP-v0.3.0-alpha.3
+        raw_byte_digest: bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+        report_id: OPMAP-BAD
+        semantic_digest: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+        session_id: SESSION-001
+        snapshot_revision: 1
+        source_state_version: 8
+        statements:
+        - agree: 3
+          disagree: 1
+          invalidated: 0
+          no_response: 1
+          not_seen: 0
+          pass: 0
+          statement_id: STMT-001
+          text: Require independent review for high-impact use.

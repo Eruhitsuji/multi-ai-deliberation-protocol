@@ -1,0 +1,152 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: urn:madp:schema:advanced-profiles:0.3.0-alpha.3
+title: MADP v0.3.0-alpha.3 Advanced Profile Artifacts
+type: object
+additionalProperties: false
+minProperties: 1
+maxProperties: 1
+oneOf:
+  - required: [independence_record]
+  - required: [alignment_contract]
+  - required: [scope_check]
+  - required: [assurance_state]
+  - required: [dissent_record]
+  - required: [opinion_map_report]
+properties:
+  independence_record: {$ref: '#/$defs/independenceRecord'}
+  alignment_contract: {$ref: '#/$defs/alignmentContract'}
+  scope_check: {$ref: '#/$defs/scopeCheck'}
+  assurance_state: {$ref: '#/$defs/assuranceState'}
+  dissent_record: {$ref: '#/$defs/dissentRecord'}
+  opinion_map_report: {$ref: '#/$defs/opinionMapReport'}
+$defs:
+  id: {type: string, minLength: 1, pattern: '^[A-Za-z0-9][A-Za-z0-9._:-]*$'}
+  nonEmpty: {type: string, minLength: 1}
+  strings:
+    type: array
+    items: {$ref: '#/$defs/nonEmpty'}
+  sha256: {type: string, pattern: '^[0-9a-f]{64}$'}
+  independenceRecord:
+    type: object
+    additionalProperties: false
+    required: [record_id, protocol_version, subject_id, subject_type, provider, model_family, data_origin, retrieval_provider, context_origin, prompt_lineage, independence_group, unknowns]
+    properties:
+      record_id: {$ref: '#/$defs/id'}
+      protocol_version: {const: MADP-v0.3.0-alpha.3}
+      subject_id: {$ref: '#/$defs/id'}
+      subject_type: {enum: [SOURCE, PARTICIPANT, MODEL_OUTPUT]}
+      provider: {type: string}
+      model_family: {type: string}
+      data_origin: {type: string}
+      retrieval_provider: {type: string}
+      context_origin: {type: string}
+      prompt_lineage: {type: string}
+      independence_group: {$ref: '#/$defs/id'}
+      unknowns: {$ref: '#/$defs/strings'}
+  alignmentContract:
+    type: object
+    additionalProperties: false
+    required: [contract_id, protocol_version, session_id, source_state_version, revision, purpose_statement, assumptions, in_scope, out_of_scope, claim_label_required, acceptance_criteria, scope_checkpoint_policy]
+    properties:
+      contract_id: {$ref: '#/$defs/id'}
+      protocol_version: {const: MADP-v0.3.0-alpha.3}
+      session_id: {$ref: '#/$defs/id'}
+      source_state_version: {type: integer, minimum: 0}
+      revision: {type: integer, minimum: 1}
+      purpose_statement: {$ref: '#/$defs/nonEmpty'}
+      assumptions:
+        type: array
+        items:
+          type: object
+          additionalProperties: false
+          required: [id, statement, status]
+          properties:
+            id: {$ref: '#/$defs/id'}
+            statement: {$ref: '#/$defs/nonEmpty'}
+            status: {enum: [CONFIRMED, QUESTION_REQUIRED, REJECTED]}
+      in_scope: {$ref: '#/$defs/strings'}
+      out_of_scope: {$ref: '#/$defs/strings'}
+      claim_label_required: {type: boolean}
+      acceptance_criteria: {$ref: '#/$defs/strings'}
+      scope_checkpoint_policy:
+        type: object
+        additionalProperties: false
+        required: [interval_revisions, trigger_on_new_policy_family]
+        properties:
+          interval_revisions: {type: integer, minimum: 1}
+          trigger_on_new_policy_family: {type: boolean}
+  scopeCheck:
+    type: object
+    additionalProperties: false
+    required: [check_id, protocol_version, session_id, source_state_version, confirmed_plan_revision, current_topic, classification, rationale, next_action]
+    properties:
+      check_id: {$ref: '#/$defs/id'}
+      protocol_version: {const: MADP-v0.3.0-alpha.3}
+      session_id: {$ref: '#/$defs/id'}
+      source_state_version: {type: integer, minimum: 0}
+      confirmed_plan_revision: {type: integer, minimum: 1}
+      current_topic: {$ref: '#/$defs/nonEmpty'}
+      classification: {enum: [IN_SCOPE, SCOPE_EXPANSION, OUT_OF_SCOPE]}
+      rationale: {$ref: '#/$defs/nonEmpty'}
+      next_action: {enum: [CONTINUE, GOAL_REVISION_REQUIRED]}
+  assuranceState:
+    type: object
+    additionalProperties: false
+    required: [state_id, protocol_version, session_id, source_state_version, mode, escalation_source, deescalation_requires_independent_validation, user_override_status]
+    properties:
+      state_id: {$ref: '#/$defs/id'}
+      protocol_version: {const: MADP-v0.3.0-alpha.3}
+      session_id: {$ref: '#/$defs/id'}
+      source_state_version: {type: integer, minimum: 0}
+      mode: {enum: [NORMAL, REVIEW_REQUIRED, STRICT]}
+      escalation_source: {enum: [HUMAN, AI, POLICY, RUNTIME]}
+      deescalation_requires_independent_validation: {const: true}
+      user_override_status: {enum: [NONE, OVERRIDDEN_WITH_DISSENT]}
+  dissentRecord:
+    type: object
+    additionalProperties: false
+    required: [dissent_id, protocol_version, session_id, source_state_version, revision, status, statement, original_record_sha256, resolver_id, evidence_refs, redaction_reason]
+    properties:
+      dissent_id: {$ref: '#/$defs/id'}
+      protocol_version: {const: MADP-v0.3.0-alpha.3}
+      session_id: {$ref: '#/$defs/id'}
+      source_state_version: {type: integer, minimum: 0}
+      revision: {type: integer, minimum: 1}
+      status: {enum: [OPEN, RESOLVED, OVERRIDDEN, SUPERSEDED, REDACTED]}
+      statement: {$ref: '#/$defs/nonEmpty'}
+      original_record_sha256: {$ref: '#/$defs/sha256'}
+      resolver_id: {type: string}
+      evidence_refs: {$ref: '#/$defs/strings'}
+      redaction_reason: {type: string}
+  opinionMapReport:
+    type: object
+    additionalProperties: false
+    required: [report_id, protocol_version, session_id, source_state_version, snapshot_revision, semantic_digest, raw_byte_digest, participant_count, independence_group_count, statements, minority_dissent_refs, authority_boundary]
+    properties:
+      report_id: {$ref: '#/$defs/id'}
+      protocol_version: {const: MADP-v0.3.0-alpha.3}
+      session_id: {$ref: '#/$defs/id'}
+      source_state_version: {type: integer, minimum: 0}
+      snapshot_revision: {type: integer, minimum: 1}
+      semantic_digest: {$ref: '#/$defs/sha256'}
+      raw_byte_digest: {$ref: '#/$defs/sha256'}
+      participant_count: {type: integer, minimum: 1}
+      independence_group_count: {type: integer, minimum: 1}
+      statements:
+        type: array
+        minItems: 1
+        items:
+          type: object
+          additionalProperties: false
+          required: [statement_id, text, agree, disagree, pass, not_seen, no_response, invalidated]
+          properties:
+            statement_id: {$ref: '#/$defs/id'}
+            text: {$ref: '#/$defs/nonEmpty'}
+            agree: {type: integer, minimum: 0}
+            disagree: {type: integer, minimum: 0}
+            pass: {type: integer, minimum: 0}
+            not_seen: {type: integer, minimum: 0}
+            no_response: {type: integer, minimum: 0}
+            invalidated: {type: integer, minimum: 0}
+      minority_dissent_refs: {$ref: '#/$defs/strings'}
+      authority_boundary: {const: ADVISORY_ONLY}

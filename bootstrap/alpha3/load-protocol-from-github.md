@@ -1,5 +1,5 @@
 ---
-bootstrap_version: 0.7-draft
+bootstrap_version: 0.8-draft
 protocol_version: MADP-v0.3.0-alpha.3
 bootstrap_role: PROTOCOL_LOADER
 report_version: MADP-PROTOCOL-LOAD-REPORT-v2
@@ -25,6 +25,9 @@ source_sets:
   - protocol/GLOSSARY-v0.3.0-alpha.3.md
   - schemas/v0.3.0-alpha.3/deliberation.schema.yaml
   - schemas/v0.3.0-alpha.3/command.schema.yaml
+  - schemas/v0.3.0-alpha.3/protocol-load-report.schema.yaml
+  - schemas/v0.3.0-alpha.3/command-registry.schema.yaml
+  - schemas/v0.3.0-alpha.3/validation-receipt.schema.yaml
   - registries/v0.3.0-alpha.3/commands.yaml
   - docs/profiles/COMMAND_SYSTEM-v0.3.0-alpha.3.md
   PORTABILITY:
@@ -47,6 +50,20 @@ source_sets:
   - skills/madp-participant/SKILL.md
   - skills/madp-recorder/SKILL.md
   - skills/madp-help/SKILL.md
+  VALIDATION_TOOLS:
+  - scripts/generate_validation_receipt_v030_alpha3.py
+  - docs/profiles/VALIDATION_EVIDENCE-v0.3.0-alpha.3.md
+  ADVANCED_PROFILES:
+  - schemas/v0.3.0-alpha.3/advanced-profiles.schema.yaml
+  - docs/profiles/SOURCE_AND_PARTICIPANT_INDEPENDENCE-v0.3.0-alpha.3.md
+  - docs/profiles/BLIND_FIRST_ROUND_REVIEW-v0.3.0-alpha.3.md
+  - docs/profiles/GENAI_USE_GOVERNANCE-v0.3.0-alpha.3.md
+  - docs/profiles/AI_DEV_TASK_CONTRACT-v0.3.0-alpha.3.md
+  - docs/profiles/COMMUNICATION_ALIGNMENT-v0.3.0-alpha.3.md
+  - docs/profiles/ASSURANCE_MODES-v0.3.0-alpha.3.md
+  - docs/profiles/OPINION_MAPPING_EXTENSION-v0.3.0-alpha.3.md
+  - docs/profiles/DISSENT_LIFECYCLE-v0.3.0-alpha.3.md
+  - docs/profiles/SESSION_RETENTION_AND_RECOVERY-v0.3.0-alpha.3.md
 load_profiles:
   QUICK:
     required_sets:
@@ -59,6 +76,7 @@ load_profiles:
     - PORTABILITY
     - TEAM
     - HELP
+    - VALIDATION_TOOLS
     schema_validation_requirement: EXECUTED
     minimum_provenance: HASH_VERIFIED
   FIELD_TRIAL:
@@ -67,19 +85,20 @@ load_profiles:
     - PORTABILITY
     - TEAM
     - HELP
+    - VALIDATION_TOOLS
     schema_validation_requirement: EXECUTED
     minimum_provenance: HASH_VERIFIED
 source_inventory_digests:
-  QUICK: fe6b4f0685aa36088bcaca13f49bea1abdc6daa7f647339db2df34636e73f242
-  VERIFIED: eccf10a42c1c629a0cd25d17aa0cec305708757c9ec959e35bcbf96dddcf78f4
-  FIELD_TRIAL: eccf10a42c1c629a0cd25d17aa0cec305708757c9ec959e35bcbf96dddcf78f4
+  QUICK: ba8c4b88c55de4d73ea82292fcaa38d2825096f3e08df041985bdab57be692c0
+  VERIFIED: c2f319b54f12389ea8728b0e6c6e7875c3485c1bf93b71faa16e4a4951437297
+  FIELD_TRIAL: c2f319b54f12389ea8728b0e6c6e7875c3485c1bf93b71faa16e4a4951437297
 ---
 
 # Load MADP v0.3.0-alpha.3 From GitHub
 
-Load the alpha.2 core and the selected alpha.3 source sets from one immutable GitHub commit before applying an alpha.3 start profile. This loader is informative and cannot override normative sources or higher-priority authority.
+Load the alpha.2 core and selected alpha.3 source sets from one immutable GitHub commit before applying an alpha.3 start profile. This loader is informative and cannot override normative sources or higher-priority authority.
 
-The caller must provide:
+The caller provides:
 
 - `MADP_GITHUB_OWNER`;
 - `MADP_GITHUB_REPOSITORY`;
@@ -90,14 +109,27 @@ Do not substitute `main`, `master`, a tag, or another movable ref for the commit
 
 ## Source-set selection
 
-Use only the source sets named by frontmatter `load_profiles.<MADP_LOAD_PROFILE>.required_sets`.
+Use only the source sets named by `load_profiles.<MADP_LOAD_PROFILE>.required_sets`.
 
 - `QUICK` loads the shared protocol core.
-- `VERIFIED` additionally loads portability, team, and Help sources.
-- `FIELD_TRIAL` uses the same normative source coverage as `VERIFIED` and requires hash-verified provenance suitable for formal usability evidence.
-- Migration, model-comparison, and Skill-adapter sources are feature sets. Load them when that feature is used, but they are not part of ordinary QUICK completeness.
+- `VERIFIED` and `FIELD_TRIAL` additionally load portability, team, Help, and deterministic validation tools.
+- `FIELD_TRIAL` uses the same normative source coverage as `VERIFIED` and requires receipt-bound evidence suitable for formal usability evaluation.
+- Migration, model-comparison, Skill-adapter, and advanced-profile sources are feature sets. Load them when that feature is used; they are not part of ordinary QUICK completeness.
 
-The selected ordered path list must match the corresponding frontmatter `source_inventory_digests` value using `sha256-newline-paths-v1`: SHA-256 of every selected path joined by `\n`, with one final `\n`.
+The selected ordered path list must match the corresponding `source_inventory_digests` value using `sha256-newline-paths-v1`: SHA-256 of every selected path joined by `\n`, with one final `\n`.
+
+## Capability preflight
+
+Before retrieving individual sources, record whether the environment can:
+
+- retrieve exact bytes;
+- compute SHA-256;
+- execute a JSON Schema validator;
+- read a generated complete bundle.
+
+Select one source mode: `RAW_FILES`, `GITHUB_CONNECTOR`, `PROVIDED_TEXT`, `COMPLETE_BUNDLE`, or `NONE`.
+
+When exact retrieval, hashing, or required schema validation is unavailable, prefer a commit-bound complete bundle. When no viable mode exists, emit one `INCOMPLETE` report immediately with a concrete complete protocol bundle upload or corrected-access next action. Do not spend a long run fabricating per-file attempts that cannot succeed.
 
 ## Retrieval procedure
 
@@ -113,12 +145,30 @@ For each source:
 
 - report `READ`, `PARTIALLY_READ`, or `FAILED`;
 - preserve a non-empty `source_ref`;
-- compute and record the SHA-256 of the exact bytes as `content_sha256` when possible;
+- compute SHA-256 of the exact bytes as `content_sha256` when possible;
 - never infer, reconstruct, or silently replace unread content.
+
+## Schema validation and receipts
+
+For VERIFIED and FIELD_TRIAL, use `scripts/generate_validation_receipt_v030_alpha3.py` or an equivalent deterministic validator.
+
+At minimum validate:
+
+1. `registries/v0.3.0-alpha.2/commands.yaml` with `schemas/v0.3.0-alpha.2/command-registry.schema.yaml`;
+2. `registries/v0.3.0-alpha.3/commands.yaml` with `schemas/v0.3.0-alpha.3/command-registry.schema.yaml`;
+3. the final load report with `schemas/v0.3.0-alpha.3/protocol-load-report.schema.yaml`.
+
+Preassign the final report receipt ID, include it in `validation_receipt_refs`, then compute the receipt over the complete report document using `MADP_CANONICAL_JSON_V1`. Registry receipts use `RAW_BYTES`.
+
+A `schema_validation_record` binds one loaded repository target to one schema and receipt. `schemas_applicable` is the unique set of record schema paths. `schemas_executed` is the unique set of schema paths whose records are `PASS`. Every record receipt and the final report receipt must resolve to an actual `VALIDATION_RECEIPT`.
+
+`unvalidated_structured_sources` concerns loaded instance documents for which an applicable repository schema exists. Schema-definition documents are checked as schemas by the validator and are not silently classified as validated instances.
+
+The chat-visible output may remain the load report only, but every referenced receipt must be preserved as a retrievable artifact and supplied with formal trial evidence. A receipt ID without the receipt artifact is not evidence.
 
 ## Report revisions and recovery
 
-A failed load remains in chat history. Therefore, retries do not require there to be only one report document.
+A failed load remains in chat history.
 
 - The first report uses a stable `report_id` and `revision: 1`.
 - A retry reuses the same `report_id`, increments `revision`, and identifies the prior revision in `supersedes`.
@@ -128,7 +178,7 @@ A failed load remains in chat history. Therefore, retries do not require there t
 
 ## Required output
 
-Return one YAML document for each load attempt, before deliberation:
+Return one YAML report for each load attempt, before deliberation:
 
 ```yaml
 PROTOCOL_LOAD_REPORT:
@@ -142,7 +192,13 @@ PROTOCOL_LOAD_REPORT:
   repository: "{{MADP_GITHUB_OWNER}}/{{MADP_GITHUB_REPOSITORY}}"
   repository_commit: "{{MADP_COMMIT_SHA}}"
   inventory_digest_algorithm: sha256-newline-paths-v1
-  source_inventory_digest: "<digest for the selected load profile>"
+  source_inventory_digest: "<digest for selected load profile>"
+  capability_preflight:
+    exact_byte_retrieval: true | false
+    sha256_available: true | false
+    schema_validator_available: true | false
+    complete_bundle_available: true | false
+    selected_source_mode: RAW_FILES | GITHUB_CONNECTOR | PROVIDED_TEXT | COMPLETE_BUNDLE | NONE
   status: COMPLETE | INCOMPLETE
   files:
     - path: protocol/MADP-v0.3.0-alpha.3.md
@@ -153,6 +209,19 @@ PROTOCOL_LOAD_REPORT:
   all_required_files_read: true | false
   schema_validation_capability: EXECUTED | AVAILABLE_NOT_EXECUTED | UNAVAILABLE
   schema_validation_executed: true | false
+  schemas_applicable: []
+  schemas_executed: []
+  schema_validation_records:
+    - target_ref: repo://registries/v0.3.0-alpha.3/commands.yaml
+      target_sha256: "<sha256>"
+      artifact_type: COMMAND_REGISTRY
+      artifact_id: COMMANDS-A3
+      artifact_version: MADP-COMMAND-REGISTRY-v0.2
+      schema_path: schemas/v0.3.0-alpha.3/command-registry.schema.yaml
+      schema_sha256: "<sha256>"
+      receipt_ref: VAL-REGISTRY-A3
+      result: PASS | FAIL
+  unvalidated_structured_sources: []
   inferred_unread_content: false
   provenance_level: HASH_VERIFIED | SOURCE_REFERENCED | SELF_ATTESTED
   authorized_start_profiles:
@@ -160,37 +229,49 @@ PROTOCOL_LOAD_REPORT:
       repository: "{{MADP_GITHUB_OWNER}}/{{MADP_GITHUB_REPOSITORY}}"
       repository_commit: "{{MADP_COMMIT_SHA}}"
       source_ref: "exact commit-pinned source reference"
+      content_sha256: "<sha256 of exact profile bytes>"
+  validation_receipt_refs:
+    - VAL-REGISTRY-A2
+    - VAL-REGISTRY-A3
+    - VAL-PLR-001-R1
   limitations: []
   next_action:
     command: APPLY_START_PROFILE | RECOVER_PROTOCOL_SOURCE
-    accepted_input: bootstrap/alpha3/quick-start.md | bootstrap/alpha3/verified-start.md | corrected source access
+    accepted_input: bootstrap/alpha3/quick-start.md | bootstrap/alpha3/verified-start.md | complete protocol bundle upload | corrected source access
 ```
 
-The `files` array must contain exactly one entry for every selected required path, in the selected inventory order, without omissions, additions, or duplicates.
+The `files` array contains exactly one entry for every selected required path, in selected inventory order, without omissions, additions, or duplicates.
 
-`authorized_start_profiles` is:
+`authorized_start_profiles` is empty for every `INCOMPLETE` report. For a `COMPLETE` report it is:
 
-- only `quick-start.md` for a `QUICK` load;
-- `quick-start.md` and `verified-start.md` for `VERIFIED` or `FIELD_TRIAL`.
+- only `quick-start.md` for QUICK;
+- `quick-start.md` and `verified-start.md` for VERIFIED or FIELD_TRIAL.
 
-When applying an authorized profile, the caller must provide a `PROFILE_SOURCE_BINDING` whose repository, commit, path, and source reference match the active report and the selected `authorized_start_profiles` entry.
+Each authorization includes the exact profile-byte SHA-256. When applying a profile, the caller provides `PROFILE_SOURCE_BINDING` whose repository, commit, path, source reference, profile hash, and inventory digest match the active report.
 
 ## Completion conditions
 
 Set `status: COMPLETE` only when:
 
 - repository and commit are explicit and immutable;
-- `source_inventory_digest` matches the selected profile inventory;
-- every selected source is present exactly once and is `READ`;
-- every file has a non-empty provenance reference;
-- `all_required_files_read` is `true`;
-- `inferred_unread_content` is `false`;
-- the report revision is the active, highest revision for its `report_id`;
-- schema validation satisfies the selected load profile;
-- provenance satisfies the selected load profile.
+- inventory digest matches the selected profile;
+- every selected source is present once and `READ`;
+- every source has a non-empty provenance reference;
+- `all_required_files_read` is true;
+- `inferred_unread_content` is false;
+- the report revision is active and highest for its `report_id`;
+- validation and provenance satisfy the selected load profile.
 
-For `QUICK`, schema validation may be unavailable or not executed, but that limitation must be explicit. `SOURCE_REFERENCED` or stronger provenance is required.
+For QUICK, schema validation may be unavailable or not executed, but the limitation is explicit. `SOURCE_REFERENCED` or stronger provenance is required.
 
-For `VERIFIED` and `FIELD_TRIAL`, schema validation must be `EXECUTED`, `schema_validation_executed` must be `true`, every `content_sha256` must be present, and provenance must be `HASH_VERIFIED`.
+For VERIFIED and FIELD_TRIAL:
 
-If any requirement fails, set `status: INCOMPLETE`, use `RECOVER_PROTOCOL_SOURCE`, stop, and report `PROTOCOL_SOURCE_UNAVAILABLE`. Do not apply a start profile or begin a MADP session.
+- schema validation is `EXECUTED`;
+- both command registries have PASS records and actual receipts;
+- `schemas_applicable`, `schemas_executed`, records, and receipt references agree;
+- `unvalidated_structured_sources` is empty;
+- the final report has a deterministic PASS receipt;
+- every selected file and authorized profile has a valid SHA-256;
+- provenance is `HASH_VERIFIED`.
+
+If any requirement fails, set `status: INCOMPLETE`, set `authorized_start_profiles: []`, include at least one specific limitation, use `RECOVER_PROTOCOL_SOURCE`, stop, and report `PROTOCOL_SOURCE_UNAVAILABLE`. Prefer complete protocol bundle upload when direct retrieval or hashing is unavailable. Do not apply a start profile or begin a MADP session.

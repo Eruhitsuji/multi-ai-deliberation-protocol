@@ -1,0 +1,128 @@
+collection_version: MADP-FIELD-TRIAL-COLLECTION-v1
+protocol_version: MADP-v0.3.0-alpha.3
+participant:
+  participant_id: MODEL-001
+  client: <client>
+  displayed_model_label: <model>
+  reasoning_mode: <mode>
+  tool_notes: ""
+run:
+  run_id: RUN-001
+  run_index: 1
+  tested_commit: <40-character-lowercase-commit>
+  protocol_load_report_file: ./load-report.yaml
+  start_profile_path: bootstrap/alpha3/quick-start.md
+observations:
+  - observation_id: OBS-PRIMARY
+    kind: PRIMARY_CHAT
+    source_file: ./primary-chat.md
+    destination_name: primary-chat.md
+  - observation_id: OBS-RELAY
+    kind: RELAY_RAW_RESPONSE
+    source_file: ./relay-raw-response.md
+    destination_name: relay-raw-response.md
+scenario_results:
+  - scenario_id: USAB-QUICK-001
+    observation_refs: [OBS-PRIMARY]
+    task_completed: null
+    next_action_understood: null
+    recovery_attempts: null
+    eligible_workflow_transitions: null
+    unnecessary_user_pauses: null
+    critical_authority_errors: null
+    critical_unnecessary_pauses: null
+    expected_behavior: null
+    actual_behavior: null
+    reviewer: null
+    notes: null
+  - scenario_id: USAB-COMMAND-COMPAT-001
+    observation_refs: [OBS-PRIMARY]
+    task_completed: null
+    next_action_understood: null
+    recovery_attempts: null
+    eligible_workflow_transitions: null
+    unnecessary_user_pauses: null
+    critical_authority_errors: null
+    critical_unnecessary_pauses: null
+    expected_behavior: null
+    actual_behavior: null
+    reviewer: null
+    notes: null
+  - scenario_id: USAB-RELAY-001
+    observation_refs: [OBS-PRIMARY, OBS-RELAY]
+    task_completed: null
+    next_action_understood: null
+    recovery_attempts: null
+    eligible_workflow_transitions: null
+    unnecessary_user_pauses: null
+    critical_authority_errors: null
+    critical_unnecessary_pauses: null
+    expected_behavior: null
+    actual_behavior: null
+    reviewer: null
+    notes: null
+  - scenario_id: USAB-LIMITED-001
+    observation_refs: [OBS-PRIMARY]
+    task_completed: null
+    next_action_understood: null
+    recovery_attempts: null
+    eligible_workflow_transitions: null
+    unnecessary_user_pauses: null
+    critical_authority_errors: null
+    critical_unnecessary_pauses: null
+    expected_behavior: null
+    actual_behavior: null
+    reviewer: null
+    notes: null
+  - scenario_id: USAB-RECOVERY-001
+    observation_refs: [OBS-PRIMARY]
+    task_completed: null
+    next_action_understood: null
+    recovery_attempts: null
+    eligible_workflow_transitions: null
+    unnecessary_user_pauses: null
+    critical_authority_errors: null
+    critical_unnecessary_pauses: null
+    expected_behavior: null
+    actual_behavior: null
+    reviewer: null
+    notes: null
+  - scenario_id: USAB-TEAM-001
+    observation_refs: [OBS-PRIMARY]
+    task_completed: null
+    next_action_understood: null
+    recovery_attempts: null
+    eligible_workflow_transitions: null
+    unnecessary_user_pauses: null
+    critical_authority_errors: null
+    critical_unnecessary_pauses: null
+    expected_behavior: null
+    actual_behavior: null
+    reviewer: null
+    notes: null
+  - scenario_id: USAB-MINUTES-001
+    observation_refs: [OBS-PRIMARY]
+    task_completed: null
+    next_action_understood: null
+    recovery_attempts: null
+    eligible_workflow_transitions: null
+    unnecessary_user_pauses: null
+    critical_authority_errors: null
+    critical_unnecessary_pauses: null
+    expected_behavior: null
+    actual_behavior: null
+    reviewer: null
+    notes: null
+  - scenario_id: USAB-HELP-001
+    observation_refs: [OBS-PRIMARY]
+    task_completed: null
+    next_action_understood: null
+    recovery_attempts: null
+    eligible_workflow_transitions: null
+    unnecessary_user_pauses: null
+    critical_authority_errors: null
+    critical_unnecessary_pauses: null
+    expected_behavior: null
+    actual_behavior: null
+    reviewer: null
+    notes: null
