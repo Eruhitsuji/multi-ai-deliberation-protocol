@@ -15,7 +15,7 @@ entries:
 - source: README-v0.3.0-alpha.3.md
   translation: README-v0.3.0-alpha.3.ja.md
   status: COMPLETE
-  source_git_blob_sha1: b0ab5e7d8eaf63c474a744a3c3dfc63a7fe05041
+  source_git_blob_sha1: 7307e4ebf55f570b86b92ee5594cc2c2e17e5e4a
   required_markers:
   - alpha.3
   - 互換
