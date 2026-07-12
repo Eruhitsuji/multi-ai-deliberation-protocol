@@ -171,3 +171,10 @@ entries:
   required_markers:
   - MADP_CANONICAL_JSON_V1
   - receipt
+- source: docs/profiles/FIELD_TRIAL_EVIDENCE-v0.3.0-alpha.3.md
+  translation: docs/ja/v0.3.0-alpha.3/field-trial-evidence.md
+  status: COMPLETE
+  source_git_blob_sha1: 85465adbf2549feb5dd717783bb9a3a56c48b29e
+  required_markers:
+  - run_evidence
+  - fail closed
