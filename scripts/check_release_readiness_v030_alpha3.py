@@ -12,6 +12,7 @@ REQUIRED_CHECKS = {
     'A3-CHECK-IMPLEMENTATION',
     'A3-CHECK-HARDENING',
     'A3-CHECK-RECEIPT',
+    'A3-CHECK-FIELD-TRIAL-FORMAT',
     'A3-CHECK-MIGRATION',
     'A3-CHECK-TRANSLATION',
     'A3-CHECK-USABILITY',
@@ -66,6 +67,7 @@ def main() -> int:
         or policy.get('machine_generated_evidence_manifest_required') is not True
         or policy.get('artifact_validation_receipt_required') is not True
         or policy.get('receipt_chain_must_be_recomputed') is not True
+        or policy.get('run_normalized_field_trial_evidence_required') is not True
     ):
         problems.append('unsafe validation evidence policy')
     if 'automated_checks' in status:
@@ -84,9 +86,10 @@ def main() -> int:
     else:
         evidence = yaml.safe_load(evidence_path.read_text(encoding='utf-8'))
         if (
-            evidence.get('evidence_version') != 'MADP-ALPHA3-VALIDATION-EVIDENCE-v3'
+            evidence.get('evidence_version') != 'MADP-ALPHA3-VALIDATION-EVIDENCE-v4'
             or evidence.get('self_attested') is not False
             or evidence.get('receipt_check_required') is not True
+            or evidence.get('run_normalized_field_trial_evidence') is not True
         ):
             problems.append('invalid evidence format')
         if evidence.get('repository_commit') != args.repository_commit:
