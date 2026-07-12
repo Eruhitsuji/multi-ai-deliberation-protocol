@@ -90,6 +90,11 @@ requirements:
     status: IMPLEMENTED
     artifact: scripts/migrate_field_trial_results_v5_to_v6.py
     validation: scripts/test_field_trial_evidence_v030_alpha3.py
+  - id: A3-REVIEW-FIELD-COLLECTION-001
+    title: Practical run logs are copied, hashed, receipt-bound, packaged as DRAFT or READY, and merged without automatic sign-off
+    status: IMPLEMENTED
+    artifact: scripts/collect_field_trial_evidence_v030_alpha3.py
+    validation: scripts/test_field_trial_collection_v030_alpha3.py
   - id: A3-REVIEW-FIELD-EVIDENCE-001
     title: Formal field-trial release evidence is independently recomputed from run reports, receipts, repository files, schemas, start profiles, and raw observations
     status: IMPLEMENTED
