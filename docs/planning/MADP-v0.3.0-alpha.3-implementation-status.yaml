@@ -1,10 +1,11 @@
-status_version: 13
+status_version: 14
 protocol_version: MADP-v0.3.0-alpha.3
 implementation_status: RELEASE_CANDIDATE_CONTENT_READY
 integration_status: MERGED_TO_MAIN
-integration_status_scope: ALPHA3_BASELINE
-current_change_integration_status: PENDING_PR_11
-current_change_branch: agent/alpha3-field-trial-hardening
+integration_status_scope: ALPHA3_HARDENED_BASELINE
+hardening_integration_status: MERGED_TO_MAIN
+hardening_pr: 11
+hardening_merge_commit: 78f8a8be3455bd97076600e88c6427b10d015025
 evaluation_status: FIELD_TRIAL_IN_PROGRESS
 content_ready: true
 release_ready: false
@@ -64,7 +65,8 @@ release_blockers:
     title: Run evidence-backed final-main audit after A3-REL-001 is complete
 release_notes:
   - Automated evidence does not substitute for human usability evidence.
-  - integration_status describes the alpha.3 baseline already on main; the hardening and collection changes in this file remain pending in PR #11.
+  - PR #11 hardening and collection changes were merged to main at commit 78f8a8be3455bd97076600e88c6427b10d015025.
+  - The next formal field trial must pin the exact checked-out main commit used by the collector.
   - Field-trial defects now require explicit session-start, exact authority-sensitive arguments, and machine validation receipts.
   - Receipt IDs alone are not evidence; release checking recomputes report, artifact, schema, start-profile, and raw-observation hashes.
   - Formal evidence uses results_version 6 and MADP-FIELD-TRIAL-EVIDENCE-v2.
