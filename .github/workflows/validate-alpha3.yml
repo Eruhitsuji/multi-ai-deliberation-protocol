@@ -73,6 +73,21 @@ jobs:
           status = yaml.safe_load(
               Path('docs/planning/MADP-v0.3.0-alpha.3-implementation-status.yaml').read_text(encoding='utf-8')
           )
+          if status.get('integration_status_scope') != 'ALPHA3_HARDENED_BASELINE':
+              raise SystemExit('alpha.3 integration scope is not the hardened baseline')
+          if status.get('hardening_integration_status') != 'MERGED_TO_MAIN':
+              raise SystemExit('alpha.3 hardening is not recorded as merged to main')
+          if status.get('hardening_pr') != 11:
+              raise SystemExit('alpha.3 hardening PR provenance mismatch')
+          if status.get('hardening_merge_commit') != '78f8a8be3455bd97076600e88c6427b10d015025':
+              raise SystemExit('alpha.3 hardening merge-commit provenance mismatch')
+          stale = {
+              'current_change_integration_status',
+              'current_change_branch',
+          } & set(status)
+          if stale:
+              raise SystemExit(f'stale pre-merge lifecycle metadata remains: {sorted(stale)}')
+
           integration = status.get('integration_status')
           release_ready = status.get('release_ready')
           if integration == 'IMPLEMENTATION_BRANCH':
