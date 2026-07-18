@@ -5,6 +5,7 @@ from pathlib import Path
 import argparse
 import hashlib
 import re
+import subprocess
 import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -41,6 +42,21 @@ def validate_inputs(repository: str, source_commit: str) -> None:
         raise ValueError("repository must be owner/name")
     if not re.fullmatch(r"[0-9a-f]{40}", source_commit):
         raise ValueError("source commit must be 40 lowercase hexadecimal characters")
+
+
+def verify_git_head(root: Path, source_commit: str) -> None:
+    try:
+        result = subprocess.run(
+            ["git", "-C", str(root), "rev-parse", "HEAD"],
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+    except (OSError, subprocess.CalledProcessError) as exc:
+        raise ValueError("repository Git HEAD is unavailable for commit binding") from exc
+    head = result.stdout.strip().lower()
+    if head != source_commit:
+        raise ValueError(f"source commit does not match checked-out Git HEAD: {head}")
 
 
 def build_bundle(repository: str, source_commit: str, root: Path = ROOT) -> tuple[bytes, dict]:
@@ -141,6 +157,8 @@ def main() -> int:
     parser.add_argument("--repository", required=True)
     parser.add_argument("--source-commit", required=True)
     args = parser.parse_args()
+    validate_inputs(args.repository, args.source_commit)
+    verify_git_head(ROOT, args.source_commit)
     manifest = write_bundle(args.output_directory, args.repository, args.source_commit)
     print(
         f"generated {manifest['bundle_file']} "
