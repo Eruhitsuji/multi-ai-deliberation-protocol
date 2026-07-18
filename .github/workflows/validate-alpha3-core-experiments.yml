@@ -10,6 +10,7 @@ on:
       - "docs/migration/*claim-evidence-candidate*"
       - "tests/v0.3.0-alpha.3/core-candidate-experiment-fixtures.yaml"
       - "scripts/check_alpha3_core_candidate_experiments.py"
+      - "scripts/test_alpha3_core_candidate_evidence_integrity.py"
       - "docs/planning/MADP-v0.3.0-alpha.3-implementation-status.yaml"
       - ".github/workflows/validate-alpha3-core-experiments.yml"
   pull_request:
@@ -20,6 +21,7 @@ on:
       - "docs/migration/*claim-evidence-candidate*"
       - "tests/v0.3.0-alpha.3/core-candidate-experiment-fixtures.yaml"
       - "scripts/check_alpha3_core_candidate_experiments.py"
+      - "scripts/test_alpha3_core_candidate_evidence_integrity.py"
       - "docs/planning/MADP-v0.3.0-alpha.3-implementation-status.yaml"
       - ".github/workflows/validate-alpha3-core-experiments.yml"
 
@@ -48,6 +50,8 @@ jobs:
         run: python scripts/check_alpha3_core_candidate.py
       - name: Validate operational experiments
         run: python scripts/check_alpha3_core_candidate_experiments.py
+      - name: Test evidence integrity hardening
+        run: python scripts/test_alpha3_core_candidate_evidence_integrity.py
       - name: Verify experiment remains non-release evidence
         shell: bash
         run: |
@@ -67,9 +71,12 @@ jobs:
               item.get('id'): item
               for item in status.get('experimental_checks', [])
           }
-          operational = checks.get('A3-EXPERIMENT-CORE-CANDIDATE-OPERATIONS', {})
-          if operational.get('release_evidence') is not False:
-              raise SystemExit('operational experiment must remain non-release evidence')
+          for check_id in (
+              'A3-EXPERIMENT-CORE-CANDIDATE-OPERATIONS',
+              'A3-EXPERIMENT-CORE-CANDIDATE-INTEGRITY',
+          ):
+              if checks.get(check_id, {}).get('release_evidence') is not False:
+                  raise SystemExit(f'{check_id} must remain non-release evidence')
           if status.get('release_ready') is not False:
               raise SystemExit('experimental work must not set release_ready')
           PY
