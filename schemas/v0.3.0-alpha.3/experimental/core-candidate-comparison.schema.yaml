@@ -1,0 +1,196 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: urn:madp:schema:core-candidate-comparison:0.3.0-alpha.3
+title: MADP v0.3.0-alpha.3 Core Candidate Comparative Experiment
+type: object
+additionalProperties: false
+required:
+  - experiment_version
+  - protocol_version
+  - experiment_id
+  - experiment_status
+  - decision_ref
+  - formal_release_evidence
+  - task
+  - runs
+  - conclusion
+properties:
+  experiment_version:
+    const: MADP-CORE-CANDIDATE-COMPARISON-v1
+  protocol_version:
+    const: MADP-v0.3.0-alpha.3
+  experiment_id:
+    $ref: '#/$defs/id'
+  experiment_status:
+    enum: [DRAFT, READY_FOR_REVIEW, HUMAN_REVIEWED]
+  decision_ref:
+    const: docs/planning/DEC-MADP-CORE-001.yaml
+  formal_release_evidence:
+    const: false
+  task:
+    $ref: '#/$defs/task'
+  runs:
+    type: array
+    minItems: 1
+    items:
+      $ref: '#/$defs/run'
+  conclusion:
+    $ref: '#/$defs/conclusion'
+$defs:
+  id:
+    type: string
+    minLength: 1
+    pattern: '^[A-Za-z0-9][A-Za-z0-9._:-]*$'
+  nonEmpty:
+    type: string
+    minLength: 1
+  sha256:
+    type: string
+    pattern: '^[0-9a-f]{64}$'
+  nullableSha256:
+    oneOf:
+      - $ref: '#/$defs/sha256'
+      - type: 'null'
+  nullableCommit:
+    oneOf:
+      - type: string
+        pattern: '^[0-9a-f]{40}$'
+      - type: 'null'
+  nullableNonEmpty:
+    oneOf:
+      - $ref: '#/$defs/nonEmpty'
+      - type: 'null'
+  nullableInteger:
+    oneOf:
+      - type: integer
+        minimum: 0
+      - type: 'null'
+  task:
+    type: object
+    additionalProperties: false
+    required: [task_id, title, prompt_sha256, authority_boundary, acceptance_criteria]
+    properties:
+      task_id: {$ref: '#/$defs/id'}
+      title: {$ref: '#/$defs/nonEmpty'}
+      prompt_sha256: {$ref: '#/$defs/nullableSha256'}
+      authority_boundary: {enum: [REFERENCE_ONLY, PROPOSE_ONLY, USER_CONFIRMED]}
+      acceptance_criteria:
+        type: array
+        items: {$ref: '#/$defs/nonEmpty'}
+  participant:
+    type: object
+    additionalProperties: false
+    required: [participant_id, service, model_label, chat_context_id, independence_group, correlation_status]
+    properties:
+      participant_id: {$ref: '#/$defs/id'}
+      service: {$ref: '#/$defs/nonEmpty'}
+      model_label: {$ref: '#/$defs/nonEmpty'}
+      chat_context_id: {$ref: '#/$defs/id'}
+      independence_group: {$ref: '#/$defs/id'}
+      correlation_status:
+        enum: [DISTINCT_CONTEXT_KNOWN, CORRELATED_SAME_MODEL_FAMILY, SHARED_CONTEXT, SHARED_RETRIEVAL_ORIGIN, UNKNOWN]
+  protocolBinding:
+    type: object
+    additionalProperties: false
+    required: [status, source_ref, source_digest]
+    properties:
+      status: {enum: [BOUND, NOT_APPLICABLE, UNAVAILABLE]}
+      source_ref: {$ref: '#/$defs/nonEmpty'}
+      source_digest: {$ref: '#/$defs/nullableSha256'}
+  initialResponse:
+    type: object
+    additionalProperties: false
+    required: [response_id, participant_id, independence_group, raw_response_ref, raw_response_sha256, captured_before_cross_exposure, exposure_state, exposed_response_refs]
+    properties:
+      response_id: {$ref: '#/$defs/id'}
+      participant_id: {$ref: '#/$defs/id'}
+      independence_group: {$ref: '#/$defs/id'}
+      raw_response_ref: {$ref: '#/$defs/nonEmpty'}
+      raw_response_sha256: {$ref: '#/$defs/sha256'}
+      captured_before_cross_exposure: {type: boolean}
+      exposure_state: {enum: [UNEXPOSED, PARTIALLY_EXPOSED, EXPOSED, UNKNOWN]}
+      exposed_response_refs:
+        type: array
+        uniqueItems: true
+        items: {$ref: '#/$defs/id'}
+  blindFirstRound:
+    type: object
+    additionalProperties: false
+    required: [required, status, information_set_hash, initial_responses, eligible_initial_response_count, independence_group_count, convergence_classification, conformance_eligible, reasons]
+    properties:
+      required: {type: boolean}
+      status: {enum: [VALID, PARTIALLY_COMPROMISED, ANCHORING_EXPOSED, NOT_PERFORMED, NOT_APPLICABLE]}
+      information_set_hash: {$ref: '#/$defs/nullableSha256'}
+      initial_responses:
+        type: array
+        items: {$ref: '#/$defs/initialResponse'}
+      eligible_initial_response_count: {type: integer, minimum: 0}
+      independence_group_count: {type: integer, minimum: 0}
+      convergence_classification:
+        enum: [INDEPENDENT_CONVERGENCE, CORRELATED_CONVERGENCE, MIXED, NO_CONVERGENCE, NOT_EVALUATED]
+      conformance_eligible: {type: boolean}
+      reasons:
+        type: array
+        items: {$ref: '#/$defs/nonEmpty'}
+  metrics:
+    type: object
+    additionalProperties: false
+    required: [completion_time_seconds, human_actions, canonical_commands, corrections, unclear_next_actions, authority_errors, stale_revision_errors, user_burden]
+    properties:
+      completion_time_seconds: {$ref: '#/$defs/nullableInteger'}
+      human_actions: {$ref: '#/$defs/nullableInteger'}
+      canonical_commands: {$ref: '#/$defs/nullableInteger'}
+      corrections: {$ref: '#/$defs/nullableInteger'}
+      unclear_next_actions: {$ref: '#/$defs/nullableInteger'}
+      authority_errors: {$ref: '#/$defs/nullableInteger'}
+      stale_revision_errors: {$ref: '#/$defs/nullableInteger'}
+      user_burden:
+        oneOf:
+          - type: integer
+            minimum: 1
+            maximum: 5
+          - type: 'null'
+  result:
+    type: object
+    additionalProperties: false
+    required: [task_completed, raw_records_preserved, authority_boundary_recorded, material_dissent_count, dissent_preserved_count, decision_reconstruction, core_conformance, decision_record_ref, notes]
+    properties:
+      task_completed:
+        oneOf: [{type: boolean}, {type: 'null'}]
+      raw_records_preserved:
+        oneOf: [{type: boolean}, {type: 'null'}]
+      authority_boundary_recorded:
+        oneOf: [{type: boolean}, {type: 'null'}]
+      material_dissent_count: {$ref: '#/$defs/nullableInteger'}
+      dissent_preserved_count: {$ref: '#/$defs/nullableInteger'}
+      decision_reconstruction:
+        oneOf:
+          - enum: [PASS, FAIL, NOT_EVALUATED]
+          - type: 'null'
+      core_conformance: {enum: [CONFORMING, DEGRADED, NONCONFORMING, NOT_EVALUATED]}
+      decision_record_ref: {$ref: '#/$defs/nullableNonEmpty'}
+      notes: {type: string}
+  run:
+    type: object
+    additionalProperties: false
+    required: [run_id, workflow, tested_commit, protocol_binding, participants, blind_first_round, metrics, result]
+    properties:
+      run_id: {$ref: '#/$defs/id'}
+      workflow: {enum: [MANUAL_MULTI_AI, STANDARD_ALPHA3, ALPHA3_CORE_CANDIDATE, MARKDOWN_VALIDATOR]}
+      tested_commit: {$ref: '#/$defs/nullableCommit'}
+      protocol_binding: {$ref: '#/$defs/protocolBinding'}
+      participants:
+        type: array
+        items: {$ref: '#/$defs/participant'}
+      blind_first_round: {$ref: '#/$defs/blindFirstRound'}
+      metrics: {$ref: '#/$defs/metrics'}
+      result: {$ref: '#/$defs/result'}
+  conclusion:
+    type: object
+    additionalProperties: false
+    required: [review_status, alpha4_recommendation, alpha4_authorized, reviewer, rationale]
+    properties:
+      review_status: {enum: [NOT_REVIEWED, HUMAN_REVIEWED]}
+      alpha4_recommendation: {enum: [KEEP_DEFERRED, CONSIDER_ALPHA4, REVISE_CORE_CANDIDATE, ABANDON_CORE_CANDIDATE, NOT_EVALUATED]}
+      alpha4_authorized: {const: false}
+      reviewer: {$ref: '#/$defs/nullableNonEmpty'}
+      rationale: {$ref: '#/$defs/nullableNonEmpty'}
