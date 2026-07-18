@@ -15,6 +15,7 @@ from generate_alpha3_core_compact_bundle import (
     MANIFEST_FILENAME,
     PROTOCOL_VERSION,
     SOURCE_FILES,
+    build_bundle,
     inventory_digest,
     verify_git_head,
     verify_git_sources,
@@ -168,7 +169,28 @@ def check(directory: Path, expected_repository: str | None, expected_commit: str
         if current_path.is_file() and embedded_row["data"] != current_path.read_bytes():
             problems.append(f"embedded source bytes differ from repository source: {manifest_row['path']}")
 
-    text = bundle.decode("utf-8")
+    # Hashes and embedded-source validation are necessary but not sufficient:
+    # a modified bundle could append instructions and then update bundle_sha256.
+    # Regenerate the complete canonical artifact and require exact equality.
+    try:
+        canonical_bundle, canonical_manifest = build_bundle(
+            manifest["repository"],
+            manifest["source_commit"],
+            root=root,
+        )
+    except (OSError, UnicodeDecodeError, ValueError) as exc:
+        problems.append(f"canonical bundle regeneration failed: {exc}")
+    else:
+        if bundle != canonical_bundle:
+            problems.append("bundle does not match canonical deterministic output")
+        if manifest != canonical_manifest:
+            problems.append("manifest does not match canonical deterministic output")
+
+    try:
+        text = bundle.decode("utf-8")
+    except UnicodeDecodeError:
+        problems.append("bundle is not UTF-8")
+        text = ""
     for marker in (
         "not a PROTOCOL_LOAD_REPORT",
         "formal FIELD_TRIAL artifact",
