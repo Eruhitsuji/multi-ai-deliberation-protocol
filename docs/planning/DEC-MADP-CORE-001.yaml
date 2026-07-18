@@ -1,0 +1,90 @@
+decision_record_version: MADP-PLANNING-DECISION-v1
+decision_id: DEC-MADP-CORE-001
+revision: 2
+status: ACCEPTED
+decided_by: HUMAN-OWNER
+accepted_at: "2026-07-18T11:35:40+09:00"
+source:
+  exploratory_trial_id: "#30"
+  tested_commit: 7183e2345c1cea5cc67f776d6996b0e34b2c0f6b
+  archive_sha256: 2cf9a9d50eb48f740307a1c9f71d99f6155e36cf73af6fc9722360d6c4c2e2ab
+  evidence_class: EXPLORATORY_DESIGN_INPUT
+
+decision_text: >-
+  Preserve MADP v0.3.0-alpha.3 as the experimental baseline and defer an
+  independent alpha.4 implementation. Specify a Core Candidate Profile and a
+  human-facing Workflow Macro layer on alpha.3, then compare them with the
+  standard alpha.3 workflow, ordinary manual multi-AI comparison, and a
+  Markdown-plus-validator workflow before deciding whether alpha.4 should begin.
+
+accepted_directions:
+  - id: CORE-NO-METERED-DEPENDENCY
+    statement: >-
+      MADP Core use, implementation, and conformance testing must not require a
+      metered API or paid agent-orchestration service. Manual copy-and-paste and
+      local validation are first-class mechanisms.
+  - id: CORE-HUMAN-FINAL-AUTHORITY
+    statement: Human final authority remains mandatory.
+  - id: CORE-BLIND-FIRST-ROUND
+    statement: >-
+      Blind First Round is a Core requirement for multi-participant
+      deliberation and covers direct cross-participant exposure within the MADP
+      session. A compromised round may be retained as ordinary review evidence
+      but must not be represented as a conforming blind round.
+  - id: CORE-COMMAND-LAYERS
+    statement: >-
+      Preserve fine-grained canonical commands as the machine layer and add a
+      small, non-atomic human-facing Workflow Macro layer that expands into
+      recorded canonical commands and explicit gates.
+  - id: CORE-CLAIM-MIGRATION
+    statement: >-
+      Separate speech form from verification status, but do not remove the
+      existing FACT representation until replacement schemas, invariants, and
+      migration tests are available.
+  - id: CORE-EVIDENCE-MULTIAXIS
+    statement: >-
+      Evidence assessment remains multidimensional; a single composite evidence
+      score is not a Core requirement.
+  - id: CORE-PROVENANCE-TIERS
+    statement: >-
+      Core retains minimum protocol and source binding. The complete validation
+      receipt chain remains an Assured or formal field-trial requirement.
+  - id: CORE-DISSENT-DISPOSITION
+    statement: >-
+      Preserve whether dissent remains unresolved separately from how a human
+      dispositioned or overrode it.
+
+version_strategy:
+  alpha3:
+    role: EXPERIMENTAL_BASELINE
+    preserve_runtime: true
+    preserve_fine_grained_commands: true
+    formal_field_trial_still_required: true
+  alpha4:
+    implementation_status: DEFERRED
+    condition_to_start: >-
+      Comparative evidence exists for standard alpha.3, alpha.3 with the Core
+      Candidate Profile, ordinary manual multi-AI comparison, and a
+      Markdown-plus-validator workflow.
+
+next_phase:
+  name: ALPHA3_CORE_CANDIDATE_EXPERIMENT
+  planned_outputs:
+    - docs/profiles/MADP_CORE_CANDIDATE-v0.3.0-alpha.3.md
+    - docs/profiles/WORKFLOW_MACROS-v0.3.0-alpha.3.md
+    - registries/v0.3.0-alpha.3/workflow-macros.yaml
+    - Blind First Round operational tests
+    - comparative evaluation criteria
+    - Claim and Evidence migration design
+
+implementation_authorization:
+  status: AUTHORIZED
+  authorized_on: "2026-07-18"
+  scope:
+    - record exploratory trials 01-30 as design input
+    - add the Core Candidate Profile specification
+    - add the Workflow Macro specification and registry
+    - add non-release validation for these experimental artifacts
+  release_authorized: false
+  tag_authorized: false
+  publication_authorized: false
