@@ -72,6 +72,15 @@ def main() -> int:
         problems.append("Core decision ID mismatch")
     if decision.get("status") != "ACCEPTED":
         problems.append("Core decision is not accepted")
+    source = decision.get("source", {})
+    if source.get("evidence_class") != "EXPLORATORY_DESIGN_INPUT":
+        problems.append("trial 30 must remain exploratory design input")
+    if source.get("protocol_load_status") != "INCOMPLETE":
+        problems.append("trial 30 protocol-load status must remain INCOMPLETE")
+    if source.get("formal_madp_session") is not False:
+        problems.append("trial 30 must not be represented as a formal MADP session")
+    if source.get("decision_basis") != "HUMAN_PLANNING_DECISION_AFTER_ORDINARY_RESEARCH":
+        problems.append("trial 30 decision basis mismatch")
     version_strategy = decision.get("version_strategy", {})
     if version_strategy.get("alpha3", {}).get("role") != "EXPERIMENTAL_BASELINE":
         problems.append("alpha.3 is not recorded as the experimental baseline")
@@ -147,6 +156,9 @@ def main() -> int:
             "2cf9a9d50eb48f740307a1c9f71d99f6155e36cf73af6fc9722360d6c4c2e2ab",
             "DEC-MADP-CORE-001",
             "not, by itself, formal release evidence",
+            "`PROTOCOL_LOAD_REPORT.status: INCOMPLETE`",
+            "not a formal MADP session",
+            "separately prompted reviewers",
         ],
     }
     for relative, markers in profile_markers.items():
@@ -166,7 +178,7 @@ def main() -> int:
 
     print(
         "alpha.3 Core Candidate experiment: PASS "
-        "(decision, 30-trial synthesis, 8 non-atomic macros, Blind First Round, MIT license)"
+        "(decision boundary, 30-trial synthesis, 8 non-atomic macros, Blind First Round, MIT license)"
     )
     return 0
 
