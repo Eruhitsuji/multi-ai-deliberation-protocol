@@ -79,23 +79,20 @@ def correlated(a: dict, b: dict) -> bool:
 
 def choose_blind_services(services: list[dict], count: int) -> tuple[list[dict], list[dict]]:
     ranked = ranked_services(services, "PROPOSER")
-    selected: list[dict] = []
+    independent_subset: list[dict] = []
     for candidate in ranked:
-        if len(selected) >= count:
+        if len(independent_subset) >= count:
             break
-        if all(not correlated(candidate, existing) for existing in selected):
-            selected.append(candidate)
+        if all(not correlated(candidate, existing) for existing in independent_subset):
+            independent_subset.append(candidate)
+    selected = list(independent_subset)
     if len(selected) < count:
         for candidate in ranked:
             if len(selected) >= count:
                 break
             if candidate not in selected:
                 selected.append(candidate)
-    eligible: list[dict] = []
-    for candidate in selected:
-        if all(not correlated(candidate, other) for other in selected if other is not candidate):
-            eligible.append(candidate)
-    return selected, eligible
+    return selected, independent_subset
 
 
 def validate_input(document: dict) -> list[str]:
@@ -147,6 +144,8 @@ def validate_input(document: dict) -> list[str]:
             problems.append("blind_initial_response_count must be a non-negative integer")
         if task.get("blind_first_round_required") is True and (not isinstance(count, int) or count < 2):
             problems.append("blind_first_round_required needs at least two initial responses")
+        if task.get("blind_first_round_required") is False and count != 0:
+            problems.append("blind_initial_response_count must be zero when Blind First Round is not required")
     return problems
 
 
