@@ -1,0 +1,120 @@
+name: Validate alpha.3 Core distribution and role planning
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "schemas/v0.3.0-alpha.3/experimental/core-compact-bundle-manifest.schema.yaml"
+      - "schemas/v0.3.0-alpha.3/experimental/dynamic-role-plan.schema.yaml"
+      - "docs/profiles/COMPACT_CORE_BUNDLE-v0.3.0-alpha.3.md"
+      - "docs/profiles/DYNAMIC_ROLE_ASSIGNMENT-v0.3.0-alpha.3.md"
+      - "docs/evaluation/MADP-v0.3.0-alpha.3-dynamic-role-input-example.yaml"
+      - "scripts/generate_alpha3_core_compact_bundle.py"
+      - "scripts/check_alpha3_core_compact_bundle.py"
+      - "scripts/generate_alpha3_dynamic_role_plan.py"
+      - "scripts/check_alpha3_dynamic_role_plan.py"
+      - "tests/v0.3.0-alpha.3/test_core_distribution_and_role_planning.py"
+      - "docs/planning/MADP-v0.3.0-alpha.3-implementation-status.yaml"
+      - ".github/workflows/validate-alpha3-core-distribution.yml"
+  pull_request:
+    paths:
+      - "schemas/v0.3.0-alpha.3/experimental/core-compact-bundle-manifest.schema.yaml"
+      - "schemas/v0.3.0-alpha.3/experimental/dynamic-role-plan.schema.yaml"
+      - "docs/profiles/COMPACT_CORE_BUNDLE-v0.3.0-alpha.3.md"
+      - "docs/profiles/DYNAMIC_ROLE_ASSIGNMENT-v0.3.0-alpha.3.md"
+      - "docs/evaluation/MADP-v0.3.0-alpha.3-dynamic-role-input-example.yaml"
+      - "scripts/generate_alpha3_core_compact_bundle.py"
+      - "scripts/check_alpha3_core_compact_bundle.py"
+      - "scripts/generate_alpha3_dynamic_role_plan.py"
+      - "scripts/check_alpha3_dynamic_role_plan.py"
+      - "tests/v0.3.0-alpha.3/test_core_distribution_and_role_planning.py"
+      - "docs/planning/MADP-v0.3.0-alpha.3-implementation-status.yaml"
+      - ".github/workflows/validate-alpha3-core-distribution.yml"
+
+jobs:
+  validate-core-distribution:
+    runs-on: ubuntu-latest
+    env:
+      SOURCE_COMMIT: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
+    steps:
+      - name: Check out source commit
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ env.SOURCE_COMMIT }}
+          show-progress: false
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+      - name: Install validation dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements-dev.txt
+      - name: Verify checked-out commit
+        run: test "$(git rev-parse HEAD)" = "${SOURCE_COMMIT}"
+      - name: Run distribution and role-planning tests
+        run: python tests/v0.3.0-alpha.3/test_core_distribution_and_role_planning.py
+      - name: Generate compact bundle first pass
+        run: >-
+          python scripts/generate_alpha3_core_compact_bundle.py
+          tmp/core-compact-a
+          --repository "${{ github.repository }}"
+          --source-commit "${SOURCE_COMMIT}"
+      - name: Generate compact bundle second pass
+        run: >-
+          python scripts/generate_alpha3_core_compact_bundle.py
+          tmp/core-compact-b
+          --repository "${{ github.repository }}"
+          --source-commit "${SOURCE_COMMIT}"
+      - name: Verify compact bundle reproducibility
+        run: diff -ru tmp/core-compact-a tmp/core-compact-b
+      - name: Validate compact bundle
+        run: >-
+          python scripts/check_alpha3_core_compact_bundle.py
+          tmp/core-compact-a
+          --repository "${{ github.repository }}"
+          --source-commit "${SOURCE_COMMIT}"
+      - name: Generate dynamic role plan
+        run: >-
+          python scripts/generate_alpha3_dynamic_role_plan.py
+          docs/evaluation/MADP-v0.3.0-alpha.3-dynamic-role-input-example.yaml
+          tmp/dynamic-role-plan.yaml
+      - name: Validate dynamic role plan
+        run: python scripts/check_alpha3_dynamic_role_plan.py tmp/dynamic-role-plan.yaml
+      - name: Verify experimental boundary
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import yaml
+
+          status = yaml.safe_load(
+              Path('docs/planning/MADP-v0.3.0-alpha.3-implementation-status.yaml').read_text(encoding='utf-8')
+          )
+          workstream = status.get('experimental_workstreams', {}).get('core_candidate', {})
+          if workstream.get('release_gate_effect') != 'NONE':
+              raise SystemExit('Core distribution changed a release gate')
+          if workstream.get('alpha4_implementation') != 'DEFERRED':
+              raise SystemExit('alpha.4 is no longer deferred')
+          if status.get('release_ready') is not False:
+              raise SystemExit('experimental distribution must not set release_ready')
+          checks = {item.get('id'): item for item in status.get('experimental_checks', [])}
+          for check_id in (
+              'A3-EXPERIMENT-CORE-COMPACT-BUNDLE',
+              'A3-EXPERIMENT-DYNAMIC-ROLE-PLAN',
+          ):
+              if checks.get(check_id, {}).get('release_evidence') is not False:
+                  raise SystemExit(f'{check_id} must remain non-release evidence')
+          PY
+      - name: Upload compact bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: madp-v0.3.0-alpha.3-core-compact-experimental
+          path: tmp/core-compact-a/
+          if-no-files-found: error
+      - name: Upload role plan example
+        uses: actions/upload-artifact@v4
+        with:
+          name: madp-v0.3.0-alpha.3-dynamic-role-plan-example
+          path: tmp/dynamic-role-plan.yaml
+          if-no-files-found: error
