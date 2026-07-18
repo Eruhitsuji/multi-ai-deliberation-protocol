@@ -7,7 +7,7 @@ import sys
 import yaml
 from jsonschema import Draft202012Validator
 
-from generate_alpha3_dynamic_role_plan import ROLE_CAPABILITY, correlated
+from generate_alpha3_dynamic_role_plan import ROLE_CAPABILITY, build_plan, correlated
 
 ROOT = Path(__file__).resolve().parents[1]
 SCHEMA = ROOT / "schemas/v0.3.0-alpha.3/experimental/dynamic-role-plan.schema.yaml"
@@ -76,8 +76,8 @@ def semantic_errors(plan: dict) -> list[str]:
         service = service_by_id.get(service_id)
         if service is None:
             continue
-        peers = [service_by_id[other] for other in assigned_ids if other != service_id and other in service_by_id]
-        if all(not correlated(service, peer) for peer in peers):
+        selected_services = [service_by_id[item] for item in actual_eligible]
+        if all(not correlated(service, existing) for existing in selected_services):
             actual_eligible.append(service_id)
     if set(eligible_ids) != set(actual_eligible):
         errors.append("BLIND_ELIGIBLE_RECOMPUTE_MISMATCH")
@@ -101,8 +101,24 @@ def semantic_errors(plan: dict) -> list[str]:
         if plan.get("status") != expected_plan_status:
             errors.append("PLAN_STATUS_MISMATCH")
     else:
+        if requested != 0:
+            errors.append("BLIND_NOT_REQUIRED_COUNT_NONZERO")
         if blind.get("status") != "NOT_REQUIRED":
             errors.append("BLIND_NOT_REQUIRED_STATUS")
+
+    try:
+        regenerated = build_plan({
+            "plan_id": plan.get("plan_id"),
+            "task": task,
+            "services": services,
+        })
+    except ValueError:
+        regenerated = None
+    if regenerated is None or any(
+        plan.get(key) != regenerated.get(key)
+        for key in ("status", "assignments", "blind_first_round", "unfilled_roles", "warnings", "planner")
+    ):
+        errors.append("NONDETERMINISTIC_OR_TAMPERED_PLAN")
 
     if plan.get("human_final_authority") is not True:
         errors.append("HUMAN_FINAL_AUTHORITY_REQUIRED")
