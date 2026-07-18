@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from pathlib import Path
 import argparse
+import re
 import sys
 import yaml
 
@@ -32,10 +33,30 @@ ROLE_AUTHORITY = {
 AVAILABILITY_SCORE = {"AVAILABLE": 20, "LIMITED": 5, "UNAVAILABLE": -10_000}
 USAGE_SCORE = {"PREFER": 6, "NORMAL": 3, "MINIMIZE": 0}
 COST_SCORE = {"FREE": 3, "SUBSCRIPTION": 2, "METERED": -3, "UNKNOWN": 0}
+CAPABILITY_KEYS = {
+    "facilitation",
+    "generation",
+    "critique",
+    "evidence_review",
+    "recording",
+    "exact_file_reading",
+    "web_research",
+    "code_execution",
+    "long_context",
+}
+ID_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._:-]*$")
 
 
 def load(path: Path):
     return yaml.safe_load(path.read_text(encoding="utf-8"))
+
+
+def valid_id(value) -> bool:
+    return isinstance(value, str) and bool(ID_RE.fullmatch(value))
+
+
+def nonempty_string(value) -> bool:
+    return isinstance(value, str) and bool(value.strip())
 
 
 def score(service: dict, role: str) -> tuple[int, str]:
@@ -77,14 +98,43 @@ def correlated(a: dict, b: dict) -> bool:
     )
 
 
+def maximum_independent_subset(ranked: list[dict], limit: int) -> list[dict]:
+    """Return the first maximum-cardinality pairwise-non-correlated subset.
+
+    Candidate order is already deterministic. The depth-first search therefore
+    preserves the earliest ranked solution when several maximum subsets exist.
+    """
+    target = min(limit, len(ranked))
+    best: list[dict] = []
+
+    def search(start: int, chosen: list[dict]) -> bool:
+        nonlocal best
+        if len(chosen) > len(best):
+            best = list(chosen)
+        if len(chosen) >= target:
+            return True
+        if len(chosen) + (len(ranked) - start) <= len(best):
+            return False
+
+        for index in range(start, len(ranked)):
+            if len(chosen) + (len(ranked) - index) <= len(best):
+                break
+            candidate = ranked[index]
+            if all(not correlated(candidate, existing) for existing in chosen):
+                chosen.append(candidate)
+                if search(index + 1, chosen):
+                    return True
+                chosen.pop()
+        return False
+
+    if target > 0:
+        search(0, [])
+    return best
+
+
 def choose_blind_services(services: list[dict], count: int) -> tuple[list[dict], list[dict]]:
     ranked = ranked_services(services, "PROPOSER")
-    independent_subset: list[dict] = []
-    for candidate in ranked:
-        if len(independent_subset) >= count:
-            break
-        if all(not correlated(candidate, existing) for existing in independent_subset):
-            independent_subset.append(candidate)
+    independent_subset = maximum_independent_subset(ranked, count)
     selected = list(independent_subset)
     if len(selected) < count:
         for candidate in ranked:
@@ -99,53 +149,96 @@ def validate_input(document: dict) -> list[str]:
     problems: list[str] = []
     if not isinstance(document, dict):
         return ["input must be a mapping"]
-    if not document.get("plan_id"):
-        problems.append("plan_id is required")
+    if not valid_id(document.get("plan_id")):
+        problems.append("plan_id must be a valid identifier")
+
     task = document.get("task")
     services = document.get("services")
     if not isinstance(task, dict):
         problems.append("task is required")
+    else:
+        if not valid_id(task.get("task_id")):
+            problems.append("task.task_id must be a valid identifier")
+        if not nonempty_string(task.get("title")):
+            problems.append("task.title must be a non-empty string")
+        roles = task.get("required_roles")
+        if not isinstance(roles, list) or not roles:
+            problems.append("task.required_roles must be a non-empty list")
+        else:
+            if any(not isinstance(role, str) for role in roles):
+                problems.append("task.required_roles must contain strings")
+            unknown_roles = set(role for role in roles if isinstance(role, str)) - set(ROLE_CAPABILITY)
+            if unknown_roles:
+                problems.append(f"unknown required roles: {sorted(unknown_roles)}")
+            if len(roles) != len(set(role for role in roles if isinstance(role, str))):
+                problems.append("duplicate required role")
+        blind_required = task.get("blind_first_round_required")
+        if not isinstance(blind_required, bool):
+            problems.append("blind_first_round_required must be boolean")
+        count = task.get("blind_initial_response_count")
+        if isinstance(count, bool) or not isinstance(count, int) or not 0 <= count <= 10:
+            problems.append("blind_initial_response_count must be an integer from 0 to 10")
+        elif blind_required is True and count < 2:
+            problems.append("blind_first_round_required needs at least two initial responses")
+        elif blind_required is False and count != 0:
+            problems.append("blind_initial_response_count must be zero when Blind First Round is not required")
+
     if not isinstance(services, list) or not services:
         problems.append("services must be a non-empty list")
         return problems
-    service_ids = [item.get("service_id") for item in services if isinstance(item, dict)]
-    if len(service_ids) != len(services) or any(not value for value in service_ids):
-        problems.append("every service requires service_id")
+
+    service_ids: list[str] = []
+    for index, item in enumerate(services):
+        if not isinstance(item, dict):
+            problems.append(f"service at index {index} must be a mapping")
+            continue
+        service_id = item.get("service_id")
+        if not valid_id(service_id):
+            problems.append(f"service at index {index} requires a valid service_id")
+        else:
+            service_ids.append(service_id)
+
     if len(service_ids) != len(set(service_ids)):
         problems.append("duplicate service_id")
     service_set = set(service_ids)
-    for item in services:
+
+    for index, item in enumerate(services):
         if not isinstance(item, dict):
             continue
-        correlations = item.get("known_correlations", [])
+        service_id = item.get("service_id", f"index-{index}")
+        for key in ("provider", "model_label"):
+            if not nonempty_string(item.get(key)):
+                problems.append(f"service {service_id} requires non-empty {key}")
+        for key in ("chat_context_id", "independence_group"):
+            if not valid_id(item.get(key)):
+                problems.append(f"service {service_id} requires valid {key}")
+        if item.get("availability") not in AVAILABILITY_SCORE:
+            problems.append(f"service {service_id} has invalid availability")
+        if item.get("usage_preference") not in USAGE_SCORE:
+            problems.append(f"service {service_id} has invalid usage_preference")
+        if item.get("cost_mode") not in COST_SCORE:
+            problems.append(f"service {service_id} has invalid cost_mode")
+
+        capabilities = item.get("capabilities")
+        if not isinstance(capabilities, dict) or set(capabilities) != CAPABILITY_KEYS:
+            problems.append(f"service {service_id} capability set mismatch")
+        elif any(not isinstance(value, bool) for value in capabilities.values()):
+            problems.append(f"service {service_id} capabilities must be boolean")
+
+        correlations = item.get("known_correlations")
+        if not isinstance(correlations, list):
+            problems.append(f"service {service_id} known_correlations must be a list")
+            continue
+        if any(not valid_id(value) for value in correlations):
+            problems.append(f"service {service_id} has invalid correlation identifier")
+            continue
+        if len(correlations) != len(set(correlations)):
+            problems.append(f"service {service_id} has duplicate correlations")
         unknown = set(correlations) - service_set
         if unknown:
-            problems.append(f"service {item.get('service_id')} references unknown correlations: {sorted(unknown)}")
-        if item.get("service_id") in correlations:
-            problems.append(f"service {item.get('service_id')} must not correlate with itself")
-        for key in ("provider", "model_label", "chat_context_id", "independence_group", "availability", "usage_preference", "cost_mode"):
-            if key not in item:
-                problems.append(f"service {item.get('service_id')} missing {key}")
-        capabilities = item.get("capabilities")
-        if not isinstance(capabilities, dict) or set(capabilities) != {
-            "facilitation", "generation", "critique", "evidence_review", "recording",
-            "exact_file_reading", "web_research", "code_execution", "long_context",
-        }:
-            problems.append(f"service {item.get('service_id')} capability set mismatch")
-    if isinstance(task, dict):
-        roles = task.get("required_roles", [])
-        unknown_roles = set(roles) - set(ROLE_CAPABILITY)
-        if unknown_roles:
-            problems.append(f"unknown required roles: {sorted(unknown_roles)}")
-        if len(roles) != len(set(roles)):
-            problems.append("duplicate required role")
-        count = task.get("blind_initial_response_count")
-        if not isinstance(count, int) or count < 0:
-            problems.append("blind_initial_response_count must be a non-negative integer")
-        if task.get("blind_first_round_required") is True and (not isinstance(count, int) or count < 2):
-            problems.append("blind_first_round_required needs at least two initial responses")
-        if task.get("blind_first_round_required") is False and count != 0:
-            problems.append("blind_initial_response_count must be zero when Blind First Round is not required")
+            problems.append(f"service {service_id} references unknown correlations: {sorted(unknown)}")
+        if service_id in correlations:
+            problems.append(f"service {service_id} must not correlate with itself")
     return problems
 
 
