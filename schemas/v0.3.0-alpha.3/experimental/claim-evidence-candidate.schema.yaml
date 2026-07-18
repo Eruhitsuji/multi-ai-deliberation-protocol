@@ -1,0 +1,111 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: urn:madp:schema:claim-evidence-candidate:0.3.0-alpha.3
+title: MADP v0.3.0-alpha.3 Claim and Evidence Candidate Package
+type: object
+additionalProperties: false
+required:
+  - artifact_version
+  - protocol_version
+  - package_id
+  - record_status
+  - existing_fact_records_preserved
+  - speech_form_separated_from_verification
+  - claims
+  - evidence
+  - migration_records
+properties:
+  artifact_version: {const: MADP-CLAIM-EVIDENCE-CANDIDATE-v1}
+  protocol_version: {const: MADP-v0.3.0-alpha.3}
+  package_id: {$ref: '#/$defs/id'}
+  record_status: {enum: [DRAFT, READY_FOR_REVIEW, HUMAN_REVIEWED]}
+  existing_fact_records_preserved: {const: true}
+  speech_form_separated_from_verification: {const: true}
+  claims:
+    type: array
+    minItems: 1
+    items: {$ref: '#/$defs/claim'}
+  evidence:
+    type: array
+    items: {$ref: '#/$defs/evidence'}
+  migration_records:
+    type: array
+    items: {$ref: '#/$defs/migration'}
+$defs:
+  id:
+    type: string
+    minLength: 1
+    pattern: '^[A-Za-z0-9][A-Za-z0-9._:-]*$'
+  nonEmpty: {type: string, minLength: 1}
+  sha256: {type: string, pattern: '^[0-9a-f]{64}$'}
+  claim:
+    type: object
+    additionalProperties: false
+    required: [claim_id, revision, source_state_version, statement, claim_kind, verification_status, raw_response_refs, evidence_refs, dissent_refs]
+    properties:
+      claim_id: {$ref: '#/$defs/id'}
+      revision: {type: integer, minimum: 1}
+      source_state_version: {type: integer, minimum: 0}
+      statement: {$ref: '#/$defs/nonEmpty'}
+      claim_kind: {enum: [SOURCE_CLAIM, MODEL_INFERENCE, PROPOSAL, OPINION]}
+      verification_status: {enum: [UNCHECKED, SOURCE_MATCHED, CORROBORATED, DISPUTED, REFUTED, OUTDATED, NOT_APPLICABLE]}
+      raw_response_refs:
+        type: array
+        minItems: 1
+        uniqueItems: true
+        items: {$ref: '#/$defs/id'}
+      evidence_refs:
+        type: array
+        uniqueItems: true
+        items: {$ref: '#/$defs/id'}
+      dissent_refs:
+        type: array
+        uniqueItems: true
+        items: {$ref: '#/$defs/id'}
+  evidenceAssessment:
+    type: object
+    additionalProperties: false
+    required: [source_role, claim_fit, freshness, traceability, source_independence]
+    properties:
+      source_role: {enum: [DIRECT_RECORD, PRIMARY, SECONDARY, TERTIARY, USER_STATEMENT, MODEL_ONLY, UNKNOWN]}
+      claim_fit: {enum: [DIRECT, PARTIAL, INDIRECT, UNSUPPORTED, UNKNOWN]}
+      freshness: {enum: [CURRENT, POTENTIALLY_STALE, STALE, TIME_INDEPENDENT, UNKNOWN]}
+      traceability: {enum: [SNAPSHOT_HASHED, RETRIEVABLE, CITATION_ONLY, NONE]}
+      source_independence: {enum: [INDEPENDENTLY_CORROBORATED, SINGLE_SOURCE, DERIVED_FROM_SAME_ORIGIN, UNKNOWN]}
+  evidence:
+    type: object
+    additionalProperties: false
+    required: [evidence_id, source_ref, source_digest, assessment, supports_claim_refs, challenges_claim_refs]
+    properties:
+      evidence_id: {$ref: '#/$defs/id'}
+      source_ref: {$ref: '#/$defs/nonEmpty'}
+      source_digest:
+        oneOf:
+          - $ref: '#/$defs/sha256'
+          - type: 'null'
+      assessment: {$ref: '#/$defs/evidenceAssessment'}
+      supports_claim_refs:
+        type: array
+        uniqueItems: true
+        items: {$ref: '#/$defs/id'}
+      challenges_claim_refs:
+        type: array
+        uniqueItems: true
+        items: {$ref: '#/$defs/id'}
+  migration:
+    type: object
+    additionalProperties: false
+    required: [migration_id, source_fact_ref, source_fact_revision, source_fact_preserved, target_claim_ref, mapping_status, ambiguities, verification_status_before, verification_status_after, verification_change_basis, human_review_required]
+    properties:
+      migration_id: {$ref: '#/$defs/id'}
+      source_fact_ref: {$ref: '#/$defs/nonEmpty'}
+      source_fact_revision: {type: integer, minimum: 1}
+      source_fact_preserved: {const: true}
+      target_claim_ref: {$ref: '#/$defs/id'}
+      mapping_status: {enum: [EXACT, PARTIAL, QUARANTINED]}
+      ambiguities:
+        type: array
+        items: {$ref: '#/$defs/nonEmpty'}
+      verification_status_before: {enum: [UNCHECKED, SOURCE_MATCHED, CORROBORATED, DISPUTED, REFUTED, OUTDATED, NOT_APPLICABLE]}
+      verification_status_after: {enum: [UNCHECKED, SOURCE_MATCHED, CORROBORATED, DISPUTED, REFUTED, OUTDATED, NOT_APPLICABLE]}
+      verification_change_basis: {enum: [PRESERVED, EVIDENCE_REVIEWED, DOWNGRADED_FOR_UNCERTAINTY]}
+      human_review_required: {type: boolean}

@@ -1,0 +1,49 @@
+fixture_version: MADP-CORE-CANDIDATE-EXPERIMENT-FIXTURES-v1
+comparison:
+  valid:
+    - id: CMP-VALID-READY
+      builder: READY_VALID
+    - id: CMP-VALID-DEGRADED
+      builder: DRAFT_DEGRADED
+  invalid_schema:
+    - id: CMP-SCHEMA-RELEASE-EVIDENCE
+      builder: DRAFT_DEGRADED
+      mutation: FORMAL_RELEASE_EVIDENCE_TRUE
+  invalid_semantic:
+    - id: CMP-SEM-BLIND-EXPOSED-AS-VALID
+      builder: DRAFT_DEGRADED
+      mutation: BLIND_EXPOSED_AS_VALID
+      expected_error: BLIND_VALID_EXPOSURE_MISMATCH
+    - id: CMP-SEM-MISSING-WORKFLOW
+      builder: READY_VALID
+      mutation: REMOVE_MARKDOWN_WORKFLOW
+      expected_error: MISSING_COMPARISON_WORKFLOW
+    - id: CMP-SEM-INDEPENDENCE-OVERCLAIM
+      builder: READY_VALID
+      mutation: INDEPENDENT_CONVERGENCE_ONE_GROUP
+      expected_error: INDEPENDENT_CONVERGENCE_GROUP_COUNT
+claim_evidence:
+  valid:
+    - id: CE-VALID
+      builder: CLAIM_VALID
+  invalid_schema:
+    - id: CE-SCHEMA-FACT-NOT-PRESERVED
+      builder: CLAIM_VALID
+      mutation: FACT_NOT_PRESERVED
+  invalid_semantic:
+    - id: CE-SEM-UNKNOWN-EVIDENCE
+      builder: CLAIM_VALID
+      mutation: UNKNOWN_EVIDENCE_REF
+      expected_error: UNKNOWN_EVIDENCE_REF
+    - id: CE-SEM-UPGRADE-PRESERVED
+      builder: CLAIM_VALID
+      mutation: UPGRADE_MARKED_PRESERVED
+      expected_error: VERIFICATION_CHANGE_MARKED_PRESERVED
+    - id: CE-SEM-EXACT-AMBIGUOUS
+      builder: CLAIM_VALID
+      mutation: EXACT_WITH_AMBIGUITY
+      expected_error: EXACT_MAPPING_HAS_AMBIGUITIES
+    - id: CE-SEM-QUARANTINE-NO-REVIEW
+      builder: CLAIM_VALID
+      mutation: QUARANTINE_WITHOUT_REVIEW
+      expected_error: QUARANTINED_REQUIRES_HUMAN_REVIEW
