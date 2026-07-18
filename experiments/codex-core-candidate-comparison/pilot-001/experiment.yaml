@@ -54,7 +54,7 @@ runs:
     workflow: STANDARD_ALPHA3
     tested_commit: 2a29ddfebe4d9664d3a4043a01d8728fa525d049
     protocol_binding:
-      status: BOUND
+      status: UNAVAILABLE
       source_ref: protocol/MADP-v0.3.0-alpha.3.md
       source_digest: null
     participants: []
@@ -93,7 +93,7 @@ runs:
     workflow: ALPHA3_CORE_CANDIDATE
     tested_commit: 2a29ddfebe4d9664d3a4043a01d8728fa525d049
     protocol_binding:
-      status: BOUND
+      status: UNAVAILABLE
       source_ref: docs/profiles/MADP_CORE_CANDIDATE-v0.3.0-alpha.3.md
       source_digest: null
     participants: []
