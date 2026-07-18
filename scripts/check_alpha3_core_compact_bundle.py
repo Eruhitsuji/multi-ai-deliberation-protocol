@@ -16,6 +16,7 @@ from generate_alpha3_core_compact_bundle import (
     PROTOCOL_VERSION,
     SOURCE_FILES,
     inventory_digest,
+    verify_git_head,
 )
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -31,6 +32,18 @@ def sha256(data: bytes) -> str:
 
 def load_yaml(path: Path):
     return yaml.safe_load(path.read_text(encoding="utf-8"))
+
+
+def parse_bundle_header(bundle: bytes) -> dict:
+    if not bundle.startswith(b"---\n"):
+        raise ValueError("bundle YAML frontmatter missing")
+    end = bundle.find(b"---\n", 4)
+    if end < 0:
+        raise ValueError("bundle YAML frontmatter terminator missing")
+    header = yaml.safe_load(bundle[4:end].decode("utf-8"))
+    if not isinstance(header, dict):
+        raise ValueError("bundle YAML frontmatter is not a mapping")
+    return header
 
 
 def parse_embedded_sources(bundle: bytes) -> list[dict]:
@@ -93,6 +106,24 @@ def check(directory: Path, expected_repository: str | None, expected_commit: str
         problems.append("compact bundle must remain non-release evidence")
 
     bundle = bundle_path.read_bytes()
+    try:
+        header = parse_bundle_header(bundle)
+    except (ValueError, UnicodeDecodeError, yaml.YAMLError) as exc:
+        problems.append(str(exc))
+        header = {}
+    expected_header = {
+        "bundle_version": manifest.get("bundle_version"),
+        "protocol_version": manifest.get("protocol_version"),
+        "repository": manifest.get("repository"),
+        "source_commit": manifest.get("source_commit"),
+        "profile": manifest.get("profile"),
+        "status": manifest.get("status"),
+        "formal_release_evidence": manifest.get("formal_release_evidence"),
+        "source_count": manifest.get("source_count"),
+        "source_inventory_sha256": manifest.get("source_inventory_sha256"),
+    }
+    if header != expected_header:
+        problems.append("bundle YAML frontmatter does not match manifest")
     if manifest.get("bundle_sha256") != sha256(bundle):
         problems.append("bundle SHA-256 mismatch")
     if manifest.get("bundle_bytes") != len(bundle):
@@ -153,6 +184,12 @@ def main() -> int:
     parser.add_argument("--repository")
     parser.add_argument("--source-commit")
     args = parser.parse_args()
+    if args.source_commit:
+        try:
+            verify_git_head(ROOT, args.source_commit)
+        except ValueError as exc:
+            print(f"FAIL: {exc}", file=sys.stderr)
+            return 1
     problems = check(args.directory, args.repository, args.source_commit)
     if problems:
         for problem in problems:
