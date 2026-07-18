@@ -1,4 +1,4 @@
-status_version: 17
+status_version: 18
 protocol_version: MADP-v0.3.0-alpha.3
 implementation_status: RELEASE_CANDIDATE_CONTENT_READY
 integration_status: MERGED_TO_MAIN
@@ -14,7 +14,7 @@ published: false
 theme: Field-Trial Hardening, Run-Normalized Collection, and Advanced Profiles
 experimental_workstreams:
   core_candidate:
-    status: EXECUTABLE_COMPARATIVE_EXPERIMENT_HARDENED
+    status: COMPACT_DISTRIBUTION_AND_DYNAMIC_ROLE_PLANNING_READY
     decision_ref: docs/planning/DEC-MADP-CORE-001.yaml
     exploratory_corpus_ref: docs/planning/MADP-v0.3.0-alpha.3-exploratory-trials-01-30.md
     profile_ref: docs/profiles/MADP_CORE_CANDIDATE-v0.3.0-alpha.3.md
@@ -28,6 +28,15 @@ experimental_workstreams:
     fixture_ref: tests/v0.3.0-alpha.3/core-candidate-experiment-fixtures.yaml
     checker_ref: scripts/check_alpha3_core_candidate_experiments.py
     integrity_checker_ref: scripts/test_alpha3_core_candidate_evidence_integrity.py
+    compact_bundle_profile_ref: docs/profiles/COMPACT_CORE_BUNDLE-v0.3.0-alpha.3.md
+    compact_bundle_schema_ref: schemas/v0.3.0-alpha.3/experimental/core-compact-bundle-manifest.schema.yaml
+    compact_bundle_generator_ref: scripts/generate_alpha3_core_compact_bundle.py
+    compact_bundle_checker_ref: scripts/check_alpha3_core_compact_bundle.py
+    dynamic_role_profile_ref: docs/profiles/DYNAMIC_ROLE_ASSIGNMENT-v0.3.0-alpha.3.md
+    dynamic_role_schema_ref: schemas/v0.3.0-alpha.3/experimental/dynamic-role-plan.schema.yaml
+    dynamic_role_generator_ref: scripts/generate_alpha3_dynamic_role_plan.py
+    dynamic_role_checker_ref: scripts/check_alpha3_dynamic_role_plan.py
+    distribution_role_test_ref: tests/v0.3.0-alpha.3/test_core_distribution_and_role_planning.py
     alpha3_role: EXPERIMENTAL_BASELINE
     alpha4_implementation: DEFERRED
     release_gate_effect: NONE
@@ -76,6 +85,12 @@ experimental_checks:
   - id: A3-EXPERIMENT-CORE-CANDIDATE-INTEGRITY
     command: python scripts/test_alpha3_core_candidate_evidence_integrity.py
     release_evidence: false
+  - id: A3-EXPERIMENT-CORE-COMPACT-BUNDLE
+    command: python tests/v0.3.0-alpha.3/test_core_distribution_and_role_planning.py
+    release_evidence: false
+  - id: A3-EXPERIMENT-DYNAMIC-ROLE-PLAN
+    command: python scripts/check_alpha3_dynamic_role_plan.py tmp/dynamic-role-plan.yaml
+    release_evidence: false
 release_blockers:
   - id: A3-REL-001
     status: FIELD_TRIAL_IN_PROGRESS
@@ -102,6 +117,8 @@ release_notes:
   - The executable Core Candidate experiment validates four-workflow comparison records, honest Blind First Round degradation, and non-destructive Claim and Evidence migration candidates.
   - Evidence-integrity tests recompute Blind eligibility counts, require exact workflow coverage and alpha.3 commit parity, and reject broken Claim/Evidence backlinks or duplicate source-FACT migrations.
   - Experimental comparison artifacts always remain formal_release_evidence false and cannot set alpha4_authorized true.
+  - The experimental compact bundle packages the Core Candidate sources into one deterministic commit-bound Markdown file and companion manifest, but it is not a PROTOCOL_LOAD_REPORT or formal FIELD_TRIAL evidence.
+  - Dynamic role planning is deterministic and advisory; it records service capabilities, usage preferences, independence groups, known correlation, degraded Blind plans, and never grants approval authority.
   - Field-trial defects now require explicit session-start, exact authority-sensitive arguments, and machine validation receipts.
   - Receipt IDs alone are not evidence; release checking recomputes report, artifact, schema, start-profile, and raw-observation hashes.
   - Formal evidence uses results_version 6 and MADP-FIELD-TRIAL-EVIDENCE-v2.

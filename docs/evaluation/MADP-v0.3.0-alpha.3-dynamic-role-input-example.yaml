@@ -1,0 +1,70 @@
+plan_id: ROLE-PLAN-EXAMPLE
+task:
+  task_id: TASK-EXAMPLE
+  title: Compare candidate approaches and record a human decision
+  required_roles:
+    - FACILITATOR
+    - PROPOSER
+    - CRITIC
+    - EVIDENCE_REVIEWER
+    - RECORDER
+  blind_first_round_required: true
+  blind_initial_response_count: 2
+services:
+  - service_id: CHATGPT-A
+    provider: OpenAI
+    model_label: user-selected-model
+    chat_context_id: CHAT-CHATGPT-A
+    independence_group: IG-OPENAI-A
+    availability: AVAILABLE
+    usage_preference: PREFER
+    cost_mode: SUBSCRIPTION
+    capabilities:
+      facilitation: true
+      generation: true
+      critique: true
+      evidence_review: true
+      recording: true
+      exact_file_reading: false
+      web_research: true
+      code_execution: true
+      long_context: true
+    known_correlations: []
+  - service_id: CLAUDE-A
+    provider: Anthropic
+    model_label: user-selected-model
+    chat_context_id: CHAT-CLAUDE-A
+    independence_group: IG-ANTHROPIC-A
+    availability: AVAILABLE
+    usage_preference: NORMAL
+    cost_mode: SUBSCRIPTION
+    capabilities:
+      facilitation: true
+      generation: true
+      critique: true
+      evidence_review: true
+      recording: true
+      exact_file_reading: true
+      web_research: true
+      code_execution: false
+      long_context: true
+    known_correlations: []
+  - service_id: GEMINI-A
+    provider: Google
+    model_label: user-selected-model
+    chat_context_id: CHAT-GEMINI-A
+    independence_group: IG-GOOGLE-A
+    availability: LIMITED
+    usage_preference: MINIMIZE
+    cost_mode: FREE
+    capabilities:
+      facilitation: false
+      generation: true
+      critique: true
+      evidence_review: false
+      recording: false
+      exact_file_reading: false
+      web_research: true
+      code_execution: false
+      long_context: true
+    known_correlations: []
