@@ -1,0 +1,175 @@
+experiment_version: MADP-CORE-CANDIDATE-COMPARISON-v1
+protocol_version: MADP-v0.3.0-alpha.3
+experiment_id: EXP-CODEX-PILOT-001
+experiment_status: DRAFT
+decision_ref: docs/planning/DEC-MADP-CORE-001.yaml
+formal_release_evidence: false
+task:
+  task_id: TASK-CODEX-PILOT-001
+  title: Replace with the frozen bounded decision task from task/prompt.md
+  prompt_sha256: null
+  authority_boundary: PROPOSE_ONLY
+  acceptance_criteria: []
+runs:
+  - run_id: CODEX-PILOT-001-MANUAL
+    workflow: MANUAL_MULTI_AI
+    tested_commit: null
+    protocol_binding:
+      status: NOT_APPLICABLE
+      source_ref: experiments/codex-core-candidate-comparison/pilot-001/task/prompt.md
+      source_digest: null
+    participants: []
+    blind_first_round:
+      required: true
+      status: NOT_PERFORMED
+      information_set_hash: null
+      initial_responses: []
+      eligible_initial_response_count: 0
+      independence_group_count: 0
+      convergence_classification: NOT_EVALUATED
+      conformance_eligible: false
+      reasons:
+        - DRAFT; the manual multi-AI run has not started.
+    metrics:
+      completion_time_seconds: null
+      human_actions: null
+      canonical_commands: null
+      corrections: null
+      unclear_next_actions: null
+      authority_errors: null
+      stale_revision_errors: null
+      user_burden: null
+    result:
+      task_completed: null
+      raw_records_preserved: null
+      authority_boundary_recorded: null
+      material_dissent_count: null
+      dissent_preserved_count: null
+      decision_reconstruction: null
+      core_conformance: NOT_EVALUATED
+      decision_record_ref: null
+      notes: ''
+
+  - run_id: CODEX-PILOT-001-STANDARD
+    workflow: STANDARD_ALPHA3
+    tested_commit: 2a29ddfebe4d9664d3a4043a01d8728fa525d049
+    protocol_binding:
+      status: BOUND
+      source_ref: protocol/MADP-v0.3.0-alpha.3.md
+      source_digest: null
+    participants: []
+    blind_first_round:
+      required: false
+      status: NOT_PERFORMED
+      information_set_hash: null
+      initial_responses: []
+      eligible_initial_response_count: 0
+      independence_group_count: 0
+      convergence_classification: NOT_EVALUATED
+      conformance_eligible: false
+      reasons:
+        - DRAFT; the standard alpha.3 run has not started.
+    metrics:
+      completion_time_seconds: null
+      human_actions: null
+      canonical_commands: null
+      corrections: null
+      unclear_next_actions: null
+      authority_errors: null
+      stale_revision_errors: null
+      user_burden: null
+    result:
+      task_completed: null
+      raw_records_preserved: null
+      authority_boundary_recorded: null
+      material_dissent_count: null
+      dissent_preserved_count: null
+      decision_reconstruction: null
+      core_conformance: NOT_EVALUATED
+      decision_record_ref: null
+      notes: ''
+
+  - run_id: CODEX-PILOT-001-CORE
+    workflow: ALPHA3_CORE_CANDIDATE
+    tested_commit: 2a29ddfebe4d9664d3a4043a01d8728fa525d049
+    protocol_binding:
+      status: BOUND
+      source_ref: docs/profiles/MADP_CORE_CANDIDATE-v0.3.0-alpha.3.md
+      source_digest: null
+    participants: []
+    blind_first_round:
+      required: true
+      status: NOT_PERFORMED
+      information_set_hash: null
+      initial_responses: []
+      eligible_initial_response_count: 0
+      independence_group_count: 0
+      convergence_classification: NOT_EVALUATED
+      conformance_eligible: false
+      reasons:
+        - DRAFT; the Core Candidate run has not started.
+    metrics:
+      completion_time_seconds: null
+      human_actions: null
+      canonical_commands: null
+      corrections: null
+      unclear_next_actions: null
+      authority_errors: null
+      stale_revision_errors: null
+      user_burden: null
+    result:
+      task_completed: null
+      raw_records_preserved: null
+      authority_boundary_recorded: null
+      material_dissent_count: null
+      dissent_preserved_count: null
+      decision_reconstruction: null
+      core_conformance: NOT_EVALUATED
+      decision_record_ref: null
+      notes: ''
+
+  - run_id: CODEX-PILOT-001-MARKDOWN
+    workflow: MARKDOWN_VALIDATOR
+    tested_commit: 2a29ddfebe4d9664d3a4043a01d8728fa525d049
+    protocol_binding:
+      status: NOT_APPLICABLE
+      source_ref: schemas/v0.3.0-alpha.3/experimental/core-candidate-comparison.schema.yaml
+      source_digest: null
+    participants: []
+    blind_first_round:
+      required: true
+      status: NOT_PERFORMED
+      information_set_hash: null
+      initial_responses: []
+      eligible_initial_response_count: 0
+      independence_group_count: 0
+      convergence_classification: NOT_EVALUATED
+      conformance_eligible: false
+      reasons:
+        - DRAFT; the Markdown plus validator run has not started.
+    metrics:
+      completion_time_seconds: null
+      human_actions: null
+      canonical_commands: null
+      corrections: null
+      unclear_next_actions: null
+      authority_errors: null
+      stale_revision_errors: null
+      user_burden: null
+    result:
+      task_completed: null
+      raw_records_preserved: null
+      authority_boundary_recorded: null
+      material_dissent_count: null
+      dissent_preserved_count: null
+      decision_reconstruction: null
+      core_conformance: NOT_EVALUATED
+      decision_record_ref: null
+      notes: ''
+
+conclusion:
+  review_status: NOT_REVIEWED
+  alpha4_recommendation: NOT_EVALUATED
+  alpha4_authorized: false
+  reviewer: null
+  rationale: null
