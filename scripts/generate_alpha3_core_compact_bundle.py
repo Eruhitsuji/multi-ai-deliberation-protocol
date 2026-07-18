@@ -59,6 +59,23 @@ def verify_git_head(root: Path, source_commit: str) -> None:
         raise ValueError(f"source commit does not match checked-out Git HEAD: {head}")
 
 
+def verify_git_sources(root: Path, source_commit: str) -> None:
+    for relative, _role in SOURCE_FILES:
+        working_path = root / relative
+        if not working_path.is_file():
+            raise ValueError(f"commit-bound source missing from working tree: {relative}")
+        try:
+            result = subprocess.run(
+                ["git", "-C", str(root), "show", f"{source_commit}:{relative}"],
+                check=True,
+                capture_output=True,
+            )
+        except (OSError, subprocess.CalledProcessError) as exc:
+            raise ValueError(f"source is unavailable from the claimed commit: {relative}") from exc
+        if working_path.read_bytes() != result.stdout:
+            raise ValueError(f"working-tree source differs from the claimed commit: {relative}")
+
+
 def build_bundle(repository: str, source_commit: str, root: Path = ROOT) -> tuple[bytes, dict]:
     validate_inputs(repository, source_commit)
     rows: list[dict] = []
@@ -159,6 +176,7 @@ def main() -> int:
     args = parser.parse_args()
     validate_inputs(args.repository, args.source_commit)
     verify_git_head(ROOT, args.source_commit)
+    verify_git_sources(ROOT, args.source_commit)
     manifest = write_bundle(args.output_directory, args.repository, args.source_commit)
     print(
         f"generated {manifest['bundle_file']} "
