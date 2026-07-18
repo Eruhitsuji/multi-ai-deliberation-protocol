@@ -61,7 +61,7 @@ receipt-bound evidence, scenario review, and human sign-off path.
 | #27 | GPT-5.6 Sol High | Ideal number of external AI services. |
 | #28 | Claude Opus 4.8 Medium | Dynamic role mapping and service-capability allocation. |
 | #29 | GPT-5.6 Sol High | Comparison of model and service characteristics. |
-| #30 | GPT-5.6 Sol High facilitator plus independent reviewers | Competitors, strengths, weaknesses, MADP Core, Blind First Round, command layers, evidence, and version strategy. |
+| #30 | GPT-5.6 Sol High facilitator plus separately prompted reviewers | Competitors, strengths, weaknesses, MADP Core, Blind First Round, command layers, evidence, and version strategy. |
 
 ## Cross-trial findings
 
@@ -111,7 +111,15 @@ receipt-bound evidence, scenario review, and human sign-off path.
 
 ## Trial #30 decision
 
-Trial #30 produced and the human owner accepted `DEC-MADP-CORE-001`.
+The primary #30 chat correctly stopped protocol loading with
+`PROTOCOL_LOAD_REPORT.status: INCOMPLETE` and continued as ordinary research and
+design discussion. It was therefore not a formal MADP session and is not
+FIELD_TRIAL evidence. The separately prompted reviewers are design inputs whose
+independence and correlation must not be overstated.
+
+After reviewing those inputs, the human owner accepted the planning direction
+recorded as `DEC-MADP-CORE-001`. The decision is authoritative as a human
+repository-planning decision, not as proof of protocol conformance.
 
 The accepted direction is:
 
