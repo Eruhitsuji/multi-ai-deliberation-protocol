@@ -6,10 +6,17 @@ decision_ref: docs/planning/DEC-MADP-CORE-001.yaml
 formal_release_evidence: false
 task:
   task_id: TASK-CODEX-PILOT-001
-  title: Replace with the frozen bounded decision task from task/prompt.md
-  prompt_sha256: null
+  title: Decide the next three MADP work packages and evidence gates
+  prompt_sha256: 34cb80469054d7da7cafed6f091f73d0c127d71b5e9c132b52f455a509d72c1c
   authority_boundary: PROPOSE_ONLY
-  acceptance_criteria: []
+  acceptance_criteria:
+    - Select exactly one first-priority work package.
+    - Sequence three major work packages with entry and exit conditions.
+    - Keep comparison evidence separate from formal release evidence.
+    - Preserve Human Final Authority and all release boundaries.
+    - Keep alpha.4 unauthorized without a separate human decision record.
+    - Propose one concrete next PR with explicit non-goals.
+    - Identify uncertainty, dissent, and conditions that would change the recommendation.
 runs:
   - run_id: CODEX-PILOT-001-MANUAL
     workflow: MANUAL_MULTI_AI
