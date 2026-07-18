@@ -12,6 +12,7 @@ Formal release evidence: `false`
 - Baseline commit: `2a29ddfebe4d9664d3a4043a01d8728fa525d049`
 - Comparison schema: `schemas/v0.3.0-alpha.3/experimental/core-candidate-comparison.schema.yaml`
 - Comparison checker: `scripts/check_alpha3_core_candidate_experiments.py`
+- Pilot validator: `experiments/codex-core-candidate-comparison/pilot-001/validate.py`
 - `formal_release_evidence`は常に`false`
 - `alpha4_authorized`は常に`false`
 - Codexはhuman sign-off、release authorization、最終意思決定を代行しない
@@ -23,6 +24,7 @@ pilot-001/
 ├── AGENTS.md
 ├── README.md
 ├── experiment.yaml
+├── validate.py
 ├── task/
 │   └── prompt.md
 ├── runs/
@@ -114,6 +116,14 @@ Codexは測定値を推測してはいけません。不明な値はrunを`DRAFT
 
 ### 7. 検証する
 
+pilot固有のrecord、task hash、baseline、release境界を検査します。
+
+```bash
+python experiments/codex-core-candidate-comparison/pilot-001/validate.py
+```
+
+Core Candidateの既存fixtureとchecker群も確認します。
+
 ```bash
 python scripts/check_alpha3_core_candidate_experiments.py
 ```
@@ -146,7 +156,7 @@ pilotは次の条件を満たすまで`DRAFT`です。
 - 4つのrunが別contextで行われた
 - raw recordとhashが保存された
 - 全metricsが実測値で記録された
-- checkerが成功した
+- pilot validatorと既存checkerが成功した
 - 人間が結果と限界をレビューした
 
 このpilotだけで`A3-REL-001`を完了したり、alpha.4を開始したりしてはいけません。
