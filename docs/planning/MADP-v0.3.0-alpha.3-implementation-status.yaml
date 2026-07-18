@@ -1,4 +1,4 @@
-status_version: 14
+status_version: 15
 protocol_version: MADP-v0.3.0-alpha.3
 implementation_status: RELEASE_CANDIDATE_CONTENT_READY
 integration_status: MERGED_TO_MAIN
@@ -12,6 +12,16 @@ release_ready: false
 tagged: false
 published: false
 theme: Field-Trial Hardening, Run-Normalized Collection, and Advanced Profiles
+experimental_workstreams:
+  core_candidate:
+    status: SPECIFICATION_AND_COMPARATIVE_TEST_PREPARATION
+    decision_ref: docs/planning/DEC-MADP-CORE-001.yaml
+    exploratory_corpus_ref: docs/planning/MADP-v0.3.0-alpha.3-exploratory-trials-01-30.md
+    profile_ref: docs/profiles/MADP_CORE_CANDIDATE-v0.3.0-alpha.3.md
+    macro_registry_ref: registries/v0.3.0-alpha.3/workflow-macros.yaml
+    alpha3_role: EXPERIMENTAL_BASELINE
+    alpha4_implementation: DEFERRED
+    release_gate_effect: NONE
 validation_policy:
   self_attestation_is_release_evidence: false
   machine_generated_evidence_manifest_required: true
@@ -47,6 +57,10 @@ required_automated_checks:
     command: python scripts/check_all_commands_v030_alpha3.py
   - id: A3-CHECK-RUNTIME
     command: python scripts/test_command_runtime_v030_alpha3.py
+experimental_checks:
+  - id: A3-EXPERIMENT-CORE-CANDIDATE
+    command: python scripts/check_alpha3_core_candidate.py
+    release_evidence: false
 release_blockers:
   - id: A3-REL-001
     status: FIELD_TRIAL_IN_PROGRESS
@@ -67,6 +81,9 @@ release_notes:
   - Automated evidence does not substitute for human usability evidence.
   - PR #11 hardening and collection changes were merged to main at commit 78f8a8be3455bd97076600e88c6427b10d015025.
   - The next formal field trial must pin the exact checked-out main commit used by the collector.
+  - Exploratory trials #01-#30 are retained as design and usability input; they do not automatically satisfy A3-REL-001.
+  - DEC-MADP-CORE-001 preserves alpha.3 as the experimental baseline, defers alpha.4, and authorizes a Core Candidate and Workflow Macro comparison experiment.
+  - The Core Candidate experiment has no release-gate effect and does not authorize tagging, release, publication, or Pages promotion.
   - Field-trial defects now require explicit session-start, exact authority-sensitive arguments, and machine validation receipts.
   - Receipt IDs alone are not evidence; release checking recomputes report, artifact, schema, start-profile, and raw-observation hashes.
   - Formal evidence uses results_version 6 and MADP-FIELD-TRIAL-EVIDENCE-v2.

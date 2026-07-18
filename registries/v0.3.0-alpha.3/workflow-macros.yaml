@@ -1,0 +1,104 @@
+registry_version: MADP-WORKFLOW-MACRO-REGISTRY-v0.1
+protocol_version: MADP-v0.3.0-alpha.3
+status: experimental-profile
+canonical_command_registry: registries/v0.3.0-alpha.3/commands.yaml
+record_canonical_commands: true
+macros_are_aliases: false
+macros_are_atomic: false
+missing_arguments_policy: REQUEST_EXACT_VALUE
+stale_state_policy: REJECT
+macros:
+  - macro: init
+    purpose: Establish a confirmed plan and explicitly start a session.
+    steps:
+      - command: goal-propose
+      - gate: HUMAN_CONFIRM_EXACT_PLAN_REVISION
+      - command: goal-confirm
+      - gate: HUMAN_START_SESSION
+      - command: session-start
+    required_invariants:
+      - GOAL_CONFIRM_DOES_NOT_START_SESSION
+      - EXACT_PLAN_AND_STATE_BINDING
+      - HUMAN_FINAL_AUTHORITY
+  - macro: register
+    purpose: Register participants, modes, capabilities, correlation, and roles.
+    steps:
+      - command: participant-add
+      - command: participant-update-capability
+        optional: true
+      - command: participant-set-mode
+      - command: role-assign
+        optional: true
+    required_invariants:
+      - SAME_MODEL_NOT_INDEPENDENT_BY_DEFAULT
+      - PARTICIPATION_DOES_NOT_GRANT_APPROVAL
+  - macro: capture
+    purpose: Relay a bounded question and preserve the raw response.
+    steps:
+      - command: relay-create-plain
+        optional: true
+      - gate: HUMAN_MANUAL_RELAY
+      - command: response-ingest
+    required_invariants:
+      - RAW_RESPONSE_FIRST
+      - EXTERNAL_PARTICIPANT_NO_APPROVAL_AUTHORITY
+      - SOURCE_STATE_BINDING
+  - macro: structure
+    purpose: Normalize a response and record claims without replacing raw data.
+    steps:
+      - command: response-normalize
+      - gate: HUMAN_REVIEW_NORMALIZATION_DIFF
+      - command: normalization-confirm
+      - command: claim-add
+      - command: claim-verify
+        optional: true
+    required_invariants:
+      - RAW_RESPONSE_PRESERVED
+      - NORMALIZATION_REVISION_BOUND
+      - UNKNOWN_REMAINS_UNKNOWN
+  - macro: review
+    purpose: Critique claims, identify missing evidence, and preserve dissent.
+    steps:
+      - command: request-review
+      - command: claim-verify
+        optional: true
+      - command: summarize-state
+    required_invariants:
+      - AGREEMENT_IS_NOT_EVIDENCE
+      - POST_EXPOSURE_AGREEMENT_NOT_INDEPENDENT
+      - MATERIAL_DISSENT_VISIBLE
+  - macro: decide
+    purpose: Propose a decision and record the exact human disposition.
+    steps:
+      - command: propose-decision
+      - gate: HUMAN_REVIEW_EVIDENCE_AND_DISSENT
+      - one_of_commands:
+          - approve
+          - reject
+          - defer
+    required_invariants:
+      - HUMAN_FINAL_AUTHORITY
+      - EXACT_DECISION_REVISION
+      - DECISION_NOT_EXECUTION_AUTHORIZATION
+  - macro: authorize
+    purpose: Check authority and separately request an external action.
+    steps:
+      - command: check-authority
+      - command: external-action
+        optional: true
+      - gate: SEPARATE_TRUSTED_EXECUTION_CONFIRMATION
+    required_invariants:
+      - APPROVAL_NOT_EXECUTION_AUTHORIZATION
+      - MACRO_NEVER_EXECUTES_EXTERNAL_ACTION
+      - EXACT_ACTION_SCOPE
+  - macro: status
+    purpose: Show workflow state, session state, outstanding work, and next action.
+    steps:
+      - command: status
+      - command: session-status
+        optional: true
+      - command: todo-list
+        optional: true
+    required_invariants:
+      - REFERENCE_ONLY
+      - NO_STATE_MUTATION

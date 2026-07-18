@@ -62,6 +62,8 @@ jobs:
           python -m pip install -r requirements-dev.txt
       - name: Verify checked-out commit
         run: test "$(git rev-parse HEAD)" = "${SOURCE_COMMIT}"
+      - name: Validate Core Candidate experiment
+        run: python scripts/check_alpha3_core_candidate.py
       - name: Resolve lifecycle audit mode
         shell: bash
         run: |
