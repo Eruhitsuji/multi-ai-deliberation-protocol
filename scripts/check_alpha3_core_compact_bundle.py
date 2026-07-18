@@ -17,6 +17,7 @@ from generate_alpha3_core_compact_bundle import (
     SOURCE_FILES,
     inventory_digest,
     verify_git_head,
+    verify_git_sources,
 )
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -187,6 +188,7 @@ def main() -> int:
     if args.source_commit:
         try:
             verify_git_head(ROOT, args.source_commit)
+            verify_git_sources(ROOT, args.source_commit)
         except ValueError as exc:
             print(f"FAIL: {exc}", file=sys.stderr)
             return 1
