@@ -9,6 +9,9 @@ source:
   tested_commit: 7183e2345c1cea5cc67f776d6996b0e34b2c0f6b
   archive_sha256: 2cf9a9d50eb48f740307a1c9f71d99f6155e36cf73af6fc9722360d6c4c2e2ab
   evidence_class: EXPLORATORY_DESIGN_INPUT
+  protocol_load_status: INCOMPLETE
+  formal_madp_session: false
+  decision_basis: HUMAN_PLANNING_DECISION_AFTER_ORDINARY_RESEARCH
 
 decision_text: >-
   Preserve MADP v0.3.0-alpha.3 as the experimental baseline and defer an
