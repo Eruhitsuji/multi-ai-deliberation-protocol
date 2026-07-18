@@ -96,6 +96,19 @@ def main() -> int:
     assert same_group["blind_first_round"]["status"] == "PLAN_DEGRADED"
     assert checker.semantic_errors(same_group) == []
 
+    three_service_config = config([
+        service("A", "IG-A"),
+        service("B", "IG-B"),
+        service("C", "IG-A", known_correlations=["A"]),
+    ])
+    three_service_config["task"]["blind_initial_response_count"] = 3
+    partially_independent = generator.build_plan(three_service_config)
+    assert partially_independent["status"] == "DEGRADED"
+    assert partially_independent["blind_first_round"]["assigned_service_ids"] == ["A", "B", "C"]
+    assert partially_independent["blind_first_round"]["eligible_service_ids"] == ["A", "B"]
+    assert partially_independent["blind_first_round"]["independence_group_count"] == 2
+    assert checker.semantic_errors(partially_independent) == []
+
     missing_recorder = config([
         service("A", "IG-A", capabilities=capabilities(recording=False)),
         service("B", "IG-B", capabilities=capabilities(recording=False)),
@@ -113,6 +126,10 @@ def main() -> int:
     tampered["blind_first_round"]["eligible_service_ids"] = ["A"]
     assert "BLIND_ELIGIBLE_RECOMPUTE_MISMATCH" in checker.semantic_errors(tampered)
 
+    tampered = deepcopy(distinct)
+    tampered["assignments"][0]["service_id"] = "B"
+    assert "NONDETERMINISTIC_OR_TAMPERED_PLAN" in checker.semantic_errors(tampered)
+
     with tempfile.TemporaryDirectory() as temporary:
         temp = Path(temporary)
         mock_root = temp / "repo"
@@ -129,6 +146,29 @@ def main() -> int:
         files_b = {item.name: item.read_bytes() for item in out_b.iterdir()}
         assert files_a == files_b
         assert compact_checker.check(out_a, "example/repo", commit, root=mock_root) == []
+
+        frontmatter_out = temp / "frontmatter"
+        compact_generator.write_bundle(frontmatter_out, "example/repo", commit, root=mock_root)
+        bundle = frontmatter_out / compact_generator.BUNDLE_FILENAME
+        manifest_path = frontmatter_out / compact_generator.MANIFEST_FILENAME
+        altered = bundle.read_bytes().replace(
+            f"source_commit: {commit}".encode("utf-8"),
+            f"source_commit: {'b' + commit[1:]}".encode("utf-8"),
+            1,
+        )
+        bundle.write_bytes(altered)
+        manifest = yaml.safe_load(manifest_path.read_text(encoding="utf-8"))
+        manifest["bundle_sha256"] = compact_generator.sha256(altered)
+        manifest["bundle_bytes"] = len(altered)
+        manifest_path.write_text(
+            yaml.safe_dump(manifest, sort_keys=False),
+            encoding="utf-8",
+            newline="\n",
+        )
+        assert "bundle YAML frontmatter does not match manifest" in compact_checker.check(
+            frontmatter_out, "example/repo", commit, root=mock_root
+        )
+
         bundle = out_a / compact_generator.BUNDLE_FILENAME
         data = bytearray(bundle.read_bytes())
         data[-10] ^= 1
