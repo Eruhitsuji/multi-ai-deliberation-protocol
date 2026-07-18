@@ -5,9 +5,9 @@ Review status: `NOT_REVIEWED`
 ## Fixed experimental control
 
 - Baseline commit: `2a29ddfebe4d9664d3a4043a01d8728fa525d049`
-- Task prompt SHA-256: `TO_BE_RECORDED`
-- Task frozen commit: `TO_BE_RECORDED`
-- Planned run order: `TO_BE_RECORDED_BEFORE_RUNS`
+- Task prompt SHA-256: `34cb80469054d7da7cafed6f091f73d0c127d71b5e9c132b52f455a509d72c1c`
+- Task frozen commit: `71eb23ee557398f0ff18451a0225bf5c24ed67a8`
+- Planned run order: `ALPHA3_CORE_CANDIDATE -> MARKDOWN_VALIDATOR -> MANUAL_MULTI_AI -> STANDARD_ALPHA3`
 - Actual run order: `TO_BE_RECORDED`
 - Reviewer: `TO_BE_RECORDED`
 
