@@ -4,6 +4,7 @@ from __future__ import annotations
 from copy import deepcopy
 from pathlib import Path
 import importlib.util
+import subprocess
 import tempfile
 import yaml
 
@@ -176,6 +177,29 @@ def main() -> int:
         assert "bundle SHA-256 mismatch" in compact_checker.check(
             out_a, "example/repo", commit, root=mock_root
         )
+
+        subprocess.run(["git", "init", "-q"], cwd=mock_root, check=True)
+        subprocess.run(["git", "config", "user.email", "fixture@example.invalid"], cwd=mock_root, check=True)
+        subprocess.run(["git", "config", "user.name", "Fixture"], cwd=mock_root, check=True)
+        subprocess.run(["git", "add", "."], cwd=mock_root, check=True)
+        subprocess.run(["git", "commit", "-qm", "fixture"], cwd=mock_root, check=True)
+        actual_commit = subprocess.run(
+            ["git", "rev-parse", "HEAD"],
+            cwd=mock_root,
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout.strip()
+        compact_generator.verify_git_head(mock_root, actual_commit)
+        compact_generator.verify_git_sources(mock_root, actual_commit)
+        first_source = mock_root / compact_generator.SOURCE_FILES[0][0]
+        first_source.write_text("dirty source\n", encoding="utf-8")
+        try:
+            compact_generator.verify_git_sources(mock_root, actual_commit)
+        except ValueError as exc:
+            assert "working-tree source differs" in str(exc)
+        else:
+            raise AssertionError("dirty commit-bound source unexpectedly passed")
 
     print("alpha.3 Core distribution and role planning tests: PASS")
     return 0
