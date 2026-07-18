@@ -1,4 +1,4 @@
-status_version: 15
+status_version: 16
 protocol_version: MADP-v0.3.0-alpha.3
 implementation_status: RELEASE_CANDIDATE_CONTENT_READY
 integration_status: MERGED_TO_MAIN
@@ -14,11 +14,19 @@ published: false
 theme: Field-Trial Hardening, Run-Normalized Collection, and Advanced Profiles
 experimental_workstreams:
   core_candidate:
-    status: SPECIFICATION_AND_COMPARATIVE_TEST_PREPARATION
+    status: EXECUTABLE_COMPARATIVE_EXPERIMENT_READY
     decision_ref: docs/planning/DEC-MADP-CORE-001.yaml
     exploratory_corpus_ref: docs/planning/MADP-v0.3.0-alpha.3-exploratory-trials-01-30.md
     profile_ref: docs/profiles/MADP_CORE_CANDIDATE-v0.3.0-alpha.3.md
     macro_registry_ref: registries/v0.3.0-alpha.3/workflow-macros.yaml
+    comparison_schema_ref: schemas/v0.3.0-alpha.3/experimental/core-candidate-comparison.schema.yaml
+    comparison_template_ref: docs/evaluation/MADP-v0.3.0-alpha.3-core-candidate-comparison-template.yaml
+    comparison_procedure_ref: docs/evaluation/MADP-v0.3.0-alpha.3-core-candidate-comparative-evaluation.md
+    blind_operational_test_ref: docs/evaluation/MADP-v0.3.0-alpha.3-blind-first-round-operational-test.md
+    claim_evidence_schema_ref: schemas/v0.3.0-alpha.3/experimental/claim-evidence-candidate.schema.yaml
+    claim_evidence_migration_ref: docs/migration/MADP-v0.3.0-alpha.3-claim-evidence-candidate-migration.md
+    fixture_ref: tests/v0.3.0-alpha.3/core-candidate-experiment-fixtures.yaml
+    checker_ref: scripts/check_alpha3_core_candidate_experiments.py
     alpha3_role: EXPERIMENTAL_BASELINE
     alpha4_implementation: DEFERRED
     release_gate_effect: NONE
@@ -61,6 +69,9 @@ experimental_checks:
   - id: A3-EXPERIMENT-CORE-CANDIDATE
     command: python scripts/check_alpha3_core_candidate.py
     release_evidence: false
+  - id: A3-EXPERIMENT-CORE-CANDIDATE-OPERATIONS
+    command: python scripts/check_alpha3_core_candidate_experiments.py
+    release_evidence: false
 release_blockers:
   - id: A3-REL-001
     status: FIELD_TRIAL_IN_PROGRESS
@@ -84,6 +95,8 @@ release_notes:
   - Exploratory trials #01-#30 are retained as design and usability input; they do not automatically satisfy A3-REL-001.
   - DEC-MADP-CORE-001 preserves alpha.3 as the experimental baseline, defers alpha.4, and authorizes a Core Candidate and Workflow Macro comparison experiment.
   - The Core Candidate experiment has no release-gate effect and does not authorize tagging, release, publication, or Pages promotion.
+  - The executable Core Candidate experiment now validates four-workflow comparison records, honest Blind First Round degradation, and non-destructive Claim and Evidence migration candidates.
+  - Experimental comparison artifacts always remain formal_release_evidence false and cannot set alpha4_authorized true.
   - Field-trial defects now require explicit session-start, exact authority-sensitive arguments, and machine validation receipts.
   - Receipt IDs alone are not evidence; release checking recomputes report, artifact, schema, start-profile, and raw-observation hashes.
   - Formal evidence uses results_version 6 and MADP-FIELD-TRIAL-EVIDENCE-v2.
