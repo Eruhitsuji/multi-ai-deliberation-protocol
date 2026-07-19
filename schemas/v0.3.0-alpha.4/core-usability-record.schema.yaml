@@ -1,0 +1,347 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: urn:madp:schema:core-usability-record:0.3.0-alpha.4
+title: MADP v0.3.0-alpha.4 Core Usability Record
+type: object
+additionalProperties: false
+required:
+  - artifact_version
+  - protocol_version
+  - package_id
+  - source_state_version
+  - legacy_fact_records_preserved
+  - raw_response_records_preserved
+  - macro_trace
+  - claims
+  - evidence
+  - dissents
+  - decision
+  - migration_records
+properties:
+  artifact_version:
+    const: MADP-CORE-USABILITY-RECORD-v1
+  protocol_version:
+    const: MADP-v0.3.0-alpha.4
+  package_id:
+    $ref: '#/$defs/id'
+  source_state_version:
+    type: integer
+    minimum: 0
+  legacy_fact_records_preserved:
+    const: true
+  raw_response_records_preserved:
+    const: true
+  macro_trace:
+    type: array
+    minItems: 1
+    items:
+      $ref: '#/$defs/macroExecution'
+  claims:
+    type: array
+    minItems: 1
+    items:
+      $ref: '#/$defs/claim'
+  evidence:
+    type: array
+    items:
+      $ref: '#/$defs/evidence'
+  dissents:
+    type: array
+    items:
+      $ref: '#/$defs/dissent'
+  decision:
+    $ref: '#/$defs/decision'
+  migration_records:
+    type: array
+    items:
+      $ref: '#/$defs/migration'
+$defs:
+  id:
+    type: string
+    minLength: 1
+    pattern: '^[A-Za-z0-9][A-Za-z0-9._:-]*$'
+  nonEmpty:
+    type: string
+    minLength: 1
+  sha256:
+    type: string
+    pattern: '^[0-9a-f]{64}$'
+  ids:
+    type: array
+    uniqueItems: true
+    items:
+      $ref: '#/$defs/id'
+  macroExecution:
+    type: object
+    additionalProperties: false
+    required:
+      - macro_execution_id
+      - macro
+      - started_state_version
+      - ended_state_version
+      - accepted_canonical_commands
+      - encountered_gates
+      - completion_status
+      - stop_reason
+    properties:
+      macro_execution_id:
+        $ref: '#/$defs/id'
+      macro:
+        enum: [init, register, capture, structure, review, decide, authorize, status]
+      started_state_version:
+        type: integer
+        minimum: 0
+      ended_state_version:
+        type: integer
+        minimum: 0
+      accepted_canonical_commands:
+        type: array
+        items:
+          $ref: '#/$defs/id'
+      encountered_gates:
+        $ref: '#/$defs/ids'
+      completion_status:
+        enum: [COMPLETE, IN_PROGRESS, STOPPED]
+      stop_reason:
+        oneOf:
+          - type: 'null'
+          - enum:
+              - HUMAN_INPUT_REQUIRED
+              - VALIDATION_REQUIRED
+              - MISSING_REQUIRED_ARGUMENT
+              - STALE_STATE
+              - AUTHORITY_BOUNDARY
+              - AMBIGUOUS_TARGET
+              - UNKNOWN_EXPOSURE
+              - CANCELLED_BY_HUMAN
+  claim:
+    type: object
+    additionalProperties: false
+    required:
+      - claim_id
+      - revision
+      - source_state_version
+      - statement
+      - claim_kind
+      - verification_status
+      - raw_response_refs
+      - evidence_refs
+      - dissent_refs
+    properties:
+      claim_id:
+        $ref: '#/$defs/id'
+      revision:
+        type: integer
+        minimum: 1
+      source_state_version:
+        type: integer
+        minimum: 0
+      statement:
+        $ref: '#/$defs/nonEmpty'
+      claim_kind:
+        enum: [SOURCE_CLAIM, MODEL_INFERENCE, PROPOSAL, OPINION]
+      verification_status:
+        enum: [UNCHECKED, SOURCE_MATCHED, CORROBORATED, DISPUTED, REFUTED, OUTDATED, NOT_APPLICABLE]
+      raw_response_refs:
+        type: array
+        minItems: 1
+        uniqueItems: true
+        items:
+          $ref: '#/$defs/id'
+      evidence_refs:
+        $ref: '#/$defs/ids'
+      dissent_refs:
+        $ref: '#/$defs/ids'
+      legacy_fact_ref:
+        oneOf:
+          - type: 'null'
+          - $ref: '#/$defs/id'
+      legacy_fact_revision:
+        oneOf:
+          - type: 'null'
+          - type: integer
+            minimum: 1
+  evidenceAssessment:
+    type: object
+    additionalProperties: false
+    required:
+      - source_role
+      - claim_fit
+      - freshness
+      - traceability
+      - source_independence
+    properties:
+      source_role:
+        enum: [DIRECT_RECORD, PRIMARY, SECONDARY, TERTIARY, USER_STATEMENT, MODEL_ONLY, UNKNOWN]
+      claim_fit:
+        enum: [DIRECT, PARTIAL, INDIRECT, UNSUPPORTED, UNKNOWN]
+      freshness:
+        enum: [CURRENT, POTENTIALLY_STALE, STALE, TIME_INDEPENDENT, UNKNOWN]
+      traceability:
+        enum: [SNAPSHOT_HASHED, RETRIEVABLE, CITATION_ONLY, NONE]
+      source_independence:
+        enum: [INDEPENDENTLY_CORROBORATED, SINGLE_SOURCE, DERIVED_FROM_SAME_ORIGIN, UNKNOWN]
+  evidence:
+    type: object
+    additionalProperties: false
+    required:
+      - evidence_id
+      - source_ref
+      - source_digest
+      - assessment
+      - supports_claim_refs
+      - challenges_claim_refs
+    properties:
+      evidence_id:
+        $ref: '#/$defs/id'
+      source_ref:
+        $ref: '#/$defs/nonEmpty'
+      source_digest:
+        oneOf:
+          - $ref: '#/$defs/sha256'
+          - type: 'null'
+      assessment:
+        $ref: '#/$defs/evidenceAssessment'
+      supports_claim_refs:
+        $ref: '#/$defs/ids'
+      challenges_claim_refs:
+        $ref: '#/$defs/ids'
+  dissent:
+    type: object
+    additionalProperties: false
+    required:
+      - dissent_id
+      - revision
+      - source_state_version
+      - statement
+      - status
+      - disposition
+      - claim_refs
+      - evidence_refs
+      - disposition_rationale
+    properties:
+      dissent_id:
+        $ref: '#/$defs/id'
+      revision:
+        type: integer
+        minimum: 1
+      source_state_version:
+        type: integer
+        minimum: 0
+      statement:
+        $ref: '#/$defs/nonEmpty'
+      status:
+        enum: [OPEN, RESOLVED, SUPERSEDED]
+      disposition:
+        enum: [NONE, ACCEPTED, INCORPORATED, REJECTED_WITH_RATIONALE, OVERRIDDEN_BY_HUMAN, WITHDRAWN, REPLACED]
+      claim_refs:
+        type: array
+        minItems: 1
+        uniqueItems: true
+        items:
+          $ref: '#/$defs/id'
+      evidence_refs:
+        $ref: '#/$defs/ids'
+      disposition_rationale:
+        oneOf:
+          - type: 'null'
+          - $ref: '#/$defs/nonEmpty'
+  decision:
+    type: object
+    additionalProperties: false
+    required:
+      - decision_id
+      - revision
+      - source_state_version
+      - selected_option_id
+      - decided_by_type
+      - approval_status
+      - evidence_refs
+      - acknowledged_dissent_refs
+      - unresolved_dissent_refs
+      - rationale
+      - external_action_authorization
+      - execution_authorization_ref
+    properties:
+      decision_id:
+        $ref: '#/$defs/id'
+      revision:
+        type: integer
+        minimum: 1
+      source_state_version:
+        type: integer
+        minimum: 0
+      selected_option_id:
+        $ref: '#/$defs/id'
+      decided_by_type:
+        const: HUMAN
+      approval_status:
+        enum: [APPROVED, REJECTED, DEFERRED]
+      evidence_refs:
+        $ref: '#/$defs/ids'
+      acknowledged_dissent_refs:
+        $ref: '#/$defs/ids'
+      unresolved_dissent_refs:
+        $ref: '#/$defs/ids'
+      rationale:
+        $ref: '#/$defs/nonEmpty'
+      external_action_authorization:
+        enum: [NOT_REQUESTED, REQUIRES_SEPARATE_RECORD, GRANTED_BY_SEPARATE_RECORD]
+      execution_authorization_ref:
+        oneOf:
+          - type: 'null'
+          - $ref: '#/$defs/id'
+    allOf:
+      - if:
+          properties:
+            external_action_authorization:
+              const: GRANTED_BY_SEPARATE_RECORD
+          required: [external_action_authorization]
+        then:
+          properties:
+            execution_authorization_ref:
+              $ref: '#/$defs/id'
+        else:
+          properties:
+            execution_authorization_ref:
+              type: 'null'
+  migration:
+    type: object
+    additionalProperties: false
+    required:
+      - migration_id
+      - source_fact_ref
+      - source_fact_revision
+      - source_fact_preserved
+      - target_claim_ref
+      - mapping_status
+      - ambiguities
+      - verification_status_before
+      - verification_status_after
+      - verification_change_basis
+      - human_review_required
+    properties:
+      migration_id:
+        $ref: '#/$defs/id'
+      source_fact_ref:
+        $ref: '#/$defs/id'
+      source_fact_revision:
+        type: integer
+        minimum: 1
+      source_fact_preserved:
+        const: true
+      target_claim_ref:
+        $ref: '#/$defs/id'
+      mapping_status:
+        enum: [EXACT, PARTIAL, QUARANTINED]
+      ambiguities:
+        type: array
+        items:
+          $ref: '#/$defs/nonEmpty'
+      verification_status_before:
+        enum: [UNCHECKED, SOURCE_MATCHED, CORROBORATED, DISPUTED, REFUTED, OUTDATED, NOT_APPLICABLE]
+      verification_status_after:
+        enum: [UNCHECKED, SOURCE_MATCHED, CORROBORATED, DISPUTED, REFUTED, OUTDATED, NOT_APPLICABLE]
+      verification_change_basis:
+        enum: [PRESERVED, EVIDENCE_REVIEWED, DOWNGRADED_FOR_UNCERTAINTY]
+      human_review_required:
+        type: boolean
