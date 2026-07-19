@@ -1,10 +1,16 @@
 # MADP v0.3.0-alpha.4 — Practical Core Integration and Fix-Forward Delivery
 
-Status: Core Usability, deterministic Core distribution, prerelease packaging, and exact-main release-candidate validation are merged to `main`. A read-only publication handoff is implemented on a feature branch. No tag, GitHub Release, Pages publication, or stable release is authorized by this status.
+Status: **PUBLISHED GITHUB PRERELEASE**
 
-MADP v0.3.0-alpha.4 is a short-cycle prerelease line focused on reducing human operating burden while preserving explicit authority, evidence, provenance, and revision boundaries.
+`MADP-v0.3.0-alpha.4` is published as a GitHub Prerelease. The immutable tag points to exact commit `3333c66b8b9873581af3f621615a7e1f7fc20e0a`.
 
-Implementation decisions:
+Release: https://github.com/Eruhitsuji/multi-ai-deliberation-protocol/releases/tag/MADP-v0.3.0-alpha.4
+
+Pages publication, stable-release authorization, formal release evidence, and latest-stable designation remain absent. The rollback target remains `MADP-v0.3.0-alpha.2`.
+
+MADP v0.3.0-alpha.4 is a short-cycle prerelease focused on reducing human operating burden while preserving explicit authority, evidence, provenance, and revision boundaries.
+
+Implementation and publication decisions:
 
 - `docs/planning/DEC-MADP-RAPID-PRERELEASE-001.yaml`
 - `docs/planning/DEC-MADP-ALPHA4-001.yaml`
@@ -13,12 +19,26 @@ Implementation decisions:
 - `docs/planning/DEC-MADP-ALPHA4-004.yaml`
 - `docs/planning/DEC-MADP-ALPHA4-005.yaml`
 - `docs/planning/DEC-MADP-ALPHA4-006.yaml`
+- `docs/planning/DEC-MADP-ALPHA4-007.yaml`
+- `docs/planning/DEC-MADP-ALPHA4-008.yaml`
 
-## Current implementation
+## Published release
 
-### Core Usability
+The published prerelease includes five verified assets:
 
-The merged Core Usability slice provides:
+- `MADP-v0.3.0-alpha.4-prerelease-candidate.zip`
+- `MADP-v0.3.0-alpha.4-prerelease-candidate.manifest.yaml`
+- `MADP-v0.3.0-alpha.4-prerelease-integrity-audit.yaml`
+- `MADP-v0.3.0-alpha.4-prerelease-candidate.zip.sha256`
+- `MADP-v0.3.0-alpha.4-release-candidate.receipt.yaml`
+
+Publication completed through a fail-closed GitHub Actions process. The successful run regenerated the exact-target assets, verified the authorized SHA-256 values, confirmed the tag binding, checked GitHub's stored asset digests, published with `prerelease: true`, and preserved the previous latest-stable and rollback states.
+
+The one-time write-capable publication workflows are retired after publication. A read-only published-state audit remains to detect tag, Release-mode, asset-inventory, or asset-digest drift.
+
+## Core Usability
+
+The Core Usability slice provides:
 
 - a normative additive extension over alpha.3;
 - eight versioned, non-atomic Workflow Macros;
@@ -38,7 +58,7 @@ Core artifacts:
 - [`registries/v0.3.0-alpha.4/workflow-macros.yaml`](registries/v0.3.0-alpha.4/workflow-macros.yaml)
 - [`schemas/v0.3.0-alpha.4/core-usability-record.schema.yaml`](schemas/v0.3.0-alpha.4/core-usability-record.schema.yaml)
 
-### Bootstrap and protocol loading
+## Bootstrap and protocol loading
 
 Alpha.4 defines two GitHub-first loading profiles:
 
@@ -54,7 +74,7 @@ Use:
 
 The loader fails closed when required sources, commit binding, provenance, or profile binding are incomplete.
 
-### Deterministic Core distribution
+## Deterministic Core distribution
 
 GitHub Actions generate:
 
@@ -65,41 +85,27 @@ The bundle embeds thirteen sources byte-for-byte and records repository, immutab
 
 The bundle may be used as `access_method: COMPLETE_BUNDLE`, but it is not a protocol-load report and does not prove that an AI system read every source.
 
-### Prerelease candidate package
+## Prerelease package and receipts
 
-The candidate workflow generates:
+The deterministic package contains this README, release notes, MIT License, bootstrap files, the Core distribution, relevant alpha.4 schemas, an embedded manifest, an integrity audit, and internal `SHA256SUMS`.
 
-- `MADP-v0.3.0-alpha.4-prerelease-candidate.zip`;
-- a sidecar package manifest;
-- a sidecar machine-generated integrity audit;
-- an archive SHA-256 file.
+The package is generated with fixed timestamps, file permissions, path order, and compression settings. Validation rejects undeclared files, changed payloads, checksum mismatches, authority changes, unsafe paths, privacy findings, and noncanonical output.
 
-The ZIP contains this README, release notes, MIT License, bootstrap files, the deterministic Core distribution, relevant alpha.4 schemas, an embedded manifest, an integrity audit, and internal `SHA256SUMS`.
+The release-candidate receipt records:
 
-The archive is generated twice with fixed timestamps, file permissions, path order, and compression settings. The checker rejects undeclared files, changed payloads, checksum mismatches, authority changes, unsafe paths, privacy findings, and noncanonical ZIP output.
+- exact package archive SHA-256;
+- exact package-manifest SHA-256;
+- release-notes SHA-256;
+- known limitations;
+- retained checks;
+- authority boundaries;
+- explicit `PULL_REQUEST_HEAD` versus `MERGED_MAIN` classification.
 
-### Exact-main release-candidate receipt
+## Publication handoff
 
-The release-readiness workflow adds:
+The retained read-only publication-handoff workflow generates an exact-commit-bound handoff and checklist. It cannot create or change tags, Releases, Pages, stable-release status, or formal release evidence.
 
-- `MADP-v0.3.0-alpha.4-release-candidate.receipt.yaml`;
-- explicit `PULL_REQUEST_HEAD` versus `MERGED_MAIN` classification;
-- exact package archive, package manifest, and release-notes SHA-256 binding;
-- a machine-readable record of retained checks, known limitations, and authority boundaries.
-
-A pull-request receipt is validation evidence for that PR head only. The workflow also runs on the resulting `main` commit and must emit `source_ref_kind: MERGED_MAIN`, `branch_name: main`, and `status: MERGED_MAIN_CANDIDATE_VALIDATED` before publication authorization is considered.
-
-### Read-only publication handoff
-
-The publication-handoff workflow generates:
-
-- `MADP-v0.3.0-alpha.4-publication-handoff.yaml`;
-- `MADP-v0.3.0-alpha.4-publication-checklist.md`;
-- the validated package, manifest, audit, archive digest, and release-candidate receipt.
-
-The handoff binds the exact repository, commit, source classification, target tag, candidate hashes, release-notes hash, and rollback target. It records every required Human Final Authority action as incomplete and every publication boundary as false.
-
-The workflow has `contents: read` permission only. It cannot create a tag, GitHub Release, Pages publication, stable release, or external action. Merge of the handoff PR is not publication authorization.
+The handoff remains useful for auditing the source commit, target tag, package hashes, receipt hash, release-notes hash, and rollback target. It is not publication authority.
 
 ## Workflow Macros
 
@@ -120,7 +126,7 @@ Macros are guided workflows, not canonical commands, aliases, atomic transaction
 
 Agreement among AI systems is not evidence. AI agreement, vote count, or convergence cannot replace the human decision.
 
-Human Final Authority remains required. A Human Decision is not external-action authorization. Generated packages, bundles, load reports, receipts, handoffs, validation results, and pull requests do not grant merge, tag, release, publication, or execution authority.
+Human Final Authority remains required. A Human Decision is not external-action authorization. Generated packages, bundles, load reports, receipts, handoffs, validation results, and pull requests do not independently grant merge, tag, release, publication, or execution authority.
 
 ## Compatibility
 
@@ -138,19 +144,18 @@ GitHub branches, pull requests, Actions, generated artifacts, and artifact downl
 
 ## Release model
 
-Alpha.4 follows `RELEASE_EARLY_FIX_FORWARD` for a single-primary-user phase. Candidate readiness, merge, exact-main validation, publication handoff, tag creation, GitHub Release publication, Pages publication, stable-release authorization, and formal release evidence remain separate states and actions.
+Alpha.4 follows `RELEASE_EARLY_FIX_FORWARD` for a single-primary-user phase. The prerelease is published, while Pages publication, stable-release authorization, formal release evidence, and any future superseding release remain separate states and actions.
 
 ## Known limitations
 
 - Dynamic role assignment is not promoted into alpha.4.
-- Skill adapters and broader user-facing installation packages are not updated.
+- Skill adapters and broader installer-facing packages are not updated.
 - Broader alpha.3-to-alpha.4 migration coverage remains incomplete.
 - A protocol-load report remains a reported observation unless independently verified.
 - A bundle or ZIP package cannot prove complete model ingestion or conformance.
 - The four-workflow comparison was terminated after one completed workflow; no comparative superiority is claimed.
 - Formal release evidence and stable-release authorization are absent.
-- The current published prerelease remains `MADP-v0.3.0-alpha.2`.
 
 ## Rollback
 
-The immutable published rollback target is `MADP-v0.3.0-alpha.2` at tag `MADP-v0.3.0-alpha.2`.
+The immutable published rollback target remains `MADP-v0.3.0-alpha.2` at tag `MADP-v0.3.0-alpha.2`.
