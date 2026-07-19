@@ -1,0 +1,49 @@
+decision_record_version: MADP-PLANNING-DECISION-v1
+decision_id: DEC-MADP-ALPHA4-003
+status: ACCEPTED
+authority: HUMAN_FINAL_AUTHORITY
+recorded_at_utc: UNKNOWN
+parent_decision_ref: docs/planning/DEC-MADP-ALPHA4-002.yaml
+basis:
+  kind: HUMAN_DIRECTION_AFTER_PR_19_MERGE
+  source_pr: 19
+  source_merge_commit: 058f6e10adb601fe3c22f3d476653c8f0f2cb0bf
+  derived_from_terminated_comparison_experiment: false
+decision:
+  target_version: MADP-v0.3.0-alpha.4
+  implementation_slice: CORE_DISTRIBUTION_SLICE
+  implementation_authorized: true
+  prerelease_publication_authorized: false
+  stable_release_authorized: false
+  formal_release_evidence: false
+scope:
+  - add commit-pinned QUICK and VERIFIED protocol loading profiles for alpha.4
+  - add a versioned protocol-load-report schema with fail-closed completion rules
+  - generate one deterministic alpha.4 Core distribution bundle and companion manifest
+  - validate source bytes, commit binding, loader inventory digests, and canonical regeneration
+  - upload generated distribution candidates from GitHub Actions
+  - keep local checkout optional
+compatibility:
+  alpha3_canonical_command_registry_reused: true
+  alpha3_protocol_and_schema_sources_preserved: true
+  alpha4_core_usability_extension_additive: true
+  legacy_fact_records_preserved: true
+  breaking_alpha3_schema_change: false
+evidence_boundary:
+  bundle_proves_model_ingestion: false
+  load_report_is_self_reported_unless_independently_verified: true
+  generated_bundle_is_formal_release_evidence: false
+  generated_bundle_is_external_action_authorization: false
+non_goals:
+  - resume or complete the terminated four-workflow comparison
+  - implement dynamic role assignment in this slice
+  - claim independent AI corroboration from shared or correlated sources
+  - complete A3-REL-001 or A3-REL-005
+  - create a tag, GitHub Release, or Pages publication
+authorization_boundary:
+  branch_and_pr_authorized: true
+  merge_authorized: false
+  tag_authorized: false
+  github_release_authorized: false
+  pages_publication_authorized: false
+  stable_release_authorized: false

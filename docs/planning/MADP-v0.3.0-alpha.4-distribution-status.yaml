@@ -1,0 +1,67 @@
+status_version: 1
+protocol_version: MADP-v0.3.0-alpha.4
+implementation_slice: CORE_DISTRIBUTION_SLICE
+implementation_status: DISTRIBUTION_CANDIDATE_IMPLEMENTED_IN_BRANCH
+integration_status: IMPLEMENTATION_BRANCH
+base_main_commit: 058f6e10adb601fe3c22f3d476653c8f0f2cb0bf
+branch: feature/v0.3.0-alpha.4-distribution-slice
+decision_ref: docs/planning/DEC-MADP-ALPHA4-003.yaml
+previous_slice:
+  pull_request: 19
+  merge_commit: 058f6e10adb601fe3c22f3d476653c8f0f2cb0bf
+  status: MERGED_TO_MAIN
+outputs:
+  - bootstrap/alpha4/README.md
+  - bootstrap/alpha4/load-protocol-from-github.md
+  - bootstrap/alpha4/quick-start.md
+  - bootstrap/alpha4/verified-start.md
+  - docs/profiles/COMPACT_CORE_BUNDLE-v0.3.0-alpha.4.md
+  - schemas/v0.3.0-alpha.4/protocol-load-report.schema.yaml
+  - schemas/v0.3.0-alpha.4/core-compact-bundle-manifest.schema.yaml
+  - scripts/generate_alpha4_core_compact_bundle.py
+  - scripts/check_alpha4_core_compact_bundle.py
+  - tests/v0.3.0-alpha.4/test_core_distribution.py
+  - .github/workflows/validate-alpha4-distribution.yml
+load_profiles:
+  QUICK:
+    source_count: 7
+    schema_validation_requirement: REPORT_ONLY
+    minimum_provenance: SOURCE_REFERENCED
+  VERIFIED:
+    source_count: 12
+    schema_validation_requirement: EXECUTED
+    minimum_provenance: HASH_VERIFIED
+distribution:
+  bundle_version: MADP-CORE-DISTRIBUTION-BUNDLE-v1
+  bundle_file: MADP-v0.3.0-alpha.4-core-distribution.md
+  manifest_file: MADP-v0.3.0-alpha.4-core-distribution.manifest.yaml
+  source_count: 13
+  deterministic_generation_required: true
+  exact_commit_binding_required: true
+  canonical_regeneration_required: true
+  generated_by_github_actions: true
+  uploaded_as_workflow_artifact: true
+  committed_generated_binary_or_bundle: false
+evidence_boundary:
+  proves_model_ingestion: false
+  formal_release_evidence: false
+  external_action_authorization: false
+  load_report_self_report_requires_honest_classification: true
+compatibility:
+  alpha3_command_namespace_preserved: true
+  alpha3_schemas_unchanged: true
+  legacy_fact_records_preserved: true
+  alpha4_extension_additive: true
+release_boundary:
+  content_ready: false
+  release_ready: false
+  tagged: false
+  published: false
+  stable_release_authorized: false
+  formal_release_evidence: false
+  tag_authorized: false
+  github_release_authorized: false
+  pages_publication_authorized: false
+next_action:
+  id: A4-INC-003
+  description: Prepare a release-candidate package, final known limitations, integrity audit, and separate publication decision.

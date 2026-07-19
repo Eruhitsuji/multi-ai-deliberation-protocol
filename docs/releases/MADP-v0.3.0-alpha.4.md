@@ -1,32 +1,43 @@
 # MADP v0.3.0-alpha.4 release notes
 
-Status: **DRAFT — Core Usability Slice 1**
+Status: **DRAFT — Core Distribution Slice**
 
-No tag, GitHub Release, Pages publication, or stable release is created by this
-document.
+No tag, GitHub Release, Pages publication, or stable release is created by this document.
 
 ## Theme
 
 **Practical Core Integration and Fix-Forward Delivery**
 
-Alpha.4 is a short-cycle prerelease line intended for a single primary user. It
-prioritizes practical use and rapid correction while retaining Human Final
-Authority, explicit action authorization, and honest evidence classification.
+Alpha.4 is a short-cycle prerelease line intended for a single primary user. It prioritizes practical use and rapid correction while retaining Human Final Authority, explicit action authorization, and honest evidence classification.
 
-## Implemented in Core Usability Slice 1
+## Implemented
+
+### Core Usability Slice 1
 
 - normative additive Core Usability extension over alpha.3;
 - eight non-atomic Workflow Macros;
 - versioned Workflow Macro registry and profile;
 - additive Claim and Evidence model;
-- raw-response preservation requirement;
+- raw-response preservation;
 - multidimensional evidence assessment;
 - separate dissent state and human disposition;
 - revision-bound Human Final Authority Decision;
-- separate external-action authorization reference;
-- non-destructive legacy `FACT` migration records;
-- positive, schema-negative, and semantic-negative fixtures;
-- automated macro, reference, migration, privacy, and authority checks.
+- separate external-action authorization;
+- non-destructive legacy `FACT` migration;
+- positive and negative semantic validation.
+
+### Core Distribution Slice
+
+- GitHub-first QUICK and VERIFIED loading profiles;
+- `MADP-PROTOCOL-LOAD-REPORT-v3`;
+- fail-closed source inventory, commit, provenance, and profile binding;
+- optional complete-bundle access with exact manifest binding;
+- deterministic thirteen-source Core distribution bundle;
+- companion manifest with per-source SHA-256 and byte counts;
+- canonical whole-artifact regeneration;
+- two-pass reproducibility tests;
+- GitHub Actions artifact upload;
+- local checkout remains optional.
 
 ## Compatibility
 
@@ -34,41 +45,45 @@ Authority, explicit action authorization, and honest evidence classification.
 - Alpha.3 schemas are unchanged.
 - Legacy `FACT` records remain valid historical and migration inputs.
 - Existing alpha.3 artifacts are not rewritten.
-- New records use versioned alpha.4 paths.
+- New records, loaders, schemas, and bundles use versioned alpha.4 paths.
 
 ## Evidence and authority boundaries
 
-- The terminated four-workflow experiment does not establish comparative
-  superiority.
+- The terminated four-workflow experiment does not establish comparative superiority.
 - The retained Core Candidate result is a DEGRADED single-case study.
 - Agreement among AI systems is not evidence.
 - Human Final Authority remains required.
-- AI systems do not gain merge, release, publication, or external-execution
-  authority.
 - A Decision does not itself authorize an external action.
+- A bundle does not prove that a model read every embedded source.
+- A load report is self-reported unless independently verified.
 - Formal release evidence remains false.
 - Stable release remains unauthorized.
 
 ## Validation
 
-The implementation slice is designed to run:
+The implementation slice runs:
 
 ```bash
 python scripts/check_alpha4_kickoff.py
 python scripts/check_alpha4_core_usability.py
+python tests/v0.3.0-alpha.4/test_core_distribution.py
+python scripts/generate_alpha4_core_compact_bundle.py <output> \
+  --repository owner/repository \
+  --source-commit <40-character-commit>
+python scripts/check_alpha4_core_compact_bundle.py <output> \
+  --repository owner/repository \
+  --source-commit <40-character-commit>
 ```
 
-GitHub Actions are the required validation environment. A local checkout is
-optional.
+GitHub Actions generate the distribution twice, require byte-for-byte equality, validate both copies, and upload one candidate artifact.
 
 ## Known limitations
 
-- The alpha.4 bootstrap and load profile do not yet include the new extension.
-- No deterministic alpha.4 distribution artifact is generated yet.
-- Broader alpha.3-to-alpha.4 migration coverage is still pending.
-- Skills and user-facing bootstraps are not updated in this slice.
-- The repository's current published prerelease remains
-  `MADP-v0.3.0-alpha.2`.
+- The generated artifact is not yet a tagged or published prerelease.
+- Dynamic role planning is deferred to a later alpha.4 slice.
+- Skill adapters and installer-facing packages are not updated yet.
+- Broader alpha.3-to-alpha.4 migration coverage remains incomplete.
+- The repository's current published prerelease remains `MADP-v0.3.0-alpha.2`.
 - Tagging and GitHub Release publication require a later explicit action.
 
 ## Rollback and previous version
@@ -81,5 +96,4 @@ tag: MADP-v0.3.0-alpha.2
 status: published immutable prerelease
 ```
 
-The merged alpha.3 and alpha.4 development commits remain available in
-repository history, but they are not the published rollback tag.
+The merged alpha.3 and alpha.4 development commits remain available in repository history, but they are not the published rollback tag.
