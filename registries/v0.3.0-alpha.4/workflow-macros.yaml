@@ -1,0 +1,136 @@
+registry_version: MADP-WORKFLOW-MACRO-REGISTRY-v0.2
+protocol_version: MADP-v0.3.0-alpha.4
+status: normative-interface-slice
+promoted_from: registries/v0.3.0-alpha.3/workflow-macros.yaml
+canonical_command_registry: registries/v0.3.0-alpha.3/commands.yaml
+record_canonical_commands: true
+record_macro_trace: true
+macros_are_aliases: false
+macros_are_atomic: false
+missing_arguments_policy: REQUEST_EXACT_VALUE
+stale_state_policy: REJECT
+authority_expansion: false
+macros:
+  - macro: init
+    purpose: Establish a confirmed plan and explicitly start a session.
+    steps:
+      - step_id: INIT-01
+        command: goal-propose
+      - step_id: INIT-02
+        gate: HUMAN_CONFIRM_EXACT_PLAN_REVISION
+      - step_id: INIT-03
+        command: goal-confirm
+      - step_id: INIT-04
+        gate: HUMAN_START_SESSION
+      - step_id: INIT-05
+        command: session-start
+    required_invariants:
+      - GOAL_CONFIRM_DOES_NOT_START_SESSION
+      - EXACT_PLAN_AND_STATE_BINDING
+      - HUMAN_FINAL_AUTHORITY
+  - macro: register
+    purpose: Register participants, modes, capabilities, correlation, and roles.
+    steps:
+      - step_id: REGISTER-01
+        command: participant-add
+      - step_id: REGISTER-02
+        command: participant-update-capability
+        optional: true
+      - step_id: REGISTER-03
+        command: participant-set-mode
+      - step_id: REGISTER-04
+        command: role-assign
+        optional: true
+    required_invariants:
+      - SAME_MODEL_NOT_INDEPENDENT_BY_DEFAULT
+      - PARTICIPATION_DOES_NOT_GRANT_APPROVAL
+  - macro: capture
+    purpose: Relay a bounded question and preserve the raw response.
+    steps:
+      - step_id: CAPTURE-01
+        command: relay-create-plain
+        optional: true
+      - step_id: CAPTURE-02
+        gate: HUMAN_MANUAL_RELAY
+      - step_id: CAPTURE-03
+        command: response-ingest
+    required_invariants:
+      - RAW_RESPONSE_FIRST
+      - EXTERNAL_PARTICIPANT_NO_APPROVAL_AUTHORITY
+      - SOURCE_STATE_BINDING
+  - macro: structure
+    purpose: Normalize a response and record claims without replacing raw data.
+    steps:
+      - step_id: STRUCTURE-01
+        command: response-normalize
+      - step_id: STRUCTURE-02
+        gate: HUMAN_REVIEW_NORMALIZATION_DIFF
+      - step_id: STRUCTURE-03
+        command: normalization-confirm
+      - step_id: STRUCTURE-04
+        command: claim-add
+      - step_id: STRUCTURE-05
+        command: claim-verify
+        optional: true
+    required_invariants:
+      - RAW_RESPONSE_PRESERVED
+      - NORMALIZATION_REVISION_BOUND
+      - UNKNOWN_REMAINS_UNKNOWN
+  - macro: review
+    purpose: Critique claims, identify missing evidence, and preserve dissent.
+    steps:
+      - step_id: REVIEW-01
+        command: request-review
+      - step_id: REVIEW-02
+        command: claim-verify
+        optional: true
+      - step_id: REVIEW-03
+        command: summarize-state
+    required_invariants:
+      - AGREEMENT_IS_NOT_EVIDENCE
+      - POST_EXPOSURE_AGREEMENT_NOT_INDEPENDENT
+      - MATERIAL_DISSENT_VISIBLE
+  - macro: decide
+    purpose: Propose a decision and record the exact human disposition.
+    steps:
+      - step_id: DECIDE-01
+        command: propose-decision
+      - step_id: DECIDE-02
+        gate: HUMAN_REVIEW_EVIDENCE_AND_DISSENT
+      - step_id: DECIDE-03
+        one_of_commands:
+          - approve
+          - reject
+          - defer
+    required_invariants:
+      - HUMAN_FINAL_AUTHORITY
+      - EXACT_DECISION_REVISION
+      - DECISION_NOT_EXECUTION_AUTHORIZATION
+  - macro: authorize
+    purpose: Check authority and separately request an external action.
+    steps:
+      - step_id: AUTHORIZE-01
+        command: check-authority
+      - step_id: AUTHORIZE-02
+        command: external-action
+        optional: true
+      - step_id: AUTHORIZE-03
+        gate: SEPARATE_TRUSTED_EXECUTION_CONFIRMATION
+    required_invariants:
+      - APPROVAL_NOT_EXECUTION_AUTHORIZATION
+      - MACRO_NEVER_EXECUTES_EXTERNAL_ACTION
+      - EXACT_ACTION_SCOPE
+  - macro: status
+    purpose: Show workflow state, session state, outstanding work, and next action.
+    steps:
+      - step_id: STATUS-01
+        command: status
+      - step_id: STATUS-02
+        command: session-status
+        optional: true
+      - step_id: STATUS-03
+        command: todo-list
+        optional: true
+    required_invariants:
+      - REFERENCE_ONLY
+      - NO_STATE_MUTATION

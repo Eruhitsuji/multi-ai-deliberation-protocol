@@ -1,11 +1,13 @@
-status_version: 1
+status_version: 2
 protocol_version: MADP-v0.3.0-alpha.4
-implementation_status: KICKOFF_BASELINE_READY
+implementation_status: CORE_USABILITY_SLICE_1_READY
 integration_status: IMPLEMENTATION_BRANCH
 base_version: MADP-v0.3.0-alpha.3
-base_main_commit: f7fc84675321c0f55619301642f4d52f601f30d3
-branch: feature/v0.3.0-alpha.4-kickoff
-decision_ref: docs/planning/DEC-MADP-ALPHA4-001.yaml
+base_main_commit: 92174e7e651cc5ee7f8797a845cfc33fcd39af9a
+branch: feature/v0.3.0-alpha.4-core-usability-slice-1
+decision_refs:
+  - docs/planning/DEC-MADP-ALPHA4-001.yaml
+  - docs/planning/DEC-MADP-ALPHA4-002.yaml
 rapid_prerelease_policy_ref: docs/planning/DEC-MADP-RAPID-PRERELEASE-001.yaml
 theme: Practical Core Integration and Fix-Forward Delivery
 content_ready: false
@@ -19,34 +21,42 @@ published_rollback_target:
   tag: MADP-v0.3.0-alpha.2
 work_packages:
   kickoff_baseline:
-    status: IMPLEMENTED_IN_BRANCH
-    outputs:
-      - docs/planning/DEC-MADP-ALPHA4-001.yaml
-      - docs/planning/MADP-v0.3.0-alpha.4-implementation-status.yaml
-      - README-v0.3.0-alpha.4.md
-      - docs/releases/MADP-v0.3.0-alpha.4.md
-      - scripts/check_alpha4_kickoff.py
-      - .github/workflows/validate-alpha4-kickoff.yml
+    status: MERGED_TO_MAIN
+    pull_request: 18
+    merge_commit: 92174e7e651cc5ee7f8797a845cfc33fcd39af9a
   core_usability_integration:
-    status: NOT_STARTED
-    planned_scope:
-      - versioned non-atomic Workflow Macro layer
-      - additive Claim and Evidence semantics
-      - Blind First Round and participant correlation reporting
-      - dissent status and human disposition separation
-      - compatibility-preserving migration fixtures
+    status: PARTIAL_IMPLEMENTATION_IN_BRANCH
+    current_slice: CORE_USABILITY_SLICE_1
+    implemented_outputs:
+      - protocol/MADP-v0.3.0-alpha.4-core-usability.md
+      - docs/profiles/WORKFLOW_MACROS-v0.3.0-alpha.4.md
+      - registries/v0.3.0-alpha.4/workflow-macros.yaml
+      - schemas/v0.3.0-alpha.4/core-usability-record.schema.yaml
+      - tests/v0.3.0-alpha.4/core-usability-fixtures.yaml
+      - scripts/check_alpha4_core_usability.py
+      - .github/workflows/validate-alpha4-core-usability.yml
+    implemented_semantics:
+      - non_atomic_workflow_macros
+      - claim_kind_separated_from_verification_status
+      - raw_response_preservation
+      - multidimensional_evidence
+      - dissent_status_separated_from_human_disposition
+      - revision_bound_human_decision
+      - external_action_authorization_separation
+      - non_destructive_legacy_fact_migration
+    remaining_scope:
+      - alpha4 bootstrap and load profile integration
+      - generated distribution integration
+      - broader compatibility and migration coverage
+      - prerelease artifact generation
   distribution_and_prerelease:
     status: NOT_STARTED
-    planned_scope:
-      - deterministic alpha.4 distribution artifact
-      - reproducibility and integrity validation
-      - release notes and known limitations
-      - separate tag and GitHub Release approval
 compatibility_policy:
-  alpha3_command_namespace_preserved_during_kickoff: true
-  breaking_schema_change_in_kickoff: false
+  alpha3_command_namespace_preserved: true
+  breaking_alpha3_schema_change: false
   legacy_fact_records_preserved: true
   alpha3_artifacts_remain_historical_and_unchanged: true
+  additive_alpha4_records_only: true
 authority_policy:
   human_final_authority_required: true
   agreement_is_evidence: false
@@ -60,21 +70,24 @@ development_environment:
 required_checks:
   - id: A4-CHECK-KICKOFF
     command: python scripts/check_alpha4_kickoff.py
+  - id: A4-CHECK-CORE-USABILITY
+    command: python scripts/check_alpha4_core_usability.py
   - id: REPOSITORY-VALIDATE
     command: existing repository Validate workflow
 prerelease_hard_gates:
-  privacy: IN_PROGRESS
-  required_files_parseable: IN_PROGRESS
-  required_github_actions_ci: IN_PROGRESS
+  privacy: SATISFIED_FOR_CURRENT_SLICE
+  required_files_parseable: SATISFIED_FOR_CURRENT_SLICE
+  required_github_actions_ci: REQUIRED_ON_EACH_PR_HEAD
   generated_distribution_artifact: NOT_STARTED
   release_notes_known_limitations: IMPLEMENTED_AS_DRAFT
   rollback_or_previous_version: SATISFIED_BY_ALPHA2_TAG
 known_limitations:
-  - Alpha.4 protocol, schemas, registries, bootstraps, and generated distribution are not implemented by the kickoff increment.
+  - The alpha.4 implementation is still incomplete and not a distributable prerelease.
+  - Workflow Macros guide canonical alpha.3 commands; no new canonical command namespace is introduced in this slice.
+  - The Core Usability record is additive and is not yet integrated into alpha.4 bootstrap or generated bundles.
   - The four-workflow comparison was terminated after one completed workflow and does not establish comparative superiority.
-  - The retained Core Candidate run is DEGRADED and remains a single-case study.
   - Formal release evidence and stable release authorization are absent.
   - Tagging, GitHub Release creation, and Pages publication require separate approval.
 next_action:
-  id: A4-INC-002
-  description: Implement the first additive Core usability slice with schemas, fixtures, compatibility tests, and generated distribution inputs.
+  id: A4-INC-002-SLICE-2
+  description: Integrate the Core Usability extension into alpha.4 loading and deterministic distribution inputs while preserving alpha.3 compatibility.
