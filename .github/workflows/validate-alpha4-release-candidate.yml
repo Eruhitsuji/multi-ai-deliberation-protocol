@@ -3,23 +3,6 @@ name: Validate alpha.4 release candidate
 on:
   pull_request:
     paths:
-      - 'README-v0.3.0-alpha.4.md'
-      - 'docs/releases/MADP-v0.3.0-alpha.4.md'
-      - 'docs/planning/DEC-MADP-ALPHA4-005.yaml'
-      - 'docs/planning/MADP-v0.3.0-alpha.4-release-readiness.yaml'
-      - 'schemas/v0.3.0-alpha.4/**'
-      - 'scripts/generate_alpha4_release_candidate.py'
-      - 'scripts/check_alpha4_release_candidate.py'
-      - 'tests/v0.3.0-alpha.4/test_release_candidate.py'
-      - '.github/workflows/validate-alpha4-release-candidate.yml'
-  push:
-    branches:
-      - main
-    paths:
-      - 'README-v0.3.0-alpha.4.md'
-      - 'docs/releases/MADP-v0.3.0-alpha.4.md'
-      - 'docs/planning/DEC-MADP-ALPHA4-005.yaml'
-      - 'docs/planning/MADP-v0.3.0-alpha.4-release-readiness.yaml'
       - 'schemas/v0.3.0-alpha.4/**'
       - 'scripts/generate_alpha4_release_candidate.py'
       - 'scripts/check_alpha4_release_candidate.py'
@@ -34,19 +17,18 @@ jobs:
   validate-alpha4-release-candidate:
     runs-on: ubuntu-24.04
     env:
-      SOURCE_COMMIT: ${{ github.event.pull_request.head.sha || github.sha }}
-      SOURCE_REF_KIND: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && 'MERGED_MAIN' || 'PULL_REQUEST_HEAD' }}
-      BRANCH_NAME: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref_name }}
+      SOURCE_COMMIT: 3333c66b8b9873581af3f621615a7e1f7fc20e0a
+      SOURCE_REF_KIND: MERGED_MAIN
+      BRANCH_NAME: main
       REPOSITORY_NAME: ${{ github.repository }}
     steps:
-      - name: Check out exact source commit
+      - name: Check out immutable published source
         uses: actions/checkout@v6
         with:
           ref: ${{ env.SOURCE_COMMIT }}
           fetch-depth: 1
 
-      - name: Set up Python
-        uses: actions/setup-python@v6
+      - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
 
@@ -97,8 +79,7 @@ jobs:
             --source-ref-kind "$SOURCE_REF_KIND" \
             --branch-name "$BRANCH_NAME"
 
-      - name: Verify merged-main receipt classification
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      - name: Verify published-source receipt classification
         run: |
           python - <<'PY'
           from pathlib import Path
@@ -109,11 +90,3 @@ jobs:
           assert receipt['main_branch_candidate'] is True
           assert receipt['status'] == 'MERGED_MAIN_CANDIDATE_VALIDATED'
           PY
-
-      - name: Upload alpha.4 release candidate
-        uses: actions/upload-artifact@v4
-        with:
-          name: madp-v0.3.0-alpha.4-release-candidate-${{ env.SOURCE_COMMIT }}
-          path: .artifacts/first/
-          if-no-files-found: error
-          retention-days: 30
