@@ -38,7 +38,8 @@ experimental_workstreams:
     dynamic_role_checker_ref: scripts/check_alpha3_dynamic_role_plan.py
     distribution_role_test_ref: tests/v0.3.0-alpha.3/test_core_distribution_and_role_planning.py
     alpha3_role: EXPERIMENTAL_BASELINE
-    alpha4_implementation: AUTHORIZED_BY_RAPID_PRERELEASE_DECISION
+    alpha4_implementation: DEFERRED
+    separate_alpha4_authorization_ref: docs/planning/DEC-MADP-RAPID-PRERELEASE-001.yaml
     release_gate_effect: NONE
     experiment_disposition:
       experiment_id: EXP-CODEX-PILOT-001
@@ -212,7 +213,7 @@ rapid_prerelease_policy:
   - complete-usability-signoff
   - complete-local-validator-matrix
   - zero-known-noncritical-defects
-  - formal-release-evidence
+  - formal_release_evidence
 known_local_issues:
 - issue: JSONSCHEMA_REF_RESOLUTION_ERROR
   investigation_status: DEFERRED
