@@ -53,11 +53,9 @@ version_strategy:
     preserve_fine_grained_commands: true
     formal_field_trial_still_required: true
   alpha4:
-    implementation_status: AUTHORIZED_BY_SEPARATE_HUMAN_DEVELOPMENT_DECISION
-    prerelease_authorized: true
-    next_prerelease_line: v0.3.0-alpha.4
-    authorization_basis: HUMAN_PRIORITY_AND_RELEASE_POLICY_DECISION
+    implementation_status: DEFERRED
     authorization_derived_from_comparison_experiment: false
+    separate_development_authorization_ref: docs/planning/DEC-MADP-RAPID-PRERELEASE-001.yaml
     stable_release_authorized: false
 next_phase:
   name: ALPHA3_CORE_CANDIDATE_EXPERIMENT
