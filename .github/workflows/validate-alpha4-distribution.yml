@@ -4,24 +4,7 @@ on:
   pull_request:
     paths:
       - 'bootstrap/alpha4/**'
-      - 'docs/planning/DEC-MADP-ALPHA4-003.yaml'
-      - 'docs/planning/MADP-v0.3.0-alpha.4-distribution-status.yaml'
       - 'docs/profiles/COMPACT_CORE_BUNDLE-v0.3.0-alpha.4.md'
-      - 'docs/releases/MADP-v0.3.0-alpha.4.md'
-      - 'README-v0.3.0-alpha.4.md'
-      - 'schemas/v0.3.0-alpha.4/**'
-      - 'scripts/generate_alpha4_core_compact_bundle.py'
-      - 'scripts/check_alpha4_core_compact_bundle.py'
-      - 'tests/v0.3.0-alpha.4/test_core_distribution.py'
-      - '.github/workflows/validate-alpha4-distribution.yml'
-  push:
-    paths:
-      - 'bootstrap/alpha4/**'
-      - 'docs/planning/DEC-MADP-ALPHA4-003.yaml'
-      - 'docs/planning/MADP-v0.3.0-alpha.4-distribution-status.yaml'
-      - 'docs/profiles/COMPACT_CORE_BUNDLE-v0.3.0-alpha.4.md'
-      - 'docs/releases/MADP-v0.3.0-alpha.4.md'
-      - 'README-v0.3.0-alpha.4.md'
       - 'schemas/v0.3.0-alpha.4/**'
       - 'scripts/generate_alpha4_core_compact_bundle.py'
       - 'scripts/check_alpha4_core_compact_bundle.py'
@@ -36,17 +19,16 @@ jobs:
   validate-alpha4-distribution:
     runs-on: ubuntu-24.04
     env:
-      SOURCE_COMMIT: ${{ github.event.pull_request.head.sha || github.sha }}
+      SOURCE_COMMIT: 3333c66b8b9873581af3f621615a7e1f7fc20e0a
       REPOSITORY_NAME: ${{ github.repository }}
     steps:
-      - name: Check out exact source commit
+      - name: Check out immutable published source
         uses: actions/checkout@v6
         with:
           ref: ${{ env.SOURCE_COMMIT }}
           fetch-depth: 1
 
-      - name: Set up Python
-        uses: actions/setup-python@v6
+      - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
 
@@ -82,11 +64,3 @@ jobs:
           python scripts/check_alpha4_core_compact_bundle.py .artifacts/second \
             --repository "$REPOSITORY_NAME" \
             --source-commit "$SOURCE_COMMIT"
-
-      - name: Upload alpha.4 distribution candidate
-        uses: actions/upload-artifact@v4
-        with:
-          name: madp-v0.3.0-alpha.4-core-distribution-${{ env.SOURCE_COMMIT }}
-          path: .artifacts/first/
-          if-no-files-found: error
-          retention-days: 14
