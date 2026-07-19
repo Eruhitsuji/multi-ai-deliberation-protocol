@@ -1,0 +1,41 @@
+decision_record_version: MADP-PLANNING-DECISION-v1
+decision_id: DEC-MADP-ALPHA4-002
+status: ACCEPTED
+authority: HUMAN_FINAL_AUTHORITY
+recorded_at_utc: UNKNOWN
+parent_decision_ref: docs/planning/DEC-MADP-ALPHA4-001.yaml
+basis:
+  kind: HUMAN_DIRECTION_AFTER_PR_18_MERGE
+  source_pr: 18
+  source_merge_commit: 92174e7e651cc5ee7f8797a845cfc33fcd39af9a
+  local_checkout_required: false
+decision:
+  implementation_slice: CORE_USABILITY_SLICE_1
+  target_version: MADP-v0.3.0-alpha.4
+  implementation_authorized: true
+  prerelease_line_authorized: true
+  stable_release_authorized: false
+  formal_release_evidence: false
+scope:
+  - Add a normative alpha.4 Core Usability extension over the alpha.3 baseline.
+  - Promote the eight non-atomic Workflow Macros into a versioned alpha.4 interface registry and profile.
+  - Add an alpha.4 record schema for Claim, Evidence, Dissent, Human Decision, macro trace, and non-destructive legacy FACT migration.
+  - Add executable positive, schema-negative, and semantic-negative fixtures.
+  - Validate macro command membership and order against the alpha.3 canonical command registry.
+compatibility:
+  alpha3_command_namespace_changed: false
+  alpha3_schema_changed: false
+  legacy_fact_records_preserved: true
+  alpha3_artifacts_modified: false
+  migration_is_additive: true
+evidence_boundary:
+  comparison_superiority_claimed: false
+  retained_core_run_treated_as_formal_release_evidence: false
+  formal_release_evidence: false
+authorization_boundary:
+  branch_and_pr_authorized: true
+  merge_authorized: false
+  tag_authorized: false
+  github_release_authorized: false
+  pages_publication_authorized: false
+  stable_release_authorized: false
