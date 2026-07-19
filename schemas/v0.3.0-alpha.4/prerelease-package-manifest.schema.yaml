@@ -1,0 +1,103 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: urn:madp:schema:prerelease-package-manifest:0.3.0-alpha.4
+title: MADP v0.3.0-alpha.4 Prerelease Package Manifest
+type: object
+additionalProperties: false
+required:
+  - package_version
+  - protocol_version
+  - repository
+  - source_commit
+  - status
+  - formal_release_evidence
+  - stable_release_authorized
+  - publication_authorized
+  - archive_root
+  - payload_count
+  - payload_inventory_sha256
+  - core_distribution
+  - files
+properties:
+  package_version:
+    const: MADP-PRERELEASE-PACKAGE-v1
+  protocol_version:
+    const: MADP-v0.3.0-alpha.4
+  repository:
+    type: string
+    pattern: '^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$'
+  source_commit:
+    type: string
+    pattern: '^[0-9a-f]{40}$'
+  status:
+    const: PRERELEASE_CANDIDATE_READY_FOR_HUMAN_DECISION
+  formal_release_evidence:
+    const: false
+  stable_release_authorized:
+    const: false
+  publication_authorized:
+    const: false
+  archive_root:
+    const: MADP-v0.3.0-alpha.4-prerelease
+  rollback_target:
+    type: object
+    additionalProperties: false
+    required: [version, tag]
+    properties:
+      version:
+        const: MADP-v0.3.0-alpha.2
+      tag:
+        const: MADP-v0.3.0-alpha.2
+  payload_count:
+    type: integer
+    minimum: 1
+  payload_inventory_sha256:
+    type: string
+    pattern: '^[0-9a-f]{64}$'
+  core_distribution:
+    type: object
+    additionalProperties: false
+    required:
+      - bundle_file
+      - bundle_sha256
+      - manifest_file
+      - manifest_sha256
+    properties:
+      bundle_file:
+        const: core/MADP-v0.3.0-alpha.4-core-distribution.md
+      bundle_sha256:
+        type: string
+        pattern: '^[0-9a-f]{64}$'
+      manifest_file:
+        const: core/MADP-v0.3.0-alpha.4-core-distribution.manifest.yaml
+      manifest_sha256:
+        type: string
+        pattern: '^[0-9a-f]{64}$'
+  files:
+    type: array
+    minItems: 1
+    items:
+      type: object
+      additionalProperties: false
+      required: [path, role, source, sha256, bytes]
+      properties:
+        path:
+          type: string
+          pattern: '^[A-Za-z0-9._/-]+$'
+        role:
+          enum:
+            - README
+            - RELEASE_NOTES
+            - LICENSE
+            - BOOTSTRAP
+            - CORE_DISTRIBUTION
+            - CORE_DISTRIBUTION_MANIFEST
+            - SCHEMA
+        source:
+          type: string
+          minLength: 1
+        sha256:
+          type: string
+          pattern: '^[0-9a-f]{64}$'
+        bytes:
+          type: integer
+          minimum: 0
