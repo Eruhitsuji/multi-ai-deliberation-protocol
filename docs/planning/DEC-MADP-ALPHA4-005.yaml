@@ -1,0 +1,41 @@
+decision_id: DEC-MADP-ALPHA4-005
+status: ACCEPTED
+decision_date: 2026-07-19
+authority: HUMAN_FINAL_AUTHORITY
+parent_decision_ref: docs/planning/DEC-MADP-ALPHA4-001.yaml
+previous_slice_ref: docs/planning/DEC-MADP-ALPHA4-004.yaml
+decision:
+  implementation_slice: POST_MERGE_RELEASE_READINESS
+  target_version: MADP-v0.3.0-alpha.4
+  implementation_authorized: true
+  release_candidate_validation_authorized: true
+  publication_decision_authorized: false
+  stable_release_authorized: false
+  formal_release_evidence: false
+scope:
+  - exact merged-main candidate regeneration
+  - deterministic release-candidate receipt
+  - package and release-notes digest binding
+  - pull-request-head and merged-main state separation
+  - GitHub Actions release-candidate artifact upload
+  - publication decision preparation
+validation_policy:
+  pull_request_head_is_candidate_only: true
+  merged_main_validation_required: true
+  exact_source_commit_binding_required: true
+  all_required_github_actions_must_pass: true
+  release_candidate_receipt_required: true
+  tag_requires_separate_human_authorization: true
+  github_release_requires_separate_human_authorization: true
+compatibility:
+  alpha3_command_namespace_preserved: true
+  alpha3_protocol_and_schemas_unchanged: true
+  legacy_fact_records_preserved: true
+  alpha4_core_usability_remains_additive: true
+authorization_boundary:
+  merge_authorized: false
+  tag_authorized: false
+  github_release_authorized: false
+  pages_publication_authorized: false
+  stable_release_authorized: false
+  external_action_authorized: false
