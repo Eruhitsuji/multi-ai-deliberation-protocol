@@ -1,0 +1,41 @@
+decision_id: DEC-MADP-ALPHA4-006
+status: ACCEPTED
+decision_date: 2026-07-19
+authority: HUMAN_FINAL_AUTHORITY
+parent_decision_ref: docs/planning/DEC-MADP-ALPHA4-001.yaml
+previous_slice_ref: docs/planning/DEC-MADP-ALPHA4-005.yaml
+decision:
+  implementation_slice: MANUAL_PRERELEASE_PUBLICATION_WORKFLOW
+  target_version: MADP-v0.3.0-alpha.4
+  publication_workflow_implementation_authorized: true
+  tag_creation_authorized_now: false
+  github_release_authorized_now: false
+  pages_publication_authorized_now: false
+  stable_release_authorized: false
+  formal_release_evidence: false
+scope:
+  - workflow_dispatch-only prerelease publication workflow
+  - exact main commit and exact tag validation
+  - explicit independent tag and GitHub Release confirmations
+  - deterministic package regeneration and validation before publication
+  - GitHub prerelease creation with validated assets
+  - structural and regression validation of publication safeguards
+publication_safeguards:
+  automatic_trigger_forbidden: true
+  source_ref_must_be_main: true
+  source_commit_must_match_checked_out_head: true
+  tag_name_must_equal: MADP-v0.3.0-alpha.4
+  prerelease_flag_required: true
+  latest_release_flag_forbidden: true
+  package_validation_required: true
+  release_candidate_receipt_required: true
+  existing_tag_or_release_must_fail_closed: true
+  pages_publication_forbidden: true
+authorization_boundary:
+  merge_authorized: false
+  workflow_dispatch_authorized: false
+  tag_authorized: false
+  github_release_authorized: false
+  pages_publication_authorized: false
+  stable_release_authorized: false
+  external_action_authorized: false
