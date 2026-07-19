@@ -9,8 +9,8 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
 VERSION = "MADP-v0.3.0-alpha.4"
-BASE_COMMIT = "f7fc84675321c0f55619301642f4d52f601f30d3"
-BRANCH = "feature/v0.3.0-alpha.4-kickoff"
+BASE_COMMIT = "92174e7e651cc5ee7f8797a845cfc33fcd39af9a"
+BRANCH = "feature/v0.3.0-alpha.4-core-usability-slice-1"
 
 ARTIFACTS = (
     "docs/planning/DEC-MADP-ALPHA4-001.yaml",
@@ -37,7 +37,7 @@ def main() -> int:
 
     for relative in ARTIFACTS + SUPPORT_FILES:
         if not (ROOT / relative).is_file():
-            problems.append(f"missing alpha.4 kickoff file: {relative}")
+            problems.append(f"missing alpha.4 baseline file: {relative}")
 
     if problems:
         for problem in problems:
@@ -89,7 +89,7 @@ def main() -> int:
 
     expected_status = {
         "protocol_version": VERSION,
-        "implementation_status": "KICKOFF_BASELINE_READY",
+        "implementation_status": "CORE_USABILITY_SLICE_1_READY",
         "integration_status": "IMPLEMENTATION_BRANCH",
         "base_version": "MADP-v0.3.0-alpha.3",
         "base_main_commit": BASE_COMMIT,
@@ -106,19 +106,35 @@ def main() -> int:
             problems.append(f"status mismatch for {key}: {status.get(key)!r}")
 
     compatibility = status.get("compatibility_policy", {})
-    if compatibility != {
-        "alpha3_command_namespace_preserved_during_kickoff": True,
-        "breaking_schema_change_in_kickoff": False,
+    for key, expected in {
+        "alpha3_command_namespace_preserved": True,
+        "breaking_alpha3_schema_change": False,
         "legacy_fact_records_preserved": True,
         "alpha3_artifacts_remain_historical_and_unchanged": True,
-    }:
-        problems.append("kickoff compatibility policy mismatch")
+        "additive_alpha4_records_only": True,
+    }.items():
+        if compatibility.get(key) is not expected:
+            problems.append(f"compatibility policy mismatch: {key}")
 
     environment = status.get("development_environment", {})
     if environment.get("github_hosted_workflow_first_class") is not True:
         problems.append("GitHub-hosted workflow must be first-class")
     if environment.get("local_checkout_required") is not False:
         problems.append("local checkout must remain optional")
+
+    kickoff = status.get("work_packages", {}).get("kickoff_baseline", {})
+    if kickoff.get("status") != "MERGED_TO_MAIN":
+        problems.append("kickoff baseline must be recorded as merged")
+    if kickoff.get("pull_request") != 18:
+        problems.append("kickoff pull request mismatch")
+    if kickoff.get("merge_commit") != BASE_COMMIT:
+        problems.append("kickoff merge commit mismatch")
+
+    core = status.get("work_packages", {}).get("core_usability_integration", {})
+    if core.get("status") != "PARTIAL_IMPLEMENTATION_IN_BRANCH":
+        problems.append("Core Usability work package status mismatch")
+    if core.get("current_slice") != "CORE_USABILITY_SLICE_1":
+        problems.append("Core Usability slice mismatch")
 
     readme = read(ARTIFACTS[2])
     release_notes = read(ARTIFACTS[3])
@@ -154,8 +170,9 @@ def main() -> int:
             print(f"FAIL: {problem}", file=sys.stderr)
         return 1
 
-    print("MADP v0.3.0-alpha.4 kickoff baseline: PASS")
+    print("MADP v0.3.0-alpha.4 implementation baseline: PASS")
     print(f"base_main_commit={BASE_COMMIT}")
+    print("implementation_status=CORE_USABILITY_SLICE_1_READY")
     print("local_checkout_required=false")
     print("stable_release_authorized=false")
     return 0
