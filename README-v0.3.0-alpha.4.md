@@ -1,68 +1,112 @@
 # MADP v0.3.0-alpha.4 — Practical Core Integration and Fix-Forward Delivery
 
-Status: implementation kickoff baseline on a feature branch. This version is not release-ready, tagged, published, or a stable release.
+Status: Core Usability Slice 1 implemented on a feature branch. This version is
+not release-ready, tagged, published, or a stable release.
 
-MADP v0.3.0-alpha.4 starts a short-cycle prerelease line focused on reducing human operating burden while preserving explicit authority, evidence, and provenance boundaries. The direction is authorized by `docs/planning/DEC-MADP-RAPID-PRERELEASE-001.yaml` and specified for implementation by `docs/planning/DEC-MADP-ALPHA4-001.yaml`.
+MADP v0.3.0-alpha.4 is a short-cycle prerelease line focused on reducing human
+operating burden while preserving explicit authority, evidence, provenance, and
+revision boundaries.
 
-## Kickoff scope
+The implementation direction is authorized by:
 
-This first increment establishes:
+- `docs/planning/DEC-MADP-RAPID-PRERELEASE-001.yaml`
+- `docs/planning/DEC-MADP-ALPHA4-001.yaml`
+- `docs/planning/DEC-MADP-ALPHA4-002.yaml`
 
-- a versioned alpha.4 implementation decision;
-- a machine-readable implementation status;
-- draft release notes and known limitations;
-- a GitHub Actions validation path that does not require a local checkout;
-- explicit compatibility and authority boundaries for subsequent implementation PRs.
+## Current implementation
 
-It does not yet implement the alpha.4 protocol, schemas, registries, bootstraps, migration fixtures, or generated distribution package.
+The first Core Usability slice adds:
 
-## Planned alpha.4 direction
+- a normative additive Core Usability extension over alpha.3;
+- eight versioned, non-atomic Workflow Macros;
+- a macro registry whose steps remain canonical alpha.3 commands;
+- an additive Claim, Evidence, Dissent, Human Decision, and migration record;
+- explicit raw-response preservation;
+- separate dissent status and human disposition;
+- separate decision and external-action authorization;
+- executable schema-positive, schema-negative, and semantic-negative fixtures;
+- a dedicated GitHub Actions validation path.
 
-### Human-facing workflow layer
+Normative and executable artifacts:
 
-The eight Workflow Macros—`init`, `register`, `capture`, `structure`, `review`, `decide`, `authorize`, and `status`—are planned as a versioned, non-atomic interaction layer. They must expand into recorded canonical operations and may stop at human or validation gates.
+- [`protocol/MADP-v0.3.0-alpha.4-core-usability.md`](protocol/MADP-v0.3.0-alpha.4-core-usability.md)
+- [`docs/profiles/WORKFLOW_MACROS-v0.3.0-alpha.4.md`](docs/profiles/WORKFLOW_MACROS-v0.3.0-alpha.4.md)
+- [`registries/v0.3.0-alpha.4/workflow-macros.yaml`](registries/v0.3.0-alpha.4/workflow-macros.yaml)
+- [`schemas/v0.3.0-alpha.4/core-usability-record.schema.yaml`](schemas/v0.3.0-alpha.4/core-usability-record.schema.yaml)
+- [`tests/v0.3.0-alpha.4/core-usability-fixtures.yaml`](tests/v0.3.0-alpha.4/core-usability-fixtures.yaml)
 
-### Claim and Evidence semantics
+## Workflow Macros
 
-Alpha.4 is planned to distinguish claim kind from verification status as additive concepts. Existing `FACT` records remain valid historical and compatibility inputs until explicit migration schemas, fixtures, and safety tests exist.
+The registered macros are:
 
-### Blind review, correlation, and dissent
+- `init`
+- `register`
+- `capture`
+- `structure`
+- `review`
+- `decide`
+- `authorize`
+- `status`
 
-Blind First Round procedure status, known participant correlation, material dissent, and human disposition remain explicit. Agreement among AI systems is not evidence, and degraded runs must not be relabeled as conforming.
+Macros are guided workflows, not canonical commands, aliases, atomic
+transactions, or authority grants. Accepted machine operations are still
+recorded as canonical alpha.3 commands with exact identifiers, revisions, and
+state versions.
 
-### Distribution and role planning
+## Claim, Evidence, Dissent, and Decision
 
-The compact bundle and dynamic role planner may become alpha.4 distribution inputs. They remain deterministic advisory tools: a bundle does not prove that a model read it, and a role plan does not grant approval or execution authority.
+Alpha.4 separates:
 
-### GitHub-first development
+- `claim_kind` from `verification_status`;
+- Evidence from the Claim it supports or challenges;
+- dissent `status` from human `disposition`;
+- a Human Final Authority Decision from external-action authorization.
 
-Alpha.4 development supports branch creation, repository editing, validation, artifact generation, and pull-request review through GitHub-hosted workflows. A local checkout is optional rather than required.
+Existing alpha.3 `FACT` records remain valid historical inputs. Migration must
+preserve the original record and revision and must not silently upgrade
+verification.
 
-## Compatibility policy
+Agreement among AI systems is not evidence. AI agreement, vote count, or
+convergence cannot replace the human decision.
 
-During the kickoff increment:
+## Compatibility
 
-- the alpha.3 command namespace remains unchanged;
-- no breaking schema change is introduced;
-- legacy `FACT` records are preserved;
-- alpha.3 artifacts remain historical and unchanged;
-- external actions still require separate, action-specific human authorization.
+This slice:
+
+- preserves the alpha.3 canonical command namespace;
+- does not modify alpha.3 schemas;
+- preserves legacy `FACT` records;
+- leaves alpha.3 artifacts historical and unchanged;
+- adds only versioned alpha.4 artifacts.
+
+## GitHub-first development
+
+Alpha.4 development treats GitHub branches, pull requests, Actions, and
+generated artifacts as first-class. A local checkout is optional.
 
 ## Release model
 
-Alpha.4 follows the `RELEASE_EARLY_FIX_FORWARD` policy for a single-primary-user phase. Short prerelease increments may proceed without completing the terminated four-workflow comparison or the alpha.3 stable-release gates.
+Alpha.4 follows `RELEASE_EARLY_FIX_FORWARD` for a single-primary-user phase.
+Short prerelease increments may proceed without completing the terminated
+four-workflow comparison or the alpha.3 stable-release gates.
 
-Tagging, GitHub Release creation, Pages publication, and stable-release authorization remain separate actions.
+Tagging, GitHub Release creation, Pages publication, and stable-release
+authorization remain separate actions.
 
 ## Known limitations
 
-- Alpha.4 normative protocol and schema content is not implemented in this kickoff increment.
-- No alpha.4 distribution artifact exists yet.
-- The four-workflow comparison was terminated after one completed workflow; no comparative superiority is claimed.
+- The alpha.4 bootstrap, load profile, generated distribution, and release
+  package are not implemented yet.
+- The Core Usability record is not yet included in a deterministic alpha.4
+  bundle.
+- No new canonical command namespace is introduced in this slice.
+- The four-workflow comparison was terminated after one completed workflow; no
+  comparative superiority is claimed.
 - The retained Core Candidate result is a DEGRADED single-case study.
 - Formal release evidence and stable-release authorization are absent.
-- The current published prerelease remains `MADP-v0.3.0-alpha.2` until a later publication action is completed.
+- The current published prerelease remains `MADP-v0.3.0-alpha.2`.
 
 ## Rollback
 
-The immutable published rollback target is `MADP-v0.3.0-alpha.2` at tag `MADP-v0.3.0-alpha.2`.
+The immutable published rollback target is `MADP-v0.3.0-alpha.2` at tag
+`MADP-v0.3.0-alpha.2`.
