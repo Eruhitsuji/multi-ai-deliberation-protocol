@@ -1,0 +1,30 @@
+status_version: 1
+protocol_version: MADP-v0.3.0-alpha.4
+implementation_slice: PRERELEASE_PUBLICATION_HANDOFF
+implementation_status: IMPLEMENTED_IN_BRANCH
+integration_status: IMPLEMENTATION_BRANCH
+branch: feature/v0.3.0-alpha.4-publication-workflow
+decision_ref: docs/planning/DEC-MADP-ALPHA4-006.yaml
+previous_slice:
+  pull_request: 22
+  status: MERGED_TO_MAIN
+handoff:
+  target_tag: MADP-v0.3.0-alpha.4
+  release_mode: prerelease
+  exact_source_commit_required: true
+  deterministic_package_required: true
+  release_candidate_receipt_required: true
+  known_limitations_required: true
+  rollback_target: MADP-v0.3.0-alpha.2
+  github_actions_artifact_retention_days: 30
+boundaries:
+  read_only_workflow: true
+  automatic_publication: false
+  tag_created: false
+  github_release_created: false
+  pages_published: false
+  stable_release_authorized: false
+  formal_release_evidence: false
+next_action:
+  id: REVIEW_PUBLICATION_HANDOFF
+  description: Merge this handoff PR, inspect the exact-main artifact, then issue separate explicit authorization for tag and GitHub Prerelease creation.
