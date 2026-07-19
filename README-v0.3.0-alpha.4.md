@@ -1,6 +1,6 @@
 # MADP v0.3.0-alpha.4 — Practical Core Integration and Fix-Forward Delivery
 
-Status: Core Usability, deterministic Core distribution, and the deterministic prerelease package are merged to `main`. Exact-main release-candidate validation is implemented on a feature branch. No tag, GitHub Release, Pages publication, or stable release is authorized by this status.
+Status: Core Usability, deterministic Core distribution, prerelease packaging, and exact-main release-candidate validation are merged to `main`. A read-only publication handoff is implemented on a feature branch. No tag, GitHub Release, Pages publication, or stable release is authorized by this status.
 
 MADP v0.3.0-alpha.4 is a short-cycle prerelease line focused on reducing human operating burden while preserving explicit authority, evidence, provenance, and revision boundaries.
 
@@ -12,6 +12,7 @@ Implementation decisions:
 - `docs/planning/DEC-MADP-ALPHA4-003.yaml`
 - `docs/planning/DEC-MADP-ALPHA4-004.yaml`
 - `docs/planning/DEC-MADP-ALPHA4-005.yaml`
+- `docs/planning/DEC-MADP-ALPHA4-006.yaml`
 
 ## Current implementation
 
@@ -73,18 +74,9 @@ The candidate workflow generates:
 - a sidecar machine-generated integrity audit;
 - an archive SHA-256 file.
 
-The ZIP contains:
+The ZIP contains this README, release notes, MIT License, bootstrap files, the deterministic Core distribution, relevant alpha.4 schemas, an embedded manifest, an integrity audit, and internal `SHA256SUMS`.
 
-- this README and the candidate release notes;
-- the MIT License;
-- QUICK and VERIFIED bootstrap files;
-- the deterministic Core distribution and its manifest;
-- relevant alpha.4 schemas;
-- `PRERELEASE-MANIFEST.yaml`;
-- `INTEGRITY-AUDIT.yaml`;
-- internal `SHA256SUMS`.
-
-The archive is generated twice with fixed timestamps, file permissions, path order, and compression settings. The two outputs must be byte-identical. The checker rejects undeclared files, changed payloads, checksum mismatches, authority changes, unsafe paths, privacy findings, and noncanonical ZIP output.
+The archive is generated twice with fixed timestamps, file permissions, path order, and compression settings. The checker rejects undeclared files, changed payloads, checksum mismatches, authority changes, unsafe paths, privacy findings, and noncanonical ZIP output.
 
 ### Exact-main release-candidate receipt
 
@@ -95,7 +87,19 @@ The release-readiness workflow adds:
 - exact package archive, package manifest, and release-notes SHA-256 binding;
 - a machine-readable record of retained checks, known limitations, and authority boundaries.
 
-A pull-request receipt is validation evidence for that PR head only. After this slice is merged, the workflow runs on the resulting `main` commit and must emit `source_ref_kind: MERGED_MAIN`, `branch_name: main`, and `status: MERGED_MAIN_CANDIDATE_VALIDATED` before tag or GitHub Release authorization is considered.
+A pull-request receipt is validation evidence for that PR head only. The workflow also runs on the resulting `main` commit and must emit `source_ref_kind: MERGED_MAIN`, `branch_name: main`, and `status: MERGED_MAIN_CANDIDATE_VALIDATED` before publication authorization is considered.
+
+### Read-only publication handoff
+
+The publication-handoff workflow generates:
+
+- `MADP-v0.3.0-alpha.4-publication-handoff.yaml`;
+- `MADP-v0.3.0-alpha.4-publication-checklist.md`;
+- the validated package, manifest, audit, archive digest, and release-candidate receipt.
+
+The handoff binds the exact repository, commit, source classification, target tag, candidate hashes, release-notes hash, and rollback target. It records every required Human Final Authority action as incomplete and every publication boundary as false.
+
+The workflow has `contents: read` permission only. It cannot create a tag, GitHub Release, Pages publication, stable release, or external action. Merge of the handoff PR is not publication authorization.
 
 ## Workflow Macros
 
@@ -116,7 +120,7 @@ Macros are guided workflows, not canonical commands, aliases, atomic transaction
 
 Agreement among AI systems is not evidence. AI agreement, vote count, or convergence cannot replace the human decision.
 
-Human Final Authority remains required. A Human Decision is not external-action authorization. Generated packages, bundles, load reports, receipts, validation results, and pull requests do not grant merge, tag, release, publication, or execution authority.
+Human Final Authority remains required. A Human Decision is not external-action authorization. Generated packages, bundles, load reports, receipts, handoffs, validation results, and pull requests do not grant merge, tag, release, publication, or execution authority.
 
 ## Compatibility
 
@@ -134,7 +138,7 @@ GitHub branches, pull requests, Actions, generated artifacts, and artifact downl
 
 ## Release model
 
-Alpha.4 follows `RELEASE_EARLY_FIX_FORWARD` for a single-primary-user phase. Candidate readiness, merge, exact-main validation, tag creation, GitHub Release publication, Pages publication, stable-release authorization, and formal release evidence remain separate states and actions.
+Alpha.4 follows `RELEASE_EARLY_FIX_FORWARD` for a single-primary-user phase. Candidate readiness, merge, exact-main validation, publication handoff, tag creation, GitHub Release publication, Pages publication, stable-release authorization, and formal release evidence remain separate states and actions.
 
 ## Known limitations
 

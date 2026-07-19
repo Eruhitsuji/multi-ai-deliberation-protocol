@@ -1,8 +1,8 @@
 # MADP v0.3.0-alpha.4 release notes
 
-Status: **PRERELEASE CANDIDATE — EXACT-MAIN VALIDATION PENDING**
+Status: **PRERELEASE CANDIDATE — READ-ONLY PUBLICATION HANDOFF IMPLEMENTED**
 
-No tag, GitHub Release, Pages publication, stable release, or formal release evidence is created by this document.
+No tag, GitHub Release, Pages publication, stable release, or formal release evidence is created by this document or by the publication-handoff workflow.
 
 ## Theme
 
@@ -65,13 +65,24 @@ Alpha.4 is a short-cycle prerelease line intended for a single primary user. It 
 - explicit distinction between `PULL_REQUEST_HEAD` and `MERGED_MAIN` candidates;
 - automatic validation and artifact upload on pushes to `main`.
 
+### Publication handoff
+
+- deterministic `MADP-v0.3.0-alpha.4-publication-handoff.yaml`;
+- operator-facing `MADP-v0.3.0-alpha.4-publication-checklist.md`;
+- exact repository, source commit, source classification, target tag, package hashes, receipt hash, release-notes hash, and rollback binding;
+- every required Human Final Authority action recorded as incomplete;
+- tag, GitHub Release, Pages, stable-release, and formal-evidence boundaries recorded as false;
+- read-only GitHub Actions permissions;
+- two-pass deterministic generation and canonical validation;
+- 30-day workflow artifact retention.
+
 ## Compatibility
 
 - The alpha.3 canonical command namespace is unchanged.
 - Alpha.3 protocol and schemas are unchanged.
 - Legacy `FACT` records remain valid historical and migration inputs.
 - Existing alpha.3 artifacts are not rewritten.
-- New records, loaders, schemas, bundles, package metadata, and receipts use versioned alpha.4 paths.
+- New records, loaders, schemas, bundles, package metadata, receipts, and handoffs use versioned alpha.4 paths.
 
 ## Evidence and authority boundaries
 
@@ -82,14 +93,14 @@ Alpha.4 is a short-cycle prerelease line intended for a single primary user. It 
 - A Decision does not itself authorize an external action.
 - A bundle or package does not prove that a model read every embedded source.
 - A load report is self-reported unless independently verified.
-- A PR-head receipt is not merged-main evidence.
-- Candidate readiness does not authorize merge, tagging, release, publication, or execution.
+- A PR-head receipt or handoff is not merged-main evidence.
+- Candidate readiness and handoff readiness do not authorize merge, tagging, release, publication, or execution.
 - Formal release evidence remains false.
 - Stable release remains unauthorized.
 
 ## Validation
 
-The candidate validation path runs:
+The complete candidate and handoff validation path runs:
 
 ```bash
 python scripts/check_alpha4_kickoff.py
@@ -102,30 +113,37 @@ python tests/v0.3.0-alpha.4/test_prerelease_package.py \
   --source-commit <40-character-commit>
 python tests/v0.3.0-alpha.4/test_release_candidate.py \
   --repository owner/repository \
-  --source-commit <40-character-commit>
-python scripts/generate_alpha4_release_candidate.py <output> \
+  --source-commit <40-character-commit> \
+  --branch-name feature/example
+python tests/v0.3.0-alpha.4/test_publication_handoff.py \
+  --repository owner/repository \
+  --source-commit <40-character-commit> \
+  --branch-name feature/example
+python scripts/generate_alpha4_publication_handoff.py <output> \
   --repository owner/repository \
   --source-commit <40-character-commit> \
   --source-ref-kind PULL_REQUEST_HEAD \
-  --branch-name feature/example
-python scripts/check_alpha4_release_candidate.py <output> \
+  --branch-name feature/example \
+  --target-tag MADP-v0.3.0-alpha.4
+python scripts/check_alpha4_publication_handoff.py <output> \
   --repository owner/repository \
   --source-commit <40-character-commit> \
   --source-ref-kind PULL_REQUEST_HEAD \
-  --branch-name feature/example
+  --branch-name feature/example \
+  --target-tag MADP-v0.3.0-alpha.4
 ```
 
-GitHub Actions generate the release candidate twice, require byte-for-byte equality, validate both copies, and upload one candidate artifact. After this slice is merged, the same workflow runs against the exact resulting `main` commit and must produce a `MERGED_MAIN_CANDIDATE_VALIDATED` receipt.
+GitHub Actions generate the handoff twice, require byte-for-byte equality, validate both copies, and upload one read-only handoff artifact. After merge, the same workflow runs against the exact resulting `main` commit and classifies the handoff as `MERGED_MAIN`.
 
 ## Publication procedure
 
-After this release-readiness PR is merged:
+After the publication-handoff PR is merged:
 
-1. confirm the release-candidate workflow passes on the exact merged `main` commit;
-2. inspect the generated receipt, manifest, audit, archive digest, and known limitations;
-3. confirm `source_ref_kind: MERGED_MAIN`, `branch_name: main`, and the exact main commit;
-4. obtain explicit Human Final Authority authorization for the tag;
-5. obtain explicit Human Final Authority authorization for the GitHub Release;
+1. confirm the handoff workflow passes on the exact merged `main` commit;
+2. inspect the handoff manifest, release-candidate receipt, package manifest, integrity audit, archive digest, release notes, and known limitations;
+3. confirm `source_ref_kind: MERGED_MAIN`, `branch_name: main`, the exact commit, and target tag `MADP-v0.3.0-alpha.4`;
+4. explicitly authorize tag creation;
+5. explicitly authorize GitHub Prerelease creation;
 6. keep Pages publication separate unless explicitly authorized.
 
 ## Known limitations

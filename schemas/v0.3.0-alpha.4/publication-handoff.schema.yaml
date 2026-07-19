@@ -1,0 +1,121 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: urn:madp:schema:publication-handoff:0.3.0-alpha.4
+title: MADP v0.3.0-alpha.4 Publication Handoff
+type: object
+additionalProperties: false
+required:
+  - handoff_version
+  - protocol_version
+  - repository
+  - source_commit
+  - source_ref_kind
+  - branch_name
+  - target_tag
+  - release_mode
+  - candidate
+  - rollback_target
+  - required_human_actions
+  - boundaries
+properties:
+  handoff_version:
+    const: MADP-PRERELEASE-PUBLICATION-HANDOFF-v1
+  protocol_version:
+    const: MADP-v0.3.0-alpha.4
+  repository:
+    type: string
+    pattern: '^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$'
+  source_commit:
+    type: string
+    pattern: '^[0-9a-f]{40}$'
+  source_ref_kind:
+    enum: [PULL_REQUEST_HEAD, MERGED_MAIN]
+  branch_name:
+    type: string
+    minLength: 1
+  target_tag:
+    const: MADP-v0.3.0-alpha.4
+  release_mode:
+    const: PRERELEASE
+  candidate:
+    type: object
+    additionalProperties: false
+    required:
+      - archive_file
+      - archive_sha256
+      - manifest_file
+      - manifest_sha256
+      - audit_file
+      - audit_sha256
+      - receipt_file
+      - receipt_sha256
+      - release_notes_file
+      - release_notes_sha256
+    properties:
+      archive_file: {const: MADP-v0.3.0-alpha.4-prerelease-candidate.zip}
+      archive_sha256: {$ref: '#/$defs/sha256'}
+      manifest_file: {const: MADP-v0.3.0-alpha.4-prerelease-candidate.manifest.yaml}
+      manifest_sha256: {$ref: '#/$defs/sha256'}
+      audit_file: {const: MADP-v0.3.0-alpha.4-prerelease-integrity-audit.yaml}
+      audit_sha256: {$ref: '#/$defs/sha256'}
+      receipt_file: {const: MADP-v0.3.0-alpha.4-release-candidate.receipt.yaml}
+      receipt_sha256: {$ref: '#/$defs/sha256'}
+      release_notes_file: {const: docs/releases/MADP-v0.3.0-alpha.4.md}
+      release_notes_sha256: {$ref: '#/$defs/sha256'}
+  rollback_target:
+    type: object
+    additionalProperties: false
+    required: [version, tag]
+    properties:
+      version: {const: MADP-v0.3.0-alpha.2}
+      tag: {const: MADP-v0.3.0-alpha.2}
+  required_human_actions:
+    type: object
+    additionalProperties: false
+    required:
+      - authorize_tag
+      - authorize_github_release
+      - confirm_prerelease
+      - inspect_known_limitations
+    properties:
+      authorize_tag: {const: false}
+      authorize_github_release: {const: false}
+      confirm_prerelease: {const: false}
+      inspect_known_limitations: {const: false}
+  boundaries:
+    type: object
+    additionalProperties: false
+    required:
+      - tag_created
+      - github_release_created
+      - pages_published
+      - stable_release_authorized
+      - formal_release_evidence
+      - proves_model_ingestion
+    properties:
+      tag_created: {const: false}
+      github_release_created: {const: false}
+      pages_published: {const: false}
+      stable_release_authorized: {const: false}
+      formal_release_evidence: {const: false}
+      proves_model_ingestion: {const: false}
+allOf:
+  - if:
+      properties:
+        source_ref_kind: {const: MERGED_MAIN}
+      required: [source_ref_kind]
+    then:
+      properties:
+        branch_name: {const: main}
+  - if:
+      properties:
+        source_ref_kind: {const: PULL_REQUEST_HEAD}
+      required: [source_ref_kind]
+    then:
+      not:
+        properties:
+          branch_name: {const: main}
+        required: [branch_name]
+$defs:
+  sha256:
+    type: string
+    pattern: '^[0-9a-f]{64}$'
