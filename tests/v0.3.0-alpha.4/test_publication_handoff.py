@@ -49,6 +49,16 @@ def main() -> int:
     parser.add_argument("--branch-name", required=True)
     args = parser.parse_args()
 
+    # PR-head fixtures must never use the protected main branch name. When this
+    # regression suite runs from a push to main, use a deterministic synthetic
+    # branch for PR-head-only cases while preserving an explicit MERGED_MAIN/main
+    # case below.
+    pr_branch = (
+        args.branch_name
+        if args.branch_name != "main"
+        else "feature/test-publication-handoff"
+    )
+
     with tempfile.TemporaryDirectory() as temporary:
         base = Path(temporary)
         valid = base / "valid"
@@ -57,7 +67,7 @@ def main() -> int:
             args.repository,
             args.source_commit,
             "PULL_REQUEST_HEAD",
-            args.branch_name,
+            pr_branch,
             TARGET_TAG,
             root=ROOT,
         )
@@ -67,7 +77,7 @@ def main() -> int:
                 args.repository,
                 args.source_commit,
                 "PULL_REQUEST_HEAD",
-                args.branch_name,
+                pr_branch,
             ) == [],
             "valid publication handoff must pass",
         )
@@ -78,7 +88,7 @@ def main() -> int:
             args.repository,
             args.source_commit,
             "PULL_REQUEST_HEAD",
-            args.branch_name,
+            pr_branch,
             TARGET_TAG,
             root=ROOT,
         )
@@ -97,7 +107,7 @@ def main() -> int:
             args.repository,
             args.source_commit,
             "PULL_REQUEST_HEAD",
-            args.branch_name,
+            pr_branch,
             TARGET_TAG,
             root=ROOT,
         )
@@ -118,7 +128,7 @@ def main() -> int:
                     args.repository,
                     args.source_commit,
                     "PULL_REQUEST_HEAD",
-                    args.branch_name,
+                    pr_branch,
                 )
             ),
             "confirmed authority must be rejected",
@@ -131,7 +141,7 @@ def main() -> int:
                 args.repository,
                 args.source_commit,
                 "PULL_REQUEST_HEAD",
-                args.branch_name,
+                pr_branch,
                 "MADP-v0.3.0-alpha.4-other",
                 root=ROOT,
             )
