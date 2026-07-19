@@ -65,8 +65,7 @@ jobs:
             --source-commit "$SOURCE_COMMIT"
           python tests/v0.3.0-alpha.4/test_release_candidate.py \
             --repository "$REPOSITORY_NAME" \
-            --source-commit "$SOURCE_COMMIT" \
-            --branch-name "$BRANCH_NAME"
+            --source-commit "$SOURCE_COMMIT"
 
       - name: Run publication handoff regression tests
         run: |
