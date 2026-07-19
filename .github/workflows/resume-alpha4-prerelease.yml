@@ -1,0 +1,214 @@
+name: Resume MADP v0.3.0-alpha.4 prerelease publication
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/resume-alpha4-prerelease.yml'
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/resume-alpha4-prerelease.yml'
+
+permissions:
+  contents: read
+
+env:
+  TARGET_COMMIT: 3333c66b8b9873581af3f621615a7e1f7fc20e0a
+  TARGET_TAG: MADP-v0.3.0-alpha.4
+  RELEASE_TITLE: MADP v0.3.0-alpha.4
+  REPOSITORY_NAME: ${{ github.repository }}
+  TARGET_DIR: /tmp/madp-alpha4-target
+  ASSET_DIR: /tmp/madp-alpha4-assets
+
+jobs:
+  validate-resume-plan:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Install validation dependencies
+        run: python -m pip install --disable-pip-version-check pyyaml jsonschema
+
+      - name: Regenerate and verify exact assets
+        run: |
+          rm -rf "$TARGET_DIR" "$ASSET_DIR"
+          git worktree add --detach "$TARGET_DIR" "$TARGET_COMMIT"
+          python "$TARGET_DIR/scripts/generate_alpha4_publication_handoff.py" "$ASSET_DIR" \
+            --repository "$REPOSITORY_NAME" \
+            --source-commit "$TARGET_COMMIT" \
+            --source-ref-kind MERGED_MAIN \
+            --branch-name main \
+            --target-tag "$TARGET_TAG"
+          python "$TARGET_DIR/scripts/check_alpha4_publication_handoff.py" "$ASSET_DIR" \
+            --repository "$REPOSITORY_NAME" \
+            --source-commit "$TARGET_COMMIT" \
+            --source-ref-kind MERGED_MAIN \
+            --branch-name main \
+            --target-tag "$TARGET_TAG"
+          cd "$ASSET_DIR"
+          cat > expected.sha256 <<'EOF'
+          1b8fdfba72aec2df1cd1c413855e6ff16b07eddde13c67342239e361136f53c0  MADP-v0.3.0-alpha.4-prerelease-candidate.zip
+          fa9c7077ced6fc9a78eff41cbe24e2a8a010fe01f0edd066d0f516f78796b3bf  MADP-v0.3.0-alpha.4-prerelease-candidate.manifest.yaml
+          be82f390a9e49a65b56996a51686c39c7d4d49e8a93dd09c10fd8a013ae27aa6  MADP-v0.3.0-alpha.4-prerelease-integrity-audit.yaml
+          fe11e9fdb70ad220390d29dfb6f70e3fe06ceb2264faa13d95b4213a2ae7bd74  MADP-v0.3.0-alpha.4-prerelease-candidate.zip.sha256
+          8949075f1252927e367ca6868fb171632fd5039e4a3499cd26bc0285d16a1be2  MADP-v0.3.0-alpha.4-release-candidate.receipt.yaml
+          EOF
+          sha256sum --check expected.sha256
+          test "$(sha256sum "$TARGET_DIR/docs/releases/MADP-v0.3.0-alpha.4.md" | cut -d' ' -f1)" = \
+            '05d0776afd27404ec69bac98baf53aabc20dbf5e7cae08dde091b696937c71ec'
+
+      - name: Validate tag and draft release asset digests
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          test "$(git ls-remote --tags origin "refs/tags/$TARGET_TAG" | awk '{print $1}')" = "$TARGET_COMMIT"
+          release_id="$(gh api "repos/$REPOSITORY_NAME/releases" --paginate \
+            --jq ".[] | select(.tag_name == \"$TARGET_TAG\") | .id" | head -n1)"
+          if [ -z "$release_id" ]; then
+            echo 'No draft release exists yet; merge will create it.'
+            exit 0
+          fi
+          gh api "repos/$REPOSITORY_NAME/releases/$release_id" > /tmp/release.json
+          test "$(jq -r .tag_name /tmp/release.json)" = "$TARGET_TAG"
+          test "$(jq -r .prerelease /tmp/release.json)" = 'true'
+          gh api "repos/$REPOSITORY_NAME/releases/$release_id/assets" --paginate > /tmp/assets.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          assets = json.loads(Path('/tmp/assets.json').read_text(encoding='utf-8'))
+          for asset in assets:
+              digest = asset.get('digest')
+              assert isinstance(digest, str) and digest.startswith('sha256:'), asset
+          print(f'Draft release asset digest capability: PASS ({len(assets)} assets)')
+          PY
+
+  publish-prerelease:
+    if: github.event_name == 'push' && github.ref_name == 'main'
+    needs: validate-resume-plan
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+      statuses: write
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Install validation dependencies
+        run: python -m pip install --disable-pip-version-check pyyaml jsonschema
+
+      - name: Prepare exact assets
+        run: |
+          rm -rf "$TARGET_DIR" "$ASSET_DIR"
+          git worktree add --detach "$TARGET_DIR" "$TARGET_COMMIT"
+          python "$TARGET_DIR/scripts/generate_alpha4_publication_handoff.py" "$ASSET_DIR" \
+            --repository "$REPOSITORY_NAME" \
+            --source-commit "$TARGET_COMMIT" \
+            --source-ref-kind MERGED_MAIN \
+            --branch-name main \
+            --target-tag "$TARGET_TAG"
+          python "$TARGET_DIR/scripts/check_alpha4_publication_handoff.py" "$ASSET_DIR" \
+            --repository "$REPOSITORY_NAME" \
+            --source-commit "$TARGET_COMMIT" \
+            --source-ref-kind MERGED_MAIN \
+            --branch-name main \
+            --target-tag "$TARGET_TAG"
+
+      - name: Create or discover draft release
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          test "$(git ls-remote --tags origin "refs/tags/$TARGET_TAG" | awk '{print $1}')" = "$TARGET_COMMIT"
+          latest_before="$(gh api "repos/$REPOSITORY_NAME/releases/latest" --jq .tag_name 2>/dev/null || true)"
+          rollback_before="$(git ls-remote --tags origin 'refs/tags/MADP-v0.3.0-alpha.2' | awk '{print $1}')"
+          test -n "$rollback_before"
+          echo "latest_before=$latest_before" >> "$GITHUB_OUTPUT"
+          echo "rollback_before=$rollback_before" >> "$GITHUB_OUTPUT"
+
+          release_id="$(gh api "repos/$REPOSITORY_NAME/releases" --paginate \
+            --jq ".[] | select(.tag_name == \"$TARGET_TAG\") | .id" | head -n1)"
+          if [ -z "$release_id" ]; then
+            gh release create "$TARGET_TAG" --repo "$REPOSITORY_NAME" --verify-tag \
+              --draft --prerelease --title "$RELEASE_TITLE" \
+              --notes-file "$TARGET_DIR/docs/releases/MADP-v0.3.0-alpha.4.md"
+            release_id="$(gh api "repos/$REPOSITORY_NAME/releases" --paginate \
+              --jq ".[] | select(.tag_name == \"$TARGET_TAG\") | .id" | head -n1)"
+          fi
+          test -n "$release_id"
+          echo "release_id=$release_id" >> "$GITHUB_OUTPUT"
+
+      - name: Ensure exact authorized assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_ID: ${{ steps.release.outputs.release_id }}
+        run: |
+          gh release upload "$TARGET_TAG" \
+            "$ASSET_DIR/MADP-v0.3.0-alpha.4-prerelease-candidate.zip" \
+            "$ASSET_DIR/MADP-v0.3.0-alpha.4-prerelease-candidate.manifest.yaml" \
+            "$ASSET_DIR/MADP-v0.3.0-alpha.4-prerelease-integrity-audit.yaml" \
+            "$ASSET_DIR/MADP-v0.3.0-alpha.4-prerelease-candidate.zip.sha256" \
+            "$ASSET_DIR/MADP-v0.3.0-alpha.4-release-candidate.receipt.yaml" \
+            --repo "$REPOSITORY_NAME" --clobber
+          gh api "repos/$REPOSITORY_NAME/releases/$RELEASE_ID/assets" --paginate > /tmp/assets.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          expected = {
+              'MADP-v0.3.0-alpha.4-prerelease-candidate.zip': 'sha256:1b8fdfba72aec2df1cd1c413855e6ff16b07eddde13c67342239e361136f53c0',
+              'MADP-v0.3.0-alpha.4-prerelease-candidate.manifest.yaml': 'sha256:fa9c7077ced6fc9a78eff41cbe24e2a8a010fe01f0edd066d0f516f78796b3bf',
+              'MADP-v0.3.0-alpha.4-prerelease-integrity-audit.yaml': 'sha256:be82f390a9e49a65b56996a51686c39c7d4d49e8a93dd09c10fd8a013ae27aa6',
+              'MADP-v0.3.0-alpha.4-prerelease-candidate.zip.sha256': 'sha256:fe11e9fdb70ad220390d29dfb6f70e3fe06ceb2264faa13d95b4213a2ae7bd74',
+              'MADP-v0.3.0-alpha.4-release-candidate.receipt.yaml': 'sha256:8949075f1252927e367ca6868fb171632fd5039e4a3499cd26bc0285d16a1be2',
+          }
+          assets = json.loads(Path('/tmp/assets.json').read_text(encoding='utf-8'))
+          observed = {asset['name']: asset.get('digest') for asset in assets}
+          assert set(observed) == set(expected), (sorted(observed), sorted(expected))
+          for name, digest in expected.items():
+              assert observed[name] == digest, (name, observed[name], digest)
+          print('Release asset digests: PASS')
+          PY
+
+      - name: Publish verified prerelease
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_ID: ${{ steps.release.outputs.release_id }}
+          LATEST_BEFORE: ${{ steps.release.outputs.latest_before }}
+          ROLLBACK_BEFORE: ${{ steps.release.outputs.rollback_before }}
+        run: |
+          gh api --method PATCH "repos/$REPOSITORY_NAME/releases/$RELEASE_ID" \
+            -F draft=false -F prerelease=true -f make_latest=false > /tmp/release.json
+          test "$(jq -r .tag_name /tmp/release.json)" = "$TARGET_TAG"
+          test "$(jq -r .name /tmp/release.json)" = "$RELEASE_TITLE"
+          test "$(jq -r .draft /tmp/release.json)" = 'false'
+          test "$(jq -r .prerelease /tmp/release.json)" = 'true'
+          latest_after="$(gh api "repos/$REPOSITORY_NAME/releases/latest" --jq .tag_name 2>/dev/null || true)"
+          rollback_after="$(git ls-remote --tags origin 'refs/tags/MADP-v0.3.0-alpha.2' | awk '{print $1}')"
+          test "$latest_after" = "$LATEST_BEFORE"
+          test "$rollback_after" = "$ROLLBACK_BEFORE"
+
+      - name: Publish execution status
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          JOB_STATUS: ${{ job.status }}
+        run: |
+          case "$JOB_STATUS" in
+            success) state=success; description='MADP v0.3.0-alpha.4 prerelease published' ;;
+            failure) state=failure; description='MADP v0.3.0-alpha.4 prerelease publication failed' ;;
+            *) state=error; description='MADP v0.3.0-alpha.4 prerelease publication incomplete' ;;
+          esac
+          gh api --method POST "repos/$GITHUB_REPOSITORY/statuses/$GITHUB_SHA" \
+            -f state="$state" -f context='madp/alpha4-prerelease-publication' \
+            -f description="$description" \
+            -f target_url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
