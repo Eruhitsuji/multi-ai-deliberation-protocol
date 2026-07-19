@@ -1,0 +1,63 @@
+status_version: 1
+protocol_version: MADP-v0.3.0-alpha.4
+implementation_slice: PRERELEASE_PACKAGE_SLICE
+implementation_status: PRERELEASE_CANDIDATE_PACKAGE_READY_IN_BRANCH
+integration_status: IMPLEMENTATION_BRANCH
+base_main_commit: 120ac10477810982046fd1882d1643b829a6a8af
+branch: feature/v0.3.0-alpha.4-prerelease-package
+decision_ref: docs/planning/DEC-MADP-ALPHA4-004.yaml
+previous_slices:
+  core_usability:
+    pull_request: 19
+    merge_commit: 058f6e10adb601fe3c22f3d476653c8f0f2cb0bf
+    status: MERGED_TO_MAIN
+  core_distribution:
+    pull_request: 20
+    merge_commit: 120ac10477810982046fd1882d1643b829a6a8af
+    status: MERGED_TO_MAIN
+package:
+  package_version: MADP-PRERELEASE-PACKAGE-v1
+  archive_file: MADP-v0.3.0-alpha.4-prerelease-candidate.zip
+  manifest_file: MADP-v0.3.0-alpha.4-prerelease-candidate.manifest.yaml
+  audit_file: MADP-v0.3.0-alpha.4-prerelease-integrity-audit.yaml
+  checksum_file: SHA256SUMS
+  deterministic_zip_required: true
+  fixed_zip_metadata_required: true
+  exact_source_commit_binding_required: true
+  canonical_regeneration_required: true
+  generated_by_github_actions: true
+  uploaded_as_workflow_artifact: true
+  committed_generated_archive: false
+candidate_readiness:
+  content_ready: true
+  prerelease_candidate_ready: true
+  publication_ready_for_human_decision: true
+  release_ready: false
+  tagged: false
+  published: false
+  stable_release_authorized: false
+  formal_release_evidence: false
+hard_gates:
+  privacy_scan: REQUIRED_AND_AUTOMATED
+  package_manifest_validation: REQUIRED_AND_AUTOMATED
+  internal_checksums: REQUIRED_AND_AUTOMATED
+  deterministic_regeneration: REQUIRED_AND_AUTOMATED
+  github_actions_ci: REQUIRED_ON_EACH_PR_HEAD
+  known_limitations: FINALIZED_FOR_CANDIDATE
+  rollback_target: MADP-v0.3.0-alpha.2
+publication_requirements:
+  - merge candidate PR
+  - regenerate and validate package against exact merged main commit
+  - confirm required GitHub Actions pass on main
+  - explicit Human Final Authority tag authorization
+  - explicit Human Final Authority GitHub Release authorization
+known_limitations:
+  - Dynamic role assignment is not promoted into alpha.4.
+  - Skill adapters and broader installation packages are not updated.
+  - Protocol-load reports remain reported observations unless independently verified.
+  - A bundle or package does not prove complete model ingestion or conformance.
+  - The terminated comparison pilot does not establish comparative superiority.
+  - Formal release evidence and stable-release authorization remain absent.
+next_action:
+  id: A4-PUBLICATION-DECISION
+  description: After merge, regenerate the candidate on exact main and request a separate human tag and GitHub Release decision.

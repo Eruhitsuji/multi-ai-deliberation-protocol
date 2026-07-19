@@ -1,34 +1,34 @@
 # MADP v0.3.0-alpha.4 release notes
 
-Status: **DRAFT — Core Distribution Slice**
+Status: **PRERELEASE CANDIDATE — PUBLICATION NOT AUTHORIZED**
 
-No tag, GitHub Release, Pages publication, or stable release is created by this document.
+No tag, GitHub Release, Pages publication, stable release, or formal release evidence is created by this document.
 
 ## Theme
 
 **Practical Core Integration and Fix-Forward Delivery**
 
-Alpha.4 is a short-cycle prerelease line intended for a single primary user. It prioritizes practical use and rapid correction while retaining Human Final Authority, explicit action authorization, and honest evidence classification.
+Alpha.4 is a short-cycle prerelease line intended for a single primary user. It prioritizes practical use and rapid correction while retaining Human Final Authority, explicit action authorization, honest evidence classification, and immutable source provenance.
 
 ## Implemented
 
-### Core Usability Slice 1
+### Core Usability
 
 - normative additive Core Usability extension over alpha.3;
 - eight non-atomic Workflow Macros;
 - versioned Workflow Macro registry and profile;
-- additive Claim and Evidence model;
+- separate Claim kind and verification status;
 - raw-response preservation;
-- multidimensional evidence assessment;
+- multidimensional Evidence;
 - separate dissent state and human disposition;
 - revision-bound Human Final Authority Decision;
 - separate external-action authorization;
 - non-destructive legacy `FACT` migration;
 - positive and negative semantic validation.
 
-### Core Distribution Slice
+### GitHub-first loading and Core distribution
 
-- GitHub-first QUICK and VERIFIED loading profiles;
+- QUICK and VERIFIED loading profiles;
 - `MADP-PROTOCOL-LOAD-REPORT-v3`;
 - fail-closed source inventory, commit, provenance, and profile binding;
 - optional complete-bundle access with exact manifest binding;
@@ -39,13 +39,27 @@ Alpha.4 is a short-cycle prerelease line intended for a single primary user. It 
 - GitHub Actions artifact upload;
 - local checkout remains optional.
 
+### Prerelease package and integrity audit
+
+- deterministic `MADP-v0.3.0-alpha.4-prerelease-candidate.zip`;
+- fixed ZIP timestamps, permissions, path order, and compression settings;
+- embedded package manifest and integrity audit;
+- internal `SHA256SUMS`;
+- archive SHA-256 sidecar;
+- package payload bound to repository and exact source commit;
+- Core distribution regenerated inside the package;
+- schema validation and canonical package regeneration;
+- detection of payload, checksum, manifest, authority, path, and privacy tampering;
+- two independent package generations required to be byte-identical;
+- 14-day GitHub Actions candidate artifact.
+
 ## Compatibility
 
 - The alpha.3 canonical command namespace is unchanged.
-- Alpha.3 schemas are unchanged.
+- Alpha.3 protocol and schemas are unchanged.
 - Legacy `FACT` records remain valid historical and migration inputs.
 - Existing alpha.3 artifacts are not rewritten.
-- New records, loaders, schemas, and bundles use versioned alpha.4 paths.
+- New records, loaders, schemas, bundles, and package metadata use versioned alpha.4 paths.
 
 ## Evidence and authority boundaries
 
@@ -54,37 +68,55 @@ Alpha.4 is a short-cycle prerelease line intended for a single primary user. It 
 - Agreement among AI systems is not evidence.
 - Human Final Authority remains required.
 - A Decision does not itself authorize an external action.
-- A bundle does not prove that a model read every embedded source.
+- A bundle or package does not prove that a model read every embedded source.
 - A load report is self-reported unless independently verified.
+- Candidate readiness does not authorize merge, tagging, release, publication, or execution.
 - Formal release evidence remains false.
 - Stable release remains unauthorized.
 
 ## Validation
 
-The implementation slice runs:
+The candidate validation path runs:
 
 ```bash
 python scripts/check_alpha4_kickoff.py
 python scripts/check_alpha4_core_usability.py
-python tests/v0.3.0-alpha.4/test_core_distribution.py
-python scripts/generate_alpha4_core_compact_bundle.py <output> \
+python tests/v0.3.0-alpha.4/test_core_distribution.py \
   --repository owner/repository \
   --source-commit <40-character-commit>
-python scripts/check_alpha4_core_compact_bundle.py <output> \
+python tests/v0.3.0-alpha.4/test_prerelease_package.py \
+  --repository owner/repository \
+  --source-commit <40-character-commit>
+python scripts/generate_alpha4_prerelease_package.py <output> \
+  --repository owner/repository \
+  --source-commit <40-character-commit>
+python scripts/check_alpha4_prerelease_package.py <output> \
   --repository owner/repository \
   --source-commit <40-character-commit>
 ```
 
-GitHub Actions generate the distribution twice, require byte-for-byte equality, validate both copies, and upload one candidate artifact.
+GitHub Actions generate the package twice, require byte-for-byte equality, validate both copies, and upload one candidate artifact.
+
+## Publication procedure
+
+After this candidate PR is merged:
+
+1. regenerate the package against the exact merged `main` commit;
+2. confirm all required GitHub Actions pass on that commit;
+3. inspect the generated manifest, audit, archive digest, and known limitations;
+4. obtain explicit Human Final Authority authorization for the tag;
+5. obtain explicit Human Final Authority authorization for the GitHub Release;
+6. keep Pages publication separate unless explicitly authorized.
 
 ## Known limitations
 
-- The generated artifact is not yet a tagged or published prerelease.
-- Dynamic role planning is deferred to a later alpha.4 slice.
-- Skill adapters and installer-facing packages are not updated yet.
+- Dynamic role planning is not promoted into alpha.4.
+- Skill adapters and broader installer-facing packages are not updated.
 - Broader alpha.3-to-alpha.4 migration coverage remains incomplete.
+- A load report remains a reported observation unless independently verified.
+- A bundle or package cannot prove model ingestion or conformance.
 - The repository's current published prerelease remains `MADP-v0.3.0-alpha.2`.
-- Tagging and GitHub Release publication require a later explicit action.
+- Tagging and GitHub Release publication require later explicit Human Final Authority actions.
 
 ## Rollback and previous version
 

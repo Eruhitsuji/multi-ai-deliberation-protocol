@@ -1,0 +1,40 @@
+decision_id: DEC-MADP-ALPHA4-004
+status: ACCEPTED
+decision_date: 2026-07-19
+authority: HUMAN_FINAL_AUTHORITY
+parent_decision_ref: docs/planning/DEC-MADP-ALPHA4-001.yaml
+previous_slice_ref: docs/planning/DEC-MADP-ALPHA4-003.yaml
+decision:
+  implementation_slice: PRERELEASE_PACKAGE_SLICE
+  target_version: MADP-v0.3.0-alpha.4
+  implementation_authorized: true
+  prerelease_candidate_package_authorized: true
+  publication_decision_authorized: false
+  stable_release_authorized: false
+  formal_release_evidence: false
+scope:
+  - deterministic prerelease ZIP package
+  - package manifest and internal SHA256SUMS
+  - machine-generated integrity audit
+  - exact source-commit and Core distribution binding
+  - negative tamper and authority tests
+  - GitHub Actions candidate artifact upload
+candidate_policy:
+  content_ready_may_be_true: true
+  candidate_ready_may_be_true: true
+  tag_requires_post_merge_main_validation: true
+  github_release_requires_separate_human_authorization: true
+  pages_publication_requires_separate_human_authorization: true
+  stable_release_requires_separate_evidence_and_authorization: true
+compatibility:
+  alpha3_command_namespace_preserved: true
+  alpha3_protocol_and_schemas_unchanged: true
+  legacy_fact_records_preserved: true
+  alpha4_core_usability_remains_additive: true
+authorization_boundary:
+  merge_authorized: false
+  tag_authorized: false
+  github_release_authorized: false
+  pages_publication_authorized: false
+  stable_release_authorized: false
+  external_action_authorized: false

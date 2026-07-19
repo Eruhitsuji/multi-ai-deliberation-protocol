@@ -1,6 +1,6 @@
 # MADP v0.3.0-alpha.4 — Practical Core Integration and Fix-Forward Delivery
 
-Status: Core Usability Slice 1 is merged to `main`; the GitHub-first bootstrap and deterministic Core distribution slice is implemented on a feature branch. This version is not release-ready, tagged, published, or a stable release.
+Status: Core Usability and deterministic Core distribution are merged to `main`. A deterministic prerelease candidate package is implemented on a feature branch and is ready for a separate human publication decision. No tag, GitHub Release, Pages publication, or stable release is authorized by this status.
 
 MADP v0.3.0-alpha.4 is a short-cycle prerelease line focused on reducing human operating burden while preserving explicit authority, evidence, provenance, and revision boundaries.
 
@@ -10,6 +10,7 @@ Implementation decisions:
 - `docs/planning/DEC-MADP-ALPHA4-001.yaml`
 - `docs/planning/DEC-MADP-ALPHA4-002.yaml`
 - `docs/planning/DEC-MADP-ALPHA4-003.yaml`
+- `docs/planning/DEC-MADP-ALPHA4-004.yaml`
 
 ## Current implementation
 
@@ -37,7 +38,7 @@ Core artifacts:
 
 ### Bootstrap and protocol loading
 
-Alpha.4 now defines two GitHub-first loading profiles:
+Alpha.4 defines two GitHub-first loading profiles:
 
 - `QUICK`: seven required sources, source-referenced provenance, and an explicit report when schema validation is unavailable;
 - `VERIFIED`: twelve required sources, executed schema validation, and SHA-256-verified provenance.
@@ -58,19 +59,33 @@ GitHub Actions generate:
 - `MADP-v0.3.0-alpha.4-core-distribution.md`
 - `MADP-v0.3.0-alpha.4-core-distribution.manifest.yaml`
 
-The bundle embeds thirteen sources byte-for-byte and records repository, immutable commit, path, role, byte count, and SHA-256.
+The bundle embeds thirteen sources byte-for-byte and records repository, immutable commit, path, role, byte count, and SHA-256. Validation requires exact Git HEAD and commit-object parity, manifest validation, loader inventory validation, embedded-source validation, two-pass reproducibility, canonical regeneration, and privacy and authority checks.
 
-Validation requires:
+The bundle may be used as `access_method: COMPLETE_BUNDLE`, but it is not a protocol-load report and does not prove that an AI system read every source.
 
-- exact Git HEAD and commit-object source parity;
-- manifest schema validation;
-- loader inventory digest validation;
-- embedded-source validation;
-- two-pass byte reproducibility;
-- complete canonical regeneration;
-- privacy, evidence, and authority boundaries.
+### Prerelease candidate package
 
-The generated bundle may be used as `access_method: COMPLETE_BUNDLE`, but the bundle itself is not a protocol-load report and does not prove that an AI system read every source.
+The candidate workflow generates:
+
+- `MADP-v0.3.0-alpha.4-prerelease-candidate.zip`;
+- a sidecar package manifest;
+- a sidecar machine-generated integrity audit;
+- an archive SHA-256 file.
+
+The ZIP contains:
+
+- this README and the final candidate release notes;
+- the MIT License;
+- QUICK and VERIFIED bootstrap files;
+- the deterministic Core distribution and its manifest;
+- relevant alpha.4 schemas;
+- `PRERELEASE-MANIFEST.yaml`;
+- `INTEGRITY-AUDIT.yaml`;
+- internal `SHA256SUMS`.
+
+The archive is generated twice with fixed timestamps, file permissions, path order, and compression settings. The two outputs must be byte-identical. The checker rejects undeclared files, changed payloads, checksum mismatches, authority changes, unsafe paths, privacy findings, and noncanonical ZIP output.
+
+A PR-head package remains a candidate. After merge, the package must be regenerated and validated against the exact merged `main` commit before a tag or GitHub Release decision.
 
 ## Workflow Macros
 
@@ -91,7 +106,7 @@ Macros are guided workflows, not canonical commands, aliases, atomic transaction
 
 Agreement among AI systems is not evidence. AI agreement, vote count, or convergence cannot replace the human decision.
 
-Human Final Authority remains required. A Human Decision is not external-action authorization. Generated bundles, load reports, validation results, and pull requests do not grant merge, release, publication, or execution authority.
+Human Final Authority remains required. A Human Decision is not external-action authorization. Generated packages, bundles, load reports, validation results, and pull requests do not grant merge, tag, release, publication, or execution authority.
 
 ## Compatibility
 
@@ -109,15 +124,15 @@ GitHub branches, pull requests, Actions, generated artifacts, and artifact downl
 
 ## Release model
 
-Alpha.4 follows `RELEASE_EARLY_FIX_FORWARD` for a single-primary-user phase. Tagging, GitHub Release creation, Pages publication, and stable-release authorization remain separate actions.
+Alpha.4 follows `RELEASE_EARLY_FIX_FORWARD` for a single-primary-user phase. Candidate readiness, merge, tag creation, GitHub Release publication, Pages publication, stable-release authorization, and formal release evidence remain separate states and actions.
 
 ## Known limitations
 
-- The generated distribution is a workflow artifact candidate, not a published release package.
-- Dynamic role assignment is not promoted into alpha.4 by this slice.
-- Skill adapters and broader user-facing installation packages are not updated yet.
+- Dynamic role assignment is not promoted into alpha.4.
+- Skill adapters and broader user-facing installation packages are not updated.
+- Broader alpha.3-to-alpha.4 migration coverage remains incomplete.
 - A protocol-load report remains a reported observation unless independently verified.
-- A bundle cannot prove complete model ingestion or conformance.
+- A bundle or ZIP package cannot prove complete model ingestion or conformance.
 - The four-workflow comparison was terminated after one completed workflow; no comparative superiority is claimed.
 - Formal release evidence and stable-release authorization are absent.
 - The current published prerelease remains `MADP-v0.3.0-alpha.2`.
