@@ -1,0 +1,199 @@
+fixture_version: MADP-ALPHA4-CORE-USABILITY-FIXTURES-v1
+protocol_version: MADP-v0.3.0-alpha.4
+schema_path: schemas/v0.3.0-alpha.4/core-usability-record.schema.yaml
+macro_registry_path: registries/v0.3.0-alpha.4/workflow-macros.yaml
+base_valid_artifact:
+  artifact_version: MADP-CORE-USABILITY-RECORD-v1
+  protocol_version: MADP-v0.3.0-alpha.4
+  package_id: PKG-001
+  source_state_version: 12
+  legacy_fact_records_preserved: true
+  raw_response_records_preserved: true
+  macro_trace:
+  - macro_execution_id: MX-INIT-001
+    macro: init
+    started_state_version: 0
+    ended_state_version: 3
+    accepted_canonical_commands:
+    - goal-propose
+    - goal-confirm
+    - session-start
+    encountered_gates:
+    - HUMAN_CONFIRM_EXACT_PLAN_REVISION
+    - HUMAN_START_SESSION
+    completion_status: COMPLETE
+    stop_reason: null
+  - macro_execution_id: MX-STRUCT-001
+    macro: structure
+    started_state_version: 8
+    ended_state_version: 10
+    accepted_canonical_commands:
+    - response-normalize
+    - normalization-confirm
+    - claim-add
+    - claim-verify
+    encountered_gates:
+    - HUMAN_REVIEW_NORMALIZATION_DIFF
+    completion_status: COMPLETE
+    stop_reason: null
+  - macro_execution_id: MX-DECIDE-001
+    macro: decide
+    started_state_version: 10
+    ended_state_version: 12
+    accepted_canonical_commands:
+    - propose-decision
+    - approve
+    encountered_gates:
+    - HUMAN_REVIEW_EVIDENCE_AND_DISSENT
+    completion_status: COMPLETE
+    stop_reason: null
+  claims:
+  - claim_id: CLAIM-001
+    revision: 1
+    source_state_version: 9
+    statement: The source states that the implementation preserves legacy records.
+    claim_kind: SOURCE_CLAIM
+    verification_status: SOURCE_MATCHED
+    raw_response_refs:
+    - RAW-001
+    evidence_refs:
+    - EVID-001
+    dissent_refs:
+    - DISSENT-001
+    legacy_fact_ref: FACT-001
+    legacy_fact_revision: 2
+  evidence:
+  - evidence_id: EVID-001
+    source_ref: repository:docs/source.md
+    source_digest: '0000000000000000000000000000000000000000000000000000000000000000'
+    assessment:
+      source_role: PRIMARY
+      claim_fit: DIRECT
+      freshness: CURRENT
+      traceability: SNAPSHOT_HASHED
+      source_independence: SINGLE_SOURCE
+    supports_claim_refs:
+    - CLAIM-001
+    challenges_claim_refs: []
+  dissents:
+  - dissent_id: DISSENT-001
+    revision: 1
+    source_state_version: 10
+    statement: A single source does not independently corroborate the claim.
+    status: OPEN
+    disposition: OVERRIDDEN_BY_HUMAN
+    claim_refs:
+    - CLAIM-001
+    evidence_refs:
+    - EVID-001
+    disposition_rationale: The human accepted the limitation for this prerelease decision.
+  decision:
+    decision_id: DECISION-001
+    revision: 1
+    source_state_version: 12
+    selected_option_id: OPTION-A
+    decided_by_type: HUMAN
+    approval_status: APPROVED
+    evidence_refs:
+    - EVID-001
+    acknowledged_dissent_refs:
+    - DISSENT-001
+    unresolved_dissent_refs:
+    - DISSENT-001
+    rationale: Proceed with the bounded implementation while preserving the limitation.
+    external_action_authorization: REQUIRES_SEPARATE_RECORD
+    execution_authorization_ref: null
+  migration_records:
+  - migration_id: MIG-001
+    source_fact_ref: FACT-001
+    source_fact_revision: 2
+    source_fact_preserved: true
+    target_claim_ref: CLAIM-001
+    mapping_status: PARTIAL
+    ambiguities:
+    - Legacy VERIFIED does not establish independent corroboration.
+    verification_status_before: UNCHECKED
+    verification_status_after: SOURCE_MATCHED
+    verification_change_basis: EVIDENCE_REVIEWED
+    human_review_required: true
+schema_invalid_cases:
+- id: SCHEMA-LEGACY-FACT-NOT-PRESERVED
+  mutations:
+  - path:
+    - legacy_fact_records_preserved
+    value: false
+- id: SCHEMA-AI-FINAL-DECIDER
+  mutations:
+  - path:
+    - decision
+    - decided_by_type
+    value: AI_MODEL
+- id: SCHEMA-MISSING-EXECUTION-AUTH-REF
+  mutations:
+  - path:
+    - decision
+    - external_action_authorization
+    value: GRANTED_BY_SEPARATE_RECORD
+  - path:
+    - decision
+    - execution_authorization_ref
+    value: null
+- id: SCHEMA-CLAIM-WITHOUT-RAW-RESPONSE
+  mutations:
+  - path:
+    - claims
+    - 0
+    - raw_response_refs
+    value: []
+semantic_invalid_cases:
+- id: SEM-DANGLING-EVIDENCE-REF
+  expected_error: DANGLING_CLAIM_EVIDENCE_REF
+  mutations:
+  - path:
+    - claims
+    - 0
+    - evidence_refs
+    value:
+    - EVID-MISSING
+- id: SEM-MISSING-EVIDENCE-BACKLINK
+  expected_error: MISSING_EVIDENCE_BACKLINK
+  mutations:
+  - path:
+    - evidence
+    - 0
+    - supports_claim_refs
+    value: []
+- id: SEM-OPEN-DISSENT-HIDDEN
+  expected_error: OPEN_DISSENT_NOT_VISIBLE_IN_DECISION
+  mutations:
+  - path:
+    - decision
+    - unresolved_dissent_refs
+    value: []
+- id: SEM-SILENT-VERIFICATION-UPGRADE
+  expected_error: VERIFICATION_CHANGE_BASIS_INVALID
+  mutations:
+  - path:
+    - migration_records
+    - 0
+    - verification_change_basis
+    value: PRESERVED
+- id: SEM-COMPLETE-MACRO-WITHOUT-COMMANDS
+  expected_error: COMPLETE_MACRO_MISSING_REQUIRED_COMMANDS
+  mutations:
+  - path:
+    - macro_trace
+    - 0
+    - accepted_canonical_commands
+    value: []
+- id: SEM-MACRO-COMMAND-ORDER
+  expected_error: MACRO_COMMAND_ORDER_INVALID
+  mutations:
+  - path:
+    - macro_trace
+    - 0
+    - accepted_canonical_commands
+    value:
+    - goal-confirm
+    - goal-propose
+    - session-start
