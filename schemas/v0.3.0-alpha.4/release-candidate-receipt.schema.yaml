@@ -1,0 +1,119 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: urn:madp:schema:release-candidate-receipt:0.3.0-alpha.4
+title: MADP v0.3.0-alpha.4 Release Candidate Receipt
+type: object
+additionalProperties: false
+required:
+  - receipt_version
+  - protocol_version
+  - repository
+  - source_commit
+  - source_ref_kind
+  - branch_name
+  - main_branch_candidate
+  - status
+  - artifact_name
+  - package_archive_file
+  - package_archive_sha256
+  - package_manifest_sha256
+  - release_notes_sha256
+  - known_limitation_count
+  - checks
+  - boundaries
+properties:
+  receipt_version:
+    const: MADP-RELEASE-CANDIDATE-RECEIPT-v1
+  protocol_version:
+    const: MADP-v0.3.0-alpha.4
+  repository:
+    type: string
+    pattern: '^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$'
+  source_commit:
+    $ref: '#/$defs/sha256'
+  source_ref_kind:
+    enum: [PULL_REQUEST_HEAD, MERGED_MAIN]
+  branch_name:
+    type: string
+    minLength: 1
+  main_branch_candidate:
+    type: boolean
+  status:
+    enum:
+      - PR_HEAD_CANDIDATE_VALIDATED
+      - MERGED_MAIN_CANDIDATE_VALIDATED
+  artifact_name:
+    type: string
+    pattern: '^madp-v0\.3\.0-alpha\.4-release-candidate-[0-9a-f]{40}$'
+  package_archive_file:
+    const: MADP-v0.3.0-alpha.4-prerelease-candidate.zip
+  package_archive_sha256:
+    $ref: '#/$defs/sha256'
+  package_manifest_sha256:
+    $ref: '#/$defs/sha256'
+  release_notes_sha256:
+    $ref: '#/$defs/sha256'
+  known_limitation_count:
+    type: integer
+    minimum: 1
+  checks:
+    type: object
+    additionalProperties: false
+    required:
+      - retained_alpha4_validation
+      - package_regression
+      - deterministic_generation
+      - package_canonical_validation
+      - privacy_scan
+      - authority_boundary
+      - release_notes_known_limitations
+    properties:
+      retained_alpha4_validation: {$ref: '#/$defs/pass'}
+      package_regression: {$ref: '#/$defs/pass'}
+      deterministic_generation: {$ref: '#/$defs/pass'}
+      package_canonical_validation: {$ref: '#/$defs/pass'}
+      privacy_scan: {$ref: '#/$defs/pass'}
+      authority_boundary: {$ref: '#/$defs/pass'}
+      release_notes_known_limitations: {$ref: '#/$defs/pass'}
+  boundaries:
+    type: object
+    additionalProperties: false
+    required:
+      - formal_release_evidence
+      - stable_release_authorized
+      - publication_authorized
+      - tag_authorized
+      - github_release_authorized
+      - pages_publication_authorized
+      - proves_model_ingestion
+    properties:
+      formal_release_evidence: {const: false}
+      stable_release_authorized: {const: false}
+      publication_authorized: {const: false}
+      tag_authorized: {const: false}
+      github_release_authorized: {const: false}
+      pages_publication_authorized: {const: false}
+      proves_model_ingestion: {const: false}
+allOf:
+  - if:
+      properties:
+        source_ref_kind: {const: MERGED_MAIN}
+      required: [source_ref_kind]
+    then:
+      properties:
+        branch_name: {const: main}
+        main_branch_candidate: {const: true}
+        status: {const: MERGED_MAIN_CANDIDATE_VALIDATED}
+  - if:
+      properties:
+        source_ref_kind: {const: PULL_REQUEST_HEAD}
+      required: [source_ref_kind]
+    then:
+      properties:
+        main_branch_candidate: {const: false}
+        status: {const: PR_HEAD_CANDIDATE_VALIDATED}
+$defs:
+  sha256:
+    type: string
+    pattern: '^[0-9a-f]{64}$'
+  pass:
+    const: PASS
