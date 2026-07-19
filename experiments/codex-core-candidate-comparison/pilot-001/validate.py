@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+from copy import deepcopy
 from pathlib import Path
 import hashlib
 import sys
 import yaml
 from jsonschema import Draft202012Validator
-from referencing import Registry, Resource
 
 PILOT_DIR = Path(__file__).resolve().parent
 ROOT = PILOT_DIR.parents[2]
@@ -27,19 +27,62 @@ def sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def _pointer_target(root, ref: str):
+    if not ref.startswith("#/"):
+        raise ValueError(f"only local JSON Pointer refs are supported: {ref!r}")
+    current = root
+    for raw_token in ref[2:].split("/"):
+        token = raw_token.replace("~1", "/").replace("~0", "~")
+        if not isinstance(current, dict) or token not in current:
+            raise ValueError(f"unresolved local JSON Pointer ref: {ref!r}")
+        current = current[token]
+    return current
+
+
+def _expand_local_refs(node, root, resolving=()):
+    if isinstance(node, list):
+        return [_expand_local_refs(item, root, resolving) for item in node]
+    if not isinstance(node, dict):
+        return node
+
+    if "$ref" in node:
+        ref = node["$ref"]
+        if not isinstance(ref, str):
+            raise ValueError("$ref must be a string")
+        if ref in resolving:
+            chain = " -> ".join((*resolving, ref))
+            raise ValueError(f"cyclic local JSON Pointer refs are not supported: {chain}")
+        target = _expand_local_refs(
+            deepcopy(_pointer_target(root, ref)),
+            root,
+            (*resolving, ref),
+        )
+        siblings = {key: value for key, value in node.items() if key != "$ref"}
+        if not siblings:
+            return target
+        return {
+            "allOf": [
+                target,
+                _expand_local_refs(siblings, root, resolving),
+            ]
+        }
+
+    return {
+        key: _expand_local_refs(value, root, resolving)
+        for key, value in node.items()
+    }
+
+
 def validator_for(schema):
-    schema_id = schema.get("$id")
-    if not isinstance(schema_id, str) or not schema_id:
-        raise ValueError("comparison schema must define a non-empty $id")
-    registry = Registry().with_resource(schema_id, Resource.from_contents(schema))
-    return Draft202012Validator(schema, registry=registry)
+    expanded_schema = _expand_local_refs(schema, schema)
+    Draft202012Validator.check_schema(expanded_schema)
+    return Draft202012Validator(expanded_schema)
 
 
 def main() -> int:
     problems: list[str] = []
 
     schema = load_yaml(SCHEMA_PATH)
-    Draft202012Validator.check_schema(schema)
     experiment = load_yaml(EXPERIMENT_PATH)
 
     validator = validator_for(schema)
