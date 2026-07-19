@@ -1,0 +1,213 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: urn:madp:schema:protocol-load-report:0.3.0-alpha.4
+title: MADP v0.3.0-alpha.4 Protocol Load Report
+type: object
+additionalProperties: false
+required:
+  - report_version
+  - report_id
+  - revision
+  - supersedes
+  - active
+  - protocol_version
+  - compatibility_base
+  - load_profile
+  - repository
+  - repository_commit
+  - inventory_digest_algorithm
+  - source_inventory_digest
+  - status
+  - files
+  - all_required_files_read
+  - schema_validation_capability
+  - schema_validation_executed
+  - inferred_unread_content
+  - provenance_level
+  - authorized_start_profiles
+  - limitations
+  - next_action
+properties:
+  report_version:
+    const: MADP-PROTOCOL-LOAD-REPORT-v3
+  report_id:
+    type: string
+    pattern: ^[A-Za-z0-9][A-Za-z0-9._:-]*$
+  revision:
+    type: integer
+    minimum: 1
+  supersedes:
+    oneOf:
+      - type: 'null'
+      - type: integer
+        minimum: 1
+  active:
+    type: boolean
+  protocol_version:
+    const: MADP-v0.3.0-alpha.4
+  compatibility_base:
+    const: MADP-v0.3.0-alpha.3
+  load_profile:
+    enum: [QUICK, VERIFIED]
+  repository:
+    type: string
+    pattern: ^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$
+  repository_commit:
+    type: string
+    pattern: ^[0-9a-f]{40}$
+  inventory_digest_algorithm:
+    const: sha256-newline-paths-v1
+  source_inventory_digest:
+    type: string
+    pattern: ^[0-9a-f]{64}$
+  status:
+    enum: [COMPLETE, INCOMPLETE]
+  files:
+    type: array
+    minItems: 1
+    items:
+      type: object
+      additionalProperties: false
+      required: [path, status, access_method, source_ref, content_sha256]
+      properties:
+        path:
+          type: string
+          minLength: 1
+        status:
+          enum: [READ, PARTIALLY_READ, FAILED]
+        access_method:
+          enum: [RAW_URL, GITHUB_CONNECTOR, PROVIDED_TEXT, COMPLETE_BUNDLE, OTHER]
+        source_ref:
+          type: string
+          minLength: 1
+        content_sha256:
+          oneOf:
+            - type: 'null'
+            - type: string
+              pattern: ^[0-9a-f]{64}$
+  all_required_files_read:
+    type: boolean
+  schema_validation_capability:
+    enum: [EXECUTED, AVAILABLE_NOT_EXECUTED, UNAVAILABLE]
+  schema_validation_executed:
+    type: boolean
+  inferred_unread_content:
+    const: false
+  provenance_level:
+    enum: [HASH_VERIFIED, SOURCE_REFERENCED, SELF_ATTESTED]
+  bundle_binding:
+    oneOf:
+      - type: 'null'
+      - type: object
+        additionalProperties: false
+        required: [bundle_version, bundle_file, bundle_sha256, manifest_sha256, repository, source_commit]
+        properties:
+          bundle_version:
+            const: MADP-CORE-DISTRIBUTION-BUNDLE-v1
+          bundle_file:
+            const: MADP-v0.3.0-alpha.4-core-distribution.md
+          bundle_sha256:
+            type: string
+            pattern: ^[0-9a-f]{64}$
+          manifest_sha256:
+            type: string
+            pattern: ^[0-9a-f]{64}$
+          repository:
+            type: string
+            pattern: ^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$
+          source_commit:
+            type: string
+            pattern: ^[0-9a-f]{40}$
+  authorized_start_profiles:
+    type: array
+    minItems: 1
+    maxItems: 2
+    items:
+      type: object
+      additionalProperties: false
+      required: [path, repository, repository_commit, source_ref, content_sha256]
+      properties:
+        path:
+          enum:
+            - bootstrap/alpha4/quick-start.md
+            - bootstrap/alpha4/verified-start.md
+        repository:
+          type: string
+          pattern: ^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$
+        repository_commit:
+          type: string
+          pattern: ^[0-9a-f]{40}$
+        source_ref:
+          type: string
+          minLength: 1
+        content_sha256:
+          oneOf:
+            - type: 'null'
+            - type: string
+              pattern: ^[0-9a-f]{64}$
+  limitations:
+    type: array
+    items:
+      type: string
+      minLength: 1
+  next_action:
+    type: object
+    additionalProperties: false
+    required: [command, accepted_input]
+    properties:
+      command:
+        enum: [APPLY_START_PROFILE, RECOVER_PROTOCOL_SOURCE]
+      accepted_input:
+        type: string
+        minLength: 1
+allOf:
+  - if:
+      properties:
+        status:
+          const: COMPLETE
+      required: [status]
+    then:
+      properties:
+        active:
+          const: true
+        all_required_files_read:
+          const: true
+        next_action:
+          properties:
+            command:
+              const: APPLY_START_PROFILE
+  - if:
+      properties:
+        status:
+          const: INCOMPLETE
+      required: [status]
+    then:
+      properties:
+        next_action:
+          properties:
+            command:
+              const: RECOVER_PROTOCOL_SOURCE
+  - if:
+      properties:
+        load_profile:
+          const: VERIFIED
+      required: [load_profile]
+    then:
+      properties:
+        schema_validation_capability:
+          const: EXECUTED
+        schema_validation_executed:
+          const: true
+        provenance_level:
+          const: HASH_VERIFIED
+        files:
+          items:
+            properties:
+              content_sha256:
+                type: string
+                pattern: ^[0-9a-f]{64}$
+        authorized_start_profiles:
+          items:
+            properties:
+              content_sha256:
+                type: string
+                pattern: ^[0-9a-f]{64}$
