@@ -1,16 +1,26 @@
-status_version: 1
+status_version: 2
 protocol_version: MADP-v0.3.0-alpha.4
-implementation_slice: PRERELEASE_PUBLICATION_HANDOFF
-implementation_status: IMPLEMENTED_IN_BRANCH
-integration_status: IMPLEMENTATION_BRANCH
-branch: feature/v0.3.0-alpha.4-publication-workflow
-decision_ref: docs/planning/DEC-MADP-ALPHA4-006.yaml
-previous_slice:
-  pull_request: 22
-  status: MERGED_TO_MAIN
-handoff:
+implementation_slice: PRERELEASE_PUBLICATION_AND_POST_RELEASE_CLEANUP
+implementation_status: PUBLISHED
+integration_status: MERGED_TO_MAIN
+branch: main
+decision_refs:
+  - docs/planning/DEC-MADP-ALPHA4-006.yaml
+  - docs/planning/DEC-MADP-ALPHA4-007.yaml
+  - docs/planning/DEC-MADP-ALPHA4-008.yaml
+publication:
   target_tag: MADP-v0.3.0-alpha.4
-  release_mode: prerelease
+  release_mode: PRERELEASE
+  exact_tag_target_commit: 3333c66b8b9873581af3f621615a7e1f7fc20e0a
+  release_url: https://github.com/Eruhitsuji/multi-ai-deliberation-protocol/releases/tag/MADP-v0.3.0-alpha.4
+  successful_workflow_run: 29683532093
+  publication_executor_main_commit: 5faa9cc6ee1a4bc4255f2e4a0973cf8122cc9bf4
+  status_context: madp/alpha4-prerelease-publication
+  status_result: success
+  asset_count: 5
+  github_asset_digests_verified: true
+  release_notes_source: docs/releases/MADP-v0.3.0-alpha.4.md
+handoff:
   exact_source_commit_required: true
   deterministic_package_required: true
   release_candidate_receipt_required: true
@@ -18,13 +28,24 @@ handoff:
   rollback_target: MADP-v0.3.0-alpha.2
   github_actions_artifact_retention_days: 30
 boundaries:
-  read_only_workflow: true
-  automatic_publication: false
-  tag_created: false
-  github_release_created: false
+  retained_handoff_workflow_read_only: true
+  one_time_publication_workflows_retired: true
+  automatic_republication_enabled: false
+  tag_created: true
+  github_release_created: true
   pages_published: false
   stable_release_authorized: false
   formal_release_evidence: false
+  latest_stable_designated: false
+  rollback_target_changed: false
+cleanup:
+  removed_workflows:
+    - .github/workflows/publish-alpha4-prerelease-once.yml
+    - .github/workflows/resume-alpha4-prerelease.yml
+  retained_workflows:
+    - .github/workflows/validate-alpha4-publication-handoff.yml
+    - .github/workflows/validate-alpha4-published-state.yml
+  immutable_release_assets: true
 next_action:
-  id: REVIEW_PUBLICATION_HANDOFF
-  description: Merge this handoff PR, inspect the exact-main artifact, then issue separate explicit authorization for tag and GitHub Prerelease creation.
+  id: MONITOR_ALPHA4_AND_FIX_FORWARD
+  description: Monitor published prerelease use, preserve the immutable tag and assets, and route corrections through separately authorized fix-forward work.
