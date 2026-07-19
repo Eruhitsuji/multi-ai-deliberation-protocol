@@ -1,8 +1,14 @@
 # MADP v0.3.0-alpha.4 release notes
 
-Status: **PRERELEASE CANDIDATE — READ-ONLY PUBLICATION HANDOFF IMPLEMENTED**
+Status: **PUBLISHED GITHUB PRERELEASE**
 
-No tag, GitHub Release, Pages publication, stable release, or formal release evidence is created by this document or by the publication-handoff workflow.
+Published tag: `MADP-v0.3.0-alpha.4`
+
+Exact tag target: `3333c66b8b9873581af3f621615a7e1f7fc20e0a`
+
+Release: https://github.com/Eruhitsuji/multi-ai-deliberation-protocol/releases/tag/MADP-v0.3.0-alpha.4
+
+Pages publication, stable-release authorization, formal release evidence, and latest-stable designation remain absent. The rollback target remains `MADP-v0.3.0-alpha.2`.
 
 ## Theme
 
@@ -50,31 +56,28 @@ Alpha.4 is a short-cycle prerelease line intended for a single primary user. It 
 - Core distribution regenerated inside the package;
 - schema validation and canonical package regeneration;
 - detection of payload, checksum, manifest, authority, path, and privacy tampering;
-- two independent package generations required to be byte-identical;
-- GitHub Actions candidate artifact.
+- two independent package generations required to be byte-identical.
 
-### Release-candidate receipt
+### Release-candidate receipt and publication handoff
 
-- deterministic `MADP-v0.3.0-alpha.4-release-candidate.receipt.yaml`;
-- exact package archive SHA-256;
-- exact package manifest SHA-256;
-- exact release-notes SHA-256;
-- known-limitations count;
-- retained validation results;
-- authority-boundary record;
-- explicit distinction between `PULL_REQUEST_HEAD` and `MERGED_MAIN` candidates;
-- automatic validation and artifact upload on pushes to `main`.
+- deterministic release-candidate receipt;
+- exact package, manifest, and release-notes SHA-256 binding;
+- known-limitations and authority-boundary record;
+- explicit `PULL_REQUEST_HEAD` and `MERGED_MAIN` classification;
+- exact repository, source commit, target tag, receipt, package, release-note, and rollback binding;
+- read-only retained publication-handoff validation.
 
-### Publication handoff
+## Published assets
 
-- deterministic `MADP-v0.3.0-alpha.4-publication-handoff.yaml`;
-- operator-facing `MADP-v0.3.0-alpha.4-publication-checklist.md`;
-- exact repository, source commit, source classification, target tag, package hashes, receipt hash, release-notes hash, and rollback binding;
-- every required Human Final Authority action recorded as incomplete;
-- tag, GitHub Release, Pages, stable-release, and formal-evidence boundaries recorded as false;
-- read-only GitHub Actions permissions;
-- two-pass deterministic generation and canonical validation;
-- 30-day workflow artifact retention.
+- `MADP-v0.3.0-alpha.4-prerelease-candidate.zip`
+- `MADP-v0.3.0-alpha.4-prerelease-candidate.manifest.yaml`
+- `MADP-v0.3.0-alpha.4-prerelease-integrity-audit.yaml`
+- `MADP-v0.3.0-alpha.4-prerelease-candidate.zip.sha256`
+- `MADP-v0.3.0-alpha.4-release-candidate.receipt.yaml`
+
+The successful publication workflow regenerated the exact-target artifacts, verified the authorized SHA-256 values, confirmed tag binding, compared GitHub's stored release-asset digests, published with `prerelease: true`, and preserved the rollback and latest-stable states.
+
+The one-time write-capable publication workflows are retired after publication. A read-only published-state audit remains.
 
 ## Compatibility
 
@@ -93,58 +96,8 @@ Alpha.4 is a short-cycle prerelease line intended for a single primary user. It 
 - A Decision does not itself authorize an external action.
 - A bundle or package does not prove that a model read every embedded source.
 - A load report is self-reported unless independently verified.
-- A PR-head receipt or handoff is not merged-main evidence.
-- Candidate readiness and handoff readiness do not authorize merge, tagging, release, publication, or execution.
 - Formal release evidence remains false.
 - Stable release remains unauthorized.
-
-## Validation
-
-The complete candidate and handoff validation path runs:
-
-```bash
-python scripts/check_alpha4_kickoff.py
-python scripts/check_alpha4_core_usability.py
-python tests/v0.3.0-alpha.4/test_core_distribution.py \
-  --repository owner/repository \
-  --source-commit <40-character-commit>
-python tests/v0.3.0-alpha.4/test_prerelease_package.py \
-  --repository owner/repository \
-  --source-commit <40-character-commit>
-python tests/v0.3.0-alpha.4/test_release_candidate.py \
-  --repository owner/repository \
-  --source-commit <40-character-commit> \
-  --branch-name feature/example
-python tests/v0.3.0-alpha.4/test_publication_handoff.py \
-  --repository owner/repository \
-  --source-commit <40-character-commit> \
-  --branch-name feature/example
-python scripts/generate_alpha4_publication_handoff.py <output> \
-  --repository owner/repository \
-  --source-commit <40-character-commit> \
-  --source-ref-kind PULL_REQUEST_HEAD \
-  --branch-name feature/example \
-  --target-tag MADP-v0.3.0-alpha.4
-python scripts/check_alpha4_publication_handoff.py <output> \
-  --repository owner/repository \
-  --source-commit <40-character-commit> \
-  --source-ref-kind PULL_REQUEST_HEAD \
-  --branch-name feature/example \
-  --target-tag MADP-v0.3.0-alpha.4
-```
-
-GitHub Actions generate the handoff twice, require byte-for-byte equality, validate both copies, and upload one read-only handoff artifact. After merge, the same workflow runs against the exact resulting `main` commit and classifies the handoff as `MERGED_MAIN`.
-
-## Publication procedure
-
-After the publication-handoff PR is merged:
-
-1. confirm the handoff workflow passes on the exact merged `main` commit;
-2. inspect the handoff manifest, release-candidate receipt, package manifest, integrity audit, archive digest, release notes, and known limitations;
-3. confirm `source_ref_kind: MERGED_MAIN`, `branch_name: main`, the exact commit, and target tag `MADP-v0.3.0-alpha.4`;
-4. explicitly authorize tag creation;
-5. explicitly authorize GitHub Prerelease creation;
-6. keep Pages publication separate unless explicitly authorized.
 
 ## Known limitations
 
@@ -153,17 +106,14 @@ After the publication-handoff PR is merged:
 - Broader alpha.3-to-alpha.4 migration coverage remains incomplete.
 - A load report remains a reported observation unless independently verified.
 - A bundle or package cannot prove model ingestion or conformance.
-- The repository's current published prerelease remains `MADP-v0.3.0-alpha.2`.
-- Tagging and GitHub Release publication require later explicit Human Final Authority actions.
+- The four-workflow comparison was terminated after one completed workflow and does not establish comparative superiority.
 
 ## Rollback and previous version
-
-Published rollback target:
 
 ```yaml
 version: MADP-v0.3.0-alpha.2
 tag: MADP-v0.3.0-alpha.2
-status: published immutable prerelease
+status: published immutable prerelease rollback target
 ```
 
-The merged alpha.3 and alpha.4 development commits remain available in repository history, but they are not the published rollback tag.
+The published alpha.4 tag is immutable. Future corrections must use fix-forward development and a separately authorized superseding prerelease.
