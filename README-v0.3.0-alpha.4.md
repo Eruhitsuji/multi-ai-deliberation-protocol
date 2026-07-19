@@ -1,6 +1,6 @@
 # MADP v0.3.0-alpha.4 — Practical Core Integration and Fix-Forward Delivery
 
-Status: Core Usability and deterministic Core distribution are merged to `main`. A deterministic prerelease candidate package is implemented on a feature branch and is ready for a separate human publication decision. No tag, GitHub Release, Pages publication, or stable release is authorized by this status.
+Status: Core Usability, deterministic Core distribution, and the deterministic prerelease package are merged to `main`. Exact-main release-candidate validation is implemented on a feature branch. No tag, GitHub Release, Pages publication, or stable release is authorized by this status.
 
 MADP v0.3.0-alpha.4 is a short-cycle prerelease line focused on reducing human operating burden while preserving explicit authority, evidence, provenance, and revision boundaries.
 
@@ -11,6 +11,7 @@ Implementation decisions:
 - `docs/planning/DEC-MADP-ALPHA4-002.yaml`
 - `docs/planning/DEC-MADP-ALPHA4-003.yaml`
 - `docs/planning/DEC-MADP-ALPHA4-004.yaml`
+- `docs/planning/DEC-MADP-ALPHA4-005.yaml`
 
 ## Current implementation
 
@@ -74,7 +75,7 @@ The candidate workflow generates:
 
 The ZIP contains:
 
-- this README and the final candidate release notes;
+- this README and the candidate release notes;
 - the MIT License;
 - QUICK and VERIFIED bootstrap files;
 - the deterministic Core distribution and its manifest;
@@ -85,7 +86,16 @@ The ZIP contains:
 
 The archive is generated twice with fixed timestamps, file permissions, path order, and compression settings. The two outputs must be byte-identical. The checker rejects undeclared files, changed payloads, checksum mismatches, authority changes, unsafe paths, privacy findings, and noncanonical ZIP output.
 
-A PR-head package remains a candidate. After merge, the package must be regenerated and validated against the exact merged `main` commit before a tag or GitHub Release decision.
+### Exact-main release-candidate receipt
+
+The release-readiness workflow adds:
+
+- `MADP-v0.3.0-alpha.4-release-candidate.receipt.yaml`;
+- explicit `PULL_REQUEST_HEAD` versus `MERGED_MAIN` classification;
+- exact package archive, package manifest, and release-notes SHA-256 binding;
+- a machine-readable record of retained checks, known limitations, and authority boundaries.
+
+A pull-request receipt is validation evidence for that PR head only. After this slice is merged, the workflow runs on the resulting `main` commit and must emit `source_ref_kind: MERGED_MAIN`, `branch_name: main`, and `status: MERGED_MAIN_CANDIDATE_VALIDATED` before tag or GitHub Release authorization is considered.
 
 ## Workflow Macros
 
@@ -106,7 +116,7 @@ Macros are guided workflows, not canonical commands, aliases, atomic transaction
 
 Agreement among AI systems is not evidence. AI agreement, vote count, or convergence cannot replace the human decision.
 
-Human Final Authority remains required. A Human Decision is not external-action authorization. Generated packages, bundles, load reports, validation results, and pull requests do not grant merge, tag, release, publication, or execution authority.
+Human Final Authority remains required. A Human Decision is not external-action authorization. Generated packages, bundles, load reports, receipts, validation results, and pull requests do not grant merge, tag, release, publication, or execution authority.
 
 ## Compatibility
 
@@ -124,7 +134,7 @@ GitHub branches, pull requests, Actions, generated artifacts, and artifact downl
 
 ## Release model
 
-Alpha.4 follows `RELEASE_EARLY_FIX_FORWARD` for a single-primary-user phase. Candidate readiness, merge, tag creation, GitHub Release publication, Pages publication, stable-release authorization, and formal release evidence remain separate states and actions.
+Alpha.4 follows `RELEASE_EARLY_FIX_FORWARD` for a single-primary-user phase. Candidate readiness, merge, exact-main validation, tag creation, GitHub Release publication, Pages publication, stable-release authorization, and formal release evidence remain separate states and actions.
 
 ## Known limitations
 

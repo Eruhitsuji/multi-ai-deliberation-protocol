@@ -1,0 +1,56 @@
+status_version: 1
+protocol_version: MADP-v0.3.0-alpha.4
+implementation_slice: POST_MERGE_RELEASE_READINESS
+implementation_status: RELEASE_CANDIDATE_VALIDATION_IMPLEMENTED_IN_BRANCH
+integration_status: IMPLEMENTATION_BRANCH
+base_main_commit: 0edfe9b6d8657a4690d7223639117d562c9d9d9b
+branch: feature/v0.3.0-alpha.4-release-readiness
+decision_ref: docs/planning/DEC-MADP-ALPHA4-005.yaml
+previous_slice:
+  pull_request: 21
+  merge_commit: 0edfe9b6d8657a4690d7223639117d562c9d9d9b
+  status: MERGED_TO_MAIN
+release_candidate_validation:
+  workflow: Validate alpha.4 release candidate
+  workflow_file: .github/workflows/validate-alpha4-release-candidate.yml
+  receipt_version: MADP-RELEASE-CANDIDATE-RECEIPT-v1
+  receipt_file: MADP-v0.3.0-alpha.4-release-candidate.receipt.yaml
+  artifact_name_prefix: madp-v0.3.0-alpha.4-release-candidate-
+  exact_source_commit_binding_required: true
+  pull_request_head_validation: true
+  merged_main_validation: true
+  run_on_push_to_main: true
+  deterministic_regeneration_required: true
+  package_validation_required: true
+  release_notes_digest_required: true
+candidate_readiness:
+  content_ready: true
+  prerelease_candidate_ready: true
+  publication_ready_for_human_decision: false
+  release_ready: false
+  tagged: false
+  published: false
+  stable_release_authorized: false
+  formal_release_evidence: false
+publication_gate:
+  - merge this release-readiness pull request
+  - complete the release-candidate workflow on the exact merged main commit
+  - confirm all retained and release-candidate checks pass
+  - confirm the uploaded receipt records source_ref_kind MERGED_MAIN
+  - confirm the receipt source_commit equals the merged main commit
+  - obtain explicit Human Final Authority tag authorization
+  - obtain explicit Human Final Authority GitHub Release authorization
+known_limitations:
+  - Dynamic role assignment is not promoted into alpha.4.
+  - Skill adapters and broader installation packages are not updated.
+  - Broader alpha.3-to-alpha.4 migration coverage remains incomplete.
+  - Protocol-load reports remain reported observations unless independently verified.
+  - A bundle or package does not prove complete model ingestion or conformance.
+  - The terminated comparison pilot does not establish comparative superiority.
+  - Formal release evidence and stable-release authorization remain absent.
+rollback_target:
+  version: MADP-v0.3.0-alpha.2
+  tag: MADP-v0.3.0-alpha.2
+next_action:
+  id: A4-MERGED-MAIN-VALIDATION
+  description: Merge this slice, inspect the exact-main release-candidate artifact and receipt, then request separate tag and GitHub Release authorization.
