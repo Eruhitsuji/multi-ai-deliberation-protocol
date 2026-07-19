@@ -1,0 +1,43 @@
+decision_id: DEC-MADP-ALPHA4-008
+status: ACCEPTED
+decision_date: 2026-07-19
+authority: HUMAN_FINAL_AUTHORITY
+parent_decision_ref: docs/planning/DEC-MADP-ALPHA4-007.yaml
+decision:
+  operation: RECORD_ALPHA4_PUBLICATION_AND_RETIRE_ONE_TIME_EXECUTORS
+  protocol_version: MADP-v0.3.0-alpha.4
+  publication_status: PUBLISHED_GITHUB_PRERELEASE
+  tag: MADP-v0.3.0-alpha.4
+  exact_tag_target_commit: 3333c66b8b9873581af3f621615a7e1f7fc20e0a
+  release_url: https://github.com/Eruhitsuji/multi-ai-deliberation-protocol/releases/tag/MADP-v0.3.0-alpha.4
+  successful_publication_workflow_run: 29683532093
+  publication_executor_main_commit: 5faa9cc6ee1a4bc4255f2e4a0973cf8122cc9bf4
+  retire_one_time_publication_workflows: true
+  add_read_only_published_state_audit: true
+  pages_publication_authorized: false
+  stable_release_authorized: false
+  formal_release_evidence: false
+  latest_stable_designation_authorized: false
+  rollback_target_change_authorized: false
+published_assets:
+  - file: MADP-v0.3.0-alpha.4-prerelease-candidate.zip
+    sha256: 1b8fdfba72aec2df1cd1c413855e6ff16b07eddde13c67342239e361136f53c0
+  - file: MADP-v0.3.0-alpha.4-prerelease-candidate.manifest.yaml
+    sha256: fa9c7077ced6fc9a78eff41cbe24e2a8a010fe01f0edd066d0f516f78796b3bf
+  - file: MADP-v0.3.0-alpha.4-prerelease-integrity-audit.yaml
+    sha256: be82f390a9e49a65b56996a51686c39c7d4d49e8a93dd09c10fd8a013ae27aa6
+  - file: MADP-v0.3.0-alpha.4-prerelease-candidate.zip.sha256
+    sha256: fe11e9fdb70ad220390d29dfb6f70e3fe06ceb2264faa13d95b4213a2ae7bd74
+  - file: MADP-v0.3.0-alpha.4-release-candidate.receipt.yaml
+    sha256: 8949075f1252927e367ca6868fb171632fd5039e4a3499cd26bc0285d16a1be2
+rollback_target:
+  version: MADP-v0.3.0-alpha.2
+  tag: MADP-v0.3.0-alpha.2
+cleanup_constraints:
+  - remove workflows capable of repeating alpha.4 publication
+  - retain read-only publication-handoff validation
+  - verify published tag, prerelease mode, asset inventory, and asset digests without write permissions
+  - do not change the published tag or Release assets
+  - do not publish Pages
+  - do not designate alpha.4 as stable or latest stable
+  - do not claim formal release evidence

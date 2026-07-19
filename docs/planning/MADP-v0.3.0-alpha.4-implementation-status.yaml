@@ -1,21 +1,36 @@
-status_version: 2
+status_version: 3
 protocol_version: MADP-v0.3.0-alpha.4
-implementation_status: CORE_USABILITY_SLICE_1_READY
-integration_status: IMPLEMENTATION_BRANCH
+implementation_status: PUBLISHED_PRERELEASE
+integration_status: MERGED_TO_MAIN_AND_PUBLISHED
 base_version: MADP-v0.3.0-alpha.3
-base_main_commit: 92174e7e651cc5ee7f8797a845cfc33fcd39af9a
-branch: feature/v0.3.0-alpha.4-core-usability-slice-1
+theme: Practical Core Integration and Fix-Forward Delivery
 decision_refs:
+  - docs/planning/DEC-MADP-RAPID-PRERELEASE-001.yaml
   - docs/planning/DEC-MADP-ALPHA4-001.yaml
   - docs/planning/DEC-MADP-ALPHA4-002.yaml
-rapid_prerelease_policy_ref: docs/planning/DEC-MADP-RAPID-PRERELEASE-001.yaml
-theme: Practical Core Integration and Fix-Forward Delivery
-content_ready: false
-release_ready: false
-tagged: false
-published: false
+  - docs/planning/DEC-MADP-ALPHA4-003.yaml
+  - docs/planning/DEC-MADP-ALPHA4-004.yaml
+  - docs/planning/DEC-MADP-ALPHA4-005.yaml
+  - docs/planning/DEC-MADP-ALPHA4-006.yaml
+  - docs/planning/DEC-MADP-ALPHA4-007.yaml
+  - docs/planning/DEC-MADP-ALPHA4-008.yaml
+content_ready: true
+release_ready: true
+tagged: true
+published: true
+release_mode: PRERELEASE
 stable_release_authorized: false
 formal_release_evidence: false
+pages_published: false
+latest_stable_designated: false
+publication:
+  tag: MADP-v0.3.0-alpha.4
+  exact_tag_target_commit: 3333c66b8b9873581af3f621615a7e1f7fc20e0a
+  release_url: https://github.com/Eruhitsuji/multi-ai-deliberation-protocol/releases/tag/MADP-v0.3.0-alpha.4
+  successful_workflow_run: 29683532093
+  publication_executor_main_commit: 5faa9cc6ee1a4bc4255f2e4a0973cf8122cc9bf4
+  asset_count: 5
+  asset_digests_verified: true
 published_rollback_target:
   version: MADP-v0.3.0-alpha.2
   tag: MADP-v0.3.0-alpha.2
@@ -23,34 +38,30 @@ work_packages:
   kickoff_baseline:
     status: MERGED_TO_MAIN
     pull_request: 18
-    merge_commit: 92174e7e651cc5ee7f8797a845cfc33fcd39af9a
   core_usability_integration:
-    status: PARTIAL_IMPLEMENTATION_IN_BRANCH
-    current_slice: CORE_USABILITY_SLICE_1
-    implemented_outputs:
-      - protocol/MADP-v0.3.0-alpha.4-core-usability.md
-      - docs/profiles/WORKFLOW_MACROS-v0.3.0-alpha.4.md
-      - registries/v0.3.0-alpha.4/workflow-macros.yaml
-      - schemas/v0.3.0-alpha.4/core-usability-record.schema.yaml
-      - tests/v0.3.0-alpha.4/core-usability-fixtures.yaml
-      - scripts/check_alpha4_core_usability.py
-      - .github/workflows/validate-alpha4-core-usability.yml
-    implemented_semantics:
-      - non_atomic_workflow_macros
-      - claim_kind_separated_from_verification_status
-      - raw_response_preservation
-      - multidimensional_evidence
-      - dissent_status_separated_from_human_disposition
-      - revision_bound_human_decision
-      - external_action_authorization_separation
-      - non_destructive_legacy_fact_migration
-    remaining_scope:
-      - alpha4 bootstrap and load profile integration
-      - generated distribution integration
-      - broader compatibility and migration coverage
-      - prerelease artifact generation
-  distribution_and_prerelease:
-    status: NOT_STARTED
+    status: MERGED_TO_MAIN
+    pull_request: 19
+  bootstrap_and_distribution:
+    status: MERGED_TO_MAIN
+    pull_request: 20
+  prerelease_candidate_package:
+    status: MERGED_TO_MAIN
+    pull_request: 21
+  exact_main_release_candidate:
+    status: MERGED_TO_MAIN
+    pull_request: 22
+  publication_handoff:
+    status: MERGED_TO_MAIN
+    pull_requests:
+      - 23
+      - 24
+      - 25
+  publication_execution:
+    status: COMPLETED
+    pull_requests:
+      - 26
+      - 27
+      - 28
 compatibility_policy:
   alpha3_command_namespace_preserved: true
   breaking_alpha3_schema_change: false
@@ -67,27 +78,20 @@ development_environment:
   github_hosted_workflow_first_class: true
   local_checkout_required: false
   required_validation_environment: GITHUB_ACTIONS
-required_checks:
-  - id: A4-CHECK-KICKOFF
-    command: python scripts/check_alpha4_kickoff.py
-  - id: A4-CHECK-CORE-USABILITY
-    command: python scripts/check_alpha4_core_usability.py
-  - id: REPOSITORY-VALIDATE
-    command: existing repository Validate workflow
-prerelease_hard_gates:
-  privacy: SATISFIED_FOR_CURRENT_SLICE
-  required_files_parseable: SATISFIED_FOR_CURRENT_SLICE
-  required_github_actions_ci: REQUIRED_ON_EACH_PR_HEAD
-  generated_distribution_artifact: NOT_STARTED
-  release_notes_known_limitations: IMPLEMENTED_AS_DRAFT
-  rollback_or_previous_version: SATISFIED_BY_ALPHA2_TAG
+post_release_controls:
+  one_time_publication_workflows_retired: true
+  read_only_publication_handoff_retained: true
+  read_only_published_state_audit_required: true
+  published_tag_mutation_allowed: false
+  release_asset_mutation_allowed_without_new_authorization: false
 known_limitations:
-  - The alpha.4 implementation is still incomplete and not a distributable prerelease.
-  - Workflow Macros guide canonical alpha.3 commands; no new canonical command namespace is introduced in this slice.
-  - The Core Usability record is additive and is not yet integrated into alpha.4 bootstrap or generated bundles.
-  - The four-workflow comparison was terminated after one completed workflow and does not establish comparative superiority.
-  - Formal release evidence and stable release authorization are absent.
-  - Tagging, GitHub Release creation, and Pages publication require separate approval.
+  - Dynamic role planning is not promoted into alpha.4.
+  - Skill adapters and broader installer-facing packages are not updated.
+  - Broader alpha.3-to-alpha.4 migration coverage remains incomplete.
+  - A protocol-load report remains self-reported unless independently verified.
+  - A bundle or package cannot prove complete model ingestion or conformance.
+  - The terminated comparison does not establish comparative superiority.
+  - Formal release evidence and stable-release authorization remain absent.
 next_action:
-  id: A4-INC-002-SLICE-2
-  description: Integrate the Core Usability extension into alpha.4 loading and deterministic distribution inputs while preserving alpha.3 compatibility.
+  id: A4-POST-RELEASE-FIX-FORWARD
+  description: Use the published prerelease, record defects or usability gaps, and address them through separately reviewed fix-forward changes without mutating the immutable alpha.4 tag.

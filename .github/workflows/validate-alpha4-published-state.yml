@@ -1,0 +1,88 @@
+name: Validate alpha.4 published state
+
+on:
+  pull_request:
+    paths:
+      - 'README-v0.3.0-alpha.4.md'
+      - 'docs/releases/MADP-v0.3.0-alpha.4.md'
+      - 'docs/planning/DEC-MADP-ALPHA4-007.yaml'
+      - 'docs/planning/DEC-MADP-ALPHA4-008.yaml'
+      - 'docs/planning/MADP-v0.3.0-alpha.4-implementation-status.yaml'
+      - 'docs/planning/MADP-v0.3.0-alpha.4-publication-handoff-status.yaml'
+      - 'scripts/check_alpha4_published_state.py'
+      - '.github/workflows/publish-alpha4-prerelease-once.yml'
+      - '.github/workflows/resume-alpha4-prerelease.yml'
+      - '.github/workflows/validate-alpha4-published-state.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'README-v0.3.0-alpha.4.md'
+      - 'docs/releases/MADP-v0.3.0-alpha.4.md'
+      - 'docs/planning/DEC-MADP-ALPHA4-007.yaml'
+      - 'docs/planning/DEC-MADP-ALPHA4-008.yaml'
+      - 'docs/planning/MADP-v0.3.0-alpha.4-implementation-status.yaml'
+      - 'docs/planning/MADP-v0.3.0-alpha.4-publication-handoff-status.yaml'
+      - 'scripts/check_alpha4_published_state.py'
+      - '.github/workflows/publish-alpha4-prerelease-once.yml'
+      - '.github/workflows/resume-alpha4-prerelease.yml'
+      - '.github/workflows/validate-alpha4-published-state.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-alpha4-published-state:
+    runs-on: ubuntu-24.04
+    env:
+      TARGET_TAG: MADP-v0.3.0-alpha.4
+      TARGET_COMMIT: 3333c66b8b9873581af3f621615a7e1f7fc20e0a
+      ROLLBACK_TAG: MADP-v0.3.0-alpha.2
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Install validation dependencies
+        run: python -m pip install --disable-pip-version-check pyyaml
+
+      - name: Validate repository publication records
+        run: python scripts/check_alpha4_published_state.py
+
+      - name: Validate immutable GitHub prerelease state
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tag_sha="$(gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$TARGET_TAG" --jq .object.sha)"
+          test "$tag_sha" = "$TARGET_COMMIT"
+
+          gh api "repos/$GITHUB_REPOSITORY/releases/tags/$TARGET_TAG" > /tmp/release.json
+          test "$(jq -r .tag_name /tmp/release.json)" = "$TARGET_TAG"
+          test "$(jq -r .name /tmp/release.json)" = 'MADP v0.3.0-alpha.4'
+          test "$(jq -r .draft /tmp/release.json)" = 'false'
+          test "$(jq -r .prerelease /tmp/release.json)" = 'true'
+
+          gh api "repos/$GITHUB_REPOSITORY/releases/$(jq -r .id /tmp/release.json)/assets" \
+            --paginate > /tmp/assets.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          expected = {
+              'MADP-v0.3.0-alpha.4-prerelease-candidate.zip': 'sha256:1b8fdfba72aec2df1cd1c413855e6ff16b07eddde13c67342239e361136f53c0',
+              'MADP-v0.3.0-alpha.4-prerelease-candidate.manifest.yaml': 'sha256:fa9c7077ced6fc9a78eff41cbe24e2a8a010fe01f0edd066d0f516f78796b3bf',
+              'MADP-v0.3.0-alpha.4-prerelease-integrity-audit.yaml': 'sha256:be82f390a9e49a65b56996a51686c39c7d4d49e8a93dd09c10fd8a013ae27aa6',
+              'MADP-v0.3.0-alpha.4-prerelease-candidate.zip.sha256': 'sha256:fe11e9fdb70ad220390d29dfb6f70e3fe06ceb2264faa13d95b4213a2ae7bd74',
+              'MADP-v0.3.0-alpha.4-release-candidate.receipt.yaml': 'sha256:8949075f1252927e367ca6868fb171632fd5039e4a3499cd26bc0285d16a1be2',
+          }
+          assets = json.loads(Path('/tmp/assets.json').read_text(encoding='utf-8'))
+          observed = {asset['name']: asset.get('digest') for asset in assets}
+          assert observed == expected, (observed, expected)
+          print('Published release asset inventory and digests: PASS')
+          PY
+
+          gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$ROLLBACK_TAG" >/tmp/rollback.json
+          latest="$(gh api "repos/$GITHUB_REPOSITORY/releases/latest" --jq .tag_name 2>/dev/null || true)"
+          test "$latest" != "$TARGET_TAG"
