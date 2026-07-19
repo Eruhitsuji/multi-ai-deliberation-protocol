@@ -29,7 +29,7 @@ properties:
     type: string
     pattern: '^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$'
   source_commit:
-    $ref: '#/$defs/sha256'
+    $ref: '#/$defs/gitCommit'
   source_ref_kind:
     enum: [PULL_REQUEST_HEAD, MERGED_MAIN]
   branch_name:
@@ -112,6 +112,9 @@ allOf:
         main_branch_candidate: {const: false}
         status: {const: PR_HEAD_CANDIDATE_VALIDATED}
 $defs:
+  gitCommit:
+    type: string
+    pattern: '^[0-9a-f]{40}$'
   sha256:
     type: string
     pattern: '^[0-9a-f]{64}$'
