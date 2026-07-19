@@ -77,7 +77,7 @@ required_checks:
 prerelease_hard_gates:
   privacy: SATISFIED_FOR_CURRENT_SLICE
   required_files_parseable: SATISFIED_FOR_CURRENT_SLICE
-  required_github_actions_ci: PENDING_FOR_PR
+  required_github_actions_ci: REQUIRED_ON_EACH_PR_HEAD
   generated_distribution_artifact: NOT_STARTED
   release_notes_known_limitations: IMPLEMENTED_AS_DRAFT
   rollback_or_previous_version: SATISFIED_BY_ALPHA2_TAG
