@@ -1,0 +1,78 @@
+gap_register_version: MADP-EVIDENCE-GAP-REGISTER-v1
+attempt_id: CORE-ATTEMPT-002
+
+gaps:
+  - gap_id: EG-001
+    question: Are field-trial entry conditions ready, including evidence runner, accepted criteria, named approver, and release-target profile binding?
+    affects: [field_trial_first_option, A3-REL-001_gate, first_work_package_ordering]
+    claimed_by_participants: [CHATGPT-B, CLAUDE-B]
+    source_refs:
+      - attempts/attempt-002/raw/cross-exposure-CHATGPT-B.md#L450-L460
+      - attempts/attempt-002/raw/cross-exposure-CLAUDE-B.md#L304-L312
+      - attempts/attempt-002/raw/cross-exposure-CLAUDE-B.md#L383-L391
+    current_status: UNVERIFIED
+    required_verification: Read-only repository review and dry-run of evidence runner/release checker, plus human identification of named approver and accepted criteria.
+    decision_impact: BLOCKING
+    external_action_authorized: false
+  - gap_id: EG-002
+    question: Can comparison artifacts be structurally isolated from normative release audit scope so A3-REL-005 audit area is not polluted?
+    affects: [comparison_first_option, A3-REL-005_gate, artifact_scope]
+    claimed_by_participants: [CLAUDE-B, GEMINI-B]
+    source_refs:
+      - attempts/attempt-002/raw/initial-response-CLAUDE-B.md#L26-L26
+      - attempts/attempt-002/raw/cross-exposure-CLAUDE-B.md#L160-L164
+      - attempts/attempt-002/raw/cross-exposure-GEMINI-B-ui-recapture.md#L183-L189
+      - attempts/attempt-002/raw/cross-exposure-GEMINI-B-ui-recapture.md#L315-L320
+    current_status: UNVERIFIED
+    required_verification: Read-only review of repository audit scope and proposed artifact paths; no release-audit exclusion should be inferred without human review.
+    decision_impact: MATERIAL
+    external_action_authorized: false
+  - gap_id: EG-003
+    question: Can at least two appropriate independent groups and controlled operator assistance be maintained for comparison validity?
+    affects: [blind_first_round_validity, comparison_evidence_quality, convergence_assessment]
+    claimed_by_participants: [CHATGPT-B, CLAUDE-B]
+    source_refs:
+      - attempts/attempt-002/raw/initial-response-CHATGPT-B.md#L37-L38
+      - attempts/attempt-002/raw/cross-exposure-CLAUDE-B.md#L279-L286
+      - attempts/attempt-002/raw/cross-exposure-CHATGPT-B.md#L431-L445
+    current_status: PARTIALLY_SUPPORTED
+    required_verification: Review participant register, dynamic role plan, actual chat independence attestations, and operator intervention logs.
+    decision_impact: MATERIAL
+    external_action_authorized: false
+  - gap_id: EG-004
+    question: What are the actual four-method performance metrics and whether differences are decision-relevant?
+    affects: [comparison_first_option, Core_candidate_refinement, alpha4_disposition]
+    claimed_by_participants: [CHATGPT-B, CLAUDE-B, GEMINI-B]
+    source_refs:
+      - attempts/attempt-002/raw/initial-response-CHATGPT-B.md#L37-L38
+      - attempts/attempt-002/raw/initial-response-CLAUDE-B.md#L225-L247
+      - attempts/attempt-002/raw/initial-response-GEMINI-B.md#L497-L509
+      - attempts/attempt-002/raw/cross-exposure-CHATGPT-B.md#L431-L445
+    current_status: MISSING
+    required_verification: Execute matched four-method comparison runs under frozen metric definitions and record raw/failed/aborted runs.
+    decision_impact: MATERIAL
+    external_action_authorized: false
+  - gap_id: EG-005
+    question: Is a comparison-selected experimental profile allowed for formal A3-REL-001 field trial, or must the release-target configuration be used?
+    affects: [formal_field_trial_scope, release_evidence_integrity, candidate_ordering]
+    claimed_by_participants: [CHATGPT-B, CLAUDE-B, GEMINI-B]
+    source_refs:
+      - attempts/attempt-002/raw/initial-response-GEMINI-B.md#L263-L273
+      - attempts/attempt-002/raw/cross-exposure-CLAUDE-B.md#L116-L130
+      - attempts/attempt-002/raw/cross-exposure-CHATGPT-B.md#L249-L257
+    current_status: UNVERIFIED
+    required_verification: Human/legal-protocol review of A3-REL-001 required release-target binding and status of Core Candidate artifacts.
+    decision_impact: BLOCKING
+    external_action_authorized: false
+  - gap_id: EG-006
+    question: Are there known repository changes after the bound commits that affect scaffold readiness, field-trial readiness, or baseline validity?
+    affects: [all_options, source_binding, validation]
+    claimed_by_participants: [CHATGPT-B, CLAUDE-B, GEMINI-B]
+    source_refs:
+      - attempts/attempt-002/raw/cross-exposure-CHATGPT-B.md#L462-L470
+      - attempts/attempt-002/raw/cross-exposure-CLAUDE-B.md#L314-L321
+      - attempts/attempt-002/raw/cross-exposure-GEMINI-B-ui-recapture.md#L305-L305
+    current_status: UNVERIFIED
+    required_verification: Read-only git and file audit against recorded bound commits and current operator environment.
+    decision_impact: MATERIAL
+    external_action_authorized: false

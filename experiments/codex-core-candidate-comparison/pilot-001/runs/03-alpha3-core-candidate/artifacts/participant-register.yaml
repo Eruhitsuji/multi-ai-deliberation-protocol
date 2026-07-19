@@ -1,0 +1,48 @@
+participants:
+  - participant_id: CHATGPT-A
+    service: ChatGPT
+    provider: OpenAI
+    model_label: GPT-5.6 Sol
+    chat_context_id: CHAT-CORE-CHATGPT-001
+    independence_group: IG-OPENAI-001
+    correlation_status: DISTINCT_CONTEXT_KNOWN
+    correlation_status_note: Operational classification for a distinct new chat context; not proof of complete technical independence across provider, training data, system prompt, or retrieval infrastructure.
+    participation_mode: PROPOSE_ONLY
+    authority: NONE
+    initial_response_filename: raw/initial-response-CHATGPT-A.md
+    cross_exposure_filename: raw/cross-exposure-CHATGPT-A.md
+    new_chat_required: true
+    external_web_research_allowed: false
+    other_participant_outputs_visible_before_capture: false
+
+  - participant_id: CLAUDE-A
+    service: Claude
+    provider: Anthropic
+    model_label: Opus 4.8
+    chat_context_id: CHAT-CORE-CLAUDE-001
+    independence_group: IG-ANTHROPIC-001
+    correlation_status: DISTINCT_CONTEXT_KNOWN
+    correlation_status_note: Operational classification for a distinct new chat context; not proof of complete technical independence across provider, training data, system prompt, or retrieval infrastructure.
+    participation_mode: PROPOSE_ONLY
+    authority: NONE
+    initial_response_filename: raw/initial-response-CLAUDE-A.md
+    cross_exposure_filename: raw/cross-exposure-CLAUDE-A.md
+    new_chat_required: true
+    external_web_research_allowed: false
+    other_participant_outputs_visible_before_capture: false
+
+  - participant_id: GEMINI-A
+    service: Gemini
+    provider: Google
+    model_label: 3.1 Pro
+    chat_context_id: CHAT-CORE-GEMINI-001
+    independence_group: IG-GOOGLE-001
+    correlation_status: DISTINCT_CONTEXT_KNOWN
+    correlation_status_note: Operational classification for a distinct new chat context; not proof of complete technical independence across provider, training data, system prompt, or retrieval infrastructure.
+    participation_mode: PROPOSE_ONLY
+    authority: NONE
+    initial_response_filename: raw/initial-response-GEMINI-A.md
+    cross_exposure_filename: raw/cross-exposure-GEMINI-A.md
+    new_chat_required: true
+    external_web_research_allowed: false
+    other_participant_outputs_visible_before_capture: false

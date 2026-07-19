@@ -1,0 +1,87 @@
+manifest_version: MADP-BLIND-INFORMATION-SET-v1
+experiment_id: EXP-CODEX-PILOT-001
+workflow: ALPHA3_CORE_CANDIDATE
+attempt_id: CORE-ATTEMPT-002
+restart_scope: BLIND_FIRST_ROUND_AND_LATER
+tested_baseline_commit: 2a29ddfebe4d9664d3a4043a01d8728fa525d049
+operator_environment_commit: 43815810f988588a29ba2dcaea9d2641d6263606
+prior_attempt_outputs_included: false
+prior_attempt_outputs_visible_to_participants: false
+external_web_research_prohibited: true
+other_participant_outputs_prohibited: true
+human_final_authority_required: true
+formal_release_evidence: false
+alpha4_authorized: false
+
+task:
+  path: experiments/codex-core-candidate-comparison/pilot-001/task/prompt.md
+  sha256: 34cb80469054d7da7cafed6f091f73d0c127d71b5e9c132b52f455a509d72c1c
+  bytes: 10170
+
+compact_bundle:
+  path: attempts/attempt-002/artifacts/compact-bundle/MADP-v0.3.0-alpha.3-core-compact.md
+  sha256: 303fd59a8e08a052bdef74a3545fd74a1ad5182e994c5970861428fe2b5b9c48
+  bytes: 62637
+
+compact_bundle_manifest:
+  path: attempts/attempt-002/artifacts/compact-bundle/MADP-v0.3.0-alpha.3-core-compact.manifest.yaml
+  sha256: 762ba8b6c60e0ec33d25e39b3c94116f138dc0feb1c143b35417ddce84e001c0
+  bytes: 1745
+
+participant_prompt_template:
+  path: attempts/attempt-002/artifacts/blind-first-round/participant-initial-prompt.md
+  sha256: b132c9b8dd17a4b61ea739cdc986cf82407b9b78fe66e222565d2f4d1b8bc39e
+  bytes: 1652
+
+participant_register:
+  path: attempts/attempt-002/artifacts/participant-register.yaml
+  sha256: cebc69789cf3294064b61694d4b292681078f351aabc16a583a8a97d1399ddb6
+  bytes: 1751
+
+dynamic_role_plan:
+  path: attempts/attempt-002/artifacts/dynamic-role-plan.yaml
+  sha256: d3d994b8e19cc9f143d393463bb62afabb19816e1da481eef1d63a3de39647d0
+  bytes: 3959
+
+required_attachment_order:
+  - experiments/codex-core-candidate-comparison/pilot-001/task/prompt.md
+  - experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/compact-bundle/MADP-v0.3.0-alpha.3-core-compact.md
+
+hash_construction:
+  information_set_hash: e08e2bb419f2b2b091f896165471e572f6d94fd4c54ee6c08da2c9ce02a3ed46
+  method: CONCATENATE_EXACT_FILE_BYTES_WITHOUT_SEPARATOR
+  ordered_files:
+    - experiments/codex-core-candidate-comparison/pilot-001/task/prompt.md
+    - experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/compact-bundle/MADP-v0.3.0-alpha.3-core-compact.md
+    - experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/blind-first-round/participant-initial-prompt.md
+    - experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/participant-register.yaml
+    - experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/dynamic-role-plan.yaml
+  excludes:
+    - rendered_prompt_bytes
+    - prior_attempt_outputs
+    - directory_metadata
+    - filenames_as_hash_material
+    - mtimes
+    - separators
+    - yaml_serialization_output
+
+prompt_rendering:
+  template_ref: attempts/attempt-002/artifacts/blind-first-round/participant-initial-prompt.md
+  template_sha256: b132c9b8dd17a4b61ea739cdc986cf82407b9b78fe66e222565d2f4d1b8bc39e
+  permitted_variable_fields:
+    - participant_id
+    - model_label
+  substantive_content_identical: true
+  rendered_prompts:
+    - participant_id: CHATGPT-B
+      path: attempts/attempt-002/artifacts/blind-first-round/rendered-prompt-CHATGPT-B.md
+      sha256: cf79f7a2dbfdc9ebecc583c9c11dc09f1de72ca06fcaeeb8c522157d52e2a179
+      bytes: 1603
+    - participant_id: CLAUDE-B
+      path: attempts/attempt-002/artifacts/blind-first-round/rendered-prompt-CLAUDE-B.md
+      sha256: 757f5b972d0788f8bfb6150c742f08568962a9bae819bef1e4eb804e6eb24f35
+      bytes: 1599
+    - participant_id: GEMINI-B
+      path: attempts/attempt-002/artifacts/blind-first-round/rendered-prompt-GEMINI-B.md
+      sha256: a5fdf0f8a5b59e69caa6ef6ae350f5a999c7a17770bbacf9196ab322eea3bf6c
+      bytes: 1598

@@ -1,4 +1,4 @@
-status_version: 18
+status_version: 19
 protocol_version: MADP-v0.3.0-alpha.3
 implementation_status: RELEASE_CANDIDATE_CONTENT_READY
 integration_status: MERGED_TO_MAIN
@@ -14,7 +14,7 @@ published: false
 theme: Field-Trial Hardening, Run-Normalized Collection, and Advanced Profiles
 experimental_workstreams:
   core_candidate:
-    status: COMPACT_DISTRIBUTION_AND_DYNAMIC_ROLE_PLANNING_READY
+    status: TERMINATED_BY_HUMAN_FINAL_AUTHORITY
     decision_ref: docs/planning/DEC-MADP-CORE-001.yaml
     exploratory_corpus_ref: docs/planning/MADP-v0.3.0-alpha.3-exploratory-trials-01-30.md
     profile_ref: docs/profiles/MADP_CORE_CANDIDATE-v0.3.0-alpha.3.md
@@ -39,7 +39,21 @@ experimental_workstreams:
     distribution_role_test_ref: tests/v0.3.0-alpha.3/test_core_distribution_and_role_planning.py
     alpha3_role: EXPERIMENTAL_BASELINE
     alpha4_implementation: DEFERRED
+    separate_alpha4_authorization_ref: docs/planning/DEC-MADP-RAPID-PRERELEASE-001.yaml
     release_gate_effect: NONE
+    experiment_disposition:
+      experiment_id: EXP-CODEX-PILOT-001
+      termination_class: RESOURCE_CONSTRAINT_AND_PRIORITY_CHANGE
+      completed_workflows:
+      - ALPHA3_CORE_CANDIDATE
+      cancelled_workflows:
+      - MARKDOWN_VALIDATOR
+      - MANUAL_MULTI_AI
+      - STANDARD_ALPHA3
+      full_comparison_completed: false
+      comparative_conclusion_authorized: false
+      pilot_completed: false
+      core_candidate_result_retained: true
 validation_policy:
   self_attestation_is_release_evidence: false
   machine_generated_evidence_manifest_required: true
@@ -53,85 +67,156 @@ validation_policy:
   collection_check_must_revalidate_full_receipt_chain: true
   collection_merge_must_reject_signed_or_pass_results: true
 required_automated_checks:
-  - id: A3-CHECK-IMPLEMENTATION
-    command: python scripts/check_alpha3_implementation.py
-  - id: A3-CHECK-HARDENING
-    command: python scripts/check_alpha3_hardening.py
-  - id: A3-CHECK-RECEIPT
-    command: python scripts/test_validation_receipt_v030_alpha3.py
-  - id: A3-CHECK-FIELD-TRIAL-FORMAT
-    command: python scripts/test_field_trial_evidence_v030_alpha3.py
-  - id: A3-CHECK-MIGRATION
-    command: python scripts/check_alpha3_migration.py
-  - id: A3-CHECK-TRANSLATION
-    command: python scripts/check_alpha3_translation.py
-  - id: A3-CHECK-USABILITY
-    command: python scripts/check_alpha3_field_trial.py
-  - id: A3-CHECK-USABILITY-RELEASE
-    command: python scripts/test_alpha3_usability_release_evidence.py
-  - id: A3-CHECK-PARSER
-    command: python scripts/test_command_parser_v030_alpha3.py
-  - id: A3-CHECK-COMMAND-COVERAGE
-    command: python scripts/check_all_commands_v030_alpha3.py
-  - id: A3-CHECK-RUNTIME
-    command: python scripts/test_command_runtime_v030_alpha3.py
+- id: A3-CHECK-IMPLEMENTATION
+  command: python scripts/check_alpha3_implementation.py
+- id: A3-CHECK-HARDENING
+  command: python scripts/check_alpha3_hardening.py
+- id: A3-CHECK-RECEIPT
+  command: python scripts/test_validation_receipt_v030_alpha3.py
+- id: A3-CHECK-FIELD-TRIAL-FORMAT
+  command: python scripts/test_field_trial_evidence_v030_alpha3.py
+- id: A3-CHECK-MIGRATION
+  command: python scripts/check_alpha3_migration.py
+- id: A3-CHECK-TRANSLATION
+  command: python scripts/check_alpha3_translation.py
+- id: A3-CHECK-USABILITY
+  command: python scripts/check_alpha3_field_trial.py
+- id: A3-CHECK-USABILITY-RELEASE
+  command: python scripts/test_alpha3_usability_release_evidence.py
+- id: A3-CHECK-PARSER
+  command: python scripts/test_command_parser_v030_alpha3.py
+- id: A3-CHECK-COMMAND-COVERAGE
+  command: python scripts/check_all_commands_v030_alpha3.py
+- id: A3-CHECK-RUNTIME
+  command: python scripts/test_command_runtime_v030_alpha3.py
 experimental_checks:
-  - id: A3-EXPERIMENT-CORE-CANDIDATE
-    command: python scripts/check_alpha3_core_candidate.py
-    release_evidence: false
-  - id: A3-EXPERIMENT-CORE-CANDIDATE-OPERATIONS
-    command: python scripts/check_alpha3_core_candidate_experiments.py
-    release_evidence: false
-  - id: A3-EXPERIMENT-CORE-CANDIDATE-INTEGRITY
-    command: python scripts/test_alpha3_core_candidate_evidence_integrity.py
-    release_evidence: false
-  - id: A3-EXPERIMENT-CORE-COMPACT-BUNDLE
-    command: python tests/v0.3.0-alpha.3/test_core_distribution_and_role_planning.py
-    release_evidence: false
-  - id: A3-EXPERIMENT-DYNAMIC-ROLE-PLAN
-    command: python scripts/check_alpha3_dynamic_role_plan.py tmp/dynamic-role-plan.yaml
-    release_evidence: false
+- id: A3-EXPERIMENT-CORE-CANDIDATE
+  command: python scripts/check_alpha3_core_candidate.py
+  release_evidence: false
+- id: A3-EXPERIMENT-CORE-CANDIDATE-OPERATIONS
+  command: python scripts/check_alpha3_core_candidate_experiments.py
+  release_evidence: false
+- id: A3-EXPERIMENT-CORE-CANDIDATE-INTEGRITY
+  command: python scripts/test_alpha3_core_candidate_evidence_integrity.py
+  release_evidence: false
+- id: A3-EXPERIMENT-CORE-COMPACT-BUNDLE
+  command: python tests/v0.3.0-alpha.3/test_core_distribution_and_role_planning.py
+  release_evidence: false
+- id: A3-EXPERIMENT-DYNAMIC-ROLE-PLAN
+  command: python scripts/check_alpha3_dynamic_role_plan.py tmp/dynamic-role-plan.yaml
+  release_evidence: false
 release_blockers:
-  - id: A3-REL-001
-    status: FIELD_TRIAL_IN_PROGRESS
-    title: Collect and sign off manual usability evidence from practical use
-  - id: A3-REL-002
-    status: DONE
-    title: Complete Japanese source-freshness and marker audit
-  - id: A3-REL-003
-    status: DONE
-    title: Generate reproducible release bootstrap, Skill packages, and schema bundles
-  - id: A3-REL-004
-    status: DONE
-    title: Implement record fixtures and executable alpha.2-to-alpha.3 transformations
-  - id: A3-REL-005
-    status: WAITING_FOR_FIELD_TRIAL
-    title: Run evidence-backed final-main audit after A3-REL-001 is complete
+- id: A3-REL-001
+  status: FIELD_TRIAL_IN_PROGRESS
+  title: Collect and sign off manual usability evidence from practical use
+  stable_release_gate: true
+- id: A3-REL-002
+  status: DONE
+  title: Complete Japanese source-freshness and marker audit
+- id: A3-REL-003
+  status: DONE
+  title: Generate reproducible release bootstrap, Skill packages, and schema bundles
+- id: A3-REL-004
+  status: DONE
+  title: Implement record fixtures and executable alpha.2-to-alpha.3 transformations
+- id: A3-REL-005
+  status: WAITING_FOR_FIELD_TRIAL
+  title: Run evidence-backed final-main audit after A3-REL-001 is complete
+  stable_release_gate: true
 release_notes:
-  - Automated evidence does not substitute for human usability evidence.
-  - PR #11 hardening and collection changes were merged to main at commit 78f8a8be3455bd97076600e88c6427b10d015025.
-  - The next formal field trial must pin the exact checked-out main commit used by the collector.
-  - Exploratory trials #01-#30 are retained as design and usability input; they do not automatically satisfy A3-REL-001.
-  - DEC-MADP-CORE-001 preserves alpha.3 as the experimental baseline, defers alpha.4, and authorizes a Core Candidate and Workflow Macro comparison experiment.
-  - The Core Candidate experiment has no release-gate effect and does not authorize tagging, release, publication, or Pages promotion.
-  - The executable Core Candidate experiment validates four-workflow comparison records, honest Blind First Round degradation, and non-destructive Claim and Evidence migration candidates.
-  - Evidence-integrity tests recompute Blind eligibility counts, require exact workflow coverage and alpha.3 commit parity, and reject broken Claim/Evidence backlinks or duplicate source-FACT migrations.
-  - Experimental comparison artifacts always remain formal_release_evidence false and cannot set alpha4_authorized true.
-  - The experimental compact bundle packages the Core Candidate sources into one deterministic commit-bound Markdown file and companion manifest, but it is not a PROTOCOL_LOAD_REPORT or formal FIELD_TRIAL evidence.
-  - Dynamic role planning is deterministic and advisory; it records service capabilities, usage preferences, independence groups, known correlation, degraded Blind plans, and never grants approval authority.
-  - Field-trial defects now require explicit session-start, exact authority-sensitive arguments, and machine validation receipts.
-  - Receipt IDs alone are not evidence; release checking recomputes report, artifact, schema, start-profile, and raw-observation hashes.
-  - Formal evidence uses results_version 6 and MADP-FIELD-TRIAL-EVIDENCE-v2.
-  - Load reports, profile bindings, receipts, and raw-observation inventories are stored once per run; scenario rows reference run and observation IDs.
-  - MADP-FIELD-TRIAL-COLLECTION-v1 prepares DRAFT or READY run packages, copies and hashes observations, rebuilds receipts, and merges READY packages without sign-off.
-  - Collection package check and merge revalidate the complete report, receipt, schema, profile, commit, observation, run, and scenario reference chain.
-  - Collection merge rejects signed or PASS results, duplicate participant/run identities, duplicate destinations, and conflicting run, trial, participant, or receipt records.
-  - Collection-package tests cover successful preparation and merge, receipt/profile/run-reference tampering, duplicate-run and duplicate-destination rejection, raw-observation tampering, signed-base rejection, and DRAFT rejection.
-  - Results-version 5 evidence remains historical input and must be migrated before release use; conflicting run-level evidence fails closed.
-  - The release-only usability path exercises a valid run-normalized chain, raw-observation hash tampering, and unknown-observation rejection in CI.
-  - Existing field-trial observations remain historical evidence, but release metrics must be recollected against the run-normalized receipt-hardened commit.
-  - Advanced profiles are optional and do not weaken core authority or release gates.
-  - Alpha.3 is available from main for experimental field use but is not release-ready.
-  - Practical-use observations and defects must be recorded against the tested commit.
-  - Current published bootstrap remains alpha.2 until alpha.3 release authorization.
-  - No tag, release, or Pages promotion is authorized while field trial is in progress.
+- Automated evidence does not substitute for human usability evidence.
+- PR
+- The next formal field trial must pin the exact checked-out main commit used by the
+  collector.
+- Exploratory trials
+- DEC-MADP-CORE-001 preserves alpha.3 as the experimental baseline, defers alpha.4,
+  and authorizes a Core Candidate and Workflow Macro comparison experiment.
+- The Core Candidate experiment has no release-gate effect and does not authorize
+  tagging, release, publication, or Pages promotion.
+- The executable Core Candidate experiment validates four-workflow comparison records,
+  honest Blind First Round degradation, and non-destructive Claim and Evidence migration
+  candidates.
+- Evidence-integrity tests recompute Blind eligibility counts, require exact workflow
+  coverage and alpha.3 commit parity, and reject broken Claim/Evidence backlinks or
+  duplicate source-FACT migrations.
+- Experimental comparison artifacts always remain formal_release_evidence false and
+  cannot set alpha4_authorized true.
+- The experimental compact bundle packages the Core Candidate sources into one deterministic
+  commit-bound Markdown file and companion manifest, but it is not a PROTOCOL_LOAD_REPORT
+  or formal FIELD_TRIAL evidence.
+- Dynamic role planning is deterministic and advisory; it records service capabilities,
+  usage preferences, independence groups, known correlation, degraded Blind plans,
+  and never grants approval authority.
+- Field-trial defects now require explicit session-start, exact authority-sensitive
+  arguments, and machine validation receipts.
+- Receipt IDs alone are not evidence; release checking recomputes report, artifact,
+  schema, start-profile, and raw-observation hashes.
+- Formal evidence uses results_version 6 and MADP-FIELD-TRIAL-EVIDENCE-v2.
+- Load reports, profile bindings, receipts, and raw-observation inventories are stored
+  once per run; scenario rows reference run and observation IDs.
+- MADP-FIELD-TRIAL-COLLECTION-v1 prepares DRAFT or READY run packages, copies and
+  hashes observations, rebuilds receipts, and merges READY packages without sign-off.
+- Collection package check and merge revalidate the complete report, receipt, schema,
+  profile, commit, observation, run, and scenario reference chain.
+- Collection merge rejects signed or PASS results, duplicate participant/run identities,
+  duplicate destinations, and conflicting run, trial, participant, or receipt records.
+- Collection-package tests cover successful preparation and merge, receipt/profile/run-reference
+  tampering, duplicate-run and duplicate-destination rejection, raw-observation tampering,
+  signed-base rejection, and DRAFT rejection.
+- Results-version 5 evidence remains historical input and must be migrated before
+  release use; conflicting run-level evidence fails closed.
+- The release-only usability path exercises a valid run-normalized chain, raw-observation
+  hash tampering, and unknown-observation rejection in CI.
+- Existing field-trial observations remain historical evidence, but release metrics
+  must be recollected against the run-normalized receipt-hardened commit.
+- Advanced profiles are optional and do not weaken core authority or release gates.
+- Alpha.3 is available from main for experimental field use but is not release-ready.
+- Practical-use observations and defects must be recorded against the tested commit.
+- Current published bootstrap remains alpha.2 until alpha.3 release authorization.
+- No tag, release, or Pages promotion is authorized while field trial is in progress.
+- EXP-CODEX-PILOT-001 was terminated early by Human Final Authority for resource and
+  workflow cost; this is not recorded as an experiment failure.
+- Only ALPHA3_CORE_CANDIDATE completed; MARKDOWN_VALIDATOR, MANUAL_MULTI_AI, and STANDARD_ALPHA3
+  were cancelled before execution.
+- The Core Candidate result is retained as a single-case study; no four-workflow comparative
+  conclusion is authorized.
+- Rapid Prerelease policy MADP-RAPID-PRERELEASE-v1 authorizes v0.3.0-alpha.4 implementation
+  and prerelease preparation as a separate Human Final Authority development decision,
+  not as a comparison-experiment result.
+- A3-REL-001 and A3-REL-005 remain stable-release/readiness gates and are not prerelease
+  hard gates.
+rapid_prerelease_policy:
+  decision_ref: docs/planning/DEC-MADP-RAPID-PRERELEASE-001.yaml
+  policy_id: MADP-RAPID-PRERELEASE-v1
+  development_model: RELEASE_EARLY_FIX_FORWARD
+  primary_user_scope: SINGLE_PRIMARY_USER
+  next_prerelease_line: v0.3.0-alpha.4
+  stable_release_authorized: false
+  formal_release_evidence: false
+  alpha4_implementation_authorized: true
+  alpha4_prerelease_authorized: true
+  authorization_derived_from_comparison_experiment: false
+  hard_gates:
+  - no_private_or_sensitive_information
+  - no_private_identifier_mapping
+  - git_diff_check_pass
+  - yaml_and_required_artifacts_parseable
+  - required_github_actions_ci_pass
+  - generated_distribution_artifact_available
+  - release_notes_include_known_limitations
+  - rollback_or_previous_version_available
+  non_blocking_for_prerelease:
+  - completion_of_four-workflow-comparison
+  - A3-REL-001_completion
+  - A3-REL-005_completion
+  - multi-participant-formal-field-trial
+  - complete-usability-signoff
+  - complete-local-validator-matrix
+  - zero-known-noncritical-defects
+  - formal-release-evidence
+known_local_issues:
+- issue: JSONSCHEMA_REF_RESOLUTION_ERROR
+  investigation_status: DEFERRED
+  blocks_experiment_termination: false
+  blocks_local_record_preservation: false
+  blocks_prerelease_when_github_ci_passes: false

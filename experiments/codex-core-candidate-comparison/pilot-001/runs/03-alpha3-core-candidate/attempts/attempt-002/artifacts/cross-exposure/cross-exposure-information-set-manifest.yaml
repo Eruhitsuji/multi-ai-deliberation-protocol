@@ -1,0 +1,71 @@
+manifest_version: MADP-CROSS-EXPOSURE-INFORMATION-SET-v1
+experiment_id: EXP-CODEX-PILOT-001
+attempt_id: CORE-ATTEMPT-002
+workflow: ALPHA3_CORE_CANDIDATE
+cross_exposure_common_information_set_hash: 3e9978ad568c4a16032b9353293a3887b935bc9117e6c18ae6adee30580d537e
+cross_exposure_authorized: false
+cross_exposure_started: false
+formal_release_evidence: false
+alpha4_authorized: false
+
+attachment_order:
+  - experiments/codex-core-candidate-comparison/pilot-001/task/prompt.md
+  - attempts/attempt-002/artifacts/compact-bundle/MADP-v0.3.0-alpha.3-core-compact.md
+  - attempts/attempt-002/raw/initial-response-CHATGPT-B.md
+  - attempts/attempt-002/raw/initial-response-CLAUDE-B.md
+  - attempts/attempt-002/raw/initial-response-GEMINI-B.md
+
+hash_construction:
+  method: CONCATENATE_EXACT_FILE_BYTES_WITHOUT_SEPARATOR
+  ordered_files:
+    - experiments/codex-core-candidate-comparison/pilot-001/task/prompt.md
+    - attempts/attempt-002/artifacts/compact-bundle/MADP-v0.3.0-alpha.3-core-compact.md
+    - attempts/attempt-002/raw/initial-response-CHATGPT-B.md
+    - attempts/attempt-002/raw/initial-response-CLAUDE-B.md
+    - attempts/attempt-002/raw/initial-response-GEMINI-B.md
+    - attempts/attempt-002/artifacts/cross-exposure/cross-exposure-prompt-template.md
+
+initial_response_inventory:
+  - participant_id: CHATGPT-B
+    path: attempts/attempt-002/raw/initial-response-CHATGPT-B.md
+    sha256: 0e435699e6ab9a004b5bb14f523a249e459524c3b784b7e3f00e1127fadea4f7
+    bytes: 30392
+  - participant_id: CLAUDE-B
+    path: attempts/attempt-002/raw/initial-response-CLAUDE-B.md
+    sha256: 737c74a1a247eb861767fbb7cc25c7c365605c5182c0ebd7dc249eb32c8af1a9
+    bytes: 25688
+  - participant_id: GEMINI-B
+    path: attempts/attempt-002/raw/initial-response-GEMINI-B.md
+    sha256: cc651d90c59fbedb1c2c40edee050d8b51d6817ee5e9c723c0ea48d7422c5482
+    bytes: 24741
+
+prompt_rendering:
+  template_ref: attempts/attempt-002/artifacts/cross-exposure/cross-exposure-prompt-template.md
+  template_sha256: 1bc9145bec4ae0f5fa05ec2aeeefef4592464f851656518776687199b127ae84
+  permitted_variable_fields:
+    - participant_id
+    - model_label
+    - own_initial_response_ref
+  substantive_content_identical: true
+  rendered_prompts:
+    - participant_id: CHATGPT-B
+      path: attempts/attempt-002/artifacts/cross-exposure/rendered-prompt-CHATGPT-B.md
+      sha256: b36f8c189151b286157dd268f8e25826582a94e02ee5dce4e28ad2e3b0e94539
+    - participant_id: CLAUDE-B
+      path: attempts/attempt-002/artifacts/cross-exposure/rendered-prompt-CLAUDE-B.md
+      sha256: b747c673d31b22795725f86c4c9c329f01e5dfae0269b61e2c8aa56a720c3845
+    - participant_id: GEMINI-B
+      path: attempts/attempt-002/artifacts/cross-exposure/rendered-prompt-GEMINI-B.md
+      sha256: b8e5311ff199b1960e5dbd586505d56af2bf7f1447b92126e6578ad087b97392
+
+constraints:
+  same_existing_chat_required: true
+  continuity_reconciliation_required: true
+  continuity_status_required: CONFIRMED
+  new_chat_prohibited: true
+  external_web_research_prohibited: true
+  all_three_initial_responses_attached: true
+  attachment_order_fixed: true
+  prior_attempt_outputs_prohibited: true
+  post_exposure_agreement_not_independent: true
+  human_final_authority_required: true

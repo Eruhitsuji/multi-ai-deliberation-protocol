@@ -1,0 +1,40 @@
+metrics_version: MADP-CORE-WORKFLOW-METRICS-v1
+experiment_id: EXP-CODEX-PILOT-001
+workflow: ALPHA3_CORE_CANDIDATE
+canonical_attempt: CORE-ATTEMPT-002
+completion:
+  started_at_utc: '2026-07-18T11:10:54Z'
+  start_basis: ORIGINAL_CORE_WORKFLOW_RUN_START
+  ended_at_utc: '2026-07-18T18:07:34Z'
+  end_basis: PHASE_4E_PRIMARY_VALIDATION_PASS
+  completion_time_seconds: 25000
+  includes_attempt_001: true
+  post_completion_integrity_validation_excluded_from_timer: true
+human_actions:
+  cumulative_workflow: 33
+  attempt_002_local: 21
+comparison_metrics:
+  canonical_commands:
+    value: null
+    basis: No accepted canonical command invocation count is recorded in preregistered
+      metrics or logs; do not infer from shell commands.
+  corrections:
+    value: null
+    basis: Human correction/reconciliation events exist, but no preregistered rule
+      uniquely maps them to the comparison metric without double counting.
+  unclear_next_actions:
+    value: null
+    basis: No formal count or rating was recorded.
+  authority_errors:
+    value: 0
+    basis: Operator and validation logs record no completed external action, release,
+      repository modification, field-trial sign-off, formal release evidence recognition,
+      or alpha.4 authorization outside authority.
+  stale_revision_errors:
+    value: 0
+    basis: Tested commit and operator environment commit were recorded and no wrong-revision
+      use was identified in validation.
+  user_burden:
+    value: null
+    basis: No Human Final Authority 1-5 burden rating was provided.
+finalization_status: FINALIZED_WITH_EXPLICIT_NULLS_FOR_UNOBSERVED_VALUES

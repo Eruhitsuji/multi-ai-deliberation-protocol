@@ -1,0 +1,42 @@
+bundle_version: MADP-CORE-COMPACT-BUNDLE-v1
+protocol_version: MADP-v0.3.0-alpha.3
+repository: Eruhitsuji/multi-ai-deliberation-protocol
+source_commit: 2a29ddfebe4d9664d3a4043a01d8728fa525d049
+profile: MADP_CORE_CANDIDATE
+status: EXPERIMENTAL_COMPACT_BUNDLE
+formal_release_evidence: false
+content_format: MADP-COMPACT-BUNDLE-MD-v1
+bundle_file: MADP-v0.3.0-alpha.3-core-compact.md
+bundle_sha256: 303fd59a8e08a052bdef74a3545fd74a1ad5182e994c5970861428fe2b5b9c48
+bundle_bytes: 62637
+source_count: 7
+source_inventory_sha256: 9b63d53922c0f7475ba475419bb4a934f5aa48d912ff464a9bd8d527a58e2ee9
+source_files:
+- path: protocol/MADP-v0.3.0-alpha.3.md
+  role: PROTOCOL
+  sha256: 44755fdd831071c37d93b3d2ce9e77d655c2f25c24772792d32c1d24c675a517
+  bytes: 12202
+- path: registries/v0.3.0-alpha.3/commands.yaml
+  role: COMMAND_REGISTRY
+  sha256: e1abf46d51e645ddb7ebc2d14028e83087db2eae27710ffe6bac1e6a7fcea35f
+  bytes: 27478
+- path: registries/v0.3.0-alpha.3/workflow-macros.yaml
+  role: WORKFLOW_MACRO_REGISTRY
+  sha256: e34b65eeed58ead09272b3932b101490cd69781e57caf561c48610cbd6c138e2
+  bytes: 3443
+- path: docs/profiles/MADP_CORE_CANDIDATE-v0.3.0-alpha.3.md
+  role: CORE_PROFILE
+  sha256: 0f9e2007407e8c565b0c128bdcdaa678b4b5ed3a0aeb76f76bff35460a6ccfc1
+  bytes: 7754
+- path: docs/profiles/WORKFLOW_MACROS-v0.3.0-alpha.3.md
+  role: MACRO_PROFILE
+  sha256: 44d1260fbd4c399489dfce8643d44c693027a64812708e9b254d4326e95fc34e
+  bytes: 3664
+- path: docs/profiles/BLIND_FIRST_ROUND_REVIEW-v0.3.0-alpha.3.md
+  role: BLIND_PROFILE
+  sha256: 2c37b00f7482ed130af1f992201ccf4e86f9d2ee1b8a81c761b9812ee4be02bd
+  bytes: 1445
+- path: bootstrap/alpha3/quick-start.md
+  role: BOOTSTRAP
+  sha256: c8f94142b5133dd51d6ad8dc207ff810099f6d0ed4660de40e0ba374ad739de8
+  bytes: 3525

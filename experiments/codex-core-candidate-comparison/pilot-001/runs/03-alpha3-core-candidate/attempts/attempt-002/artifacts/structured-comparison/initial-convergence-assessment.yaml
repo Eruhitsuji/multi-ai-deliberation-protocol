@@ -1,0 +1,158 @@
+assessment_version: MADP-INITIAL-CONVERGENCE-ASSESSMENT-v1
+attempt_id: CORE-ATTEMPT-002
+source_phase: BLIND_FIRST_ROUND_ONLY
+cross_exposure_content_used: false
+
+blind_procedure_status:
+  preliminary_status: VALID
+  human_confirmation_required: true
+  reasons:
+    - reason: Three initial raw responses exist, were captured before Cross Exposure, have SHA-256 and byte counts, and are marked UNEXPOSED.
+      source_refs:
+        - attempts/attempt-002/artifacts/blind-first-round/capture-register.yaml#L29-L35
+        - attempts/attempt-002/artifacts/blind-first-round/capture-register.yaml#L58-L64
+        - attempts/attempt-002/artifacts/blind-first-round/capture-register.yaml#L87-L93
+    - reason: Three distinct independence groups are recorded for initial participants.
+      source_refs:
+        - attempts/attempt-002/artifacts/participant-register.yaml#L2-L15
+        - attempts/attempt-002/artifacts/participant-register.yaml#L18-L31
+        - attempts/attempt-002/artifacts/participant-register.yaml#L34-L47
+    - reason: Chat continuity was retrospectively confirmed for all three participants without cross exposure started at that point.
+      source_refs:
+        - attempts/attempt-002/artifacts/blind-first-round/continuity-reconciliation.yaml#L5-L13
+        - attempts/attempt-002/artifacts/blind-first-round/continuity-reconciliation.yaml#L15-L49
+
+claim_clusters:
+  - cluster_id: CC-001
+    normalized_topic: First work package should be four-method Core Candidate comparison.
+    supporting_claim_ids: [IC-001, IC-012]
+    supporting_participants: [CHATGPT-B, GEMINI-B]
+    supporting_independence_groups: [IG-OPENAI-002, IG-GOOGLE-002]
+    conflicting_claim_ids: [IC-006]
+    common_source_dependency:
+      present: true
+      source: TASK
+    preliminary_support_class: BLIND_MULTI_GROUP_SUPPORT
+    source_refs:
+      - attempts/attempt-002/raw/initial-response-CHATGPT-B.md#L9-L13
+      - attempts/attempt-002/raw/initial-response-GEMINI-B.md#L15-L17
+      - attempts/attempt-002/raw/initial-response-CLAUDE-B.md#L19-L25
+      - experiments/codex-core-candidate-comparison/pilot-001/task/prompt.md#L19-L27
+  - cluster_id: CC-002
+    normalized_topic: First work package should be alpha.3 formal field trial/A3-REL-001.
+    supporting_claim_ids: [IC-006]
+    supporting_participants: [CLAUDE-B]
+    supporting_independence_groups: [IG-ANTHROPIC-002]
+    conflicting_claim_ids: [IC-001, IC-012]
+    common_source_dependency:
+      present: true
+      source: TASK
+    preliminary_support_class: CONFLICTING
+    source_refs:
+      - attempts/attempt-002/raw/initial-response-CLAUDE-B.md#L19-L28
+      - attempts/attempt-002/raw/initial-response-CHATGPT-B.md#L9-L18
+      - attempts/attempt-002/raw/initial-response-GEMINI-B.md#L15-L30
+      - experiments/codex-core-candidate-comparison/pilot-001/task/prompt.md#L21-L22
+  - cluster_id: CC-003
+    normalized_topic: Comparison evidence and formal field trial/release evidence must remain separate.
+    supporting_claim_ids: [IC-004, IC-009, IC-015]
+    supporting_participants: [CHATGPT-B, CLAUDE-B, GEMINI-B]
+    supporting_independence_groups: [IG-OPENAI-002, IG-ANTHROPIC-002, IG-GOOGLE-002]
+    conflicting_claim_ids: []
+    common_source_dependency:
+      present: true
+      source: TASK
+    preliminary_support_class: MANDATED_BY_COMMON_SOURCE
+    source_refs:
+      - attempts/attempt-002/raw/initial-response-CHATGPT-B.md#L62-L62
+      - attempts/attempt-002/raw/initial-response-CLAUDE-B.md#L112-L123
+      - attempts/attempt-002/raw/initial-response-GEMINI-B.md#L444-L459
+      - experiments/codex-core-candidate-comparison/pilot-001/task/prompt.md#L49-L50
+      - experiments/codex-core-candidate-comparison/pilot-001/task/prompt.md#L65-L69
+  - cluster_id: CC-004
+    normalized_topic: Alpha.4 must not be authorized from current information.
+    supporting_claim_ids: [IC-004, IC-016]
+    supporting_participants: [CHATGPT-B, GEMINI-B]
+    supporting_independence_groups: [IG-OPENAI-002, IG-GOOGLE-002]
+    conflicting_claim_ids: []
+    common_source_dependency:
+      present: true
+      source: TASK
+    preliminary_support_class: MANDATED_BY_COMMON_SOURCE
+    source_refs:
+      - attempts/attempt-002/raw/initial-response-CHATGPT-B.md#L295-L303
+      - attempts/attempt-002/raw/initial-response-GEMINI-B.md#L468-L481
+      - experiments/codex-core-candidate-comparison/pilot-001/task/prompt.md#L71-L76
+      - experiments/codex-core-candidate-comparison/pilot-001/task/prompt.md#L151-L161
+  - cluster_id: CC-005
+    normalized_topic: Core Candidate/additional improvement should not precede comparison evidence.
+    supporting_claim_ids: [IC-002, IC-014]
+    supporting_participants: [CHATGPT-B, GEMINI-B]
+    supporting_independence_groups: [IG-OPENAI-002, IG-GOOGLE-002]
+    conflicting_claim_ids: []
+    common_source_dependency:
+      present: true
+      source: TASK
+    preliminary_support_class: BLIND_MULTI_GROUP_SUPPORT
+    source_refs:
+      - attempts/attempt-002/raw/initial-response-CHATGPT-B.md#L13-L19
+      - attempts/attempt-002/raw/initial-response-GEMINI-B.md#L27-L30
+      - experiments/codex-core-candidate-comparison/pilot-001/task/prompt.md#L193-L193
+  - cluster_id: CC-006
+    normalized_topic: A3-REL-001 should precede A3-REL-005.
+    supporting_claim_ids: [IC-002, IC-008, IC-013]
+    supporting_participants: [CHATGPT-B, CLAUDE-B, GEMINI-B]
+    supporting_independence_groups: [IG-OPENAI-002, IG-ANTHROPIC-002, IG-GOOGLE-002]
+    conflicting_claim_ids: []
+    common_source_dependency:
+      present: true
+      source: TASK
+    preliminary_support_class: MANDATED_BY_COMMON_SOURCE
+    source_refs:
+      - attempts/attempt-002/raw/initial-response-CHATGPT-B.md#L17-L18
+      - attempts/attempt-002/raw/initial-response-CLAUDE-B.md#L87-L115
+      - attempts/attempt-002/raw/initial-response-GEMINI-B.md#L271-L342
+      - experiments/codex-core-candidate-comparison/pilot-001/task/prompt.md#L40-L42
+      - experiments/codex-core-candidate-comparison/pilot-001/task/prompt.md#L194-L194
+  - cluster_id: CC-007
+    normalized_topic: Immediate next PR should be planning/scaffold only and have no release-gate effect.
+    supporting_claim_ids: [IC-004, IC-015]
+    supporting_participants: [CHATGPT-B, GEMINI-B]
+    supporting_independence_groups: [IG-OPENAI-002, IG-GOOGLE-002]
+    conflicting_claim_ids: []
+    common_source_dependency:
+      present: true
+      source: TASK
+    preliminary_support_class: MANDATED_BY_COMMON_SOURCE
+    source_refs:
+      - attempts/attempt-002/raw/initial-response-CHATGPT-B.md#L282-L290
+      - attempts/attempt-002/raw/initial-response-GEMINI-B.md#L413-L459
+      - experiments/codex-core-candidate-comparison/pilot-001/task/prompt.md#L136-L149
+  - cluster_id: CC-008
+    normalized_topic: Field-trial-first is a material dissent and conditional alternative.
+    supporting_claim_ids: [IC-005, IC-006, IC-011, IC-017]
+    supporting_participants: [CHATGPT-B, CLAUDE-B]
+    supporting_independence_groups: [IG-OPENAI-002, IG-ANTHROPIC-002]
+    conflicting_claim_ids: [IC-001, IC-012]
+    common_source_dependency:
+      present: false
+      source: NONE
+    preliminary_support_class: CONFLICTING
+    source_refs:
+      - attempts/attempt-002/raw/initial-response-CHATGPT-B.md#L367-L381
+      - attempts/attempt-002/raw/initial-response-CLAUDE-B.md#L19-L28
+      - attempts/attempt-002/raw/initial-response-CLAUDE-B.md#L251-L272
+
+overall_preliminary_convergence_classification:
+  value: MIXED
+  human_confirmation_required: true
+  rationale:
+    - rationale_item: There is Blind multi-group support for comparison-first, but it conflicts with CLAUDE-B's field-trial-first proposal.
+      source_refs:
+        - attempts/attempt-002/raw/initial-response-CHATGPT-B.md#L9-L18
+        - attempts/attempt-002/raw/initial-response-GEMINI-B.md#L15-L30
+        - attempts/attempt-002/raw/initial-response-CLAUDE-B.md#L19-L28
+    - rationale_item: Authority/release boundary agreement is classified separately as mandated by common task source rather than independent task-outcome convergence.
+      source_refs:
+        - experiments/codex-core-candidate-comparison/pilot-001/task/prompt.md#L202-L209
+        - experiments/codex-core-candidate-comparison/pilot-001/task/prompt.md#L211-L220

@@ -1,0 +1,179 @@
+ledger_version: MADP-INITIAL-CLAIM-LEDGER-v1
+attempt_id: CORE-ATTEMPT-002
+source_phase: BLIND_FIRST_ROUND
+cross_exposure_content_used: false
+
+claims:
+  - claim_id: IC-001
+    participant_id: CHATGPT-B
+    independence_group: IG-OPENAI-002
+    claim_type: WORK_PACKAGE
+    normalized_claim: First priority should be a four-method Core Candidate comparison experiment using Codex as operator.
+    source_refs:
+      - attempts/attempt-002/raw/initial-response-CHATGPT-B.md#L9-L13
+    evidence_basis: [PARTICIPANT_REASONING]
+    task_relevance: DIRECT
+  - claim_id: IC-002
+    participant_id: CHATGPT-B
+    independence_group: IG-OPENAI-002
+    claim_type: ORDERING
+    normalized_claim: Sequence should be comparison first, human evaluation second, then alpha.3 formal field trial/A3-REL-001 and A3-REL-005, then evidence-directed improvement and alpha.4 decision.
+    source_refs:
+      - attempts/attempt-002/raw/initial-response-CHATGPT-B.md#L17-L19
+    evidence_basis: [PARTICIPANT_REASONING]
+    task_relevance: DIRECT
+  - claim_id: IC-003
+    participant_id: CHATGPT-B
+    independence_group: IG-OPENAI-002
+    claim_type: EVIDENCE_GATE
+    normalized_claim: The comparison experiment must collect metrics such as time, human actions, corrections, authority errors, stale-state errors, Blind status, dissent preservation, decision reconstruction, and burden.
+    source_refs:
+      - attempts/attempt-002/raw/initial-response-CHATGPT-B.md#L37-L38
+    evidence_basis: [TASK, PARTICIPANT_REASONING]
+    task_relevance: DIRECT
+  - claim_id: IC-004
+    participant_id: CHATGPT-B
+    independence_group: IG-OPENAI-002
+    claim_type: AUTHORITY_BOUNDARY
+    normalized_claim: Comparison artifacts must remain non-release evidence and must not authorize alpha.4.
+    source_refs:
+      - attempts/attempt-002/raw/initial-response-CHATGPT-B.md#L62-L62
+      - attempts/attempt-002/raw/initial-response-CHATGPT-B.md#L289-L290
+    evidence_basis: [TASK, PARTICIPANT_REASONING]
+    task_relevance: DIRECT
+  - claim_id: IC-005
+    participant_id: CHATGPT-B
+    independence_group: IG-OPENAI-002
+    claim_type: RISK
+    normalized_claim: A strong counterargument is that the formal field trial should be first because A3-REL-001 is the direct release blocker and comparison does not directly advance the release gate.
+    source_refs:
+      - attempts/attempt-002/raw/initial-response-CHATGPT-B.md#L367-L381
+    evidence_basis: [PARTICIPANT_REASONING]
+    task_relevance: DIRECT
+
+  - claim_id: IC-006
+    participant_id: CLAUDE-B
+    independence_group: IG-ANTHROPIC-002
+    claim_type: WORK_PACKAGE
+    normalized_claim: First priority should be the alpha.3 formal field trial aiming to complete A3-REL-001.
+    source_refs:
+      - attempts/attempt-002/raw/initial-response-CLAUDE-B.md#L19-L25
+    evidence_basis: [TASK, PARTICIPANT_REASONING]
+    task_relevance: DIRECT
+  - claim_id: IC-007
+    participant_id: CLAUDE-B
+    independence_group: IG-ANTHROPIC-002
+    claim_type: RISK
+    normalized_claim: Running comparison or additional improvements first may increase A3-REL-005 final-main audit area and boundary-checking cost.
+    source_refs:
+      - attempts/attempt-002/raw/initial-response-CLAUDE-B.md#L26-L26
+      - attempts/attempt-002/raw/initial-response-CLAUDE-B.md#L239-L239
+    evidence_basis: [PARTICIPANT_REASONING, UNSUPPORTED]
+    task_relevance: DIRECT
+  - claim_id: IC-008
+    participant_id: CLAUDE-B
+    independence_group: IG-ANTHROPIC-002
+    claim_type: ORDERING
+    normalized_claim: Roadmap should put formal field trial/A3-REL-001 first, four-method comparison second, and evidence-based Core refinement/alpha.4 preparation third.
+    source_refs:
+      - attempts/attempt-002/raw/initial-response-CLAUDE-B.md#L85-L87
+      - attempts/attempt-002/raw/initial-response-CLAUDE-B.md#L115-L123
+      - attempts/attempt-002/raw/initial-response-CLAUDE-B.md#L141-L141
+      - attempts/attempt-002/raw/initial-response-CLAUDE-B.md#L283-L290
+    evidence_basis: [PARTICIPANT_REASONING]
+    task_relevance: DIRECT
+  - claim_id: IC-009
+    participant_id: CLAUDE-B
+    independence_group: IG-ANTHROPIC-002
+    claim_type: EVIDENCE_GATE
+    normalized_claim: Formal field trial requires load report, profile binding, validation receipts, raw observation inventory, and human sign-off, and checker PASS alone is insufficient.
+    source_refs:
+      - attempts/attempt-002/raw/initial-response-CLAUDE-B.md#L87-L112
+    evidence_basis: [TASK, PARTICIPANT_REASONING]
+    task_relevance: DIRECT
+  - claim_id: IC-010
+    participant_id: CLAUDE-B
+    independence_group: IG-ANTHROPIC-002
+    claim_type: ASSUMPTION
+    normalized_claim: The field-trial-first recommendation depends on unconfirmed assumptions about human owner capacity, audit-scope impact, and field-trial entry readiness.
+    source_refs:
+      - attempts/attempt-002/raw/initial-response-CLAUDE-B.md#L233-L239
+    evidence_basis: [PARTICIPANT_REASONING, UNSUPPORTED]
+    task_relevance: DIRECT
+  - claim_id: IC-011
+    participant_id: CLAUDE-B
+    independence_group: IG-ANTHROPIC-002
+    claim_type: RISK
+    normalized_claim: A strong counterargument is that comparison should be first because it is reversible, lower-risk as an artifact addition, and can avoid wasting high-cost field-trial effort.
+    source_refs:
+      - attempts/attempt-002/raw/initial-response-CLAUDE-B.md#L251-L260
+    evidence_basis: [PARTICIPANT_REASONING]
+    task_relevance: DIRECT
+
+  - claim_id: IC-012
+    participant_id: GEMINI-B
+    independence_group: IG-GOOGLE-002
+    claim_type: WORK_PACKAGE
+    normalized_claim: First priority should be the four-method Core Candidate comparison experiment using Codex as operator.
+    source_refs:
+      - attempts/attempt-002/raw/initial-response-GEMINI-B.md#L15-L17
+    evidence_basis: [PARTICIPANT_REASONING]
+    task_relevance: DIRECT
+  - claim_id: IC-013
+    participant_id: GEMINI-B
+    independence_group: IG-GOOGLE-002
+    claim_type: ORDERING
+    normalized_claim: Roadmap should proceed from four-method comparison, to selected-method alpha.3 formal field trial/A3-REL-001, to A3-REL-005 final audit and release/alpha.4 disposition review.
+    source_refs:
+      - attempts/attempt-002/raw/initial-response-GEMINI-B.md#L196-L200
+      - attempts/attempt-002/raw/initial-response-GEMINI-B.md#L271-L273
+      - attempts/attempt-002/raw/initial-response-GEMINI-B.md#L342-L342
+      - attempts/attempt-002/raw/initial-response-GEMINI-B.md#L543-L550
+    evidence_basis: [PARTICIPANT_REASONING]
+    task_relevance: DIRECT
+  - claim_id: IC-014
+    participant_id: GEMINI-B
+    independence_group: IG-GOOGLE-002
+    claim_type: RISK
+    normalized_claim: Without comparison evidence, direct field trial, additional improvements, or alpha.4 preparation may prematurely optimize without verified bottlenecks or burden data.
+    source_refs:
+      - attempts/attempt-002/raw/initial-response-GEMINI-B.md#L27-L30
+    evidence_basis: [PARTICIPANT_REASONING]
+    task_relevance: DIRECT
+  - claim_id: IC-015
+    participant_id: GEMINI-B
+    independence_group: IG-GOOGLE-002
+    claim_type: AUTHORITY_BOUNDARY
+    normalized_claim: The initial PR for comparison support has no release-gate effect and must not authorize alpha.4, deployment, external APIs, or orchestration.
+    source_refs:
+      - attempts/attempt-002/raw/initial-response-GEMINI-B.md#L413-L459
+    evidence_basis: [TASK, PARTICIPANT_REASONING]
+    task_relevance: DIRECT
+  - claim_id: IC-016
+    participant_id: GEMINI-B
+    independence_group: IG-GOOGLE-002
+    claim_type: AUTHORITY_BOUNDARY
+    normalized_claim: Alpha.4 should remain deferred/unauthorized until comparison evidence, human evaluation, and explicit human decision record exist.
+    source_refs:
+      - attempts/attempt-002/raw/initial-response-GEMINI-B.md#L468-L481
+    evidence_basis: [TASK, PARTICIPANT_REASONING]
+    task_relevance: DIRECT
+
+  - claim_id: IC-017
+    participant_id: CHATGPT-B
+    independence_group: IG-OPENAI-002
+    claim_type: STOP_CONDITION
+    normalized_claim: If field trial readiness is already high and time constrained, first priority may change to formal field trial.
+    source_refs:
+      - attempts/attempt-002/raw/initial-response-CHATGPT-B.md#L373-L381
+    evidence_basis: [PARTICIPANT_REASONING]
+    task_relevance: DIRECT
+  - claim_id: IC-018
+    participant_id: GEMINI-B
+    independence_group: IG-GOOGLE-002
+    claim_type: STOP_CONDITION
+    normalized_claim: Skipping comparison requires human proof that safety boundaries remain controlled and no premature-optimization risk is introduced.
+    source_refs:
+      - attempts/attempt-002/raw/initial-response-GEMINI-B.md#L527-L532
+    evidence_basis: [PARTICIPANT_REASONING]
+    task_relevance: DIRECT

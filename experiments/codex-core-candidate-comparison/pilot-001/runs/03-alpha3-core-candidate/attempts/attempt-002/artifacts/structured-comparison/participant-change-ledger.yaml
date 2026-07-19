@@ -1,0 +1,176 @@
+change_ledger_version: MADP-PARTICIPANT-CHANGE-LEDGER-v1
+attempt_id: CORE-ATTEMPT-002
+post_exposure_agreement_counted_as_independent_convergence: false
+
+participants:
+  - participant_id: CHATGPT-B
+    initial_response_ref: attempts/attempt-002/raw/initial-response-CHATGPT-B.md
+    cross_exposure_response_ref: attempts/attempt-002/raw/cross-exposure-CHATGPT-B.md
+    retained_claims:
+      - initial_claim_id: IC-001
+        cross_source_refs:
+          - attempts/attempt-002/raw/cross-exposure-CHATGPT-B.md#L206-L221
+          - attempts/attempt-002/raw/cross-exposure-CHATGPT-B.md#L477-L489
+        status_basis: EXPLICIT
+      - initial_claim_id: IC-004
+        cross_source_refs:
+          - attempts/attempt-002/raw/cross-exposure-CHATGPT-B.md#L996-L1012
+        status_basis: EXPLICIT
+      - initial_claim_id: IC-005
+        cross_source_refs:
+          - attempts/attempt-002/raw/cross-exposure-CHATGPT-B.md#L381-L397
+          - attempts/attempt-002/raw/cross-exposure-CHATGPT-B.md#L972-L980
+        status_basis: EXPLICIT
+    changed_claims:
+      - initial_claim_id: IC-002
+        before: Comparison first, then field trial/A3-REL-001 and A3-REL-005 in one second work package, then improvement/alpha.4 decision.
+        after: Comparison first, then formal field trial/A3-REL-001 as Work Package 2, then A3-REL-005 final-main audit as a distinct Work Package 3 gate.
+        initial_source_refs:
+          - attempts/attempt-002/raw/initial-response-CHATGPT-B.md#L17-L19
+          - attempts/attempt-002/raw/initial-response-CHATGPT-B.md#L127-L208
+        cross_source_refs:
+          - attempts/attempt-002/raw/cross-exposure-CHATGPT-B.md#L237-L247
+          - attempts/attempt-002/raw/cross-exposure-CHATGPT-B.md#L693-L834
+        status_basis: EXPLICIT
+      - initial_claim_id: IC-017
+        before: Field trial can be first if field-trial readiness and time-constraint conditions are met.
+        after: Field trial can be first if readiness, time constraint, and comparison non-impact/scaffold repair conditions are confirmed.
+        initial_source_refs:
+          - attempts/attempt-002/raw/initial-response-CHATGPT-B.md#L373-L381
+        cross_source_refs:
+          - attempts/attempt-002/raw/cross-exposure-CHATGPT-B.md#L489-L489
+          - attempts/attempt-002/raw/cross-exposure-CHATGPT-B.md#L972-L980
+        status_basis: EXPLICIT
+    withdrawn_claims:
+      - initial_claim_id: IC-003
+        reason: No metric claim was withdrawn; only the degree of field-trial dependency on unavailable evidence was narrowed.
+        source_refs:
+          - attempts/attempt-002/raw/cross-exposure-CHATGPT-B.md#L225-L235
+    new_claims:
+      - normalized_claim: Field trial's dependency on unavailable evidence should be treated as readiness-unconfirmed rather than automatically high because comparison is not a formal entry condition.
+        source_refs:
+          - attempts/attempt-002/raw/cross-exposure-CHATGPT-B.md#L225-L235
+        induced_after_exposure: true
+      - normalized_claim: Comparison results may inform field-trial planning but must not automatically select or authorize a formal field-trial profile.
+        source_refs:
+          - attempts/attempt-002/raw/cross-exposure-CHATGPT-B.md#L249-L257
+          - attempts/attempt-002/raw/cross-exposure-CHATGPT-B.md#L399-L403
+        induced_after_exposure: true
+      - normalized_claim: Aborted and unusable runs should be recorded rather than filtered out.
+        source_refs:
+          - attempts/attempt-002/raw/cross-exposure-CHATGPT-B.md#L290-L303
+        induced_after_exposure: true
+
+  - participant_id: CLAUDE-B
+    initial_response_ref: attempts/attempt-002/raw/initial-response-CLAUDE-B.md
+    cross_exposure_response_ref: attempts/attempt-002/raw/cross-exposure-CLAUDE-B.md
+    retained_claims:
+      - initial_claim_id: IC-006
+        cross_source_refs:
+          - attempts/attempt-002/raw/cross-exposure-CLAUDE-B.md#L149-L156
+          - attempts/attempt-002/raw/cross-exposure-CLAUDE-B.md#L343-L353
+        status_basis: EXPLICIT
+      - initial_claim_id: IC-009
+        cross_source_refs:
+          - attempts/attempt-002/raw/cross-exposure-CLAUDE-B.md#L383-L391
+        status_basis: EXPLICIT
+      - initial_claim_id: IC-011
+        cross_source_refs:
+          - attempts/attempt-002/raw/cross-exposure-CLAUDE-B.md#L471-L476
+        status_basis: EXPLICIT
+    changed_claims:
+      - initial_claim_id: IC-006
+        before: Field trial first as a clear recommendation.
+        after: Field trial first remains preferred but is conditional on entry-readiness confirmation; if G1-G3 are not short-term satisfiable, switch first priority to comparison.
+        initial_source_refs:
+          - attempts/attempt-002/raw/initial-response-CLAUDE-B.md#L19-L28
+        cross_source_refs:
+          - attempts/attempt-002/raw/cross-exposure-CLAUDE-B.md#L160-L166
+          - attempts/attempt-002/raw/cross-exposure-CLAUDE-B.md#L343-L356
+        status_basis: EXPLICIT
+      - initial_claim_id: IC-007
+        before: Audit-area minimization was a primary reason for field-trial-first.
+        after: Audit-area minimization was downgraded to a secondary consideration because isolation may neutralize it.
+        initial_source_refs:
+          - attempts/attempt-002/raw/initial-response-CLAUDE-B.md#L26-L26
+        cross_source_refs:
+          - attempts/attempt-002/raw/cross-exposure-CLAUDE-B.md#L163-L163
+          - attempts/attempt-002/raw/cross-exposure-CLAUDE-B.md#L172-L174
+        status_basis: EXPLICIT
+    withdrawn_claims:
+      - initial_claim_id: IC-010
+        reason: Participant withdrew the "clear" confidence framing and recast the recommendation as conditional on readiness.
+        source_refs:
+          - attempts/attempt-002/raw/cross-exposure-CLAUDE-B.md#L168-L174
+    new_claims:
+      - normalized_claim: The field-trial-vs-comparison order dispute can be reduced to verifying field-trial entry readiness and implementation target facts.
+        source_refs:
+          - attempts/attempt-002/raw/cross-exposure-CLAUDE-B.md#L181-L188
+          - attempts/attempt-002/raw/cross-exposure-CLAUDE-B.md#L304-L312
+        induced_after_exposure: true
+      - normalized_claim: Formal field trial should use the release-target configuration, not an experimental profile marked formal_release_evidence false.
+        source_refs:
+          - attempts/attempt-002/raw/cross-exposure-CLAUDE-B.md#L116-L130
+          - attempts/attempt-002/raw/cross-exposure-CLAUDE-B.md#L272-L278
+          - attempts/attempt-002/raw/cross-exposure-CLAUDE-B.md#L383-L390
+        induced_after_exposure: true
+      - normalized_claim: Post-exposure majority for comparison-first must not be treated as independent convergence because common prompt direction may explain it.
+        source_refs:
+          - attempts/attempt-002/raw/cross-exposure-CLAUDE-B.md#L219-L231
+          - attempts/attempt-002/raw/cross-exposure-CLAUDE-B.md#L294-L296
+        induced_after_exposure: true
+
+  - participant_id: GEMINI-B
+    initial_response_ref: attempts/attempt-002/raw/initial-response-GEMINI-B.md
+    cross_exposure_response_ref: attempts/attempt-002/raw/cross-exposure-GEMINI-B-ui-recapture.md
+    retained_claims:
+      - initial_claim_id: IC-012
+        cross_source_refs:
+          - attempts/attempt-002/raw/cross-exposure-GEMINI-B-ui-recapture.md#L171-L179
+          - attempts/attempt-002/raw/cross-exposure-GEMINI-B-ui-recapture.md#L315-L320
+        status_basis: EXPLICIT
+      - initial_claim_id: IC-015
+        cross_source_refs:
+          - attempts/attempt-002/raw/cross-exposure-GEMINI-B-ui-recapture.md#L436-L468
+        status_basis: EXPLICIT
+      - initial_claim_id: IC-016
+        cross_source_refs:
+          - attempts/attempt-002/raw/cross-exposure-GEMINI-B-ui-recapture.md#L475-L480
+          - attempts/attempt-002/raw/cross-exposure-GEMINI-B-ui-recapture.md#L521-L530
+        status_basis: EXPLICIT
+    changed_claims:
+      - initial_claim_id: IC-013
+        before: Comparison first, then selected-method field trial, then final audit/release/alpha.4 review.
+        after: Comparison first remains, but with explicit isolation of experiment artifacts from normative release audit scope and an expanded evidence contract.
+        initial_source_refs:
+          - attempts/attempt-002/raw/initial-response-GEMINI-B.md#L196-L200
+          - attempts/attempt-002/raw/initial-response-GEMINI-B.md#L271-L273
+        cross_source_refs:
+          - attempts/attempt-002/raw/cross-exposure-GEMINI-B-ui-recapture.md#L183-L198
+          - attempts/attempt-002/raw/cross-exposure-GEMINI-B-ui-recapture.md#L315-L357
+        status_basis: EXPLICIT
+      - initial_claim_id: IC-014
+        before: Comparison-first has very low or zero premature-optimization risk.
+        after: Comparison-first still preferred, but the prior low-risk framing is withdrawn and risk is re-evaluated as low-to-medium with delay/audit-area concerns.
+        initial_source_refs:
+          - attempts/attempt-002/raw/initial-response-GEMINI-B.md#L27-L30
+          - attempts/attempt-002/raw/initial-response-GEMINI-B.md#L40-L117
+        cross_source_refs:
+          - attempts/attempt-002/raw/cross-exposure-GEMINI-B-ui-recapture.md#L204-L207
+        status_basis: EXPLICIT
+    withdrawn_claims:
+      - initial_claim_id: IC-014
+        reason: Participant withdrew the optimistic assumption that comparison has almost no start risk.
+        source_refs:
+          - attempts/attempt-002/raw/cross-exposure-GEMINI-B-ui-recapture.md#L204-L207
+    new_claims:
+      - normalized_claim: Comparison artifacts should be structurally isolated from normative release audit scope to avoid increasing A3-REL-005 audit area.
+        source_refs:
+          - attempts/attempt-002/raw/cross-exposure-GEMINI-B-ui-recapture.md#L183-L189
+          - attempts/attempt-002/raw/cross-exposure-GEMINI-B-ui-recapture.md#L322-L357
+        induced_after_exposure: true
+      - normalized_claim: If artifact isolation is not feasible and human priority is resolving public bootstrap divergence/A3-REL-001, switch first priority to field trial.
+        source_refs:
+          - attempts/attempt-002/raw/cross-exposure-GEMINI-B-ui-recapture.md#L213-L215
+          - attempts/attempt-002/raw/cross-exposure-GEMINI-B-ui-recapture.md#L495-L499
+        induced_after_exposure: true

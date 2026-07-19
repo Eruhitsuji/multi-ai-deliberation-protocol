@@ -6,170 +6,258 @@ decision_ref: docs/planning/DEC-MADP-CORE-001.yaml
 formal_release_evidence: false
 task:
   task_id: TASK-CODEX-PILOT-001
-  title: Replace with the frozen bounded decision task from task/prompt.md
-  prompt_sha256: null
+  title: Decide the next three MADP work packages and evidence gates
+  prompt_sha256: 34cb80469054d7da7cafed6f091f73d0c127d71b5e9c132b52f455a509d72c1c
   authority_boundary: PROPOSE_ONLY
-  acceptance_criteria: []
+  acceptance_criteria:
+  - Select exactly one first-priority work package.
+  - Sequence three major work packages with entry and exit conditions.
+  - Keep comparison evidence separate from formal release evidence.
+  - Preserve Human Final Authority and all release boundaries.
+  - Keep alpha.4 unauthorized without a separate human decision record.
+  - Propose one concrete next PR with explicit non-goals.
+  - Identify uncertainty, dissent, and conditions that would change the recommendation.
 runs:
-  - run_id: CODEX-PILOT-001-MANUAL
-    workflow: MANUAL_MULTI_AI
-    tested_commit: null
-    protocol_binding:
-      status: NOT_APPLICABLE
-      source_ref: experiments/codex-core-candidate-comparison/pilot-001/task/prompt.md
-      source_digest: null
-    participants: []
-    blind_first_round:
-      required: true
-      status: NOT_PERFORMED
-      information_set_hash: null
-      initial_responses: []
-      eligible_initial_response_count: 0
-      independence_group_count: 0
-      convergence_classification: NOT_EVALUATED
-      conformance_eligible: false
-      reasons:
-        - DRAFT; the manual multi-AI run has not started.
-    metrics:
-      completion_time_seconds: null
-      human_actions: null
-      canonical_commands: null
-      corrections: null
-      unclear_next_actions: null
-      authority_errors: null
-      stale_revision_errors: null
-      user_burden: null
-    result:
-      task_completed: null
-      raw_records_preserved: null
-      authority_boundary_recorded: null
-      material_dissent_count: null
-      dissent_preserved_count: null
-      decision_reconstruction: null
-      core_conformance: NOT_EVALUATED
-      decision_record_ref: null
-      notes: ''
-
-  - run_id: CODEX-PILOT-001-STANDARD
-    workflow: STANDARD_ALPHA3
-    tested_commit: 2a29ddfebe4d9664d3a4043a01d8728fa525d049
-    protocol_binding:
-      status: UNAVAILABLE
-      source_ref: protocol/MADP-v0.3.0-alpha.3.md
-      source_digest: null
-    participants: []
-    blind_first_round:
-      required: false
-      status: NOT_PERFORMED
-      information_set_hash: null
-      initial_responses: []
-      eligible_initial_response_count: 0
-      independence_group_count: 0
-      convergence_classification: NOT_EVALUATED
-      conformance_eligible: false
-      reasons:
-        - DRAFT; the standard alpha.3 run has not started.
-    metrics:
-      completion_time_seconds: null
-      human_actions: null
-      canonical_commands: null
-      corrections: null
-      unclear_next_actions: null
-      authority_errors: null
-      stale_revision_errors: null
-      user_burden: null
-    result:
-      task_completed: null
-      raw_records_preserved: null
-      authority_boundary_recorded: null
-      material_dissent_count: null
-      dissent_preserved_count: null
-      decision_reconstruction: null
-      core_conformance: NOT_EVALUATED
-      decision_record_ref: null
-      notes: ''
-
-  - run_id: CODEX-PILOT-001-CORE
-    workflow: ALPHA3_CORE_CANDIDATE
-    tested_commit: 2a29ddfebe4d9664d3a4043a01d8728fa525d049
-    protocol_binding:
-      status: UNAVAILABLE
-      source_ref: docs/profiles/MADP_CORE_CANDIDATE-v0.3.0-alpha.3.md
-      source_digest: null
-    participants: []
-    blind_first_round:
-      required: true
-      status: NOT_PERFORMED
-      information_set_hash: null
-      initial_responses: []
-      eligible_initial_response_count: 0
-      independence_group_count: 0
-      convergence_classification: NOT_EVALUATED
-      conformance_eligible: false
-      reasons:
-        - DRAFT; the Core Candidate run has not started.
-    metrics:
-      completion_time_seconds: null
-      human_actions: null
-      canonical_commands: null
-      corrections: null
-      unclear_next_actions: null
-      authority_errors: null
-      stale_revision_errors: null
-      user_burden: null
-    result:
-      task_completed: null
-      raw_records_preserved: null
-      authority_boundary_recorded: null
-      material_dissent_count: null
-      dissent_preserved_count: null
-      decision_reconstruction: null
-      core_conformance: NOT_EVALUATED
-      decision_record_ref: null
-      notes: ''
-
-  - run_id: CODEX-PILOT-001-MARKDOWN
-    workflow: MARKDOWN_VALIDATOR
-    tested_commit: 2a29ddfebe4d9664d3a4043a01d8728fa525d049
-    protocol_binding:
-      status: NOT_APPLICABLE
-      source_ref: schemas/v0.3.0-alpha.3/experimental/core-candidate-comparison.schema.yaml
-      source_digest: null
-    participants: []
-    blind_first_round:
-      required: true
-      status: NOT_PERFORMED
-      information_set_hash: null
-      initial_responses: []
-      eligible_initial_response_count: 0
-      independence_group_count: 0
-      convergence_classification: NOT_EVALUATED
-      conformance_eligible: false
-      reasons:
-        - DRAFT; the Markdown plus validator run has not started.
-    metrics:
-      completion_time_seconds: null
-      human_actions: null
-      canonical_commands: null
-      corrections: null
-      unclear_next_actions: null
-      authority_errors: null
-      stale_revision_errors: null
-      user_burden: null
-    result:
-      task_completed: null
-      raw_records_preserved: null
-      authority_boundary_recorded: null
-      material_dissent_count: null
-      dissent_preserved_count: null
-      decision_reconstruction: null
-      core_conformance: NOT_EVALUATED
-      decision_record_ref: null
-      notes: ''
-
+- run_id: CODEX-PILOT-001-MANUAL
+  workflow: MANUAL_MULTI_AI
+  tested_commit: null
+  protocol_binding:
+    status: NOT_APPLICABLE
+    source_ref: experiments/codex-core-candidate-comparison/pilot-001/task/prompt.md
+    source_digest: null
+  participants: []
+  blind_first_round:
+    required: true
+    status: NOT_PERFORMED
+    information_set_hash: null
+    initial_responses: []
+    eligible_initial_response_count: 0
+    independence_group_count: 0
+    convergence_classification: NOT_EVALUATED
+    conformance_eligible: false
+    reasons:
+    - Cancelled by Human Final Authority before execution due to resource constraint
+      and priority change; no participants, prompts, worktree evidence, or run artifacts
+      were created for this workflow.
+  metrics:
+    completion_time_seconds: null
+    human_actions: null
+    canonical_commands: null
+    corrections: null
+    unclear_next_actions: null
+    authority_errors: null
+    stale_revision_errors: null
+    user_burden: null
+  result:
+    task_completed: null
+    raw_records_preserved: null
+    authority_boundary_recorded: null
+    material_dissent_count: null
+    dissent_preserved_count: null
+    decision_reconstruction: null
+    core_conformance: NOT_EVALUATED
+    decision_record_ref: null
+    notes: Cancelled by Human Final Authority before execution due to resource constraint
+      and priority change; no participants, prompts, worktree evidence, or run artifacts
+      were created for this workflow.
+- run_id: CODEX-PILOT-001-STANDARD
+  workflow: STANDARD_ALPHA3
+  tested_commit: 2a29ddfebe4d9664d3a4043a01d8728fa525d049
+  protocol_binding:
+    status: UNAVAILABLE
+    source_ref: protocol/MADP-v0.3.0-alpha.3.md
+    source_digest: null
+  participants: []
+  blind_first_round:
+    required: false
+    status: NOT_PERFORMED
+    information_set_hash: null
+    initial_responses: []
+    eligible_initial_response_count: 0
+    independence_group_count: 0
+    convergence_classification: NOT_EVALUATED
+    conformance_eligible: false
+    reasons:
+    - Cancelled by Human Final Authority before execution due to resource constraint
+      and priority change; no participants, prompts, worktree evidence, or run artifacts
+      were created for this workflow.
+  metrics:
+    completion_time_seconds: null
+    human_actions: null
+    canonical_commands: null
+    corrections: null
+    unclear_next_actions: null
+    authority_errors: null
+    stale_revision_errors: null
+    user_burden: null
+  result:
+    task_completed: null
+    raw_records_preserved: null
+    authority_boundary_recorded: null
+    material_dissent_count: null
+    dissent_preserved_count: null
+    decision_reconstruction: null
+    core_conformance: NOT_EVALUATED
+    decision_record_ref: null
+    notes: Cancelled by Human Final Authority before execution due to resource constraint
+      and priority change; no participants, prompts, worktree evidence, or run artifacts
+      were created for this workflow.
+- run_id: CODEX-PILOT-001-CORE
+  workflow: ALPHA3_CORE_CANDIDATE
+  tested_commit: 2a29ddfebe4d9664d3a4043a01d8728fa525d049
+  protocol_binding:
+    status: BOUND
+    source_ref: docs/profiles/MADP_CORE_CANDIDATE-v0.3.0-alpha.3.md
+    source_digest: 0f9e2007407e8c565b0c128bdcdaa678b4b5ed3a0aeb76f76bff35460a6ccfc1
+  participants:
+  - participant_id: CHATGPT-B
+    service: OpenAI
+    model_label: GPT-5.6 Sol
+    chat_context_id: CHAT-CORE-CHATGPT-002
+    independence_group: IG-OPENAI-002
+    correlation_status: DISTINCT_CONTEXT_KNOWN
+  - participant_id: CLAUDE-B
+    service: Anthropic
+    model_label: Opus 4.8
+    chat_context_id: CHAT-CORE-CLAUDE-002
+    independence_group: IG-ANTHROPIC-002
+    correlation_status: DISTINCT_CONTEXT_KNOWN
+  - participant_id: GEMINI-B
+    service: Google
+    model_label: 3.1 Pro
+    chat_context_id: CHAT-CORE-GEMINI-002
+    independence_group: IG-GOOGLE-002
+    correlation_status: DISTINCT_CONTEXT_KNOWN
+  blind_first_round:
+    required: true
+    status: VALID
+    information_set_hash: e08e2bb419f2b2b091f896165471e572f6d94fd4c54ee6c08da2c9ce02a3ed46
+    initial_responses:
+    - response_id: INITIAL-CHATGPT-B
+      participant_id: CHATGPT-B
+      independence_group: IG-OPENAI-002
+      raw_response_ref: experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/raw/initial-response-CHATGPT-B.md
+      raw_response_sha256: 0e435699e6ab9a004b5bb14f523a249e459524c3b784b7e3f00e1127fadea4f7
+      captured_before_cross_exposure: true
+      exposure_state: UNEXPOSED
+      exposed_response_refs: []
+    - response_id: INITIAL-CLAUDE-B
+      participant_id: CLAUDE-B
+      independence_group: IG-ANTHROPIC-002
+      raw_response_ref: experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/raw/initial-response-CLAUDE-B.md
+      raw_response_sha256: 737c74a1a247eb861767fbb7cc25c7c365605c5182c0ebd7dc249eb32c8af1a9
+      captured_before_cross_exposure: true
+      exposure_state: UNEXPOSED
+      exposed_response_refs: []
+    - response_id: INITIAL-GEMINI-B
+      participant_id: GEMINI-B
+      independence_group: IG-GOOGLE-002
+      raw_response_ref: experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/raw/initial-response-GEMINI-B.md
+      raw_response_sha256: cc651d90c59fbedb1c2c40edee050d8b51d6817ee5e9c723c0ea48d7422c5482
+      captured_before_cross_exposure: true
+      exposure_state: UNEXPOSED
+      exposed_response_refs: []
+    eligible_initial_response_count: 3
+    independence_group_count: 3
+    convergence_classification: MIXED
+    conformance_eligible: true
+    reasons:
+    - Human Final Authority confirmed Blind First Round status VALID for attempt-002.
+    - Three initial responses were captured before Cross Exposure and marked UNEXPOSED
+      with three recorded independence groups.
+    - VALID is a procedure classification only and does not prove global model independence
+      or correctness.
+    - Gemini Cross Exposure reconciliation is separate from Blind initial response
+      eligibility.
+  metrics:
+    completion_time_seconds: 25000
+    human_actions: 33
+    canonical_commands: null
+    corrections: null
+    unclear_next_actions: null
+    authority_errors: 0
+    stale_revision_errors: 0
+    user_burden: null
+  result:
+    task_completed: true
+    raw_records_preserved: true
+    authority_boundary_recorded: true
+    material_dissent_count: 4
+    dissent_preserved_count: 4
+    decision_reconstruction: PASS
+    core_conformance: DEGRADED
+    decision_record_ref: experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/structured-comparison/human-decision-record.yaml
+    notes: Canonical result is attempt-002; attempt-001 was aborted before Cross Exposure
+      and evidence was preserved. Blind First Round was confirmed VALID by Human Final
+      Authority and convergence classification is MIXED. Cross Exposure send timing
+      includes retrospective attestation for CLAUDE-B and GEMINI-B. Gemini canonical
+      Cross Exposure response is UI recapture; the noncanonical duplicate raw is preserved
+      and excluded from semantic analysis. Human decision selected OPTION-A / COMPARISON_FIRST
+      / CONDITIONAL. EG-001 and EG-005 are mandatory gates before A3-REL-001. Only
+      the bounded decision task is completed. Formal release evidence, release, A3-REL-001,
+      A3-REL-005, field trial completion, and alpha.4 remain unauthorized and incomplete.
+      Preserved public-redacted Human Final Authority input uses HFA-001; final decision
+      record uses Eruhitsuji; Human Final Authority explicitly confirmed both identifiers
+      refer to the same human and Eruhitsuji is the official record identifier. Existing
+      decision evidence files were not modified; identifier provenance is reconciled
+      and remains a documented limitation. Core Candidate evidence preserved after
+      Human Final Authority terminated EXP-CODEX-PILOT-001 early; this run remains
+      the only completed workflow and is retained as a single-case study, not comparative
+      proof.
+- run_id: CODEX-PILOT-001-MARKDOWN
+  workflow: MARKDOWN_VALIDATOR
+  tested_commit: 2a29ddfebe4d9664d3a4043a01d8728fa525d049
+  protocol_binding:
+    status: NOT_APPLICABLE
+    source_ref: schemas/v0.3.0-alpha.3/experimental/core-candidate-comparison.schema.yaml
+    source_digest: null
+  participants: []
+  blind_first_round:
+    required: true
+    status: NOT_PERFORMED
+    information_set_hash: null
+    initial_responses: []
+    eligible_initial_response_count: 0
+    independence_group_count: 0
+    convergence_classification: NOT_EVALUATED
+    conformance_eligible: false
+    reasons:
+    - Cancelled by Human Final Authority before execution due to resource constraint
+      and priority change; no participants, prompts, worktree evidence, or run artifacts
+      were created for this workflow.
+  metrics:
+    completion_time_seconds: null
+    human_actions: null
+    canonical_commands: null
+    corrections: null
+    unclear_next_actions: null
+    authority_errors: null
+    stale_revision_errors: null
+    user_burden: null
+  result:
+    task_completed: null
+    raw_records_preserved: null
+    authority_boundary_recorded: null
+    material_dissent_count: null
+    dissent_preserved_count: null
+    decision_reconstruction: null
+    core_conformance: NOT_EVALUATED
+    decision_record_ref: null
+    notes: Cancelled by Human Final Authority before execution due to resource constraint
+      and priority change; no participants, prompts, worktree evidence, or run artifacts
+      were created for this workflow.
 conclusion:
   review_status: NOT_REVIEWED
   alpha4_recommendation: NOT_EVALUATED
   alpha4_authorized: false
   reviewer: null
-  rationale: null
+  rationale: 'Experiment terminated by Human Final Authority due to resource and workflow
+    cost: generated AI usage cost, human operating time, long waiting time, interference
+    with other work, and low incremental value for current single-user operation.
+    Completed workflows: ALPHA3_CORE_CANDIDATE only. Cancelled workflows: MARKDOWN_VALIDATOR,
+    MANUAL_MULTI_AI, STANDARD_ALPHA3. Full four-workflow comparison was not completed;
+    no comparative superiority, burden, timing, authority-error, stale-revision, or
+    four-workflow alpha.4 recommendation is authorized. Core Candidate result is retained
+    as a single-case study with evidence preserved. Rapid Prerelease policy is adopted
+    separately by Human Final Authority; experiment result remains formal_release_evidence
+    false and alpha4_authorized false.'

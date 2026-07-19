@@ -1,0 +1,23 @@
+register_version: MADP-CORE-ATTEMPT-REGISTER-v1
+workflow: ALPHA3_CORE_CANDIDATE
+active_attempt: CORE-ATTEMPT-002
+attempts:
+- attempt_id: CORE-ATTEMPT-001
+  layout: LEGACY_RUN_ROOT
+  status: ABORTED_BEFORE_CROSS_EXPOSURE
+  reason: ORIGINAL_PARTICIPANT_CHATS_UNAVAILABLE
+  blind_initial_responses_preserved: true
+  blind_initial_responses_reused: false
+  cross_exposure_started: false
+  evidence_deleted: false
+  evidence_overwritten: false
+  selected_for_experiment_result: false
+  evidence_preserved: true
+- attempt_id: CORE-ATTEMPT-002
+  path: attempts/attempt-002
+  status: FINALIZED
+  restart_scope: BLIND_FIRST_ROUND_AND_LATER
+  prior_attempt_outputs_allowed_in_participant_information_set: false
+  formal_release_evidence: false
+  alpha4_authorized: false
+  selected_for_experiment_result: true

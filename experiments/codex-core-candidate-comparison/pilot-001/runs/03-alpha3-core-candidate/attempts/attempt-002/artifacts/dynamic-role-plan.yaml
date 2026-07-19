@@ -1,0 +1,146 @@
+plan_version: MADP-DYNAMIC-ROLE-PLAN-v1
+protocol_version: MADP-v0.3.0-alpha.3
+plan_id: ROLE-PLAN-CODEX-PILOT-001-CORE-ATTEMPT-002
+status: READY
+formal_release_evidence: false
+human_final_authority: true
+approval_authority_granted: false
+task:
+  task_id: TASK-CODEX-PILOT-001
+  title: Decide the next three MADP work packages and evidence gates
+  required_roles:
+  - FACILITATOR
+  - PROPOSER
+  - CRITIC
+  - EVIDENCE_REVIEWER
+  - RECORDER
+  blind_first_round_required: true
+  blind_initial_response_count: 3
+services:
+- service_id: CHATGPT-B
+  provider: OpenAI
+  model_label: GPT-5.6 Sol
+  chat_context_id: CHAT-CORE-CHATGPT-002
+  independence_group: IG-OPENAI-002
+  availability: AVAILABLE
+  usage_preference: NORMAL
+  cost_mode: UNKNOWN
+  capabilities:
+    facilitation: true
+    generation: true
+    critique: true
+    evidence_review: true
+    recording: true
+    exact_file_reading: false
+    web_research: false
+    code_execution: false
+    long_context: true
+  known_correlations: []
+- service_id: CLAUDE-B
+  provider: Anthropic
+  model_label: Opus 4.8
+  chat_context_id: CHAT-CORE-CLAUDE-002
+  independence_group: IG-ANTHROPIC-002
+  availability: AVAILABLE
+  usage_preference: NORMAL
+  cost_mode: UNKNOWN
+  capabilities:
+    facilitation: true
+    generation: true
+    critique: true
+    evidence_review: true
+    recording: true
+    exact_file_reading: false
+    web_research: false
+    code_execution: false
+    long_context: true
+  known_correlations: []
+- service_id: GEMINI-B
+  provider: Google
+  model_label: 3.1 Pro
+  chat_context_id: CHAT-CORE-GEMINI-002
+  independence_group: IG-GOOGLE-002
+  availability: AVAILABLE
+  usage_preference: NORMAL
+  cost_mode: UNKNOWN
+  capabilities:
+    facilitation: true
+    generation: true
+    critique: true
+    evidence_review: true
+    recording: true
+    exact_file_reading: false
+    web_research: false
+    code_execution: false
+    long_context: true
+  known_correlations: []
+assignments:
+- assignment_id: ASSIGN-PROPOSER-1
+  role: PROPOSER
+  service_id: CHATGPT-B
+  phase: BLIND_INITIAL
+  authority: PROPOSE_ONLY
+  independent_count_eligible: true
+  rationale: Selected deterministically for Blind First Round generation.
+- assignment_id: ASSIGN-PROPOSER-2
+  role: PROPOSER
+  service_id: CLAUDE-B
+  phase: BLIND_INITIAL
+  authority: PROPOSE_ONLY
+  independent_count_eligible: true
+  rationale: Selected deterministically for Blind First Round generation.
+- assignment_id: ASSIGN-PROPOSER-3
+  role: PROPOSER
+  service_id: GEMINI-B
+  phase: BLIND_INITIAL
+  authority: PROPOSE_ONLY
+  independent_count_eligible: true
+  rationale: Selected deterministically for Blind First Round generation.
+- assignment_id: ASSIGN-FACILITATOR-1
+  role: FACILITATOR
+  service_id: CHATGPT-B
+  phase: ALL
+  authority: PROPOSE_ONLY
+  independent_count_eligible: false
+  rationale: Selected deterministically for facilitator capability.
+- assignment_id: ASSIGN-CRITIC-1
+  role: CRITIC
+  service_id: CLAUDE-B
+  phase: CROSS_EXPOSURE
+  authority: OPINION_ONLY
+  independent_count_eligible: false
+  rationale: Selected deterministically for critic capability.
+- assignment_id: ASSIGN-EVIDENCE_REVIEWER-1
+  role: EVIDENCE_REVIEWER
+  service_id: GEMINI-B
+  phase: CROSS_EXPOSURE
+  authority: OPINION_ONLY
+  independent_count_eligible: false
+  rationale: Selected deterministically for evidence reviewer capability.
+- assignment_id: ASSIGN-RECORDER-1
+  role: RECORDER
+  service_id: CHATGPT-B
+  phase: ALL
+  authority: RECORD_ONLY
+  independent_count_eligible: false
+  rationale: Selected deterministically for recorder capability.
+blind_first_round:
+  required: true
+  status: PLAN_VALID
+  requested_response_count: 3
+  assigned_service_ids:
+  - CHATGPT-B
+  - CLAUDE-B
+  - GEMINI-B
+  eligible_service_ids:
+  - CHATGPT-B
+  - CLAUDE-B
+  - GEMINI-B
+  independence_group_count: 3
+  reasons: []
+unfilled_roles: []
+warnings: []
+planner:
+  algorithm: MADP-DYNAMIC-ROLE-PLANNER-v1
+  deterministic: true
+  tie_breaker: SERVICE_ID_ASCENDING

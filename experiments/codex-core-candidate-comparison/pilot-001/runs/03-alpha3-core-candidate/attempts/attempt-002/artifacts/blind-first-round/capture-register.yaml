@@ -1,0 +1,94 @@
+capture_register_version: MADP-BLIND-CAPTURE-REGISTER-v1
+experiment_id: EXP-CODEX-PILOT-001
+workflow: ALPHA3_CORE_CANDIDATE
+attempt_id: CORE-ATTEMPT-002
+information_set_hash: e08e2bb419f2b2b091f896165471e572f6d94fd4c54ee6c08da2c9ce02a3ed46
+cross_exposure_authorized: false
+cross_exposure_started: false
+participants:
+  - participant_id: CHATGPT-B
+    provider: OpenAI
+    expected_model_label: GPT-5.6 Sol
+    chat_context_id: CHAT-CORE-CHATGPT-002
+    independence_group: IG-OPENAI-002
+    rendered_prompt_ref: attempts/attempt-002/artifacts/blind-first-round/rendered-prompt-CHATGPT-B.md
+    rendered_prompt_sha256: cf79f7a2dbfdc9ebecc583c9c11dc09f1de72ca06fcaeeb8c522157d52e2a179
+    model_label_confirmed_by_human: true
+    new_chat_confirmed_by_human: false
+    chat_history_retention_confirmed_by_human: true
+    chat_bookmarked_or_history_saved: true
+    same_chat_reopen_test_completed: true
+    same_chat_reopen_test_result: PASS
+    cross_exposure_continuity_status: CONFIRMED
+    continuity_verified_at_utc: 2026-07-18T15:00:24Z
+    continuity_time_basis: OPERATOR_ATTESTATION_RECEIPT
+    send_status: SENT
+    sent_at_utc: null
+    send_time_status: UNKNOWN
+    send_confirmation_status: RETROSPECTIVE_CAPTURE_AUTHORIZATION
+    response_status: CAPTURED
+    received_at_utc: 2026-07-18T14:38:20Z
+    raw_response_ref: raw/initial-response-CHATGPT-B.md
+    raw_response_sha256: 0e435699e6ab9a004b5bb14f523a249e459524c3b784b7e3f00e1127fadea4f7
+    raw_response_bytes: 30392
+    captured_before_cross_exposure: true
+    exposure_state: UNEXPOSED
+    exposed_response_refs: []
+
+  - participant_id: CLAUDE-B
+    provider: Anthropic
+    expected_model_label: Opus 4.8
+    chat_context_id: CHAT-CORE-CLAUDE-002
+    independence_group: IG-ANTHROPIC-002
+    rendered_prompt_ref: attempts/attempt-002/artifacts/blind-first-round/rendered-prompt-CLAUDE-B.md
+    rendered_prompt_sha256: 757f5b972d0788f8bfb6150c742f08568962a9bae819bef1e4eb804e6eb24f35
+    model_label_confirmed_by_human: true
+    new_chat_confirmed_by_human: false
+    chat_history_retention_confirmed_by_human: true
+    chat_bookmarked_or_history_saved: true
+    same_chat_reopen_test_completed: true
+    same_chat_reopen_test_result: PASS
+    cross_exposure_continuity_status: CONFIRMED
+    continuity_verified_at_utc: 2026-07-18T15:00:24Z
+    continuity_time_basis: OPERATOR_ATTESTATION_RECEIPT
+    send_status: SENT
+    sent_at_utc: null
+    send_time_status: UNKNOWN
+    send_confirmation_status: RETROSPECTIVE_CAPTURE_AUTHORIZATION
+    response_status: CAPTURED
+    received_at_utc: 2026-07-18T14:44:25Z
+    raw_response_ref: raw/initial-response-CLAUDE-B.md
+    raw_response_sha256: 737c74a1a247eb861767fbb7cc25c7c365605c5182c0ebd7dc249eb32c8af1a9
+    raw_response_bytes: 25688
+    captured_before_cross_exposure: true
+    exposure_state: UNEXPOSED
+    exposed_response_refs: []
+
+  - participant_id: GEMINI-B
+    provider: Google
+    expected_model_label: 3.1 Pro
+    chat_context_id: CHAT-CORE-GEMINI-002
+    independence_group: IG-GOOGLE-002
+    rendered_prompt_ref: attempts/attempt-002/artifacts/blind-first-round/rendered-prompt-GEMINI-B.md
+    rendered_prompt_sha256: a5fdf0f8a5b59e69caa6ef6ae350f5a999c7a17770bbacf9196ab322eea3bf6c
+    model_label_confirmed_by_human: true
+    new_chat_confirmed_by_human: false
+    chat_history_retention_confirmed_by_human: true
+    chat_bookmarked_or_history_saved: true
+    same_chat_reopen_test_completed: true
+    same_chat_reopen_test_result: PASS
+    cross_exposure_continuity_status: CONFIRMED
+    continuity_verified_at_utc: 2026-07-18T15:00:24Z
+    continuity_time_basis: OPERATOR_ATTESTATION_RECEIPT
+    send_status: SENT
+    sent_at_utc: null
+    send_time_status: UNKNOWN
+    send_confirmation_status: RETROSPECTIVE_CAPTURE_AUTHORIZATION
+    response_status: CAPTURED
+    received_at_utc: 2026-07-18T14:49:54Z
+    raw_response_ref: raw/initial-response-GEMINI-B.md
+    raw_response_sha256: cc651d90c59fbedb1c2c40edee050d8b51d6817ee5e9c723c0ea48d7422c5482
+    raw_response_bytes: 24741
+    captured_before_cross_exposure: true
+    exposure_state: UNEXPOSED
+    exposed_response_refs: []

@@ -1,0 +1,61 @@
+reconciliation_version: MADP-BLIND-SEND-RECONCILIATION-v1
+experiment_id: EXP-CODEX-PILOT-001
+workflow: ALPHA3_CORE_CANDIDATE
+basis: RETROSPECTIVE_HUMAN_ATTESTATION
+send_confirmed_in_realtime: false
+exact_send_times_available: false
+information_set_hash: a754c49463e74c2fe79ed039438da070ed3ea0259fd55c87c71195a901f26925
+events:
+  - participant_id: CHATGPT-A
+    human_action_id: HA-RETRO-SEND-CHATGPT-A
+    new_chat: true
+    ui_model_label_confirmed: GPT-5.6 Sol
+    attachments_sent_together_in_initial_message:
+      - task/prompt.md
+      - MADP-v0.3.0-alpha.3-core-compact.md
+    rendered_prompt_used: artifacts/blind-first-round/rendered-prompt-CHATGPT-A.md
+    external_web_research_enabled: false
+    other_participant_outputs_seen_before_capture: false
+    sent_before_corresponding_raw_submission: true
+    sent_at_utc: null
+    model_label_status: CONFLICT_RECORDED
+    expected_model_label: GPT-5.6 Sol
+    ui_model_label_confirmed_by_human: GPT-5.6 Sol
+    response_self_reported_model_label: GPT-5.6 Thinking
+    resolution:
+      participant_metadata_label: HUMAN_CONFIRMED_UI_LABEL
+      raw_response_preserved: true
+      self_reported_label_not_treated_as_authoritative: true
+      blind_exposure_eligibility_changed: false
+
+  - participant_id: CLAUDE-A
+    human_action_id: HA-RETRO-SEND-CLAUDE-A
+    new_chat: true
+    ui_model_label_confirmed: Opus 4.8
+    attachments_sent_together_in_initial_message:
+      - task/prompt.md
+      - MADP-v0.3.0-alpha.3-core-compact.md
+    rendered_prompt_used: artifacts/blind-first-round/rendered-prompt-CLAUDE-A.md
+    external_web_research_enabled: false
+    other_participant_outputs_seen_before_capture: false
+    sent_before_corresponding_raw_submission: true
+    sent_at_utc: null
+
+  - participant_id: GEMINI-A
+    human_action_id: HA-RETRO-SEND-GEMINI-A
+    new_chat: true
+    ui_model_label_confirmed: 3.1 Pro
+    attachments_sent_together_in_initial_message:
+      - task/prompt.md
+      - MADP-v0.3.0-alpha.3-core-compact.md
+    rendered_prompt_used: artifacts/blind-first-round/rendered-prompt-GEMINI-A.md
+    external_web_research_enabled: false
+    other_participant_outputs_seen_before_capture: false
+    sent_before_corresponding_raw_submission: true
+    sent_at_utc: null
+limitations:
+  - SEND_CONFIRMED was not recorded at send time.
+  - Exact sent_at_utc values remain unknown.
+  - Send events are counted as human actions based on retrospective human attestation.
+formal_release_evidence: false
+alpha4_authorized: false

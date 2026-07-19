@@ -1,0 +1,49 @@
+analysis_version: MADP-STRUCTURED-COMPARISON-v1
+experiment_id: EXP-CODEX-PILOT-001
+attempt_id: CORE-ATTEMPT-002
+workflow: ALPHA3_CORE_CANDIDATE
+authority: PROPOSAL_ONLY
+human_final_authority_required: true
+
+analysis_sequence:
+  - INITIAL_RESPONSES_ONLY
+  - FREEZE_INITIAL_CLAIM_LEDGER
+  - FREEZE_INITIAL_CONVERGENCE_ASSESSMENT
+  - READ_CROSS_EXPOSURE_RESPONSES
+  - BUILD_PARTICIPANT_CHANGE_LEDGER
+  - BUILD_ACCEPTANCE_MATRIX
+  - PRESERVE_DISSENT
+  - IDENTIFY_EVIDENCE_GAPS
+  - PREPARE_CANDIDATE_OPTIONS
+  - PREPARE_HUMAN_DECISION_PACKET
+
+stage_a:
+  started_at_utc: 2026-07-18T16:30:52Z
+  completed_at_utc: 2026-07-18T16:33:46Z
+  frozen_artifacts:
+    - path: attempts/attempt-002/artifacts/structured-comparison/initial-claim-ledger.yaml
+      sha256: 2a0a19cc84552e034708b5eabdb33b05dd03c03e05276e78d66ee0f2e6b26556
+      bytes: 8725
+    - path: attempts/attempt-002/artifacts/structured-comparison/initial-convergence-assessment.yaml
+      sha256: e1f8cb1a063f0b96002a94f708c9077520236452b801b2acfbee72c0f47f7b53
+      bytes: 8232
+  semantic_sources_allowed:
+    - attempts/attempt-002/raw/initial-response-CHATGPT-B.md
+    - attempts/attempt-002/raw/initial-response-CLAUDE-B.md
+    - attempts/attempt-002/raw/initial-response-GEMINI-B.md
+  cross_exposure_content_used: false
+  limitations:
+    - limitation: Codex had mechanically handled Cross Exposure raw capture before this phase; Stage A intentionally did not use Cross Exposure raw for semantic analysis.
+      source_refs:
+        - attempts/attempt-002/artifacts/cross-exposure/cross-exposure-reconciliation.yaml#L1-L84
+
+external_web_research_used: false
+sibling_runs_used: false
+prior_attempt_participant_outputs_used: false
+noncanonical_gemini_submission_used_for_semantic_analysis: false
+formal_release_evidence: false
+alpha4_authorized: false
+phase4c_authorized: true
+comparison_performed: true
+human_final_decision_recorded: false
+core_conformance: NOT_EVALUATED

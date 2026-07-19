@@ -1,0 +1,216 @@
+evaluation_version: MADP-CORE-CONFORMANCE-EVALUATION-v1
+experiment_id: EXP-CODEX-PILOT-001
+attempt_id: CORE-ATTEMPT-002
+workflow: ALPHA3_CORE_CANDIDATE
+evaluated_commit: 2a29ddfebe4d9664d3a4043a01d8728fa525d049
+operator_environment_commit: 43815810f988588a29ba2dcaea9d2641d6263606
+authority: EVIDENCE_BASED_OPERATOR_EVALUATION
+human_final_authority_identifier: Eruhitsuji
+human_final_decision_ref: artifacts/structured-comparison/human-decision-record.yaml
+human_authority_identifier_provenance:
+  public_redacted_input_identifier: HFA-001
+  official_record_identifier: Eruhitsuji
+  final_authoritative_identifier: Eruhitsuji
+  reconciliation_ref: artifacts/finalization/human-authority-identifier-reconciliation.yaml
+  reconciled: true
+  residual_limitation_present: true
+  same_human_authority_confirmed: true
+  identifier_values_match: false
+  privacy_redaction_applied: true
+blind_first_round:
+  human_confirmed_status: VALID
+  convergence_classification: MIXED
+  eligible_initial_response_count: 3
+  independence_group_count: 3
+decision:
+  selected_option_id: OPTION-A
+  task_completed_by_human_decision: true
+  material_dissent_count: 4
+  dissent_preserved_count: 4
+  blocking_evidence_gaps:
+  - EG-001
+  - EG-005
+  decision_reconstruction: PASS
+  decision_reconstruction_requires_reconciliation: true
+requirement_results:
+- requirement_id: CR-01
+  requirement: Protocol binding
+  requirement_ref: docs/profiles/MADP_CORE_CANDIDATE-v0.3.0-alpha.3.md#L144-L154
+  evidence_refs:
+  - attempts/attempt-002/artifacts/blind-first-round/information-set-manifest.yaml#L5-L48
+  - docs/profiles/MADP_CORE_CANDIDATE-v0.3.0-alpha.3.md#L144-L154
+  result: PASS
+  rationale: Tested commit, task, profile, compact bundle and dynamic role artifacts
+    are hash-bound.
+  material_to_final_classification: false
+- requirement_id: CR-02
+  requirement: Participant and independence-group recording
+  requirement_ref: docs/profiles/MADP_CORE_CANDIDATE-v0.3.0-alpha.3.md#L41-L66
+  evidence_refs:
+  - attempts/attempt-002/artifacts/participant-register.yaml#L1-L47
+  - attempts/attempt-002/artifacts/structured-comparison/initial-convergence-assessment.yaml#L15-L20
+  result: PASS
+  rationale: Three participants and three independence groups are recorded.
+  material_to_final_classification: false
+- requirement_id: CR-03
+  requirement: Blind First Round information-set control
+  requirement_ref: docs/profiles/MADP_CORE_CANDIDATE-v0.3.0-alpha.3.md#L41-L73
+  evidence_refs:
+  - attempts/attempt-002/artifacts/blind-first-round/information-set-manifest.yaml#L1-L57
+  result: PASS
+  rationale: Blind information set was frozen with exact-byte hash and prior attempt
+    outputs excluded.
+  material_to_final_classification: false
+- requirement_id: CR-04
+  requirement: Blind initial raw preservation
+  requirement_ref: docs/profiles/MADP_CORE_CANDIDATE-v0.3.0-alpha.3.md#L75-L78
+  evidence_refs:
+  - attempts/attempt-002/artifacts/blind-first-round/capture-register.yaml#L29-L35
+  - attempts/attempt-002/artifacts/blind-first-round/capture-register.yaml#L58-L64
+  - attempts/attempt-002/artifacts/blind-first-round/capture-register.yaml#L87-L93
+  result: PASS
+  rationale: All three initial raw responses are preserved with hashes and byte counts.
+  material_to_final_classification: false
+- requirement_id: CR-05
+  requirement: Capture-before-cross-exposure
+  requirement_ref: docs/profiles/MADP_CORE_CANDIDATE-v0.3.0-alpha.3.md#L41-L73
+  evidence_refs:
+  - attempts/attempt-002/artifacts/blind-first-round/capture-register.yaml#L29-L35
+  - attempts/attempt-002/artifacts/blind-first-round/capture-register.yaml#L58-L64
+  - attempts/attempt-002/artifacts/blind-first-round/capture-register.yaml#L87-L93
+  result: PASS
+  rationale: All initial responses were captured before Cross Exposure and marked
+    UNEXPOSED.
+  material_to_final_classification: false
+- requirement_id: CR-06
+  requirement: Cross Exposure execution
+  requirement_ref: docs/profiles/MADP_CORE_CANDIDATE-v0.3.0-alpha.3.md#L144-L154
+  evidence_refs:
+  - attempts/attempt-002/artifacts/cross-exposure/cross-exposure-capture-register.yaml#L1-L126
+  - attempts/attempt-002/artifacts/cross-exposure/cross-exposure-reconciliation.yaml#L16-L84
+  result: PASS_WITH_RECONCILIATION
+  rationale: Cross Exposure evidence exists for three canonical responses, with retrospective
+    send and Gemini recapture reconciliation.
+  material_to_final_classification: true
+- requirement_id: CR-07
+  requirement: Same-chat continuity
+  requirement_ref: docs/profiles/MADP_CORE_CANDIDATE-v0.3.0-alpha.3.md#L41-L73
+  evidence_refs:
+  - attempts/attempt-002/artifacts/blind-first-round/continuity-reconciliation.yaml#L15-L49
+  result: PASS
+  rationale: Continuity was human-attested for all three participants before Cross
+    Exposure.
+  material_to_final_classification: false
+- requirement_id: CR-08
+  requirement: Cross Exposure raw preservation
+  requirement_ref: docs/profiles/MADP_CORE_CANDIDATE-v0.3.0-alpha.3.md#L75-L78
+  evidence_refs:
+  - attempts/attempt-002/artifacts/cross-exposure/cross-exposure-capture-register.yaml#L30-L126
+  - attempts/attempt-002/artifacts/structured-comparison/source-inventory.yaml#L68-L101
+  result: PASS_WITH_RECONCILIATION
+  rationale: Canonical Cross Exposure raw records are preserved; Gemini required UI
+    recapture and noncanonical preservation.
+  material_to_final_classification: true
+- requirement_id: CR-09
+  requirement: Retained/changed/withdrawn/new claim tracking
+  requirement_ref: docs/profiles/MADP_CORE_CANDIDATE-v0.3.0-alpha.3.md#L80-L89
+  evidence_refs:
+  - attempts/attempt-002/artifacts/structured-comparison/participant-change-ledger.yaml#L1-L165
+  result: PASS
+  rationale: Participant change ledger records retained, changed, withdrawn and new
+    claims.
+  material_to_final_classification: false
+- requirement_id: CR-10
+  requirement: Dissent preservation
+  requirement_ref: docs/profiles/MADP_CORE_CANDIDATE-v0.3.0-alpha.3.md#L80-L89
+  evidence_refs:
+  - attempts/attempt-002/artifacts/structured-comparison/dissent-register.yaml#L1-L86
+  - attempts/attempt-002/artifacts/structured-comparison/human-decision-record.yaml#L63-L126
+  result: PASS
+  rationale: Four material dissents are preserved and dispositioned by Human Final
+    Authority.
+  material_to_final_classification: false
+- requirement_id: CR-11
+  requirement: Evidence-gap preservation
+  requirement_ref: docs/profiles/MADP_CORE_CANDIDATE-v0.3.0-alpha.3.md#L80-L89
+  evidence_refs:
+  - attempts/attempt-002/artifacts/structured-comparison/evidence-gap-register.yaml#L1-L74
+  - attempts/attempt-002/artifacts/structured-comparison/human-decision-record.yaml#L128-L138
+  result: PASS
+  rationale: Evidence gaps are preserved; EG-001 and EG-005 remain mandatory gates.
+  material_to_final_classification: false
+- requirement_id: CR-12
+  requirement: Authority-boundary preservation
+  requirement_ref: docs/profiles/MADP_CORE_CANDIDATE-v0.3.0-alpha.3.md#L35-L39
+  evidence_refs:
+  - attempts/attempt-002/artifacts/structured-comparison/human-decision-record.yaml#L193-L213
+  - attempts/attempt-002/artifacts/structured-comparison/human-decision-record.yaml#L214-L219
+  result: PASS
+  rationale: Repository modification, release, formal release evidence and alpha.4
+    remain unauthorized.
+  material_to_final_classification: false
+- requirement_id: CR-13
+  requirement: Human Final Authority decision recording
+  requirement_ref: docs/profiles/MADP_CORE_CANDIDATE-v0.3.0-alpha.3.md#L35-L39
+  evidence_refs:
+  - attempts/attempt-002/artifacts/structured-comparison/human-decision-record.yaml#L1-L219
+  - attempts/attempt-002/artifacts/finalization/human-authority-identifier-reconciliation.yaml#L1-L52
+  result: PASS_WITH_RECONCILIATION
+  rationale: Final decision is recorded; authority identifier provenance requires
+    explicit reconciliation.
+  material_to_final_classification: true
+- requirement_id: CR-14
+  requirement: Decision reconstruction
+  requirement_ref: docs/profiles/MADP_CORE_CANDIDATE-v0.3.0-alpha.3.md#L80-L89
+  evidence_refs:
+  - attempts/attempt-002/artifacts/structured-comparison/human-decision-brief.md#L1-L77
+  - attempts/attempt-002/artifacts/structured-comparison/human-decision-record.yaml#L28-L190
+  - attempts/attempt-002/artifacts/finalization/human-authority-identifier-reconciliation.yaml#L35-L47
+  result: PASS_WITH_RECONCILIATION
+  rationale: Decision content is reconstructable; identifier, send timing and Gemini
+    recapture require reconciliation artifacts.
+  material_to_final_classification: true
+- requirement_id: CR-15
+  requirement: Release and alpha.4 boundary preservation
+  requirement_ref: docs/profiles/MADP_CORE_CANDIDATE-v0.3.0-alpha.3.md#L197-L204
+  evidence_refs:
+  - attempts/attempt-002/artifacts/structured-comparison/human-decision-record.yaml#L193-L219
+  - experiments/codex-core-candidate-comparison/pilot-001/task/prompt.md#L202-L209
+  result: PASS
+  rationale: No formal release evidence, A3-REL-001/A3-REL-005 completion, release,
+    or alpha.4 authorization is claimed.
+  material_to_final_classification: false
+- requirement_id: CR-16
+  requirement: Evidence provenance and reconciliation
+  requirement_ref: docs/profiles/MADP_CORE_CANDIDATE-v0.3.0-alpha.3.md#L197-L204
+  evidence_refs:
+  - attempts/attempt-002/artifacts/cross-exposure/cross-exposure-reconciliation.yaml#L1-L84
+  - attempts/attempt-002/artifacts/finalization/human-authority-identifier-reconciliation.yaml#L1-L52
+  result: PASS_WITH_RECONCILIATION
+  rationale: Protocol-significant provenance limitations are explicitly recorded and
+    considered.
+  material_to_final_classification: true
+deviations:
+- DEV-001
+- DEV-002
+- DEV-003
+- DEV-004
+final_classification: DEGRADED
+classification_rationale:
+- Required Core sequence, Blind evidence, Cross Exposure, dissent preservation and
+  Human Final Authority decision reconstruction are present.
+- DEV-002 retrospective Cross Exposure send attestation, DEV-003 Gemini UI recapture,
+  and DEV-004 authority identifier provenance mismatch are protocol-significant reconciliation
+  limitations.
+- Local Core Candidate profile states that authority ambiguity and degraded evidence
+  prevent CONFORMING but may be retained as degraded evidence.
+- No evidence shows raw record loss, invalid Blind First Round, Cross Exposure invalidation,
+  decision reconstruction failure, release-boundary breach, or alpha.4 authorization;
+  therefore NONCONFORMING is not indicated.
+boundaries:
+  repository_modification_authorized: false
+  release_authorized: false
+  formal_release_evidence: false
+  a3_rel_001_completed: false
+  a3_rel_005_completed: false
+  alpha4_authorized: false

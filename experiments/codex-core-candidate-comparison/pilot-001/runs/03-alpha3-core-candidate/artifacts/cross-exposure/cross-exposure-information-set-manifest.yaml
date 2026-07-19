@@ -1,0 +1,67 @@
+manifest_version: MADP-CROSS-EXPOSURE-INFORMATION-SET-v1
+experiment_id: EXP-CODEX-PILOT-001
+workflow: ALPHA3_CORE_CANDIDATE
+blind_information_set_hash: a754c49463e74c2fe79ed039438da070ed3ea0259fd55c87c71195a901f26925
+cross_exposure_common_information_set_hash: 7c7a642de7f16640b17a35bf78b8c7fd9ede199fb30ec963032971c62fb5fbf7
+cross_exposure_started: false
+formal_release_evidence: false
+alpha4_authorized: false
+
+attachment_order:
+  - experiments/codex-core-candidate-comparison/pilot-001/task/prompt.md
+  - experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/compact-bundle/MADP-v0.3.0-alpha.3-core-compact.md
+  - experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw/initial-response-CHATGPT-A.md
+  - experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw/initial-response-CLAUDE-A.md
+  - experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw/initial-response-GEMINI-A.md
+
+hash_construction:
+  method: CONCATENATE_EXACT_FILE_BYTES_WITHOUT_SEPARATOR
+  ordered_files:
+    - experiments/codex-core-candidate-comparison/pilot-001/task/prompt.md
+    - experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/compact-bundle/MADP-v0.3.0-alpha.3-core-compact.md
+    - experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw/initial-response-CHATGPT-A.md
+    - experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw/initial-response-CLAUDE-A.md
+    - experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw/initial-response-GEMINI-A.md
+    - experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/cross-exposure/cross-exposure-prompt-template.md
+
+initial_response_inventory:
+  - participant_id: CHATGPT-A
+    path: raw/initial-response-CHATGPT-A.md
+    sha256: b405cd9f321ba092ffa402ab501db44a6484d4308292fbd1e279e2d87ad77377
+    bytes: 32709
+  - participant_id: CLAUDE-A
+    path: raw/initial-response-CLAUDE-A.md
+    sha256: 23d3bfb31da0fb29e93a524e0487c9703bd6a98c4e3cb3e1f94e1c37d6379ca3
+    bytes: 26120
+  - participant_id: GEMINI-A
+    path: raw/initial-response-GEMINI-A.md
+    sha256: 0281d4d113c5aa277b2e207209963a026b7a3a751559c2b2164d0498dd1726b5
+    bytes: 22893
+
+prompt_rendering:
+  template_ref: artifacts/cross-exposure/cross-exposure-prompt-template.md
+  template_sha256: c706d32a63528e86a3edf573b5d27f7c514a848e36b8f432e211b3b12f6b1559
+  permitted_variable_fields:
+    - participant_id
+    - model_label
+    - own_initial_response_ref
+  substantive_content_identical: true
+  rendered_prompts:
+    - participant_id: CHATGPT-A
+      path: artifacts/cross-exposure/rendered-prompt-CHATGPT-A.md
+      sha256: 3f94b426a8e14be0cc06628294a326d4df0f7129162cb2aac29c5b0efc9ce3a6
+    - participant_id: CLAUDE-A
+      path: artifacts/cross-exposure/rendered-prompt-CLAUDE-A.md
+      sha256: 7ad07e2c47d816792b59a4acb949caef787ab42415bb602b3045da97126020d0
+    - participant_id: GEMINI-A
+      path: artifacts/cross-exposure/rendered-prompt-GEMINI-A.md
+      sha256: cdc7be82e2e72546084cce7e1ff35ac21379c35faa168fb8a02a29586b001dd2
+
+constraints:
+  same_existing_chat_required: true
+  new_chat_prohibited: true
+  external_web_research_prohibited: true
+  all_three_initial_responses_attached: true
+  attachment_order_fixed: true
+  post_exposure_agreement_not_independent: true
+  human_final_authority_required: true
