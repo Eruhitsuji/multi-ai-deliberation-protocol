@@ -1,0 +1,92 @@
+name: Validate alpha.4 distribution
+
+on:
+  pull_request:
+    paths:
+      - 'bootstrap/alpha4/**'
+      - 'docs/planning/DEC-MADP-ALPHA4-003.yaml'
+      - 'docs/planning/MADP-v0.3.0-alpha.4-distribution-status.yaml'
+      - 'docs/profiles/COMPACT_CORE_BUNDLE-v0.3.0-alpha.4.md'
+      - 'docs/releases/MADP-v0.3.0-alpha.4.md'
+      - 'README-v0.3.0-alpha.4.md'
+      - 'schemas/v0.3.0-alpha.4/**'
+      - 'scripts/generate_alpha4_core_compact_bundle.py'
+      - 'scripts/check_alpha4_core_compact_bundle.py'
+      - 'tests/v0.3.0-alpha.4/test_core_distribution.py'
+      - '.github/workflows/validate-alpha4-distribution.yml'
+  push:
+    paths:
+      - 'bootstrap/alpha4/**'
+      - 'docs/planning/DEC-MADP-ALPHA4-003.yaml'
+      - 'docs/planning/MADP-v0.3.0-alpha.4-distribution-status.yaml'
+      - 'docs/profiles/COMPACT_CORE_BUNDLE-v0.3.0-alpha.4.md'
+      - 'docs/releases/MADP-v0.3.0-alpha.4.md'
+      - 'README-v0.3.0-alpha.4.md'
+      - 'schemas/v0.3.0-alpha.4/**'
+      - 'scripts/generate_alpha4_core_compact_bundle.py'
+      - 'scripts/check_alpha4_core_compact_bundle.py'
+      - 'tests/v0.3.0-alpha.4/test_core_distribution.py'
+      - '.github/workflows/validate-alpha4-distribution.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-alpha4-distribution:
+    runs-on: ubuntu-24.04
+    env:
+      SOURCE_COMMIT: ${{ github.event.pull_request.head.sha || github.sha }}
+      REPOSITORY_NAME: ${{ github.repository }}
+    steps:
+      - name: Check out exact source commit
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ env.SOURCE_COMMIT }}
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Install validation dependencies
+        run: python -m pip install --disable-pip-version-check pyyaml jsonschema
+
+      - name: Validate retained alpha.4 slices
+        run: |
+          python scripts/check_alpha4_kickoff.py
+          python scripts/check_alpha4_core_usability.py
+
+      - name: Run distribution regression tests
+        run: |
+          python tests/v0.3.0-alpha.4/test_core_distribution.py \
+            --repository "$REPOSITORY_NAME" \
+            --source-commit "$SOURCE_COMMIT"
+
+      - name: Generate deterministic distribution twice
+        run: |
+          python scripts/generate_alpha4_core_compact_bundle.py .artifacts/first \
+            --repository "$REPOSITORY_NAME" \
+            --source-commit "$SOURCE_COMMIT"
+          python scripts/generate_alpha4_core_compact_bundle.py .artifacts/second \
+            --repository "$REPOSITORY_NAME" \
+            --source-commit "$SOURCE_COMMIT"
+          diff -ru .artifacts/first .artifacts/second
+
+      - name: Validate generated distribution
+        run: |
+          python scripts/check_alpha4_core_compact_bundle.py .artifacts/first \
+            --repository "$REPOSITORY_NAME" \
+            --source-commit "$SOURCE_COMMIT"
+          python scripts/check_alpha4_core_compact_bundle.py .artifacts/second \
+            --repository "$REPOSITORY_NAME" \
+            --source-commit "$SOURCE_COMMIT"
+
+      - name: Upload alpha.4 distribution candidate
+        uses: actions/upload-artifact@v4
+        with:
+          name: madp-v0.3.0-alpha.4-core-distribution-${{ env.SOURCE_COMMIT }}
+          path: .artifacts/first/
+          if-no-files-found: error
+          retention-days: 14
