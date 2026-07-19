@@ -3,21 +3,6 @@ name: Validate alpha.4 prerelease package
 on:
   pull_request:
     paths:
-      - 'README-v0.3.0-alpha.4.md'
-      - 'docs/releases/MADP-v0.3.0-alpha.4.md'
-      - 'docs/planning/DEC-MADP-ALPHA4-004.yaml'
-      - 'docs/planning/MADP-v0.3.0-alpha.4-prerelease-status.yaml'
-      - 'schemas/v0.3.0-alpha.4/**'
-      - 'scripts/generate_alpha4_prerelease_package.py'
-      - 'scripts/check_alpha4_prerelease_package.py'
-      - 'tests/v0.3.0-alpha.4/test_prerelease_package.py'
-      - '.github/workflows/validate-alpha4-prerelease.yml'
-  push:
-    paths:
-      - 'README-v0.3.0-alpha.4.md'
-      - 'docs/releases/MADP-v0.3.0-alpha.4.md'
-      - 'docs/planning/DEC-MADP-ALPHA4-004.yaml'
-      - 'docs/planning/MADP-v0.3.0-alpha.4-prerelease-status.yaml'
       - 'schemas/v0.3.0-alpha.4/**'
       - 'scripts/generate_alpha4_prerelease_package.py'
       - 'scripts/check_alpha4_prerelease_package.py'
@@ -32,17 +17,16 @@ jobs:
   validate-alpha4-prerelease:
     runs-on: ubuntu-24.04
     env:
-      SOURCE_COMMIT: ${{ github.event.pull_request.head.sha || github.sha }}
+      SOURCE_COMMIT: 3333c66b8b9873581af3f621615a7e1f7fc20e0a
       REPOSITORY_NAME: ${{ github.repository }}
     steps:
-      - name: Check out exact source commit
+      - name: Check out immutable published source
         uses: actions/checkout@v6
         with:
           ref: ${{ env.SOURCE_COMMIT }}
           fetch-depth: 1
 
-      - name: Set up Python
-        uses: actions/setup-python@v6
+      - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
 
@@ -81,11 +65,3 @@ jobs:
           python scripts/check_alpha4_prerelease_package.py .artifacts/second \
             --repository "$REPOSITORY_NAME" \
             --source-commit "$SOURCE_COMMIT"
-
-      - name: Upload alpha.4 prerelease candidate
-        uses: actions/upload-artifact@v4
-        with:
-          name: madp-v0.3.0-alpha.4-prerelease-candidate-${{ env.SOURCE_COMMIT }}
-          path: .artifacts/first/
-          if-no-files-found: error
-          retention-days: 14
