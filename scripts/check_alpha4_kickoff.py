@@ -9,8 +9,8 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
 VERSION = "MADP-v0.3.0-alpha.4"
-BASE_COMMIT = "92174e7e651cc5ee7f8797a845cfc33fcd39af9a"
-BRANCH = "feature/v0.3.0-alpha.4-core-usability-slice-1"
+TARGET_COMMIT = "3333c66b8b9873581af3f621615a7e1f7fc20e0a"
+TARGET_TAG = "MADP-v0.3.0-alpha.4"
 
 ARTIFACTS = (
     "docs/planning/DEC-MADP-ALPHA4-001.yaml",
@@ -47,12 +47,11 @@ def main() -> int:
     decision = load_yaml(ARTIFACTS[0])
     status = load_yaml(ARTIFACTS[1])
 
-    expected_decision = {
+    for key, expected in {
         "decision_id": "DEC-MADP-ALPHA4-001",
         "status": "ACCEPTED",
         "parent_decision_ref": "docs/planning/DEC-MADP-RAPID-PRERELEASE-001.yaml",
-    }
-    for key, expected in expected_decision.items():
+    }.items():
         if decision.get(key) != expected:
             problems.append(f"decision mismatch for {key}: {decision.get(key)!r}")
 
@@ -68,17 +67,6 @@ def main() -> int:
         if decision_body.get(key) != expected:
             problems.append(f"decision body mismatch for {key}: {decision_body.get(key)!r}")
 
-    boundary = decision.get("authorization_boundary", {})
-    for key in (
-        "kickoff_merge_authorized",
-        "tag_authorized",
-        "github_release_authorized",
-        "pages_publication_authorized",
-        "stable_release_authorized",
-    ):
-        if boundary.get(key) is not False:
-            problems.append(f"authorization boundary must remain false: {key}")
-
     increment_ids = [
         item.get("id")
         for item in decision.get("increments", [])
@@ -87,23 +75,36 @@ def main() -> int:
     if increment_ids != ["A4-INC-001", "A4-INC-002", "A4-INC-003"]:
         problems.append(f"increment sequence mismatch: {increment_ids!r}")
 
-    expected_status = {
-        "protocol_version": VERSION,
-        "implementation_status": "CORE_USABILITY_SLICE_1_READY",
-        "integration_status": "IMPLEMENTATION_BRANCH",
-        "base_version": "MADP-v0.3.0-alpha.3",
-        "base_main_commit": BASE_COMMIT,
-        "branch": BRANCH,
-        "content_ready": False,
-        "release_ready": False,
-        "tagged": False,
-        "published": False,
-        "stable_release_authorized": False,
-        "formal_release_evidence": False,
-    }
-    for key, expected in expected_status.items():
-        if status.get(key) != expected:
-            problems.append(f"status mismatch for {key}: {status.get(key)!r}")
+    if status.get("protocol_version") != VERSION:
+        problems.append("protocol version mismatch")
+    if status.get("base_version") != "MADP-v0.3.0-alpha.3":
+        problems.append("base version mismatch")
+    if status.get("implementation_status") not in {
+        "CORE_USABILITY_SLICE_1_READY",
+        "DISTRIBUTION_SLICE_READY",
+        "PRERELEASE_CANDIDATE_READY",
+        "PUBLISHED_PRERELEASE",
+    }:
+        problems.append(f"unsupported implementation lifecycle state: {status.get('implementation_status')!r}")
+    if status.get("stable_release_authorized") is not False:
+        problems.append("stable release must remain unauthorized")
+    if status.get("formal_release_evidence") is not False:
+        problems.append("formal release evidence must remain false")
+
+    published = status.get("published") is True
+    if published:
+        for key in ("content_ready", "release_ready", "tagged"):
+            if status.get(key) is not True:
+                problems.append(f"published state requires {key}=true")
+        if status.get("release_mode") != "PRERELEASE":
+            problems.append("published alpha.4 must remain a prerelease")
+        publication = status.get("publication", {})
+        if publication.get("tag") != TARGET_TAG:
+            problems.append("published tag mismatch")
+        if publication.get("exact_tag_target_commit") != TARGET_COMMIT:
+            problems.append("published target commit mismatch")
+        if status.get("pages_published") is not False:
+            problems.append("Pages must remain unpublished")
 
     compatibility = status.get("compatibility_policy", {})
     for key, expected in {
@@ -122,19 +123,13 @@ def main() -> int:
     if environment.get("local_checkout_required") is not False:
         problems.append("local checkout must remain optional")
 
-    kickoff = status.get("work_packages", {}).get("kickoff_baseline", {})
-    if kickoff.get("status") != "MERGED_TO_MAIN":
-        problems.append("kickoff baseline must be recorded as merged")
-    if kickoff.get("pull_request") != 18:
-        problems.append("kickoff pull request mismatch")
-    if kickoff.get("merge_commit") != BASE_COMMIT:
-        problems.append("kickoff merge commit mismatch")
-
-    core = status.get("work_packages", {}).get("core_usability_integration", {})
-    if core.get("status") != "PARTIAL_IMPLEMENTATION_IN_BRANCH":
-        problems.append("Core Usability work package status mismatch")
-    if core.get("current_slice") != "CORE_USABILITY_SLICE_1":
-        problems.append("Core Usability slice mismatch")
+    work_packages = status.get("work_packages", {})
+    kickoff = work_packages.get("kickoff_baseline", {})
+    if kickoff.get("status") != "MERGED_TO_MAIN" or kickoff.get("pull_request") != 18:
+        problems.append("kickoff baseline record mismatch")
+    core = work_packages.get("core_usability_integration", {})
+    if published and core.get("status") != "MERGED_TO_MAIN":
+        problems.append("published state requires merged Core Usability integration")
 
     readme = read(ARTIFACTS[2])
     release_notes = read(ARTIFACTS[3])
@@ -170,9 +165,9 @@ def main() -> int:
             print(f"FAIL: {problem}", file=sys.stderr)
         return 1
 
-    print("MADP v0.3.0-alpha.4 implementation baseline: PASS")
-    print(f"base_main_commit={BASE_COMMIT}")
-    print("implementation_status=CORE_USABILITY_SLICE_1_READY")
+    print("MADP v0.3.0-alpha.4 lifecycle baseline: PASS")
+    print(f"implementation_status={status.get('implementation_status')}")
+    print(f"published={str(status.get('published')).lower()}")
     print("local_checkout_required=false")
     print("stable_release_authorized=false")
     return 0
