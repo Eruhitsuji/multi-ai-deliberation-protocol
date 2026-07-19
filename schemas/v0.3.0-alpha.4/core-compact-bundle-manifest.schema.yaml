@@ -1,0 +1,113 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: urn:madp:schema:core-distribution-bundle-manifest:0.3.0-alpha.4
+title: MADP v0.3.0-alpha.4 Core Distribution Bundle Manifest
+type: object
+additionalProperties: false
+required:
+  - bundle_version
+  - protocol_version
+  - compatibility_base
+  - repository
+  - source_commit
+  - status
+  - formal_release_evidence
+  - proves_model_ingestion
+  - external_action_authorization
+  - content_format
+  - bundle_file
+  - bundle_sha256
+  - bundle_bytes
+  - supported_load_profiles
+  - loader_path
+  - loader_sha256
+  - loader_inventory_digests
+  - source_count
+  - source_inventory_sha256
+  - source_files
+properties:
+  bundle_version:
+    const: MADP-CORE-DISTRIBUTION-BUNDLE-v1
+  protocol_version:
+    const: MADP-v0.3.0-alpha.4
+  compatibility_base:
+    const: MADP-v0.3.0-alpha.3
+  repository:
+    type: string
+    pattern: ^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$
+  source_commit:
+    type: string
+    pattern: ^[0-9a-f]{40}$
+  status:
+    const: PRERELEASE_DISTRIBUTION_CANDIDATE
+  formal_release_evidence:
+    const: false
+  proves_model_ingestion:
+    const: false
+  external_action_authorization:
+    const: false
+  content_format:
+    const: MADP-COMPACT-BUNDLE-MD-v2
+  bundle_file:
+    const: MADP-v0.3.0-alpha.4-core-distribution.md
+  bundle_sha256:
+    type: string
+    pattern: ^[0-9a-f]{64}$
+  bundle_bytes:
+    type: integer
+    minimum: 1
+  supported_load_profiles:
+    const: [QUICK, VERIFIED]
+  loader_path:
+    const: bootstrap/alpha4/load-protocol-from-github.md
+  loader_sha256:
+    type: string
+    pattern: ^[0-9a-f]{64}$
+  loader_inventory_digests:
+    type: object
+    additionalProperties: false
+    required: [QUICK, VERIFIED]
+    properties:
+      QUICK:
+        type: string
+        pattern: ^[0-9a-f]{64}$
+      VERIFIED:
+        type: string
+        pattern: ^[0-9a-f]{64}$
+  source_count:
+    const: 13
+  source_inventory_sha256:
+    type: string
+    pattern: ^[0-9a-f]{64}$
+  source_files:
+    type: array
+    minItems: 13
+    maxItems: 13
+    items:
+      type: object
+      additionalProperties: false
+      required: [path, role, sha256, bytes]
+      properties:
+        path:
+          type: string
+          minLength: 1
+        role:
+          enum:
+            - ALPHA4_README
+            - BASE_PROTOCOL
+            - BASE_GLOSSARY
+            - COMMAND_REGISTRY
+            - BASE_DELIBERATION_SCHEMA
+            - ALPHA4_EXTENSION
+            - WORKFLOW_MACRO_PROFILE
+            - WORKFLOW_MACRO_REGISTRY
+            - CORE_USABILITY_SCHEMA
+            - PROTOCOL_LOAD_REPORT_SCHEMA
+            - PROTOCOL_LOADER
+            - QUICK_START
+            - VERIFIED_START
+        sha256:
+          type: string
+          pattern: ^[0-9a-f]{64}$
+        bytes:
+          type: integer
+          minimum: 1
