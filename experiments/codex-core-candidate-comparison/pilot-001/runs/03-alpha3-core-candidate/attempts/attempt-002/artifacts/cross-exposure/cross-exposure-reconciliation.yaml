@@ -1,0 +1,84 @@
+reconciliation_version: MADP-CROSS-EXPOSURE-RECONCILIATION-v1
+experiment_id: EXP-CODEX-PILOT-001
+attempt_id: CORE-ATTEMPT-002
+workflow: ALPHA3_CORE_CANDIDATE
+basis:
+  - RETROSPECTIVE_SEND_ATTESTATION
+  - GEMINI_UI_RESPONSE_INSPECTION
+cross_exposure_authorized: true
+cross_exposure_started: true
+phase4c_authorized: false
+comparison_performed: false
+decision_created: false
+reconciled_at_utc: 2026-07-18T16:15:21Z
+reconciled_time_basis: OPERATOR_RECONCILIATION_ATTESTATION_RECEIPT
+
+send_reconciliation:
+  - participant_id: CLAUDE-B
+    realtime_send_confirmation_recorded: false
+    retrospective_human_attestation_received: true
+    cross_exposure_packet_actually_sent: true
+    send_status: SENT
+    sent_at_utc: null
+    send_time_status: UNKNOWN
+    send_confirmation_status: RETROSPECTIVE_HUMAN_ATTESTATION
+    same_existing_chat_confirmed_by_human: true
+    new_chat_created: false
+    attachment_count: 5
+    attachments_sent_in_one_message: true
+    attachment_order_confirmed_by_human: true
+    external_web_research_enabled: false
+    additional_information_sent: false
+    exact_sent_at_utc_available: false
+    send_time_inferred: false
+  - participant_id: GEMINI-B
+    realtime_send_confirmation_recorded: false
+    retrospective_human_attestation_received: true
+    cross_exposure_packet_actually_sent: true
+    send_status: SENT
+    sent_at_utc: null
+    send_time_status: UNKNOWN
+    send_confirmation_status: RETROSPECTIVE_HUMAN_ATTESTATION
+    same_existing_chat_confirmed_by_human: true
+    new_chat_created: false
+    attachment_count: 5
+    attachments_sent_in_one_message: true
+    attachment_order_confirmed_by_human: true
+    external_web_research_enabled: false
+    additional_information_sent: false
+    exact_sent_at_utc_available: false
+    send_time_inferred: false
+
+gemini_response_reconciliation:
+  saved_raw_ref: attempts/attempt-002/raw/cross-exposure-GEMINI-B.md
+  saved_raw_sha256: cc651d90c59fbedb1c2c40edee050d8b51d6817ee5e9c723c0ea48d7422c5482
+  saved_raw_bytes: 24741
+  saved_raw_preserved: true
+  duplicate_of_initial_response: true
+  matching_initial_response: true
+  metadata_conflict:
+    prior_participant_outputs_seen: false
+  same_existing_chat_reopened: true
+  new_message_sent_during_inspection: false
+  response_after_cross_exposure_packet_present: true
+  response_is_identical_to_initial_response: false
+  different_cross_exposure_response_present: true
+  response_regenerated: false
+  ui_inspection_result: DIFFERENT_RESPONSE_PRESENT
+  disposition: UI_RECAPTURE_CANONICALIZED
+  response_status: CAPTURED_AFTER_RECONCILIATION
+  original_capture_status: SUBMISSION_CONTENT_MISMATCH
+  original_raw_response_ref: attempts/attempt-002/raw/cross-exposure-GEMINI-B.md
+  original_raw_response_preserved: true
+  canonical_raw_response_ref: attempts/attempt-002/raw/cross-exposure-GEMINI-B-ui-recapture.md
+  canonical_raw_response_sha256: 9251f0715198f992988392e78d2077d958e4f5875cff15e67277253500c2802e
+  canonical_raw_response_bytes: 31008
+  canonical_capture_basis: RETROSPECTIVE_UI_RECAPTURE
+  new_model_response_generated: false
+  new_prompt_sent: false
+  recaptured_at_utc: 2026-07-18T16:15:21Z
+  recaptured_time_basis: OPERATOR_RECAPTURE_SUBMISSION_RECEIPT
+
+valid_cross_exposure_response_count: 3
+ready_for_structured_comparison: true
+human_disposition_required: false

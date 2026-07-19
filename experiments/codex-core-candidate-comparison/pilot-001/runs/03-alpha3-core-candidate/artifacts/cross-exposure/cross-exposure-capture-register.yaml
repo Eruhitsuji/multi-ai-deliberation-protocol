@@ -1,0 +1,63 @@
+capture_register_version: MADP-CROSS-EXPOSURE-CAPTURE-REGISTER-v1
+experiment_id: EXP-CODEX-PILOT-001
+workflow: ALPHA3_CORE_CANDIDATE
+cross_exposure_common_information_set_hash: 7c7a642de7f16640b17a35bf78b8c7fd9ede199fb30ec963032971c62fb5fbf7
+cross_exposure_authorized: false
+cross_exposure_started: false
+participants:
+  - participant_id: CHATGPT-A
+    expected_ui_model_label: GPT-5.6 Sol
+    chat_context_id: CHAT-CORE-CHATGPT-001
+    rendered_prompt_ref: artifacts/cross-exposure/rendered-prompt-CHATGPT-A.md
+    rendered_prompt_sha256: 3f94b426a8e14be0cc06628294a326d4df0f7129162cb2aac29c5b0efc9ce3a6
+    attached_initial_response_refs:
+      - raw/initial-response-CHATGPT-A.md
+      - raw/initial-response-CLAUDE-A.md
+      - raw/initial-response-GEMINI-A.md
+    newly_exposed_response_refs:
+      - raw/initial-response-CLAUDE-A.md
+      - raw/initial-response-GEMINI-A.md
+    send_status: NOT_SENT
+    sent_at_utc: null
+    response_status: NOT_RECEIVED
+    received_at_utc: null
+    raw_response_ref: raw/cross-exposure-CHATGPT-A.md
+    raw_response_sha256: null
+
+  - participant_id: CLAUDE-A
+    expected_ui_model_label: Opus 4.8
+    chat_context_id: CHAT-CORE-CLAUDE-001
+    rendered_prompt_ref: artifacts/cross-exposure/rendered-prompt-CLAUDE-A.md
+    rendered_prompt_sha256: 7ad07e2c47d816792b59a4acb949caef787ab42415bb602b3045da97126020d0
+    attached_initial_response_refs:
+      - raw/initial-response-CHATGPT-A.md
+      - raw/initial-response-CLAUDE-A.md
+      - raw/initial-response-GEMINI-A.md
+    newly_exposed_response_refs:
+      - raw/initial-response-CHATGPT-A.md
+      - raw/initial-response-GEMINI-A.md
+    send_status: NOT_SENT
+    sent_at_utc: null
+    response_status: NOT_RECEIVED
+    received_at_utc: null
+    raw_response_ref: raw/cross-exposure-CLAUDE-A.md
+    raw_response_sha256: null
+
+  - participant_id: GEMINI-A
+    expected_ui_model_label: 3.1 Pro
+    chat_context_id: CHAT-CORE-GEMINI-001
+    rendered_prompt_ref: artifacts/cross-exposure/rendered-prompt-GEMINI-A.md
+    rendered_prompt_sha256: cdc7be82e2e72546084cce7e1ff35ac21379c35faa168fb8a02a29586b001dd2
+    attached_initial_response_refs:
+      - raw/initial-response-CHATGPT-A.md
+      - raw/initial-response-CLAUDE-A.md
+      - raw/initial-response-GEMINI-A.md
+    newly_exposed_response_refs:
+      - raw/initial-response-CHATGPT-A.md
+      - raw/initial-response-CLAUDE-A.md
+    send_status: NOT_SENT
+    sent_at_utc: null
+    response_status: NOT_RECEIVED
+    received_at_utc: null
+    raw_response_ref: raw/cross-exposure-GEMINI-A.md
+    raw_response_sha256: null

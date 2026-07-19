@@ -1,0 +1,46 @@
+decision_record_version: MADP-HUMAN-DECISION-DRAFT-v1
+experiment_id: EXP-CODEX-PILOT-001
+attempt_id: CORE-ATTEMPT-002
+workflow: ALPHA3_CORE_CANDIDATE
+status: PENDING_HUMAN_FINAL_AUTHORITY
+authority: HUMAN_FINAL_AUTHORITY_REQUIRED
+
+evidence:
+  source_inventory_ref: artifacts/structured-comparison/source-inventory.yaml
+  initial_claim_ledger_ref: artifacts/structured-comparison/initial-claim-ledger.yaml
+  initial_convergence_assessment_ref: artifacts/structured-comparison/initial-convergence-assessment.yaml
+  participant_change_ledger_ref: artifacts/structured-comparison/participant-change-ledger.yaml
+  acceptance_matrix_ref: artifacts/structured-comparison/acceptance-criteria-matrix.md
+  dissent_register_ref: artifacts/structured-comparison/dissent-register.yaml
+  evidence_gap_register_ref: artifacts/structured-comparison/evidence-gap-register.yaml
+  candidate_options_ref: artifacts/structured-comparison/candidate-work-package-options.md
+
+preliminary_findings:
+  blind_first_round_status: VALID
+  convergence_classification: MIXED
+  blind_multi_group_convergence_cluster_count: 2
+  common_source_mandated_cluster_count: 4
+  material_dissent_count: 4
+  unresolved_material_dissent_count: 3
+  unresolved_blocking_evidence_gap_count: 2
+  reconciliation_limitations_present: true
+
+human_decision:
+  selected_option_id: null
+  modifications: []
+  dissent_dispositions: []
+  additional_evidence_required: null
+  final_blind_first_round_status: null
+  final_convergence_classification: null
+  task_completed: null
+  core_conformance: NOT_EVALUATED
+  decision_rationale: null
+  decided_by: null
+  decided_at_utc: null
+
+boundaries:
+  external_action_authorized: false
+  repository_modification_authorized: false
+  release_authorized: false
+  formal_release_evidence: false
+  alpha4_authorized: false

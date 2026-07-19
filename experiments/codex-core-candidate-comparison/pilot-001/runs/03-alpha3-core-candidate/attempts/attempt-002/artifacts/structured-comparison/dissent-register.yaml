@@ -1,0 +1,101 @@
+dissent_register_version: MADP-DISSENT-REGISTER-v1
+attempt_id: CORE-ATTEMPT-002
+
+dissents:
+  - dissent_id: DS-001
+    topic: First work package ordering
+    material: true
+    positions:
+      - participant_id: CHATGPT-B
+        position: Comparison-first; field-trial-first is conditional if readiness/time constraints are confirmed.
+        phase: CROSS_EXPOSURE
+        source_refs:
+          - attempts/attempt-002/raw/cross-exposure-CHATGPT-B.md#L477-L489
+          - attempts/attempt-002/raw/cross-exposure-CHATGPT-B.md#L972-L980
+      - participant_id: CLAUDE-B
+        position: Field-trial-first, conditional on entry-readiness; switch to comparison-first if field-trial entry is not short-term satisfiable.
+        phase: CROSS_EXPOSURE
+        source_refs:
+          - attempts/attempt-002/raw/cross-exposure-CLAUDE-B.md#L343-L356
+          - attempts/attempt-002/raw/cross-exposure-CLAUDE-B.md#L258-L265
+      - participant_id: GEMINI-B
+        position: Comparison-first with isolated artifact layout; switch to field-trial-first if artifact isolation is infeasible and human prioritizes A3-REL-001/public bootstrap divergence.
+        phase: CROSS_EXPOSURE
+        source_refs:
+          - attempts/attempt-002/raw/cross-exposure-GEMINI-B-ui-recapture.md#L315-L320
+          - attempts/attempt-002/raw/cross-exposure-GEMINI-B-ui-recapture.md#L495-L499
+    current_disposition: UNRESOLVED
+    resolution_basis_refs: []
+    human_disposition_required: true
+  - dissent_id: DS-002
+    topic: Formal field trial execution profile
+    material: true
+    positions:
+      - participant_id: GEMINI-B
+        position: Field trial should use the workflow/profile selected after comparison.
+        phase: INITIAL
+        source_refs:
+          - attempts/attempt-002/raw/initial-response-GEMINI-B.md#L263-L273
+      - participant_id: CLAUDE-B
+        position: Field trial should use the release-target configuration, not an experimental profile marked formal_release_evidence false.
+        phase: CROSS_EXPOSURE
+        source_refs:
+          - attempts/attempt-002/raw/cross-exposure-CLAUDE-B.md#L116-L130
+          - attempts/attempt-002/raw/cross-exposure-CLAUDE-B.md#L272-L278
+          - attempts/attempt-002/raw/cross-exposure-CLAUDE-B.md#L383-L390
+      - participant_id: CHATGPT-B
+        position: Comparison may inform field-trial planning but must not automatically authorize or select a formal field-trial profile.
+        phase: CROSS_EXPOSURE
+        source_refs:
+          - attempts/attempt-002/raw/cross-exposure-CHATGPT-B.md#L249-L257
+          - attempts/attempt-002/raw/cross-exposure-CHATGPT-B.md#L399-L403
+    current_disposition: UNRESOLVED
+    resolution_basis_refs: []
+    human_disposition_required: true
+  - dissent_id: DS-003
+    topic: Alpha.4 disposition label
+    material: true
+    positions:
+      - participant_id: CHATGPT-B
+        position: CONSIDER_AFTER_COMPARISON, while maintaining alpha4_authorized false.
+        phase: CROSS_EXPOSURE
+        source_refs:
+          - attempts/attempt-002/raw/cross-exposure-CHATGPT-B.md#L910-L943
+      - participant_id: CLAUDE-B
+        position: CONSIDER_AFTER_COMPARISON, while acknowledging KEEP_DEFERRED as a conservative alternative.
+        phase: CROSS_EXPOSURE
+        source_refs:
+          - attempts/attempt-002/raw/cross-exposure-CLAUDE-B.md#L459-L469
+      - participant_id: GEMINI-B
+        position: Changed from KEEP_DEFERRED to CONSIDER_AFTER_COMPARISON in the revised proposal.
+        phase: CROSS_EXPOSURE
+        source_refs:
+          - attempts/attempt-002/raw/cross-exposure-GEMINI-B-ui-recapture.md#L475-L480
+    current_disposition: RETAINED_AS_ALTERNATIVE
+    resolution_basis_refs:
+      - experiments/codex-core-candidate-comparison/pilot-001/task/prompt.md#L151-L161
+    human_disposition_required: true
+  - dissent_id: DS-004
+    topic: Evidence readiness versus release progress as ordering criterion
+    material: true
+    positions:
+      - participant_id: CHATGPT-B
+        position: Evidence integrity and avoiding premature optimization favor comparison-first unless field-trial readiness/time constraints override.
+        phase: CROSS_EXPOSURE
+        source_refs:
+          - attempts/attempt-002/raw/cross-exposure-CHATGPT-B.md#L477-L489
+      - participant_id: CLAUDE-B
+        position: A3-REL-001 release evidence is not invalidated by comparison results and can be collected first if ready.
+        phase: CROSS_EXPOSURE
+        source_refs:
+          - attempts/attempt-002/raw/cross-exposure-CLAUDE-B.md#L149-L151
+          - attempts/attempt-002/raw/cross-exposure-CLAUDE-B.md#L343-L356
+      - participant_id: GEMINI-B
+        position: Comparison-first is maintained when artifact isolation is assured and workflow-selection evidence is prioritized.
+        phase: CROSS_EXPOSURE
+        source_refs:
+          - attempts/attempt-002/raw/cross-exposure-GEMINI-B-ui-recapture.md#L315-L320
+          - attempts/attempt-002/raw/cross-exposure-GEMINI-B-ui-recapture.md#L495-L499
+    current_disposition: UNRESOLVED
+    resolution_basis_refs: []
+    human_disposition_required: true

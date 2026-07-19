@@ -1,0 +1,24 @@
+plan_version: MADP-EXPERIMENT-CORE-RUN-UPDATE-PLAN-v1
+experiment_id: EXP-CODEX-PILOT-001
+target_workflow: ALPHA3_CORE_CANDIDATE
+canonical_attempt: CORE-ATTEMPT-002
+pre_update_experiment_sha256: 17928697742e6cd22bb0d3364d799911b2cd6bcf7826334922286303e6518fa1
+pre_update_experiment_bytes: 5965
+preserve:
+  experiment_status: true
+  decision_ref: true
+  formal_release_evidence_false: true
+  task: true
+  non_target_runs: true
+  conclusion: true
+  alpha4_authorized_false: true
+update_only:
+- runs[workflow=ALPHA3_CORE_CANDIDATE]
+planned_core_run_values:
+  tested_commit: 2a29ddfebe4d9664d3a4043a01d8728fa525d049
+  blind_first_round_status: VALID
+  convergence_classification: MIXED
+  core_conformance: DEGRADED
+  human_actions: 33
+  completion_time_seconds: TO_BE_SET_AFTER_PRIMARY_VALIDATION
+  decision_record_ref: experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/structured-comparison/human-decision-record.yaml

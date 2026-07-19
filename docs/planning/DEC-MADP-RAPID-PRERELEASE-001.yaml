@@ -1,0 +1,117 @@
+decision_record_version: MADP-PLANNING-DECISION-v1
+decision_id: DEC-MADP-RAPID-PRERELEASE-001
+status: ACCEPTED
+authority: HUMAN_FINAL_AUTHORITY
+accepted_at_utc: '2026-07-19T03:52:18Z'
+decision:
+  rapid_prerelease_policy_adopted: true
+  policy_id: MADP-RAPID-PRERELEASE-v1
+  development_model: RELEASE_EARLY_FIX_FORWARD
+  primary_user_scope: SINGLE_PRIMARY_USER
+  next_prerelease_line: v0.3.0-alpha.4
+  release_early_fix_forward: true
+  four_workflow_pilot_terminated: true
+  stable_release_authorized: false
+  formal_release_evidence: false
+termination:
+  experiment_id: EXP-CODEX-PILOT-001
+  status: TERMINATED_BY_HUMAN_FINAL_AUTHORITY
+  termination_class: RESOURCE_CONSTRAINT_AND_PRIORITY_CHANGE
+  termination_reason:
+    primary: RESOURCE_AND_WORKFLOW_COST
+    factors:
+    - generated_ai_usage_cost
+    - human_operating_time
+    - long_waiting_time
+    - interference_with_other_work
+    - low_incremental_value_for_current_single-user_operation
+  completed_workflows:
+  - ALPHA3_CORE_CANDIDATE
+  cancelled_workflows:
+  - MARKDOWN_VALIDATOR
+  - MANUAL_MULTI_AI
+  - STANDARD_ALPHA3
+  completed_workflow_count: 1
+  preregistered_workflow_count: 4
+  full_comparison_completed: false
+  comparative_conclusion_authorized: false
+  pilot_completed: false
+  not_experiment_failure: true
+core_candidate_result_retained:
+  task_completed: true
+  blind_first_round_status: VALID
+  convergence_classification: MIXED
+  core_conformance: DEGRADED
+  selected_option_id: OPTION-A
+  evidence_preserved: true
+unsupported_claims:
+- superiority_between_four_workflows
+- relative_human_burden_between_four_workflows
+- relative_completion_time_between_four_workflows
+- comparative_authority_error_rate
+- comparative_stale_revision_error_rate
+- four-workflow-based-alpha4-recommendation
+privacy:
+  public_redaction_completed: true
+  public_identifier: HFA-001
+  official_repository_identifier: Eruhitsuji
+  publish_private_original: false
+  publish_identifier_mapping: false
+known_local_issue:
+  issue: JSONSCHEMA_REF_RESOLUTION_ERROR
+  investigation_status: DEFERRED
+  blocks_experiment_termination: false
+  blocks_local_record_preservation: false
+  blocks_prerelease_when_github_ci_passes: false
+prerelease_hard_gates:
+- no_private_or_sensitive_information
+- no_private_identifier_mapping
+- git_diff_check_pass
+- yaml_and_required_artifacts_parseable
+- required_github_actions_ci_pass
+- generated_distribution_artifact_available
+- release_notes_include_known_limitations
+- rollback_or_previous_version_available
+non_blocking_for_prerelease:
+- completion_of_four-workflow-comparison
+- A3-REL-001_completion
+- A3-REL-005_completion
+- multi-participant-formal-field-trial
+- complete-usability-signoff
+- complete-local-validator-matrix
+- zero-known-noncritical-defects
+- formal-release-evidence
+stable_release_gates_retained:
+- A3-REL-001
+- A3-REL-005
+experiment_result:
+  alpha4_authorized: false
+  formal_release_evidence: false
+human_development_authorization:
+  alpha4_implementation_authorized: true
+  alpha4_prerelease_authorized: true
+  authorization_basis: HUMAN_PRIORITY_AND_RELEASE_POLICY_DECISION
+  authorization_derived_from_comparison_experiment: false
+  stable_release_authorized: false
+versioning:
+  next_prerelease_line: v0.3.0-alpha.4
+  subsequent_short_cycle_examples:
+  - v0.3.0-alpha.5
+  - v0.3.0-alpha.6
+  tag_or_github_release_created: false
+boundaries:
+  git_commit_authorized: false
+  push_authorized: false
+  pull_request_authorized: false
+  merge_authorized: false
+  tag_authorized: false
+  github_release_authorized: false
+  pages_publication_authorized: false
+  stable_release_authorized: false
+  formal_release_evidence: false
+rationale:
+- reduce_generated_ai_usage
+- reduce_human_operating_burden
+- reduce_waiting_time
+- allow_parallel_work
+- prioritize_real_usage_feedback

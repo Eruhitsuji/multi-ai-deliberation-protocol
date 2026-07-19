@@ -1,0 +1,155 @@
+capture_register_version: MADP-CROSS-EXPOSURE-CAPTURE-REGISTER-v1
+experiment_id: EXP-CODEX-PILOT-001
+attempt_id: CORE-ATTEMPT-002
+workflow: ALPHA3_CORE_CANDIDATE
+cross_exposure_common_information_set_hash: 3e9978ad568c4a16032b9353293a3887b935bc9117e6c18ae6adee30580d537e
+cross_exposure_authorized: true
+cross_exposure_started: true
+cross_exposure_started_at_utc: 2026-07-18T15:32:41Z
+phase4c_authorized: false
+comparison_performed: false
+decision_created: false
+valid_cross_exposure_response_count: 3
+ready_for_structured_comparison: true
+
+participants:
+  - participant_id: CHATGPT-B
+    expected_ui_model_label: GPT-5.6 Sol
+    chat_context_id: CHAT-CORE-CHATGPT-002
+    continuity_result: PASS
+    rendered_prompt_ref: attempts/attempt-002/artifacts/cross-exposure/rendered-prompt-CHATGPT-B.md
+    rendered_prompt_sha256: b36f8c189151b286157dd268f8e25826582a94e02ee5dce4e28ad2e3b0e94539
+    attached_initial_response_refs:
+      - attempts/attempt-002/raw/initial-response-CHATGPT-B.md
+      - attempts/attempt-002/raw/initial-response-CLAUDE-B.md
+      - attempts/attempt-002/raw/initial-response-GEMINI-B.md
+    newly_exposed_response_refs:
+      - attempts/attempt-002/raw/initial-response-CLAUDE-B.md
+      - attempts/attempt-002/raw/initial-response-GEMINI-B.md
+    send_status: SENT
+    sent_at_utc: 2026-07-18T15:32:41Z
+    send_time_basis: OPERATOR_SEND_CONFIRMATION_RECEIPT
+    send_action_number:
+      cumulative: 23
+      attempt_local: 11
+    send_confirmation_action_number:
+      cumulative: 24
+      attempt_local: 12
+    ui_model_label_confirmed_by_human: GPT-5.6 Sol
+    same_existing_chat_used: true
+    new_chat_created: false
+    external_web_research_enabled: false
+    additional_information_sent: false
+    attachments_confirmed_by_human:
+      - task/prompt.md
+      - MADP-v0.3.0-alpha.3-core-compact.md
+      - initial-response-CHATGPT-B.md
+      - initial-response-CLAUDE-B.md
+      - initial-response-GEMINI-B.md
+    response_status: CAPTURED
+    received_at_utc: 2026-07-18T15:40:41Z
+    receive_time_basis: OPERATOR_RAW_SUBMISSION_RECEIPT
+    raw_submission_action_number:
+      cumulative: 25
+      attempt_local: 13
+    model_label_confirmed_by_human_at_capture: GPT-5.6 Sol
+    other_participant_outputs_seen_before_response_capture: false
+    external_web_research_observed: false
+    raw_response_ref: attempts/attempt-002/raw/cross-exposure-CHATGPT-B.md
+    raw_response_sha256: 21600ecebc974cd8e9c1d561e3b6f9c4c2f046e850edb81dd0febb8f821c0ae5
+    raw_response_bytes: 48180
+
+  - participant_id: CLAUDE-B
+    expected_ui_model_label: Opus 4.8
+    chat_context_id: CHAT-CORE-CLAUDE-002
+    continuity_result: PASS
+    rendered_prompt_ref: attempts/attempt-002/artifacts/cross-exposure/rendered-prompt-CLAUDE-B.md
+    rendered_prompt_sha256: b747c673d31b22795725f86c4c9c329f01e5dfae0269b61e2c8aa56a720c3845
+    attached_initial_response_refs:
+      - attempts/attempt-002/raw/initial-response-CHATGPT-B.md
+      - attempts/attempt-002/raw/initial-response-CLAUDE-B.md
+      - attempts/attempt-002/raw/initial-response-GEMINI-B.md
+    newly_exposed_response_refs:
+      - attempts/attempt-002/raw/initial-response-CHATGPT-B.md
+      - attempts/attempt-002/raw/initial-response-GEMINI-B.md
+    send_status: SENT
+    sent_at_utc: null
+    send_confirmation_status: RETROSPECTIVE_HUMAN_ATTESTATION
+    send_time_status: UNKNOWN
+    same_existing_chat_confirmed_by_human: true
+    new_chat_created: false
+    attachment_count: 5
+    attachments_sent_in_one_message: true
+    attachment_order_confirmed_by_human: true
+    external_web_research_enabled: false
+    additional_information_sent: false
+    exact_sent_at_utc_available: false
+    send_time_inferred: false
+    response_status: CAPTURED
+    received_at_utc: 2026-07-18T15:49:39Z
+    receive_time_basis: OPERATOR_RAW_SUBMISSION_RECEIPT
+    raw_submission_action_number:
+      cumulative: 26
+      attempt_local: 14
+    model_label_confirmed_by_human_at_capture: Opus 4.8
+    other_participant_outputs_seen_before_response_capture: false
+    external_web_research_observed: false
+    raw_response_ref: attempts/attempt-002/raw/cross-exposure-CLAUDE-B.md
+    raw_response_sha256: 0de4538cc3e4810a50ee8324cb639fb6dc0053d6a26758a7cb4c4039430a5fa1
+    raw_response_bytes: 62298
+
+  - participant_id: GEMINI-B
+    expected_ui_model_label: 3.1 Pro
+    chat_context_id: CHAT-CORE-GEMINI-002
+    continuity_result: PASS
+    rendered_prompt_ref: attempts/attempt-002/artifacts/cross-exposure/rendered-prompt-GEMINI-B.md
+    rendered_prompt_sha256: b8e5311ff199b1960e5dbd586505d56af2bf7f1447b92126e6578ad087b97392
+    attached_initial_response_refs:
+      - attempts/attempt-002/raw/initial-response-CHATGPT-B.md
+      - attempts/attempt-002/raw/initial-response-CLAUDE-B.md
+      - attempts/attempt-002/raw/initial-response-GEMINI-B.md
+    newly_exposed_response_refs:
+      - attempts/attempt-002/raw/initial-response-CHATGPT-B.md
+      - attempts/attempt-002/raw/initial-response-CLAUDE-B.md
+    send_status: SENT
+    sent_at_utc: null
+    send_confirmation_status: RETROSPECTIVE_HUMAN_ATTESTATION
+    send_time_status: UNKNOWN
+    same_existing_chat_confirmed_by_human: true
+    new_chat_created: false
+    attachment_count: 5
+    attachments_sent_in_one_message: true
+    attachment_order_confirmed_by_human: true
+    external_web_research_enabled: false
+    additional_information_sent: false
+    exact_sent_at_utc_available: false
+    send_time_inferred: false
+    response_status: CAPTURED_AFTER_RECONCILIATION
+    received_at_utc: 2026-07-18T15:57:43Z
+    receive_time_basis: OPERATOR_RAW_SUBMISSION_RECEIPT
+    raw_submission_action_number:
+      cumulative: 27
+      attempt_local: 15
+    model_label_confirmed_by_human_at_capture: 3.1 Pro
+    other_participant_outputs_seen_before_response_capture: false
+    external_web_research_observed: false
+    expected_prior_participant_outputs_seen: true
+    response_self_reported_prior_participant_outputs_seen: false
+    cross_exposure_metadata_status: CONFLICT_RECORDED
+    raw_response_hash_duplicate_of: attempts/attempt-002/raw/initial-response-GEMINI-B.md
+    raw_response_ref: attempts/attempt-002/raw/cross-exposure-GEMINI-B.md
+    raw_response_sha256: cc651d90c59fbedb1c2c40edee050d8b51d6817ee5e9c723c0ea48d7422c5482
+    raw_response_bytes: 24741
+    original_capture_status: SUBMISSION_CONTENT_MISMATCH
+    original_raw_response_ref: attempts/attempt-002/raw/cross-exposure-GEMINI-B.md
+    original_raw_response_preserved: true
+    canonical_raw_response_ref: attempts/attempt-002/raw/cross-exposure-GEMINI-B-ui-recapture.md
+    canonical_raw_response_sha256: 9251f0715198f992988392e78d2077d958e4f5875cff15e67277253500c2802e
+    canonical_raw_response_bytes: 31008
+    canonical_capture_basis: RETROSPECTIVE_UI_RECAPTURE
+    new_model_response_generated: false
+    new_prompt_sent: false
+    recaptured_at_utc: 2026-07-18T16:15:21Z
+    recaptured_time_basis: OPERATOR_RECAPTURE_SUBMISSION_RECEIPT
+    ui_inspection_result: DIFFERENT_RESPONSE_PRESENT
+    disposition: UI_RECAPTURE_CANONICALIZED

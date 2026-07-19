@@ -1,0 +1,48 @@
+participants:
+  - participant_id: CHATGPT-B
+    service: ChatGPT
+    provider: OpenAI
+    model_label: GPT-5.6 Sol
+    chat_context_id: CHAT-CORE-CHATGPT-002
+    independence_group: IG-OPENAI-002
+    correlation_status: DISTINCT_CONTEXT_KNOWN
+    participation_mode: PROPOSE_ONLY
+    authority: NONE
+    initial_response_filename: raw/initial-response-CHATGPT-B.md
+    cross_exposure_filename: raw/cross-exposure-CHATGPT-B.md
+    new_chat_required: true
+    external_web_research_allowed: false
+    other_participant_outputs_visible_before_capture: false
+    prior_attempt_outputs_visible: false
+
+  - participant_id: CLAUDE-B
+    service: Claude
+    provider: Anthropic
+    model_label: Opus 4.8
+    chat_context_id: CHAT-CORE-CLAUDE-002
+    independence_group: IG-ANTHROPIC-002
+    correlation_status: DISTINCT_CONTEXT_KNOWN
+    participation_mode: PROPOSE_ONLY
+    authority: NONE
+    initial_response_filename: raw/initial-response-CLAUDE-B.md
+    cross_exposure_filename: raw/cross-exposure-CLAUDE-B.md
+    new_chat_required: true
+    external_web_research_allowed: false
+    other_participant_outputs_visible_before_capture: false
+    prior_attempt_outputs_visible: false
+
+  - participant_id: GEMINI-B
+    service: Gemini
+    provider: Google
+    model_label: 3.1 Pro
+    chat_context_id: CHAT-CORE-GEMINI-002
+    independence_group: IG-GOOGLE-002
+    correlation_status: DISTINCT_CONTEXT_KNOWN
+    participation_mode: PROPOSE_ONLY
+    authority: NONE
+    initial_response_filename: raw/initial-response-GEMINI-B.md
+    cross_exposure_filename: raw/cross-exposure-GEMINI-B.md
+    new_chat_required: true
+    external_web_research_allowed: false
+    other_participant_outputs_visible_before_capture: false
+    prior_attempt_outputs_visible: false

@@ -1,0 +1,49 @@
+reconciliation_version: MADP-CHAT-CONTINUITY-RECONCILIATION-v1
+experiment_id: EXP-CODEX-PILOT-001
+attempt_id: CORE-ATTEMPT-002
+workflow: ALPHA3_CORE_CANDIDATE
+basis: RETROSPECTIVE_HUMAN_REOPEN_ATTESTATION
+verified_at_utc: 2026-07-18T15:00:24Z
+verified_time_basis: OPERATOR_ATTESTATION_RECEIPT
+actual_chat_urls_recorded: false
+prior_attempt_outputs_seen: false
+cross_exposure_authorized: false
+cross_exposure_started: false
+chat_continuity_status: CONFIRMED
+ready_for_cross_exposure_packet_preparation: true
+participants:
+  - participant_id: CHATGPT-B
+    chat_context_id: CHAT-CORE-CHATGPT-002
+    original_chat_reopened: true
+    new_chat_created: false
+    initial_user_message_visible: true
+    initial_response_visible: true
+    ui_model_label_confirmed: GPT-5.6 Sol
+    history_or_bookmark_retained: true
+    other_participant_outputs_seen: false
+    message_sent_during_check: false
+    continuity_result: PASS
+
+  - participant_id: CLAUDE-B
+    chat_context_id: CHAT-CORE-CLAUDE-002
+    original_chat_reopened: true
+    new_chat_created: false
+    initial_user_message_visible: true
+    initial_response_visible: true
+    ui_model_label_confirmed: Opus 4.8
+    history_or_bookmark_retained: true
+    other_participant_outputs_seen: false
+    message_sent_during_check: false
+    continuity_result: PASS
+
+  - participant_id: GEMINI-B
+    chat_context_id: CHAT-CORE-GEMINI-002
+    original_chat_reopened: true
+    new_chat_created: false
+    initial_user_message_visible: true
+    initial_response_visible: true
+    ui_model_label_confirmed: 3.1 Pro
+    history_or_bookmark_retained: true
+    other_participant_outputs_seen: false
+    message_sent_during_check: false
+    continuity_result: PASS

@@ -1,0 +1,72 @@
+plan_id: ROLE-PLAN-CODEX-PILOT-001-CORE-ATTEMPT-002
+task:
+  task_id: TASK-CODEX-PILOT-001
+  title: Decide the next three MADP work packages and evidence gates
+  required_roles:
+    - FACILITATOR
+    - PROPOSER
+    - CRITIC
+    - EVIDENCE_REVIEWER
+    - RECORDER
+  blind_first_round_required: true
+  blind_initial_response_count: 3
+services:
+  - service_id: CHATGPT-B
+    provider: OpenAI
+    model_label: GPT-5.6 Sol
+    chat_context_id: CHAT-CORE-CHATGPT-002
+    independence_group: IG-OPENAI-002
+    availability: AVAILABLE
+    usage_preference: NORMAL
+    cost_mode: UNKNOWN
+    capabilities:
+      facilitation: true
+      generation: true
+      critique: true
+      evidence_review: true
+      recording: true
+      exact_file_reading: false
+      web_research: false
+      code_execution: false
+      long_context: true
+    known_correlations: []
+
+  - service_id: CLAUDE-B
+    provider: Anthropic
+    model_label: Opus 4.8
+    chat_context_id: CHAT-CORE-CLAUDE-002
+    independence_group: IG-ANTHROPIC-002
+    availability: AVAILABLE
+    usage_preference: NORMAL
+    cost_mode: UNKNOWN
+    capabilities:
+      facilitation: true
+      generation: true
+      critique: true
+      evidence_review: true
+      recording: true
+      exact_file_reading: false
+      web_research: false
+      code_execution: false
+      long_context: true
+    known_correlations: []
+
+  - service_id: GEMINI-B
+    provider: Google
+    model_label: 3.1 Pro
+    chat_context_id: CHAT-CORE-GEMINI-002
+    independence_group: IG-GOOGLE-002
+    availability: AVAILABLE
+    usage_preference: NORMAL
+    cost_mode: UNKNOWN
+    capabilities:
+      facilitation: true
+      generation: true
+      critique: true
+      evidence_review: true
+      recording: true
+      exact_file_reading: false
+      web_research: false
+      code_execution: false
+      long_context: true
+    known_correlations: []

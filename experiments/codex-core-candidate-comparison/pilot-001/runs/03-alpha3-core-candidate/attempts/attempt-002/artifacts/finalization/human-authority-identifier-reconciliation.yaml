@@ -1,0 +1,65 @@
+reconciliation_version: MADP-HUMAN-AUTHORITY-IDENTIFIER-RECONCILIATION-v1
+experiment_id: EXP-CODEX-PILOT-001
+attempt_id: CORE-ATTEMPT-002
+workflow: ALPHA3_CORE_CANDIDATE
+status: RECONCILED_WITH_EXPLICIT_HUMAN_CLARIFICATION
+authority: HUMAN_FINAL_AUTHORITY
+clarification:
+  basis: EXPLICIT_HUMAN_CLARIFICATION
+  cumulative_human_action_number: 33
+  attempt_local_human_action_number: 21
+  submitted_identifier_in_public_redacted_input: HFA-001
+  official_record_identifier: Eruhitsuji
+  same_human_authority: true
+  identifier_relationship: INFORMAL_NAME_AND_OFFICIAL_RECORD_IDENTIFIER
+  final_authoritative_identifier: Eruhitsuji
+source_integrity:
+  final_decision_record:
+    path: artifacts/structured-comparison/human-decision-record.yaml
+    sha256: 5b6003857068142c1a28082ce359ee5c5891cbbb742b196b42397d04d00e7382
+    bytes: 10209
+    modified_during_reconciliation: false
+  decision_draft:
+    path: artifacts/structured-comparison/human-decision-record-draft.yaml
+    sha256: 7be2223c2249b358ad3fa4eeda8d9d49b35844028cda6e336bf5d4f713c26f5d
+    bytes: 1804
+    modified_during_reconciliation: false
+  public_redacted_input:
+    path: artifacts/structured-comparison/human-final-authority-input-public-redacted.md
+    sha256: db41d5eecf9153d4cf4294a96da7df433c7414e3022cc0bf868ae2eb811c80f2
+    bytes: 6721
+    created_during_privacy_redaction: true
+  private_unredacted_input:
+    preserved_outside_repository: true
+    path_recorded_in_public_artifact: false
+    sha256_recorded_in_public_artifact: false
+decision_integrity:
+  identifier_values_match: false
+  identifier_conflict_resolved_by_human: true
+  decision_semantic_content_changed: false
+  selected_option_changed: false
+  option_modifications_changed: false
+  dissent_dispositions_changed: false
+  evidence_requirements_changed: false
+  blind_first_round_status_changed: false
+  convergence_classification_changed: false
+  task_completed_changed: false
+  authority_boundaries_changed: false
+  privacy_redaction_applied: true
+residual_limitation:
+  present: true
+  type: PUBLIC_REDACTED_DECISION_INPUT_IDENTIFIER_DIFFERS_FROM_OFFICIAL_FINAL_RECORD
+  effect_on_decision_reconstruction: RECONCILED
+  effect_on_human_authority_identity: NONE_AFTER_EXPLICIT_CLARIFICATION
+  must_be_considered_in_core_conformance: true
+boundaries:
+  repository_modification_authorized: false
+  release_authorized: false
+  formal_release_evidence: false
+  alpha4_authorized: false
+redaction:
+  public_replacement_identifier: HFA-001
+  official_record_identifier: Eruhitsuji
+  original_value_recorded_in_public_artifact: false
+  identifier_mapping_published: false
+  private_original_preserved_outside_repository: true

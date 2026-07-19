@@ -1,0 +1,59 @@
+information_set_id: INFOSET-CODEX-PILOT-001-CORE-BLIND-FIRST-ROUND
+experiment_id: EXP-CODEX-PILOT-001
+workflow: ALPHA3_CORE_CANDIDATE
+task:
+  path: experiments/codex-core-candidate-comparison/pilot-001/task/prompt.md
+  sha256: 34cb80469054d7da7cafed6f091f73d0c127d71b5e9c132b52f455a509d72c1c
+compact_bundle:
+  path: experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/compact-bundle/MADP-v0.3.0-alpha.3-core-compact.md
+  sha256: 303fd59a8e08a052bdef74a3545fd74a1ad5182e994c5970861428fe2b5b9c48
+compact_bundle_manifest:
+  path: experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/compact-bundle/MADP-v0.3.0-alpha.3-core-compact.manifest.yaml
+  sha256: 762ba8b6c60e0ec33d25e39b3c94116f138dc0feb1c143b35417ddce84e001c0
+participant_prompt:
+  path: experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/blind-first-round/participant-initial-prompt.md
+  sha256: b132c9b8dd17a4b61ea739cdc986cf82407b9b78fe66e222565d2f4d1b8bc39e
+participant_register:
+  path: experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/participant-register.yaml
+  sha256: a154fcbb5db4623c5b06a406464236c5e40b05e316a00f5b9b2ced03283f37b9
+dynamic_role_plan:
+  path: experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/dynamic-role-plan.yaml
+  sha256: 396041ae9389da51ddab78413973e6a9a06e3cc101af5592a9be9b462be261cc
+dynamic_role_input:
+  path: experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/dynamic-role-input.yaml
+  sha256: 9fc808a5e085f57247294b35937e07a4331dfdd87fee43602334b76febfdf2e9
+required_attachment_order:
+  - task/prompt.md
+  - MADP-v0.3.0-alpha.3-core-compact.md
+external_web_research_prohibited: true
+prior_participant_output_prohibited: true
+human_final_authority_required: true
+formal_release_evidence: false
+alpha4_authorized: false
+information_set_hash:
+  algorithm: SHA-256
+  value: a754c49463e74c2fe79ed039438da070ed3ea0259fd55c87c71195a901f26925
+  concatenation_method: exact file bytes concatenated in listed order, with no separators, directory metadata, mtimes, filenames, or normalization
+  concatenation_order:
+    - experiments/codex-core-candidate-comparison/pilot-001/task/prompt.md
+    - experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/compact-bundle/MADP-v0.3.0-alpha.3-core-compact.md
+    - experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/blind-first-round/participant-initial-prompt.md
+    - experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/participant-register.yaml
+    - experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/dynamic-role-plan.yaml
+participant_prompt_rendering:
+  template_ref: experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/blind-first-round/participant-initial-prompt.md
+  template_sha256: b132c9b8dd17a4b61ea739cdc986cf82407b9b78fe66e222565d2f4d1b8bc39e
+  permitted_variable_fields:
+    - participant_id
+    - model_label
+  substantive_content_identical: true
+  rendered_prompts:
+    - participant_id: CHATGPT-A
+      path: artifacts/blind-first-round/rendered-prompt-CHATGPT-A.md
+      sha256: 60856cfacfd8e6e380aef8a84f2df11b5a4882b92c0deedaa35cdc3144dc77df
+    - participant_id: CLAUDE-A
+      path: artifacts/blind-first-round/rendered-prompt-CLAUDE-A.md
+      sha256: 27fd1033b90e467a9756221110c7627ab5bf04536dda85f794f8f520f8cafc72
+    - participant_id: GEMINI-A
+      path: artifacts/blind-first-round/rendered-prompt-GEMINI-A.md
+      sha256: 2b9edd842e6f090f5566ae6bd58abec9d365580c47bca38f7e8eb01461ee2b3f

@@ -1,0 +1,4578 @@
+# Commands log
+
+All commands were run from `/mnt/e/madp-codex-pilot-core` unless otherwise noted. Preflight commands before run start are excluded from this log.
+
+## 225
+
+command:
+```text
+test ! -e attempts/attempt-002/artifacts/structured-comparison/human-final-authority-input-public-redacted.md
+test ! -e attempts/attempt-002/artifacts/structured-comparison/human-decision-record.yaml
+sha256sum attempts/attempt-002/artifacts/structured-comparison/human-decision-record-draft.yaml
+sed -n '1,80p' attempts/attempt-002/attempt.yaml
+```
+
+exit_code: `0`
+
+stdout:
+```text
+7be2223c2249b358ad3fa4eeda8d9d49b35844028cda6e336bf5d4f713c26f5d  experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/structured-comparison/human-decision-record-draft.yaml
+attempt_id: CORE-ATTEMPT-002
+status: AWAITING_HUMAN_FINAL_AUTHORITY_INPUT
+...
+core_conformance: NOT_EVALUATED
+formal_release_evidence: false
+alpha4_authorized: false
+```
+
+stderr:
+```text
+```
+
+## 226
+
+command:
+```text
+python - <<'PY'
+... compute SHA-256 and byte count for human-final-authority-input-raw.md ...
+PY
+```
+
+exit_code: `0`
+
+stdout:
+```text
+PRIVATE_ORIGINAL_HASH_NOT_PUBLISHED
+6432
+```
+
+stderr:
+```text
+```
+
+## 227
+
+command:
+```text
+python - <<'PY'
+... validate Phase 4D-B final human decision record, draft immutability, raw participant hashes, experiment.yaml diff, boundaries, and metrics non-finalization ...
+PY
+```
+
+exit_code: `0`
+
+stdout:
+```text
+RAW_INPUT_EXISTS PASS PRIVATE_ORIGINAL_HASH_NOT_PUBLISHED 6432
+DECISION_RECORD_EXISTS PASS 5b6003857068142c1a28082ce359ee5c5891cbbb742b196b42397d04d00e7382 10209
+DRAFT_SHA_UNCHANGED PASS 7be2223c2249b358ad3fa4eeda8d9d49b35844028cda6e336bf5d4f713c26f5d 1804
+DECISION_RECORD_YAML_LOAD PASS
+RAW_HASH_RECORDED PASS
+SELECTED_OPTION_A PASS
+OPTION_MODIFICATIONS_COUNT PASS
+DISSENTS_ALL_RECORDED PASS
+DS_SUMMARY_ALL_RECORDED PASS
+BLOCKING_GATES_EG001_EG005 PASS
+BLIND_CONFIRM_VALID PASS
+CONVERGENCE_CONFIRM_MIXED PASS
+TASK_COMPLETED_TRUE PASS
+CORE_EVAL_PROCEED_TRUE PASS
+DECIDED_BY_ERUHITSUJI PASS
+REPO_MOD_UNAUTHORIZED PASS
+RELEASE_UNAUTHORIZED PASS
+FORMAL_RELEASE_FALSE PASS
+ALPHA4_FALSE PASS
+CORE_CONFORMANCE_NOT_EVALUATED PASS
+METRICS_UNFINALIZED PASS
+ATTEMPT_STATUS PASS
+ATTEMPT_READY_CORE_EVAL PASS
+ATTEMPT_BOUNDARIES PASS
+EXPERIMENT_YAML_DIFF_EMPTY PASS
+RAW_PARTICIPANT_HASH_raw/initial-response-CHATGPT-B.md PASS 0e435699e6ab9a004b5bb14f523a249e459524c3b784b7e3f00e1127fadea4f7 30392
+RAW_PARTICIPANT_HASH_raw/initial-response-CLAUDE-B.md PASS 737c74a1a247eb861767fbb7cc25c7c365605c5182c0ebd7dc249eb32c8af1a9 25688
+RAW_PARTICIPANT_HASH_raw/initial-response-GEMINI-B.md PASS cc651d90c59fbedb1c2c40edee050d8b51d6817ee5e9c723c0ea48d7422c5482 24741
+RAW_PARTICIPANT_HASH_raw/cross-exposure-CHATGPT-B.md PASS 21600ecebc974cd8e9c1d561e3b6f9c4c2f046e850edb81dd0febb8f821c0ae5 48180
+RAW_PARTICIPANT_HASH_raw/cross-exposure-CLAUDE-B.md PASS 0de4538cc3e4810a50ee8324cb639fb6dc0053d6a26758a7cb4c4039430a5fa1 62298
+RAW_PARTICIPANT_HASH_raw/cross-exposure-GEMINI-B-ui-recapture.md PASS 9251f0715198f992988392e78d2077d958e4f5875cff15e67277253500c2802e 31008
+RAW_PARTICIPANT_HASH_raw/cross-exposure-GEMINI-B.md PASS cc651d90c59fbedb1c2c40edee050d8b51d6817ee5e9c723c0ea48d7422c5482 24741
+NO_SIBLING_RUN_REF_IN_DECISION PASS
+NO_ATTEMPT001_REF_IN_DECISION PASS
+PHASE_4D_B_CUSTOM_VALIDATION PASS
+```
+
+stderr:
+```text
+```
+
+## 228
+
+command:
+```text
+python scripts/check_alpha3_dynamic_role_plan.py experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/dynamic-role-plan.yaml
+python experiments/codex-core-candidate-comparison/pilot-001/validate.py
+python scripts/check_alpha3_core_candidate_experiments.py
+```
+
+exit_code: `0`
+
+stdout:
+```text
+alpha.3 dynamic role plan: PASS
+Codex Core Candidate comparison pilot: PASS
+task_sha256=34cb80469054d7da7cafed6f091f73d0c127d71b5e9c132b52f455a509d72c1c
+experiment_status=DRAFT
+alpha.3 Core Candidate operational experiments: PASS (2 experimental schemas, Blind First Round semantics, 4-workflow comparison, Claim/Evidence migration invariants)
+```
+
+stderr:
+```text
+```
+
+## 223
+
+command:
+```text
+sed -n '1,260p' attempts/attempt-002/artifacts/structured-comparison/human-decision-brief.md
+sed -n '1,220p' attempts/attempt-002/artifacts/structured-comparison/human-decision-record-draft.yaml
+sed -n '1,260p' attempts/attempt-002/artifacts/structured-comparison/candidate-work-package-options.md
+sed -n '1,240p' attempts/attempt-002/artifacts/structured-comparison/dissent-register.yaml
+sed -n '1,240p' attempts/attempt-002/artifacts/structured-comparison/evidence-gap-register.yaml
+sed -n '1,180p' attempts/attempt-002/artifacts/structured-comparison/initial-convergence-assessment.yaml
+sed -n '1,220p' attempts/attempt-002/artifacts/structured-comparison/validation-report.md
+sed -n '1,260p' attempts/attempt-002/artifacts/structured-comparison/acceptance-criteria-matrix.md
+sed -n '1,230p' experiments/codex-core-candidate-comparison/pilot-001/task/prompt.md
+```
+
+exit_code: `0`
+
+stdout:
+```text
+Read-only review packet source inspection completed. Output was used only to present the Phase 4D-A Human Final Authority review packet.
+```
+
+stderr:
+```text
+```
+
+## 224
+
+command:
+```text
+python - <<'PY'
+... verify Phase 4D-A waiting status, unchanged human decision draft, experiment.yaml diff, and raw hashes ...
+PY
+```
+
+exit_code: `0`
+
+stdout:
+```text
+attempt_status AWAITING_HUMAN_FINAL_AUTHORITY_INPUT
+phase4c_completed True
+human_final_decision_recorded False
+ready_for_human_decision True
+core_conformance NOT_EVALUATED
+formal_release_evidence False
+alpha4_authorized False
+draft_field selected_option_id None
+draft_field additional_evidence_required None
+draft_field final_blind_first_round_status None
+draft_field final_convergence_classification None
+draft_field task_completed None
+draft_field decision_rationale None
+draft_field decided_by None
+draft_field decided_at_utc None
+git_diff_empty experiments/codex-core-candidate-comparison/pilot-001/experiment.yaml True
+git_diff_empty experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/structured-comparison/human-decision-record-draft.yaml True
+raw_hash raw/initial-response-CHATGPT-B.md 0e435699e6ab9a004b5bb14f523a249e459524c3b784b7e3f00e1127fadea4f7 30392
+raw_hash raw/initial-response-CLAUDE-B.md 737c74a1a247eb861767fbb7cc25c7c365605c5182c0ebd7dc249eb32c8af1a9 25688
+raw_hash raw/initial-response-GEMINI-B.md cc651d90c59fbedb1c2c40edee050d8b51d6817ee5e9c723c0ea48d7422c5482 24741
+raw_hash raw/cross-exposure-CHATGPT-B.md 21600ecebc974cd8e9c1d561e3b6f9c4c2f046e850edb81dd0febb8f821c0ae5 48180
+raw_hash raw/cross-exposure-CLAUDE-B.md 0de4538cc3e4810a50ee8324cb639fb6dc0053d6a26758a7cb4c4039430a5fa1 62298
+raw_hash raw/cross-exposure-GEMINI-B-ui-recapture.md 9251f0715198f992988392e78d2077d958e4f5875cff15e67277253500c2802e 31008
+raw_hash raw/cross-exposure-GEMINI-B.md cc651d90c59fbedb1c2c40edee050d8b51d6817ee5e9c723c0ea48d7422c5482 24741
+```
+
+stderr:
+```text
+```
+
+## 220
+
+command:
+```text
+python scripts/check_alpha3_dynamic_role_plan.py experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/dynamic-role-plan.yaml
+python experiments/codex-core-candidate-comparison/pilot-001/validate.py
+python scripts/check_alpha3_core_candidate_experiments.py
+```
+
+exit_code: `0`
+
+stdout:
+```text
+alpha.3 dynamic role plan: PASS
+Codex Core Candidate comparison pilot: PASS
+task_sha256=34cb80469054d7da7cafed6f091f73d0c127d71b5e9c132b52f455a509d72c1c
+experiment_status=DRAFT
+alpha.3 Core Candidate operational experiments: PASS (2 experimental schemas, Blind First Round semantics, 4-workflow comparison, Claim/Evidence migration invariants)
+```
+
+stderr:
+```text
+```
+
+## 221
+
+command:
+```text
+python - <<'PY'
+... final Phase 4C structured-comparison validation, YAML loads, source-reference line-range checks, raw hash checks, Stage A frozen-hash checks, human decision null-field checks, noncanonical Gemini exclusion check, and experiment.yaml diff check ...
+PY
+```
+
+exit_code: `0`
+
+stdout:
+```text
+STRUCTURED_ARTIFACTS
+analysis-method.yaml 3a92180cbc76271893b6ea53f97968424cafa164f9fe4016df5708ef4469849a 1930
+source-inventory.yaml ec217970ac6c67eca5159993ad01e7e89fd74ca3063007c805cfd6f15648debd 4326
+initial-claim-ledger.yaml 2a0a19cc84552e034708b5eabdb33b05dd03c03e05276e78d66ee0f2e6b26556 8725
+initial-convergence-assessment.yaml e1f8cb1a063f0b96002a94f708c9077520236452b801b2acfbee72c0f47f7b53 8232
+participant-change-ledger.yaml cc525c5b6e4b9c9d5742cca45f5e2be5e5d393585ea384d290848eb842e5f613 10343
+acceptance-criteria-matrix.md 1ef5633b8af253224e199aee6f66cce1d6bcb3cad283ee4ad6df74af55ebca61 15530
+dissent-register.yaml fac0c4aa92b7ec31dc9a075498812aa9f03c01fb6c52901b76d5d58de66e02de 5113
+evidence-gap-register.yaml 8cfd1066726e39423b53ce6c9335fdfe6665c19696ab6468c9b6425f81009ee1 4902
+candidate-work-package-options.md 49cdb4aac997e83533ea6756b107e995f58791ee375283d10b1b59c15ee5fad7 13048
+human-decision-brief.md d56d901c501f79d6aea8d76470765542605847eebe5730b6bf92e7bfa9bcf418 8633
+human-decision-record-draft.yaml 7be2223c2249b358ad3fa4eeda8d9d49b35844028cda6e336bf5d4f713c26f5d 1804
+validation-report.md f02b1d8930b690bfba5c858ae6e03ac9857511995c4f8d6214cfbba0030cb525 4176
+RAW_HASHES
+raw/initial-response-CHATGPT-B.md 0e435699e6ab9a004b5bb14f523a249e459524c3b784b7e3f00e1127fadea4f7 30392 PASS
+raw/initial-response-CLAUDE-B.md 737c74a1a247eb861767fbb7cc25c7c365605c5182c0ebd7dc249eb32c8af1a9 25688 PASS
+raw/initial-response-GEMINI-B.md cc651d90c59fbedb1c2c40edee050d8b51d6817ee5e9c723c0ea48d7422c5482 24741 PASS
+raw/cross-exposure-CHATGPT-B.md 21600ecebc974cd8e9c1d561e3b6f9c4c2f046e850edb81dd0febb8f821c0ae5 48180 PASS
+raw/cross-exposure-CLAUDE-B.md 0de4538cc3e4810a50ee8324cb639fb6dc0053d6a26758a7cb4c4039430a5fa1 62298 PASS
+raw/cross-exposure-GEMINI-B-ui-recapture.md 9251f0715198f992988392e78d2077d958e4f5875cff15e67277253500c2802e 31008 PASS
+raw/cross-exposure-GEMINI-B.md cc651d90c59fbedb1c2c40edee050d8b51d6817ee5e9c723c0ea48d7422c5482 24741 PASS
+YAML_LOADS
+analysis-method.yaml PASS
+source-inventory.yaml PASS
+initial-claim-ledger.yaml PASS
+initial-convergence-assessment.yaml PASS
+participant-change-ledger.yaml PASS
+dissent-register.yaml PASS
+evidence-gap-register.yaml PASS
+human-decision-record-draft.yaml PASS
+SOURCE_REF_VALIDATION PASS 167
+ANALYSIS_BOUNDARIES False False False False False False
+STAGE_A_FROZEN
+initial-claim-ledger.yaml 2a0a19cc84552e034708b5eabdb33b05dd03c03e05276e78d66ee0f2e6b26556 8725 PASS
+initial-convergence-assessment.yaml e1f8cb1a063f0b96002a94f708c9077520236452b801b2acfbee72c0f47f7b53 8232 PASS
+INITIAL_CONVERGENCE_NO_CROSS_RAW_REF PASS
+CANONICAL_CROSS_COUNT 3 PASS
+HUMAN_FIELD_NULL selected_option_id PASS
+HUMAN_FIELD_NULL additional_evidence_required PASS
+HUMAN_FIELD_NULL final_blind_first_round_status PASS
+HUMAN_FIELD_NULL final_convergence_classification PASS
+HUMAN_FIELD_NULL task_completed PASS
+HUMAN_FIELD_NULL decision_rationale PASS
+HUMAN_FIELD_NULL decided_by PASS
+HUMAN_FIELD_NULL decided_at_utc PASS
+CORE_CONFORMANCE NOT_EVALUATED
+NONCANONICAL_EXCLUDED_FROM_SEMANTIC_ARTIFACTS PASS
+EXPERIMENT_YAML_DIFF_EMPTY PASS
+ATTEMPT_STATUS READY_FOR_HUMAN_DECISION
+READY_FOR_HUMAN_DECISION True
+PHASE4C_COMPLETED True
+```
+
+stderr:
+```text
+```
+
+## 222
+
+command:
+```text
+python scripts/check_alpha3_dynamic_role_plan.py experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/dynamic-role-plan.yaml
+python experiments/codex-core-candidate-comparison/pilot-001/validate.py
+python scripts/check_alpha3_core_candidate_experiments.py
+```
+
+exit_code: `0`
+
+stdout:
+```text
+alpha.3 dynamic role plan: PASS
+Codex Core Candidate comparison pilot: PASS
+task_sha256=34cb80469054d7da7cafed6f091f73d0c127d71b5e9c132b52f455a509d72c1c
+experiment_status=DRAFT
+alpha.3 Core Candidate operational experiments: PASS (2 experimental schemas, Blind First Round semantics, 4-workflow comparison, Claim/Evidence migration invariants)
+```
+
+stderr:
+```text
+```
+
+## 219
+
+command:
+```text
+python - <<'PY' ... verify attempt-002 Phase 4B-R CASE A reconciliation state, raw hashes, YAML files, experiment.yaml diff, and validators ...
+python scripts/check_alpha3_dynamic_role_plan.py experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/dynamic-role-plan.yaml
+python experiments/codex-core-candidate-comparison/pilot-001/validate.py
+python scripts/check_alpha3_core_candidate_experiments.py
+rg -n "runs/0[124]-|runs/(01|02|04)|attempt-001" <attempt-002 reconciliation files>
+```
+
+exit_code: `0` for Python verification and validators; `1` for `rg` no-match sibling/attempt-001 reference check.
+
+stdout:
+```text
+RAW initial CHATGPT-B 0e435699e6ab9a004b5bb14f523a249e459524c3b784b7e3f00e1127fadea4f7 30392 PASS
+RAW initial CLAUDE-B 737c74a1a247eb861767fbb7cc25c7c365605c5182c0ebd7dc249eb32c8af1a9 25688 PASS
+RAW initial GEMINI-B cc651d90c59fbedb1c2c40edee050d8b51d6817ee5e9c723c0ea48d7422c5482 24741 PASS
+RAW cross CHATGPT-B 21600ecebc974cd8e9c1d561e3b6f9c4c2f046e850edb81dd0febb8f821c0ae5 48180 PASS
+RAW cross CLAUDE-B 0de4538cc3e4810a50ee8324cb639fb6dc0053d6a26758a7cb4c4039430a5fa1 62298 PASS
+RAW cross GEMINI-B original cc651d90c59fbedb1c2c40edee050d8b51d6817ee5e9c723c0ea48d7422c5482 24741 PASS
+RAW cross GEMINI-B ui recapture 9251f0715198f992988392e78d2077d958e4f5875cff15e67277253500c2802e 31008 PASS
+capture_yaml_load PASS
+reconciliation_yaml_load PASS
+attempt_status CROSS_EXPOSURE_RESPONSES_CAPTURED_WITH_RECONCILIATION
+ready_for_structured_comparison True
+phase4c_authorized False
+comparison_performed False
+decision_created False
+gemini_ui_inspection_result DIFFERENT_RESPONSE_PRESENT
+gemini_disposition UI_RECAPTURE_CANONICALIZED
+gemini_canonical_hash 9251f0715198f992988392e78d2077d958e4f5875cff15e67277253500c2802e
+SEND CLAUDE-B SENT None UNKNOWN RETROSPECTIVE_HUMAN_ATTESTATION False
+SEND GEMINI-B SENT None UNKNOWN RETROSPECTIVE_HUMAN_ATTESTATION False
+FILE artifacts/cross-exposure/cross-exposure-reconciliation.yaml 6b3b2f4e6a67c805a4edd7ef63d157b824c641fe8c37b316feff0ad0a2cf279b 3316
+FILE artifacts/cross-exposure/cross-exposure-capture-register.yaml 0fef9487e1ce772e01cad47b8ff9b10fae594bee0e39c047b9eccd44dc084609 7037
+FILE attempt.yaml e3f36846e24d0a28807626a804347f6d118ca663440916c7d7afeda46718093e 716
+FILE artifacts/cross-exposure/operator-cross-exposure-checklist.md f4ec664a4a1233098c223b3081cb9127abaa50c7166a6a2bca4830906065dd57 5802
+experiment_yaml_diff_exit 0
+experiment_yaml_diff_stdout_len 0
+alpha.3 dynamic role plan: PASS
+Codex Core Candidate comparison pilot: PASS
+task_sha256=34cb80469054d7da7cafed6f091f73d0c127d71b5e9c132b52f455a509d72c1c
+experiment_status=DRAFT
+alpha.3 Core Candidate operational experiments: PASS (2 experimental schemas, Blind First Round semantics, 4-workflow comparison, Claim/Evidence migration invariants)
+```
+
+stderr:
+```text
+```
+
+## 218
+
+command:
+```text
+date -u +%Y-%m-%dT%H:%M:%SZ
+python - <<'PY' ... verify attempt-002 Phase 4B-R authorization status update and raw preservation ...
+```
+
+exit_code: `0`
+
+stdout:
+```text
+2026-07-18T16:11:10Z
+attempt_status CROSS_EXPOSURE_RECONCILIATION_IN_PROGRESS
+cross_exposure_authorized True
+cross_exposure_started True
+formal_release_evidence False
+alpha4_authorized False
+FILE raw/initial-response-CHATGPT-B.md 0e435699e6ab9a004b5bb14f523a249e459524c3b784b7e3f00e1127fadea4f7 30392
+FILE raw/initial-response-CLAUDE-B.md 737c74a1a247eb861767fbb7cc25c7c365605c5182c0ebd7dc249eb32c8af1a9 25688
+FILE raw/initial-response-GEMINI-B.md cc651d90c59fbedb1c2c40edee050d8b51d6817ee5e9c723c0ea48d7422c5482 24741
+FILE raw/cross-exposure-CHATGPT-B.md 21600ecebc974cd8e9c1d561e3b6f9c4c2f046e850edb81dd0febb8f821c0ae5 48180
+FILE raw/cross-exposure-CLAUDE-B.md 0de4538cc3e4810a50ee8324cb639fb6dc0053d6a26758a7cb4c4039430a5fa1 62298
+FILE raw/cross-exposure-GEMINI-B.md cc651d90c59fbedb1c2c40edee050d8b51d6817ee5e9c723c0ea48d7422c5482 24741
+FILE attempt.yaml ae596dafdafcf923fc1aaf826443668b25f4db4b6f658ce538c591e7f44dba69 548
+experiment_yaml_diff_exit 0
+experiment_yaml_diff_stdout_len 0
+reconciliation_file_exists False
+ui_recapture_exists False
+```
+
+stderr:
+```text
+```
+
+## 1
+
+command:
+```text
+date -u +%Y-%m-%dT%H:%M:%SZ
+```
+
+exit_code: `0`
+
+stdout:
+```text
+2026-07-18T11:10:54Z
+```
+
+stderr:
+```text
+```
+
+## 217
+
+command:
+```text
+python - <<'PY' ... verify attempt-002 Cross Exposure capture state after GEMINI-B reconciliation log updates ...
+python scripts/check_alpha3_dynamic_role_plan.py experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/dynamic-role-plan.yaml
+python experiments/codex-core-candidate-comparison/pilot-001/validate.py
+python scripts/check_alpha3_core_candidate_experiments.py
+```
+
+exit_code: `0`
+
+stdout:
+```text
+INITIAL CHATGPT-B 0e435699e6ab9a004b5bb14f523a249e459524c3b784b7e3f00e1127fadea4f7 30392 PASS
+INITIAL CLAUDE-B 737c74a1a247eb861767fbb7cc25c7c365605c5182c0ebd7dc249eb32c8af1a9 25688 PASS
+INITIAL GEMINI-B cc651d90c59fbedb1c2c40edee050d8b51d6817ee5e9c723c0ea48d7422c5482 24741 PASS
+CROSS CHATGPT-B 21600ecebc974cd8e9c1d561e3b6f9c4c2f046e850edb81dd0febb8f821c0ae5 48180 PASS
+CROSS CLAUDE-B 0de4538cc3e4810a50ee8324cb639fb6dc0053d6a26758a7cb4c4039430a5fa1 62298 PASS
+CROSS GEMINI-B cc651d90c59fbedb1c2c40edee050d8b51d6817ee5e9c723c0ea48d7422c5482 24741 PASS
+FILE artifacts/cross-exposure/cross-exposure-capture-register.yaml 584bdab409cf49fbb01d3c654aa24d29060d2fce75c6082a86bc2df5edd01ad4 5443
+FILE attempt.yaml c8f43bee8b0ecd2bf2071fbc790f82e52635bfe30af1d7260b2a0775aa20eadc 545
+FILE artifacts/cross-exposure/operator-cross-exposure-checklist.md 2699ada57ff6d7d47463cbed5758dc5d3d32a897291851e91f13ccc21dc8b271 4989
+FILE run-notes.md 96bbb7ac4a37e8e6a32bdfe8befd9f132b555146d6219d7b4e92cb6ff1a53c45 12701
+FILE logs/operator-actions.md 941b6c69b32cd96fdb1966eb649da35b565a856a083a7417a1c3ded78045fbff 14659
+FILE ../../run-notes.md 2c368d86b01324109665ee99d7bbfe397ddc4bb3880059cd09376f02fd42d3c9 35510
+FILE ../../logs/operator-actions.md 790a4584b008952599ebc7e63b8f5e4fd9a4fd7039d049de98ec1dd36049c646 28519
+capture_yaml_load PASS
+attempt_status CROSS_EXPOSURE_RECONCILIATION_REQUIRED
+cross_exposure_authorized True
+cross_exposure_started True
+PARTICIPANT CHATGPT-B SENT None CAPTURED 21600ecebc974cd8e9c1d561e3b6f9c4c2f046e850edb81dd0febb8f821c0ae5 48180 None
+PARTICIPANT CLAUDE-B UNCONFIRMED MISSING_BEFORE_RAW_CAPTURE CAPTURED 0de4538cc3e4810a50ee8324cb639fb6dc0053d6a26758a7cb4c4039430a5fa1 62298 None
+PARTICIPANT GEMINI-B UNCONFIRMED MISSING_BEFORE_RAW_CAPTURE CAPTURED cc651d90c59fbedb1c2c40edee050d8b51d6817ee5e9c723c0ea48d7422c5482 24741 CONFLICT_RECORDED
+experiment_yaml_diff_exit 0
+experiment_yaml_diff_stdout_len 0
+changed_files
+
+alpha.3 dynamic role plan: PASS
+Codex Core Candidate comparison pilot: PASS
+task_sha256=34cb80469054d7da7cafed6f091f73d0c127d71b5e9c132b52f455a509d72c1c
+experiment_status=DRAFT
+alpha.3 Core Candidate operational experiments: PASS (2 experimental schemas, Blind First Round semantics, 4-workflow comparison, Claim/Evidence migration invariants)
+```
+
+stderr:
+```text
+```
+
+## 212
+
+command:
+```text
+date -u +%Y-%m-%dT%H:%M:%SZ
+test ! -e experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/raw/cross-exposure-CLAUDE-B.md
+sed -n '1,180p' experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/cross-exposure/cross-exposure-capture-register.yaml
+```
+
+exit_code: `0`
+
+stdout:
+```text
+2026-07-18T15:49:39Z
+... confirmed raw/cross-exposure-CLAUDE-B.md did not exist before creation and inspected capture register state ...
+```
+
+stderr:
+```text
+```
+
+## 213
+
+command:
+```text
+sha256sum experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/raw/cross-exposure-CLAUDE-B.md
+wc -c experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/raw/cross-exposure-CLAUDE-B.md
+```
+
+exit_code: `0`
+
+stdout:
+```text
+0de4538cc3e4810a50ee8324cb639fb6dc0053d6a26758a7cb4c4039430a5fa1  experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/raw/cross-exposure-CLAUDE-B.md
+62298 experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/raw/cross-exposure-CLAUDE-B.md
+```
+
+stderr:
+```text
+```
+
+## 2
+
+command:
+```text
+git worktree list
+```
+
+exit_code: `0`
+
+stdout:
+```text
+/mnt/e/multi-ai-deliberation-protocol  4381581 [main]
+/mnt/e/madp-codex-pilot-core           4381581 [experiment/pilot-001-core]
+/mnt/e/madp-codex-pilot-manual         4381581 [experiment/pilot-001-manual]
+/mnt/e/madp-codex-pilot-markdown       4381581 [experiment/pilot-001-markdown]
+/mnt/e/madp-codex-pilot-standard       4381581 [experiment/pilot-001-standard]
+```
+
+stderr:
+```text
+```
+
+## 3
+
+command:
+```text
+test ! -e /mnt/e/madp-codex-pilot-core-baseline
+```
+
+exit_code: `0`
+
+stdout:
+```text
+```
+
+stderr:
+```text
+```
+
+## 4
+
+command:
+```text
+find experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate -maxdepth 3 -mindepth 1 -print
+```
+
+exit_code: `0`
+
+stdout:
+```text
+experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/README.md
+```
+
+stderr:
+```text
+```
+
+## 5-12
+
+commands:
+```text
+sed -n '1,280p' docs/profiles/COMPACT_CORE_BUNDLE-v0.3.0-alpha.3.md
+sed -n '1,320p' docs/profiles/DYNAMIC_ROLE_ASSIGNMENT-v0.3.0-alpha.3.md
+sed -n '1,260p' docs/evaluation/MADP-v0.3.0-alpha.3-dynamic-role-input-example.yaml
+sed -n '1,320p' scripts/generate_alpha3_core_compact_bundle.py
+sed -n '1,360p' scripts/check_alpha3_core_compact_bundle.py
+sed -n '1,360p' scripts/generate_alpha3_dynamic_role_plan.py
+sed -n '1,360p' scripts/check_alpha3_dynamic_role_plan.py
+sed -n '1,420p' tests/v0.3.0-alpha.3/test_core_distribution_and_role_planning.py
+```
+
+exit_code: `0` for each command
+
+stdout:
+```text
+Read-only source contents were displayed in the operator session. They are not duplicated here because the repository source files remain the authoritative records.
+```
+
+stderr:
+```text
+```
+
+## 13
+
+command:
+```text
+sed -n '321,520p' scripts/generate_alpha3_dynamic_role_plan.py
+```
+
+exit_code: `0`
+
+stdout:
+```text
+Read-only source contents were displayed in the operator session to complete the file read.
+```
+
+stderr:
+```text
+```
+
+## 14
+
+command:
+```text
+mkdir -p experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/logs
+```
+
+exit_code: `0`
+
+stdout:
+```text
+```
+
+stderr:
+```text
+```
+
+## 15
+
+command:
+```text
+git worktree add --detach /mnt/e/madp-codex-pilot-core-baseline 2a29ddfebe4d9664d3a4043a01d8728fa525d049
+```
+
+exit_code: `0`
+
+stdout:
+```text
+Preparing worktree (detached HEAD 2a29ddf)
+HEAD is now at 2a29ddf Merge pull request #15 from Eruhitsuji/agent/alpha3-core-distribution-role-planning
+```
+
+stderr:
+```text
+Updating files completed successfully. Progress output was emitted by Git.
+```
+
+## 16
+
+command:
+```text
+git rev-parse HEAD
+```
+
+working_directory: `/mnt/e/madp-codex-pilot-core-baseline`
+
+exit_code: `0`
+
+stdout:
+```text
+2a29ddfebe4d9664d3a4043a01d8728fa525d049
+```
+
+stderr:
+```text
+```
+
+## 17
+
+command:
+```text
+python scripts/generate_alpha3_core_compact_bundle.py /mnt/e/madp-codex-pilot-core/experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/compact-bundle --repository Eruhitsuji/multi-ai-deliberation-protocol --source-commit 2a29ddfebe4d9664d3a4043a01d8728fa525d049
+```
+
+working_directory: `/mnt/e/madp-codex-pilot-core-baseline`
+
+exit_code: `0`
+
+stdout:
+```text
+generated MADP-v0.3.0-alpha.3-core-compact.md sha256=303fd59a8e08a052bdef74a3545fd74a1ad5182e994c5970861428fe2b5b9c48 sources=7
+```
+
+stderr:
+```text
+```
+
+## 18
+
+command:
+```text
+mktemp -d
+```
+
+working_directory: `/mnt/e/madp-codex-pilot-core-baseline`
+
+exit_code: `0`
+
+stdout:
+```text
+/tmp/tmp.o5USricokv
+```
+
+stderr:
+```text
+```
+
+## 19
+
+command:
+```text
+python scripts/generate_alpha3_core_compact_bundle.py /tmp/tmp.o5USricokv/compact-bundle --repository Eruhitsuji/multi-ai-deliberation-protocol --source-commit 2a29ddfebe4d9664d3a4043a01d8728fa525d049
+```
+
+working_directory: `/mnt/e/madp-codex-pilot-core-baseline`
+
+exit_code: `0`
+
+stdout:
+```text
+generated MADP-v0.3.0-alpha.3-core-compact.md sha256=303fd59a8e08a052bdef74a3545fd74a1ad5182e994c5970861428fe2b5b9c48 sources=7
+```
+
+stderr:
+```text
+```
+
+## 20
+
+command:
+```text
+diff -ru /mnt/e/madp-codex-pilot-core/experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/compact-bundle /tmp/tmp.o5USricokv/compact-bundle
+```
+
+working_directory: `/mnt/e/madp-codex-pilot-core-baseline`
+
+exit_code: `0`
+
+stdout:
+```text
+```
+
+stderr:
+```text
+```
+
+## 21
+
+command:
+```text
+python scripts/check_alpha3_core_compact_bundle.py /mnt/e/madp-codex-pilot-core/experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/compact-bundle --repository Eruhitsuji/multi-ai-deliberation-protocol --source-commit 2a29ddfebe4d9664d3a4043a01d8728fa525d049
+```
+
+working_directory: `/mnt/e/madp-codex-pilot-core-baseline`
+
+exit_code: `0`
+
+stdout:
+```text
+alpha.3 Core compact bundle: PASS
+```
+
+stderr:
+```text
+```
+
+## 22
+
+command:
+```text
+sha256sum /mnt/e/madp-codex-pilot-core/experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/compact-bundle/MADP-v0.3.0-alpha.3-core-compact.md /mnt/e/madp-codex-pilot-core/experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/compact-bundle/MADP-v0.3.0-alpha.3-core-compact.manifest.yaml /mnt/e/madp-codex-pilot-core-baseline/docs/profiles/MADP_CORE_CANDIDATE-v0.3.0-alpha.3.md
+```
+
+working_directory: `/mnt/e/madp-codex-pilot-core-baseline`
+
+exit_code: `0`
+
+stdout:
+```text
+303fd59a8e08a052bdef74a3545fd74a1ad5182e994c5970861428fe2b5b9c48  /mnt/e/madp-codex-pilot-core/experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/compact-bundle/MADP-v0.3.0-alpha.3-core-compact.md
+762ba8b6c60e0ec33d25e39b3c94116f138dc0feb1c143b35417ddce84e001c0  /mnt/e/madp-codex-pilot-core/experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/compact-bundle/MADP-v0.3.0-alpha.3-core-compact.manifest.yaml
+0f9e2007407e8c565b0c128bdcdaa678b4b5ed3a0aeb76f76bff35460a6ccfc1  /mnt/e/madp-codex-pilot-core-baseline/docs/profiles/MADP_CORE_CANDIDATE-v0.3.0-alpha.3.md
+```
+
+stderr:
+```text
+```
+
+## 23
+
+command:
+```text
+wc -c /mnt/e/madp-codex-pilot-core/experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/compact-bundle/MADP-v0.3.0-alpha.3-core-compact.md /mnt/e/madp-codex-pilot-core/experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/compact-bundle/MADP-v0.3.0-alpha.3-core-compact.manifest.yaml /mnt/e/madp-codex-pilot-core-baseline/docs/profiles/MADP_CORE_CANDIDATE-v0.3.0-alpha.3.md
+```
+
+working_directory: `/mnt/e/madp-codex-pilot-core-baseline`
+
+exit_code: `0`
+
+stdout:
+```text
+62637 /mnt/e/madp-codex-pilot-core/experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/compact-bundle/MADP-v0.3.0-alpha.3-core-compact.md
+ 1745 /mnt/e/madp-codex-pilot-core/experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/compact-bundle/MADP-v0.3.0-alpha.3-core-compact.manifest.yaml
+ 7754 /mnt/e/madp-codex-pilot-core-baseline/docs/profiles/MADP_CORE_CANDIDATE-v0.3.0-alpha.3.md
+72136 total
+```
+
+stderr:
+```text
+```
+
+## 24
+
+command:
+```text
+grep '^source_inventory_sha256:' /mnt/e/madp-codex-pilot-core/experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/compact-bundle/MADP-v0.3.0-alpha.3-core-compact.manifest.yaml
+```
+
+working_directory: `/mnt/e/madp-codex-pilot-core-baseline`
+
+exit_code: `0`
+
+stdout:
+```text
+source_inventory_sha256: 9b63d53922c0f7475ba475419bb4a934f5aa48d912ff464a9bd8d527a58e2ee9
+```
+
+stderr:
+```text
+```
+
+## 25
+
+command:
+```text
+python scripts/check_alpha3_core_candidate.py
+```
+
+working_directory: `/mnt/e/madp-codex-pilot-core-baseline`
+
+exit_code: `0`
+
+stdout:
+```text
+alpha.3 Core Candidate experiment: PASS (decision boundary, 30-trial synthesis, 8 non-atomic macros, Blind First Round, MIT license)
+```
+
+stderr:
+```text
+```
+
+## 26
+
+command:
+```text
+python tests/v0.3.0-alpha.3/test_core_distribution_and_role_planning.py
+```
+
+working_directory: `/mnt/e/madp-codex-pilot-core-baseline`
+
+exit_code: `0`
+
+stdout:
+```text
+alpha.3 Core distribution and role planning tests: PASS
+```
+
+stderr:
+```text
+```
+
+## 27
+
+command:
+```text
+python experiments/codex-core-candidate-comparison/pilot-001/validate.py
+```
+
+exit_code: `0`
+
+stdout:
+```text
+Codex Core Candidate comparison pilot: PASS
+task_sha256=34cb80469054d7da7cafed6f091f73d0c127d71b5e9c132b52f455a509d72c1c
+experiment_status=DRAFT
+```
+
+stderr:
+```text
+```
+
+## 28
+
+command:
+```text
+python scripts/check_alpha3_core_candidate_experiments.py
+```
+
+exit_code: `0`
+
+stdout:
+```text
+alpha.3 Core Candidate operational experiments: PASS (2 experimental schemas, Blind First Round semantics, 4-workflow comparison, Claim/Evidence migration invariants)
+```
+
+stderr:
+```text
+```
+
+## 29
+
+command:
+```text
+git worktree remove /mnt/e/madp-codex-pilot-core-baseline
+```
+
+exit_code: `0`
+
+stdout:
+```text
+```
+
+stderr:
+```text
+```
+
+## 30
+
+command:
+```text
+git worktree list
+```
+
+exit_code: `0`
+
+stdout:
+```text
+/mnt/e/multi-ai-deliberation-protocol  4381581 [main]
+/mnt/e/madp-codex-pilot-core           4381581 [experiment/pilot-001-core]
+/mnt/e/madp-codex-pilot-manual         4381581 [experiment/pilot-001-manual]
+/mnt/e/madp-codex-pilot-markdown       4381581 [experiment/pilot-001-markdown]
+/mnt/e/madp-codex-pilot-standard       4381581 [experiment/pilot-001-standard]
+```
+
+stderr:
+```text
+```
+
+## 31
+
+command:
+```text
+test ! -e /mnt/e/madp-codex-pilot-core-baseline
+```
+
+exit_code: `0`
+
+stdout:
+```text
+```
+
+stderr:
+```text
+```
+
+## 32
+
+command:
+```text
+git status --short
+```
+
+exit_code: `0`
+
+stdout:
+```text
+?? experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/
+?? experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/logs/
+?? experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/run-notes.md
+```
+
+stderr:
+```text
+```
+
+## 33
+
+command:
+```text
+git diff -- experiments/codex-core-candidate-comparison/pilot-001/experiment.yaml
+```
+
+exit_code: `0`
+
+stdout:
+```text
+```
+
+stderr:
+```text
+```
+
+## 34
+
+command:
+```text
+find experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate -maxdepth 4 -type f -print
+```
+
+exit_code: `0`
+
+stdout:
+```text
+experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/compact-bundle/MADP-v0.3.0-alpha.3-core-compact.manifest.yaml
+experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/compact-bundle/MADP-v0.3.0-alpha.3-core-compact.md
+experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/logs/commands.log
+experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/logs/operator-actions.md
+experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/README.md
+experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/run-notes.md
+```
+
+stderr:
+```text
+```
+
+## 35
+
+command:
+```text
+sha256sum experiments/codex-core-candidate-comparison/pilot-001/task/prompt.md
+```
+
+exit_code: `0`
+
+stdout:
+```text
+34cb80469054d7da7cafed6f091f73d0c127d71b5e9c132b52f455a509d72c1c  experiments/codex-core-candidate-comparison/pilot-001/task/prompt.md
+```
+
+stderr:
+```text
+```
+
+## 36-39
+
+commands:
+```text
+test ! -e experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/dynamic-role-input.yaml
+test ! -e experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/dynamic-role-plan.yaml
+test ! -e experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/participant-register.yaml
+test ! -e experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/blind-first-round
+```
+
+exit_code: `0` for each command
+
+stdout:
+```text
+```
+
+stderr:
+```text
+```
+
+## 40
+
+command:
+```text
+find /tmp/tmp.o5USricokv -maxdepth 3 -type f -print
+```
+
+exit_code: `0`
+
+stdout:
+```text
+/tmp/tmp.o5USricokv/compact-bundle/MADP-v0.3.0-alpha.3-core-compact.md
+/tmp/tmp.o5USricokv/compact-bundle/MADP-v0.3.0-alpha.3-core-compact.manifest.yaml
+```
+
+stderr:
+```text
+```
+
+## 41
+
+command:
+```text
+sha256sum /tmp/tmp.o5USricokv/compact-bundle/MADP-v0.3.0-alpha.3-core-compact.md /tmp/tmp.o5USricokv/compact-bundle/MADP-v0.3.0-alpha.3-core-compact.manifest.yaml
+```
+
+exit_code: `0`
+
+stdout:
+```text
+303fd59a8e08a052bdef74a3545fd74a1ad5182e994c5970861428fe2b5b9c48  /tmp/tmp.o5USricokv/compact-bundle/MADP-v0.3.0-alpha.3-core-compact.md
+762ba8b6c60e0ec33d25e39b3c94116f138dc0feb1c143b35417ddce84e001c0  /tmp/tmp.o5USricokv/compact-bundle/MADP-v0.3.0-alpha.3-core-compact.manifest.yaml
+```
+
+stderr:
+```text
+```
+
+## 42
+
+command:
+```text
+diff -ru experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/compact-bundle /tmp/tmp.o5USricokv/compact-bundle
+```
+
+exit_code: `0`
+
+stdout:
+```text
+```
+
+stderr:
+```text
+```
+
+## 43
+
+command:
+```text
+rm -r /tmp/tmp.o5USricokv
+```
+
+exit_code: `0`
+
+stdout:
+```text
+```
+
+stderr:
+```text
+```
+
+## 44
+
+command:
+```text
+mkdir -p experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/blind-first-round
+```
+
+exit_code: `0`
+
+stdout:
+```text
+```
+
+stderr:
+```text
+```
+
+## 45
+
+command:
+```text
+python scripts/generate_alpha3_dynamic_role_plan.py experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/dynamic-role-input.yaml experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/dynamic-role-plan.yaml
+```
+
+exit_code: `0`
+
+stdout:
+```text
+generated dynamic role plan: experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/dynamic-role-plan.yaml status=READY
+```
+
+stderr:
+```text
+```
+
+## 46
+
+command:
+```text
+python scripts/check_alpha3_dynamic_role_plan.py experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/dynamic-role-plan.yaml
+```
+
+exit_code: `0`
+
+stdout:
+```text
+alpha.3 dynamic role plan: PASS
+```
+
+stderr:
+```text
+```
+
+## 47
+
+command:
+```text
+sed -n '1,260p' experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/dynamic-role-plan.yaml
+```
+
+exit_code: `0`
+
+stdout:
+```text
+Generated dynamic role plan was displayed in the operator session. Key values recorded in run-notes.md: status=READY, blind_first_round.status=PLAN_VALID, assignments listed.
+```
+
+stderr:
+```text
+```
+
+## 48
+
+command:
+```text
+sha256sum experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/dynamic-role-input.yaml experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/dynamic-role-plan.yaml experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/participant-register.yaml experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/blind-first-round/participant-initial-prompt.md experiments/codex-core-candidate-comparison/pilot-001/task/prompt.md experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/compact-bundle/MADP-v0.3.0-alpha.3-core-compact.md experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/compact-bundle/MADP-v0.3.0-alpha.3-core-compact.manifest.yaml
+```
+
+exit_code: `0`
+
+stdout:
+```text
+9fc808a5e085f57247294b35937e07a4331dfdd87fee43602334b76febfdf2e9  experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/dynamic-role-input.yaml
+396041ae9389da51ddab78413973e6a9a06e3cc101af5592a9be9b462be261cc  experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/dynamic-role-plan.yaml
+a154fcbb5db4623c5b06a406464236c5e40b05e316a00f5b9b2ced03283f37b9  experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/participant-register.yaml
+b132c9b8dd17a4b61ea739cdc986cf82407b9b78fe66e222565d2f4d1b8bc39e  experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/blind-first-round/participant-initial-prompt.md
+34cb80469054d7da7cafed6f091f73d0c127d71b5e9c132b52f455a509d72c1c  experiments/codex-core-candidate-comparison/pilot-001/task/prompt.md
+303fd59a8e08a052bdef74a3545fd74a1ad5182e994c5970861428fe2b5b9c48  experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/compact-bundle/MADP-v0.3.0-alpha.3-core-compact.md
+762ba8b6c60e0ec33d25e39b3c94116f138dc0feb1c143b35417ddce84e001c0  experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/compact-bundle/MADP-v0.3.0-alpha.3-core-compact.manifest.yaml
+```
+
+stderr:
+```text
+```
+
+## 49
+
+command:
+```text
+python -c 'from pathlib import Path; import hashlib; files=[Path("experiments/codex-core-candidate-comparison/pilot-001/task/prompt.md"),Path("experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/compact-bundle/MADP-v0.3.0-alpha.3-core-compact.md"),Path("experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/blind-first-round/participant-initial-prompt.md"),Path("experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/participant-register.yaml"),Path("experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/dynamic-role-plan.yaml")]; h=hashlib.sha256(); [h.update(p.read_bytes()) for p in files]; print(h.hexdigest())'
+```
+
+exit_code: `0`
+
+stdout:
+```text
+a754c49463e74c2fe79ed039438da070ed3ea0259fd55c87c71195a901f26925
+```
+
+stderr:
+```text
+```
+
+## 50
+
+command:
+```text
+python scripts/check_alpha3_dynamic_role_plan.py experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/dynamic-role-plan.yaml
+```
+
+exit_code: `0`
+
+stdout:
+```text
+alpha.3 dynamic role plan: PASS
+```
+
+stderr:
+```text
+```
+
+## 51
+
+command:
+```text
+python experiments/codex-core-candidate-comparison/pilot-001/validate.py
+```
+
+exit_code: `0`
+
+stdout:
+```text
+Codex Core Candidate comparison pilot: PASS
+task_sha256=34cb80469054d7da7cafed6f091f73d0c127d71b5e9c132b52f455a509d72c1c
+experiment_status=DRAFT
+```
+
+stderr:
+```text
+```
+
+## 52
+
+command:
+```text
+python scripts/check_alpha3_core_candidate_experiments.py
+```
+
+exit_code: `0`
+
+stdout:
+```text
+alpha.3 Core Candidate operational experiments: PASS (2 experimental schemas, Blind First Round semantics, 4-workflow comparison, Claim/Evidence migration invariants)
+```
+
+stderr:
+```text
+```
+
+## 53
+
+command:
+```text
+find experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw -type f -print
+```
+
+exit_code: `1`
+
+stdout:
+```text
+```
+
+stderr:
+```text
+find: ‘experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw’: No such file or directory
+```
+
+note: The command failed because `raw/` does not exist, confirming no raw response files were created. Command 58 records the same check as an explicit successful absence test.
+
+## 54
+
+command:
+```text
+git diff -- experiments/codex-core-candidate-comparison/pilot-001/experiment.yaml
+```
+
+exit_code: `0`
+
+stdout:
+```text
+```
+
+stderr:
+```text
+```
+
+## 55
+
+command:
+```text
+git status --short
+```
+
+exit_code: `0`
+
+stdout:
+```text
+?? experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/
+?? experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/logs/
+?? experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/run-notes.md
+```
+
+stderr:
+```text
+```
+
+## 56
+
+command:
+```text
+find experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate -maxdepth 4 -type f -print
+```
+
+exit_code: `0`
+
+stdout:
+```text
+experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/blind-first-round/information-set-manifest.yaml
+experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/blind-first-round/operator-send-checklist.md
+experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/blind-first-round/participant-initial-prompt.md
+experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/compact-bundle/MADP-v0.3.0-alpha.3-core-compact.manifest.yaml
+experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/compact-bundle/MADP-v0.3.0-alpha.3-core-compact.md
+experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/dynamic-role-input.yaml
+experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/dynamic-role-plan.yaml
+experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/participant-register.yaml
+experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/logs/commands.log
+experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/logs/operator-actions.md
+experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/README.md
+experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/run-notes.md
+```
+
+stderr:
+```text
+```
+
+## 57
+
+command:
+```text
+sha256sum experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/blind-first-round/information-set-manifest.yaml experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/blind-first-round/operator-send-checklist.md
+```
+
+exit_code: `0`
+
+stdout:
+```text
+848fcdd7ec56e4ff22b1a7a0d9b2bf662518ebcc616125cf0d25f2371fb53b0e  experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/blind-first-round/information-set-manifest.yaml
+206fc5f9385ea112b52a17714e9f053ac5a8ae3b53146b3ce745562274d80a3f  experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/blind-first-round/operator-send-checklist.md
+```
+
+stderr:
+```text
+```
+
+## 58
+
+command:
+```text
+test ! -e experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw
+```
+
+exit_code: `0`
+
+stdout:
+```text
+```
+
+stderr:
+```text
+```
+
+## 59-62
+
+commands:
+```text
+test ! -e experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/blind-first-round/rendered-prompt-CHATGPT-A.md
+test ! -e experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/blind-first-round/rendered-prompt-CLAUDE-A.md
+test ! -e experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/blind-first-round/rendered-prompt-GEMINI-A.md
+test ! -e experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/blind-first-round/capture-register.yaml
+```
+
+exit_code: `0` for each command
+
+stdout:
+```text
+```
+
+stderr:
+```text
+```
+
+## 63
+
+command:
+```text
+python -c 'from pathlib import Path; import hashlib; files=[Path("experiments/codex-core-candidate-comparison/pilot-001/task/prompt.md"),Path("experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/compact-bundle/MADP-v0.3.0-alpha.3-core-compact.md"),Path("experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/blind-first-round/participant-initial-prompt.md"),Path("experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/participant-register.yaml"),Path("experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/dynamic-role-plan.yaml")]; h=hashlib.sha256(); [h.update(p.read_bytes()) for p in files]; print(h.hexdigest())'
+```
+
+exit_code: `0`
+
+stdout:
+```text
+a754c49463e74c2fe79ed039438da070ed3ea0259fd55c87c71195a901f26925
+```
+
+stderr:
+```text
+```
+
+## 64
+
+command:
+```text
+sha256sum experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/blind-first-round/rendered-prompt-CHATGPT-A.md experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/blind-first-round/rendered-prompt-CLAUDE-A.md experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/blind-first-round/rendered-prompt-GEMINI-A.md
+```
+
+exit_code: `0`
+
+stdout:
+```text
+60856cfacfd8e6e380aef8a84f2df11b5a4882b92c0deedaa35cdc3144dc77df  experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/blind-first-round/rendered-prompt-CHATGPT-A.md
+27fd1033b90e467a9756221110c7627ab5bf04536dda85f794f8f520f8cafc72  experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/blind-first-round/rendered-prompt-CLAUDE-A.md
+2b9edd842e6f090f5566ae6bd58abec9d365580c47bca38f7e8eb01461ee2b3f  experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/blind-first-round/rendered-prompt-GEMINI-A.md
+```
+
+stderr:
+```text
+```
+
+## 65
+
+command:
+```text
+wc -c experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/blind-first-round/rendered-prompt-CHATGPT-A.md experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/blind-first-round/rendered-prompt-CLAUDE-A.md experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/blind-first-round/rendered-prompt-GEMINI-A.md
+```
+
+exit_code: `0`
+
+stdout:
+```text
+1603 experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/blind-first-round/rendered-prompt-CHATGPT-A.md
+1599 experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/blind-first-round/rendered-prompt-CLAUDE-A.md
+1598 experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/blind-first-round/rendered-prompt-GEMINI-A.md
+4800 total
+```
+
+stderr:
+```text
+```
+
+## 66
+
+command:
+```text
+python -c 'from pathlib import Path; base=Path("experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/blind-first-round"); template=(base/"participant-initial-prompt.md").read_text(encoding="utf-8"); cases={"CHATGPT-A":("GPT-5.6 Sol",base/"rendered-prompt-CHATGPT-A.md"),"CLAUDE-A":("Opus 4.8",base/"rendered-prompt-CLAUDE-A.md"),"GEMINI-A":("3.1 Pro",base/"rendered-prompt-GEMINI-A.md")};
+for pid,(model,path) in cases.items():
+    expected=template.replace("participant_id: <人間が指定したID>",f"participant_id: {pid}").replace("model_label: <画面に表示されているモデル名>",f"model_label: {model}"); actual=path.read_text(encoding="utf-8");
+    if actual != expected: raise SystemExit(f"FAIL {pid}")
+print("rendered prompt diff check: PASS")'
+```
+
+exit_code: `0`
+
+stdout:
+```text
+rendered prompt diff check: PASS
+```
+
+stderr:
+```text
+```
+
+## 67
+
+command:
+```text
+test ! -e experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw
+```
+
+exit_code: `0`
+
+stdout:
+```text
+```
+
+stderr:
+```text
+```
+
+## 68
+
+command:
+```text
+mkdir experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw
+```
+
+exit_code: `0`
+
+stdout:
+```text
+```
+
+stderr:
+```text
+```
+
+## 69
+
+command:
+```text
+python -c 'from pathlib import Path; import yaml; p=Path("experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/blind-first-round/capture-register.yaml"); data=yaml.safe_load(p.read_text(encoding="utf-8")); assert data["cross_exposure_authorized"] is False; assert data["cross_exposure_started"] is False; print("capture-register YAML: PASS cross_exposure_authorized=false cross_exposure_started=false")'
+```
+
+exit_code: `0`
+
+stdout:
+```text
+capture-register YAML: PASS cross_exposure_authorized=false cross_exposure_started=false
+```
+
+stderr:
+```text
+```
+
+## 70
+
+command:
+```text
+python -c 'from pathlib import Path; import yaml; p=Path("experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/blind-first-round/information-set-manifest.yaml"); data=yaml.safe_load(p.read_text(encoding="utf-8")); assert data["information_set_hash"]["value"] == "a754c49463e74c2fe79ed039438da070ed3ea0259fd55c87c71195a901f26925"; print("information-set manifest YAML: PASS information_set_hash unchanged")'
+```
+
+exit_code: `0`
+
+stdout:
+```text
+information-set manifest YAML: PASS information_set_hash unchanged
+```
+
+stderr:
+```text
+```
+
+## 71
+
+command:
+```text
+find experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw -mindepth 1 -print
+```
+
+exit_code: `0`
+
+stdout:
+```text
+```
+
+stderr:
+```text
+```
+
+## 72
+
+command:
+```text
+sha256sum experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/blind-first-round/capture-register.yaml experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/blind-first-round/information-set-manifest.yaml
+```
+
+exit_code: `0`
+
+stdout:
+```text
+cbe9882a680092d7be53394b4296bc3f72387fbf21a612a04f341be1d4b37e3b  experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/blind-first-round/capture-register.yaml
+f91fe38e0e1a6dc8b3b261ddffdae73986c4a8b2420e9767f772962cb4a4ae3f  experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/blind-first-round/information-set-manifest.yaml
+```
+
+stderr:
+```text
+```
+
+## 73
+
+command:
+```text
+python -c 'from pathlib import Path; import hashlib; files=[Path("experiments/codex-core-candidate-comparison/pilot-001/task/prompt.md"),Path("experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/compact-bundle/MADP-v0.3.0-alpha.3-core-compact.md"),Path("experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/blind-first-round/participant-initial-prompt.md"),Path("experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/participant-register.yaml"),Path("experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/dynamic-role-plan.yaml")]; h=hashlib.sha256(); [h.update(p.read_bytes()) for p in files]; print(h.hexdigest())'
+```
+
+exit_code: `0`
+
+stdout:
+```text
+a754c49463e74c2fe79ed039438da070ed3ea0259fd55c87c71195a901f26925
+```
+
+stderr:
+```text
+```
+
+## 74
+
+command:
+```text
+python scripts/check_alpha3_dynamic_role_plan.py experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/dynamic-role-plan.yaml
+```
+
+exit_code: `0`
+
+stdout:
+```text
+alpha.3 dynamic role plan: PASS
+```
+
+stderr:
+```text
+```
+
+## 75
+
+command:
+```text
+python experiments/codex-core-candidate-comparison/pilot-001/validate.py
+```
+
+exit_code: `0`
+
+stdout:
+```text
+Codex Core Candidate comparison pilot: PASS
+task_sha256=34cb80469054d7da7cafed6f091f73d0c127d71b5e9c132b52f455a509d72c1c
+experiment_status=DRAFT
+```
+
+stderr:
+```text
+```
+
+## 76
+
+command:
+```text
+python scripts/check_alpha3_core_candidate_experiments.py
+```
+
+exit_code: `0`
+
+stdout:
+```text
+alpha.3 Core Candidate operational experiments: PASS (2 experimental schemas, Blind First Round semantics, 4-workflow comparison, Claim/Evidence migration invariants)
+```
+
+stderr:
+```text
+```
+
+## 77
+
+command:
+```text
+git diff -- experiments/codex-core-candidate-comparison/pilot-001/experiment.yaml
+```
+
+exit_code: `0`
+
+stdout:
+```text
+```
+
+stderr:
+```text
+```
+
+## 78
+
+command:
+```text
+git status --short
+```
+
+exit_code: `0`
+
+stdout:
+```text
+?? experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/
+?? experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/logs/
+?? experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/run-notes.md
+```
+
+stderr:
+```text
+```
+
+## 79
+
+command:
+```text
+find experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate -maxdepth 4 -type f -print
+```
+
+exit_code: `0`
+
+stdout:
+```text
+experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/blind-first-round/capture-register.yaml
+experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/blind-first-round/information-set-manifest.yaml
+experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/blind-first-round/operator-send-checklist.md
+experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/blind-first-round/participant-initial-prompt.md
+experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/blind-first-round/rendered-prompt-CHATGPT-A.md
+experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/blind-first-round/rendered-prompt-CLAUDE-A.md
+experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/blind-first-round/rendered-prompt-GEMINI-A.md
+experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/compact-bundle/MADP-v0.3.0-alpha.3-core-compact.manifest.yaml
+experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/compact-bundle/MADP-v0.3.0-alpha.3-core-compact.md
+experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/dynamic-role-input.yaml
+experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/dynamic-role-plan.yaml
+experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/participant-register.yaml
+experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/logs/commands.log
+experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/logs/operator-actions.md
+experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/README.md
+experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/run-notes.md
+```
+
+stderr:
+```text
+```
+
+## 80
+
+command:
+```text
+find experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw -mindepth 1 -print
+```
+
+exit_code: `0`
+
+stdout:
+```text
+```
+
+stderr:
+```text
+```
+
+## 81
+
+command:
+```text
+date -u +%Y-%m-%dT%H:%M:%SZ
+```
+
+exit_code: `0`
+
+stdout:
+```text
+2026-07-18T13:12:53Z
+```
+
+stderr:
+```text
+```
+
+## 82
+
+command:
+```text
+test ! -e experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw/initial-response-CHATGPT-A.md
+```
+
+exit_code: `0`
+
+stdout:
+```text
+```
+
+stderr:
+```text
+```
+
+## 83
+
+command:
+```text
+sha256sum experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw/initial-response-CHATGPT-A.md
+```
+
+exit_code: `0`
+
+stdout:
+```text
+b405cd9f321ba092ffa402ab501db44a6484d4308292fbd1e279e2d87ad77377  experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw/initial-response-CHATGPT-A.md
+```
+
+stderr:
+```text
+```
+
+## 84
+
+command:
+```text
+wc -c experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw/initial-response-CHATGPT-A.md
+```
+
+exit_code: `0`
+
+stdout:
+```text
+32709 experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw/initial-response-CHATGPT-A.md
+```
+
+stderr:
+```text
+```
+
+## 85
+
+command:
+```text
+sed -n '1,80p' experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/blind-first-round/capture-register.yaml
+```
+
+exit_code: `0`
+
+stdout:
+```text
+Displayed the relevant capture-register section before updating CHATGPT-A capture fields.
+```
+
+stderr:
+```text
+```
+
+## 86
+
+command:
+```text
+python -c 'from pathlib import Path; import yaml; p=Path("experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/blind-first-round/capture-register.yaml"); data=yaml.safe_load(p.read_text(encoding="utf-8")); row=next(x for x in data["participants"] if x["participant_id"]=="CHATGPT-A"); assert data["cross_exposure_authorized"] is False; assert data["cross_exposure_started"] is False; assert row["response_status"] == "CAPTURED"; assert row["raw_response_sha256"] == "b405cd9f321ba092ffa402ab501db44a6484d4308292fbd1e279e2d87ad77377"; print("capture-register partial check: PASS")'
+```
+
+exit_code: `0`
+
+stdout:
+```text
+capture-register partial check: PASS
+```
+
+stderr:
+```text
+```
+
+## 87
+
+command:
+```text
+sha256sum experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/blind-first-round/capture-register.yaml
+```
+
+exit_code: `0`
+
+stdout:
+```text
+36adb1de44e5f50c519763429e6c83bb16a4a6044b63528f3ae1c38fa8f66810  experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/blind-first-round/capture-register.yaml
+```
+
+stderr:
+```text
+```
+
+## 88
+
+command:
+```text
+find experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw -maxdepth 1 -type f -print
+```
+
+exit_code: `0`
+
+stdout:
+```text
+experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw/initial-response-CHATGPT-A.md
+```
+
+stderr:
+```text
+```
+
+## 89
+
+command:
+```text
+git diff -- experiments/codex-core-candidate-comparison/pilot-001/experiment.yaml
+```
+
+exit_code: `0`
+
+stdout:
+```text
+```
+
+stderr:
+```text
+```
+
+## 90
+
+command:
+```text
+date -u +%Y-%m-%dT%H:%M:%SZ
+```
+
+exit_code: `0`
+
+stdout:
+```text
+2026-07-18T13:18:07Z
+```
+
+stderr:
+```text
+```
+
+## 91
+
+command:
+```text
+test ! -e experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw/initial-response-CLAUDE-A.md
+```
+
+exit_code: `0`
+
+stdout:
+```text
+```
+
+stderr:
+```text
+```
+
+## 92
+
+command:
+```text
+sha256sum experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw/initial-response-CLAUDE-A.md
+```
+
+exit_code: `0`
+
+stdout:
+```text
+23d3bfb31da0fb29e93a524e0487c9703bd6a98c4e3cb3e1f94e1c37d6379ca3  experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw/initial-response-CLAUDE-A.md
+```
+
+stderr:
+```text
+```
+
+## 93
+
+command:
+```text
+wc -c experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw/initial-response-CLAUDE-A.md
+```
+
+exit_code: `0`
+
+stdout:
+```text
+26120 experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw/initial-response-CLAUDE-A.md
+```
+
+stderr:
+```text
+```
+
+## 94
+
+command:
+```text
+python -c 'from pathlib import Path; import yaml; p=Path("experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/blind-first-round/capture-register.yaml"); data=yaml.safe_load(p.read_text(encoding="utf-8")); assert data["cross_exposure_authorized"] is False; assert data["cross_exposure_started"] is False; rows={x["participant_id"]: x for x in data["participants"]}; assert rows["CHATGPT-A"]["response_status"] == "CAPTURED"; assert rows["CLAUDE-A"]["response_status"] == "CAPTURED"; assert rows["GEMINI-A"]["response_status"] == "NOT_RECEIVED"; print("capture-register partial check: PASS")'
+```
+
+exit_code: `0`
+
+stdout:
+```text
+capture-register partial check: PASS
+```
+
+stderr:
+```text
+```
+
+## 95
+
+command:
+```text
+sha256sum experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/blind-first-round/capture-register.yaml
+```
+
+exit_code: `0`
+
+stdout:
+```text
+a1883cc1c62f38151c36b67c2787e2d2df2b5bebcfaf9e9de0d9619209aecb93  experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/blind-first-round/capture-register.yaml
+```
+
+stderr:
+```text
+```
+
+## 96
+
+command:
+```text
+find experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw -maxdepth 1 -type f -print
+```
+
+exit_code: `0`
+
+stdout:
+```text
+experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw/initial-response-CHATGPT-A.md
+experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw/initial-response-CLAUDE-A.md
+```
+
+stderr:
+```text
+```
+
+## 97
+
+command:
+```text
+git diff -- experiments/codex-core-candidate-comparison/pilot-001/experiment.yaml
+```
+
+exit_code: `0`
+
+stdout:
+```text
+```
+
+stderr:
+```text
+```
+
+## 98
+
+command:
+```text
+date -u +%Y-%m-%dT%H:%M:%SZ
+```
+
+exit_code: `0`
+
+stdout:
+```text
+2026-07-18T13:22:25Z
+```
+
+stderr:
+```text
+```
+
+## 99
+
+command:
+```text
+test ! -e experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw/initial-response-GEMINI-A.md
+```
+
+exit_code: `0`
+
+stdout:
+```text
+```
+
+stderr:
+```text
+```
+
+## 100
+
+command:
+```text
+sha256sum experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw/initial-response-GEMINI-A.md
+```
+
+exit_code: `0`
+
+stdout:
+```text
+0281d4d113c5aa277b2e207209963a026b7a3a751559c2b2164d0498dd1726b5  experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw/initial-response-GEMINI-A.md
+```
+
+stderr:
+```text
+```
+
+## 101
+
+command:
+```text
+wc -c experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw/initial-response-GEMINI-A.md
+```
+
+exit_code: `0`
+
+stdout:
+```text
+22893 experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw/initial-response-GEMINI-A.md
+```
+
+stderr:
+```text
+```
+
+## 102
+
+command:
+```text
+find experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw -maxdepth 1 -type f -name 'initial-response-*.md' -print | sort
+```
+
+exit_code: `0`
+
+stdout:
+```text
+experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw/initial-response-CHATGPT-A.md
+experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw/initial-response-CLAUDE-A.md
+experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw/initial-response-GEMINI-A.md
+```
+
+stderr:
+```text
+```
+
+## 103
+
+command:
+```text
+sha256sum experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw/initial-response-CHATGPT-A.md experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw/initial-response-CLAUDE-A.md experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw/initial-response-GEMINI-A.md
+```
+
+exit_code: `0`
+
+stdout:
+```text
+b405cd9f321ba092ffa402ab501db44a6484d4308292fbd1e279e2d87ad77377  experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw/initial-response-CHATGPT-A.md
+23d3bfb31da0fb29e93a524e0487c9703bd6a98c4e3cb3e1f94e1c37d6379ca3  experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw/initial-response-CLAUDE-A.md
+0281d4d113c5aa277b2e207209963a026b7a3a751559c2b2164d0498dd1726b5  experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw/initial-response-GEMINI-A.md
+```
+
+stderr:
+```text
+```
+
+## 104
+
+command:
+```text
+wc -c experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw/initial-response-CHATGPT-A.md experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw/initial-response-CLAUDE-A.md experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw/initial-response-GEMINI-A.md
+```
+
+exit_code: `0`
+
+stdout:
+```text
+32709 experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw/initial-response-CHATGPT-A.md
+26120 experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw/initial-response-CLAUDE-A.md
+22893 experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw/initial-response-GEMINI-A.md
+81722 total
+```
+
+stderr:
+```text
+```
+
+## 105
+
+command:
+```text
+python -c 'from pathlib import Path; import yaml, hashlib; base=Path("experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate"); cap=yaml.safe_load((base/"artifacts/blind-first-round/capture-register.yaml").read_text(encoding="utf-8")); preg=yaml.safe_load((base/"artifacts/participant-register.yaml").read_text(encoding="utf-8")); assert cap["cross_exposure_authorized"] is False; assert cap["cross_exposure_started"] is False; rows={x["participant_id"]: x for x in cap["participants"]}; prows={x["participant_id"]: x for x in preg["participants"]}; expected={"CHATGPT-A":"b405cd9f321ba092ffa402ab501db44a6484d4308292fbd1e279e2d87ad77377","CLAUDE-A":"23d3bfb31da0fb29e93a524e0487c9703bd6a98c4e3cb3e1f94e1c37d6379ca3","GEMINI-A":"0281d4d113c5aa277b2e207209963a026b7a3a751559c2b2164d0498dd1726b5"};
+for pid, digest in expected.items():
+    row=rows[pid]; p=base/row["raw_response_ref"]; assert p.is_file(); actual=hashlib.sha256(p.read_bytes()).hexdigest(); assert actual == digest == row["raw_response_sha256"]; assert row["response_status"] == "CAPTURED"; assert row["captured_before_cross_exposure"] is True; assert row["exposure_state"] == "UNEXPOSED"; assert row["exposed_response_refs"] == []; assert prows[pid]["initial_response_filename"] == row["raw_response_ref"]
+print("phase3b raw capture consistency: PASS")'
+```
+
+exit_code: `0`
+
+stdout:
+```text
+phase3b raw capture consistency: PASS
+```
+
+stderr:
+```text
+```
+
+## 106
+
+command:
+```text
+sha256sum experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/blind-first-round/rendered-prompt-CHATGPT-A.md experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/blind-first-round/rendered-prompt-CLAUDE-A.md experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/blind-first-round/rendered-prompt-GEMINI-A.md
+```
+
+exit_code: `0`
+
+stdout:
+```text
+60856cfacfd8e6e380aef8a84f2df11b5a4882b92c0deedaa35cdc3144dc77df  experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/blind-first-round/rendered-prompt-CHATGPT-A.md
+27fd1033b90e467a9756221110c7627ab5bf04536dda85f794f8f520f8cafc72  experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/blind-first-round/rendered-prompt-CLAUDE-A.md
+2b9edd842e6f090f5566ae6bd58abec9d365580c47bca38f7e8eb01461ee2b3f  experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/blind-first-round/rendered-prompt-GEMINI-A.md
+```
+
+stderr:
+```text
+```
+
+## 107
+
+command:
+```text
+python -c 'from pathlib import Path; import hashlib; files=[Path("experiments/codex-core-candidate-comparison/pilot-001/task/prompt.md"),Path("experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/compact-bundle/MADP-v0.3.0-alpha.3-core-compact.md"),Path("experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/blind-first-round/participant-initial-prompt.md"),Path("experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/participant-register.yaml"),Path("experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/dynamic-role-plan.yaml")]; h=hashlib.sha256(); [h.update(p.read_bytes()) for p in files]; print(h.hexdigest())'
+```
+
+exit_code: `0`
+
+stdout:
+```text
+a754c49463e74c2fe79ed039438da070ed3ea0259fd55c87c71195a901f26925
+```
+
+stderr:
+```text
+```
+
+## 108
+
+command:
+```text
+git diff -- experiments/codex-core-candidate-comparison/pilot-001/experiment.yaml
+```
+
+exit_code: `0`
+
+stdout:
+```text
+```
+
+stderr:
+```text
+```
+
+## 109
+
+command:
+```text
+sha256sum experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/blind-first-round/capture-register.yaml
+```
+
+exit_code: `0`
+
+stdout:
+```text
+ed5bb0f332090c87b7f8ebc00a4b570ee4ea02701a9ed2881674096f19c00cac  experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/blind-first-round/capture-register.yaml
+```
+
+stderr:
+```text
+```
+
+## 110
+
+command:
+```text
+python scripts/check_alpha3_dynamic_role_plan.py experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/dynamic-role-plan.yaml
+```
+
+exit_code: `0`
+
+stdout:
+```text
+alpha.3 dynamic role plan: PASS
+```
+
+stderr:
+```text
+```
+
+## 111
+
+command:
+```text
+python experiments/codex-core-candidate-comparison/pilot-001/validate.py
+```
+
+exit_code: `0`
+
+stdout:
+```text
+Codex Core Candidate comparison pilot: PASS
+task_sha256=34cb80469054d7da7cafed6f091f73d0c127d71b5e9c132b52f455a509d72c1c
+experiment_status=DRAFT
+```
+
+stderr:
+```text
+```
+
+## 112
+
+command:
+```text
+python scripts/check_alpha3_core_candidate_experiments.py
+```
+
+exit_code: `0`
+
+stdout:
+```text
+alpha.3 Core Candidate operational experiments: PASS (2 experimental schemas, Blind First Round semantics, 4-workflow comparison, Claim/Evidence migration invariants)
+```
+
+stderr:
+```text
+```
+
+## 113
+
+command:
+```text
+git status --short
+```
+
+exit_code: `0`
+
+stdout:
+```text
+?? experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/
+?? experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/logs/
+?? experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw/
+?? experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/run-notes.md
+```
+
+stderr:
+```text
+```
+
+## 114
+
+command:
+```text
+test ! -e experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/blind-first-round/send-reconciliation.yaml
+```
+
+exit_code: `0`
+
+stdout:
+```text
+```
+
+stderr:
+```text
+```
+
+## 115
+
+command:
+```text
+sha256sum experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw/initial-response-CHATGPT-A.md experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw/initial-response-CLAUDE-A.md experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw/initial-response-GEMINI-A.md
+```
+
+exit_code: `0`
+
+stdout:
+```text
+b405cd9f321ba092ffa402ab501db44a6484d4308292fbd1e279e2d87ad77377  experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw/initial-response-CHATGPT-A.md
+23d3bfb31da0fb29e93a524e0487c9703bd6a98c4e3cb3e1f94e1c37d6379ca3  experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw/initial-response-CLAUDE-A.md
+0281d4d113c5aa277b2e207209963a026b7a3a751559c2b2164d0498dd1726b5  experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw/initial-response-GEMINI-A.md
+```
+
+stderr:
+```text
+```
+
+## 116
+
+command:
+```text
+wc -c experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw/initial-response-CHATGPT-A.md experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw/initial-response-CLAUDE-A.md experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw/initial-response-GEMINI-A.md
+```
+
+exit_code: `0`
+
+stdout:
+```text
+32709 experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw/initial-response-CHATGPT-A.md
+26120 experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw/initial-response-CLAUDE-A.md
+22893 experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw/initial-response-GEMINI-A.md
+81722 total
+```
+
+stderr:
+```text
+```
+
+## 117
+
+command:
+```text
+python -c 'from pathlib import Path; import yaml; p=Path("experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/blind-first-round/send-reconciliation.yaml"); data=yaml.safe_load(p.read_text(encoding="utf-8")); assert data["send_confirmed_in_realtime"] is False; assert data["exact_send_times_available"] is False; assert all(e["sent_at_utc"] is None for e in data["events"]); assert data["formal_release_evidence"] is False; assert data["alpha4_authorized"] is False; print("send-reconciliation YAML: PASS sent_at_utc_null=true")'
+```
+
+exit_code: `0`
+
+stdout:
+```text
+send-reconciliation YAML: PASS sent_at_utc_null=true
+```
+
+stderr:
+```text
+```
+
+## 118
+
+command:
+```text
+python -c 'from pathlib import Path; import yaml; p=Path("experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/blind-first-round/capture-register.yaml"); data=yaml.safe_load(p.read_text(encoding="utf-8")); assert data["cross_exposure_authorized"] is False; assert data["cross_exposure_started"] is False; rows=data["participants"]; assert len({r["independence_group"] for r in rows}) == 3; assert all(r["send_status"] == "SENT" for r in rows); assert all(r["sent_at_utc"] is None for r in rows); assert all(r["send_time_status"] == "UNKNOWN" for r in rows); assert all(r["send_confirmation_status"] == "RETROSPECTIVE_HUMAN_ATTESTATION" for r in rows); assert all(r["response_status"] == "CAPTURED" for r in rows); assert all(r["captured_before_cross_exposure"] is True for r in rows); assert all(r["exposure_state"] == "UNEXPOSED" for r in rows); assert all(r["exposed_response_refs"] == [] for r in rows); print("capture-register reconciliation check: PASS")'
+```
+
+exit_code: `0`
+
+stdout:
+```text
+capture-register reconciliation check: PASS
+```
+
+stderr:
+```text
+```
+
+## 119
+
+command:
+```text
+sha256sum experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/blind-first-round/send-reconciliation.yaml experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/blind-first-round/capture-register.yaml
+```
+
+exit_code: `0`
+
+stdout:
+```text
+4b6491770510c6359af8666428133f7b091f0334f9ca1545199b14a1b87dc057  experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/blind-first-round/send-reconciliation.yaml
+e06a865e1e2047480f26c4bc12ea5ae4674bad3bf20b6708669aa97f31d8c0c6  experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/blind-first-round/capture-register.yaml
+```
+
+stderr:
+```text
+```
+
+## 120
+
+command:
+```text
+python scripts/check_alpha3_dynamic_role_plan.py experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/dynamic-role-plan.yaml
+```
+
+exit_code: `0`
+
+stdout:
+```text
+alpha.3 dynamic role plan: PASS
+```
+
+stderr:
+```text
+```
+
+## 121
+
+command:
+```text
+python experiments/codex-core-candidate-comparison/pilot-001/validate.py
+```
+
+exit_code: `0`
+
+stdout:
+```text
+Codex Core Candidate comparison pilot: PASS
+task_sha256=34cb80469054d7da7cafed6f091f73d0c127d71b5e9c132b52f455a509d72c1c
+experiment_status=DRAFT
+```
+
+stderr:
+```text
+```
+
+## 122
+
+command:
+```text
+python scripts/check_alpha3_core_candidate_experiments.py
+```
+
+exit_code: `0`
+
+stdout:
+```text
+alpha.3 Core Candidate operational experiments: PASS (2 experimental schemas, Blind First Round semantics, 4-workflow comparison, Claim/Evidence migration invariants)
+```
+
+stderr:
+```text
+```
+
+## 123
+
+command:
+```text
+git diff -- experiments/codex-core-candidate-comparison/pilot-001/experiment.yaml
+```
+
+exit_code: `0`
+
+stdout:
+```text
+```
+
+stderr:
+```text
+```
+
+## 124
+
+command:
+```text
+git status --short
+```
+
+exit_code: `0`
+
+stdout:
+```text
+?? experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/
+?? experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/logs/
+?? experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw/
+?? experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/run-notes.md
+```
+
+stderr:
+```text
+```
+
+## 125
+
+command:
+```text
+test ! -e experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/cross-exposure
+```
+
+exit_code: `0`
+
+stdout:
+```text
+```
+
+stderr:
+```text
+```
+
+## 126
+
+command:
+```text
+sha256sum experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw/initial-response-CHATGPT-A.md experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw/initial-response-CLAUDE-A.md experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw/initial-response-GEMINI-A.md
+```
+
+exit_code: `0`
+
+stdout:
+```text
+b405cd9f321ba092ffa402ab501db44a6484d4308292fbd1e279e2d87ad77377  experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw/initial-response-CHATGPT-A.md
+23d3bfb31da0fb29e93a524e0487c9703bd6a98c4e3cb3e1f94e1c37d6379ca3  experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw/initial-response-CLAUDE-A.md
+0281d4d113c5aa277b2e207209963a026b7a3a751559c2b2164d0498dd1726b5  experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw/initial-response-GEMINI-A.md
+```
+
+stderr:
+```text
+```
+
+## 127
+
+command:
+```text
+wc -c experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw/initial-response-CHATGPT-A.md experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw/initial-response-CLAUDE-A.md experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw/initial-response-GEMINI-A.md
+```
+
+exit_code: `0`
+
+stdout:
+```text
+32709 experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw/initial-response-CHATGPT-A.md
+26120 experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw/initial-response-CLAUDE-A.md
+22893 experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw/initial-response-GEMINI-A.md
+81722 total
+```
+
+stderr:
+```text
+```
+
+## 128
+
+command:
+```text
+mkdir experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/cross-exposure
+```
+
+exit_code: `0`
+
+stdout:
+```text
+```
+
+stderr:
+```text
+```
+
+## 129
+
+command:
+```text
+python -c 'from pathlib import Path; base=Path("experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/cross-exposure"); template=(base/"cross-exposure-prompt-template.md").read_text(encoding="utf-8"); cases={"CHATGPT-A":("GPT-5.6 Sol","raw/initial-response-CHATGPT-A.md"),"CLAUDE-A":("Opus 4.8","raw/initial-response-CLAUDE-A.md"),"GEMINI-A":("3.1 Pro","raw/initial-response-GEMINI-A.md")};
+for pid,(model,own_ref) in cases.items():
+    expected=template.replace("<PARTICIPANT_ID>",pid).replace("<MODEL_LABEL>",model).replace("<OWN_INITIAL_RESPONSE_REF>",own_ref); actual=(base/f"rendered-prompt-{pid}.md").read_text(encoding="utf-8");
+    if actual != expected: raise SystemExit(f"FAIL {pid}")
+print("cross exposure rendered prompt diff check: PASS")'
+```
+
+exit_code: `0`
+
+stdout:
+```text
+cross exposure rendered prompt diff check: PASS
+```
+
+stderr:
+```text
+```
+
+## 130
+
+command:
+```text
+sha256sum experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/cross-exposure/cross-exposure-prompt-template.md experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/cross-exposure/rendered-prompt-CHATGPT-A.md experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/cross-exposure/rendered-prompt-CLAUDE-A.md experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/cross-exposure/rendered-prompt-GEMINI-A.md
+```
+
+exit_code: `0`
+
+stdout:
+```text
+c706d32a63528e86a3edf573b5d27f7c514a848e36b8f432e211b3b12f6b1559  experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/cross-exposure/cross-exposure-prompt-template.md
+3f94b426a8e14be0cc06628294a326d4df0f7129162cb2aac29c5b0efc9ce3a6  experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/cross-exposure/rendered-prompt-CHATGPT-A.md
+7ad07e2c47d816792b59a4acb949caef787ab42415bb602b3045da97126020d0  experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/cross-exposure/rendered-prompt-CLAUDE-A.md
+cdc7be82e2e72546084cce7e1ff35ac21379c35faa168fb8a02a29586b001dd2  experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/cross-exposure/rendered-prompt-GEMINI-A.md
+```
+
+stderr:
+```text
+```
+
+## 131
+
+command:
+```text
+wc -c experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/cross-exposure/cross-exposure-prompt-template.md experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/cross-exposure/rendered-prompt-CHATGPT-A.md experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/cross-exposure/rendered-prompt-CLAUDE-A.md experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/cross-exposure/rendered-prompt-GEMINI-A.md
+```
+
+exit_code: `0`
+
+stdout:
+```text
+ 3909 experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/cross-exposure/cross-exposure-prompt-template.md
+ 3907 experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/cross-exposure/rendered-prompt-CHATGPT-A.md
+ 3902 experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/cross-exposure/rendered-prompt-CLAUDE-A.md
+ 3901 experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/cross-exposure/rendered-prompt-GEMINI-A.md
+15619 total
+```
+
+stderr:
+```text
+```
+
+## 132
+
+command:
+```text
+python -c 'from pathlib import Path; import hashlib; files=[Path("experiments/codex-core-candidate-comparison/pilot-001/task/prompt.md"),Path("experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/compact-bundle/MADP-v0.3.0-alpha.3-core-compact.md"),Path("experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw/initial-response-CHATGPT-A.md"),Path("experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw/initial-response-CLAUDE-A.md"),Path("experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw/initial-response-GEMINI-A.md"),Path("experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/cross-exposure/cross-exposure-prompt-template.md")]; h=hashlib.sha256(); [h.update(p.read_bytes()) for p in files]; print(h.hexdigest())'
+```
+
+exit_code: `0`
+
+stdout:
+```text
+7c7a642de7f16640b17a35bf78b8c7fd9ede199fb30ec963032971c62fb5fbf7
+```
+
+stderr:
+```text
+```
+
+## 133
+
+command:
+```text
+python -c 'from pathlib import Path; import yaml; p=Path("experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/cross-exposure/cross-exposure-information-set-manifest.yaml"); data=yaml.safe_load(p.read_text(encoding="utf-8")); assert data["cross_exposure_started"] is False; assert data["formal_release_evidence"] is False; assert data["alpha4_authorized"] is False; assert len(data["attachment_order"]) == 5; assert len(data["initial_response_inventory"]) == 3; print("cross-exposure manifest YAML: PASS")'
+```
+
+exit_code: `0`
+
+stdout:
+```text
+cross-exposure manifest YAML: PASS
+```
+
+stderr:
+```text
+```
+
+## 134
+
+command:
+```text
+python -c 'from pathlib import Path; import yaml; base=Path("experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate"); p=base/"artifacts/cross-exposure/cross-exposure-capture-register.yaml"; data=yaml.safe_load(p.read_text(encoding="utf-8")); assert data["cross_exposure_authorized"] is False; assert data["cross_exposure_started"] is False; canonical=["raw/initial-response-CHATGPT-A.md","raw/initial-response-CLAUDE-A.md","raw/initial-response-GEMINI-A.md"]; own={"CHATGPT-A":"raw/initial-response-CHATGPT-A.md","CLAUDE-A":"raw/initial-response-CLAUDE-A.md","GEMINI-A":"raw/initial-response-GEMINI-A.md"};
+for row in data["participants"]:
+    pid=row["participant_id"]; assert row["attached_initial_response_refs"] == canonical; assert sorted(row["newly_exposed_response_refs"]) == sorted([x for x in canonical if x != own[pid]]); assert row["send_status"] == "NOT_SENT"; assert row["response_status"] == "NOT_RECEIVED"; assert row["sent_at_utc"] is None; assert row["received_at_utc"] is None; assert not (base/row["raw_response_ref"]).exists()
+print("cross-exposure capture-register structure: PASS")'
+```
+
+exit_code: `0`
+
+stdout:
+```text
+cross-exposure capture-register structure: PASS
+```
+
+stderr:
+```text
+```
+
+## 135
+
+command:
+```text
+sha256sum experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/cross-exposure/cross-exposure-information-set-manifest.yaml experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/cross-exposure/cross-exposure-capture-register.yaml
+```
+
+exit_code: `0`
+
+stdout:
+```text
+f1d9cdc322ee5420590315ada0e8315e75ca0b7a32d279bd7fee392fb9450b35  experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/cross-exposure/cross-exposure-information-set-manifest.yaml
+8af2849f83ac2fcdceed5124a8efe1671c23c2b825f68d1d927530ec2f9a410d  experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/cross-exposure/cross-exposure-capture-register.yaml
+```
+
+stderr:
+```text
+```
+
+## 136-138
+
+commands:
+```text
+test ! -e experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw/cross-exposure-CHATGPT-A.md
+test ! -e experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw/cross-exposure-CLAUDE-A.md
+test ! -e experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw/cross-exposure-GEMINI-A.md
+```
+
+exit_code: `0` for each command
+
+stdout:
+```text
+```
+
+stderr:
+```text
+```
+
+## 139
+
+command:
+```text
+python scripts/check_alpha3_dynamic_role_plan.py experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/dynamic-role-plan.yaml
+```
+
+exit_code: `0`
+
+stdout:
+```text
+alpha.3 dynamic role plan: PASS
+```
+
+stderr:
+```text
+```
+
+## 140
+
+command:
+```text
+python experiments/codex-core-candidate-comparison/pilot-001/validate.py
+```
+
+exit_code: `0`
+
+stdout:
+```text
+Codex Core Candidate comparison pilot: PASS
+task_sha256=34cb80469054d7da7cafed6f091f73d0c127d71b5e9c132b52f455a509d72c1c
+experiment_status=DRAFT
+```
+
+stderr:
+```text
+```
+
+## 141
+
+command:
+```text
+python scripts/check_alpha3_core_candidate_experiments.py
+```
+
+exit_code: `0`
+
+stdout:
+```text
+alpha.3 Core Candidate operational experiments: PASS (2 experimental schemas, Blind First Round semantics, 4-workflow comparison, Claim/Evidence migration invariants)
+```
+
+stderr:
+```text
+```
+
+## 142
+
+command:
+```text
+git diff -- experiments/codex-core-candidate-comparison/pilot-001/experiment.yaml
+```
+
+exit_code: `0`
+
+stdout:
+```text
+```
+
+stderr:
+```text
+```
+
+## 143
+
+command:
+```text
+git diff -- experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/blind-first-round/capture-register.yaml
+```
+
+exit_code: `0`
+
+stdout:
+```text
+```
+
+stderr:
+```text
+```
+
+## 144
+
+command:
+```text
+git status --short
+```
+
+exit_code: `0`
+
+stdout:
+```text
+?? experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/
+?? experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/logs/
+?? experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw/
+?? experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/run-notes.md
+```
+
+stderr:
+```text
+```
+
+## 145
+
+command:
+```text
+sed -n '1,80p' experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/logs/operator-actions.md
+```
+
+exit_code: `0`
+
+stdout:
+```text
+Existing operator action log showed cumulative human actions through #12 plus retrospective send action IDs.
+```
+
+stderr:
+```text
+```
+
+## 146
+
+command:
+```text
+test ! -e experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002
+```
+
+exit_code: `0`
+
+stdout:
+```text
+```
+
+stderr:
+```text
+```
+
+## 147
+
+command:
+```text
+test ! -e experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/attempt-register.yaml
+```
+
+exit_code: `0`
+
+stdout:
+```text
+```
+
+stderr:
+```text
+```
+
+## 148
+
+command:
+```text
+sha256sum experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw/initial-response-CHATGPT-A.md experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw/initial-response-CLAUDE-A.md experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw/initial-response-GEMINI-A.md
+```
+
+exit_code: `0`
+
+stdout:
+```text
+b405cd9f321ba092ffa402ab501db44a6484d4308292fbd1e279e2d87ad77377  experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw/initial-response-CHATGPT-A.md
+23d3bfb31da0fb29e93a524e0487c9703bd6a98c4e3cb3e1f94e1c37d6379ca3  experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw/initial-response-CLAUDE-A.md
+0281d4d113c5aa277b2e207209963a026b7a3a751559c2b2164d0498dd1726b5  experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/raw/initial-response-GEMINI-A.md
+```
+
+stderr:
+```text
+```
+
+## 149
+
+command:
+```text
+mkdir -p experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/logs experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/compact-bundle experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/blind-first-round experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/raw
+```
+
+exit_code: `0`
+
+stdout:
+```text
+```
+
+stderr:
+```text
+```
+
+## 150
+
+command:
+```text
+cp experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/compact-bundle/MADP-v0.3.0-alpha.3-core-compact.md experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/compact-bundle/MADP-v0.3.0-alpha.3-core-compact.md
+```
+
+exit_code: `0`
+
+stdout:
+```text
+```
+
+stderr:
+```text
+```
+
+## 151
+
+command:
+```text
+cp experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/compact-bundle/MADP-v0.3.0-alpha.3-core-compact.manifest.yaml experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/compact-bundle/MADP-v0.3.0-alpha.3-core-compact.manifest.yaml
+```
+
+exit_code: `0`
+
+stdout:
+```text
+```
+
+stderr:
+```text
+```
+
+## 152
+
+command:
+```text
+cp experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/blind-first-round/participant-initial-prompt.md experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/blind-first-round/participant-initial-prompt.md
+```
+
+exit_code: `0`
+
+stdout:
+```text
+```
+
+stderr:
+```text
+```
+
+## 153
+
+command:
+```text
+cmp -s experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/compact-bundle/MADP-v0.3.0-alpha.3-core-compact.md experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/compact-bundle/MADP-v0.3.0-alpha.3-core-compact.md
+```
+
+exit_code: `0`
+
+stdout:
+```text
+```
+
+stderr:
+```text
+```
+
+## 154
+
+command:
+```text
+cmp -s experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/compact-bundle/MADP-v0.3.0-alpha.3-core-compact.manifest.yaml experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/compact-bundle/MADP-v0.3.0-alpha.3-core-compact.manifest.yaml
+```
+
+exit_code: `0`
+
+stdout:
+```text
+```
+
+stderr:
+```text
+```
+
+## 155
+
+command:
+```text
+cmp -s experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/artifacts/blind-first-round/participant-initial-prompt.md experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/blind-first-round/participant-initial-prompt.md
+```
+
+exit_code: `0`
+
+stdout:
+```text
+```
+
+stderr:
+```text
+```
+
+## 156
+
+command:
+```text
+sha256sum experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/compact-bundle/MADP-v0.3.0-alpha.3-core-compact.md experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/compact-bundle/MADP-v0.3.0-alpha.3-core-compact.manifest.yaml experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/blind-first-round/participant-initial-prompt.md
+```
+
+exit_code: `0`
+
+stdout:
+```text
+303fd59a8e08a052bdef74a3545fd74a1ad5182e994c5970861428fe2b5b9c48  experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/compact-bundle/MADP-v0.3.0-alpha.3-core-compact.md
+762ba8b6c60e0ec33d25e39b3c94116f138dc0feb1c143b35417ddce84e001c0  experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/compact-bundle/MADP-v0.3.0-alpha.3-core-compact.manifest.yaml
+b132c9b8dd17a4b61ea739cdc986cf82407b9b78fe66e222565d2f4d1b8bc39e  experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/blind-first-round/participant-initial-prompt.md
+```
+
+stderr:
+```text
+```
+
+## 157
+
+command:
+```text
+wc -c experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/compact-bundle/MADP-v0.3.0-alpha.3-core-compact.md experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/compact-bundle/MADP-v0.3.0-alpha.3-core-compact.manifest.yaml experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/blind-first-round/participant-initial-prompt.md
+```
+
+exit_code: `0`
+
+stdout:
+```text
+62637 experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/compact-bundle/MADP-v0.3.0-alpha.3-core-compact.md
+ 1745 experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/compact-bundle/MADP-v0.3.0-alpha.3-core-compact.manifest.yaml
+ 1652 experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/blind-first-round/participant-initial-prompt.md
+66034 total
+```
+
+stderr:
+```text
+```
+
+## 158
+
+command:
+```text
+sed -n '1,220p' experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/blind-first-round/participant-initial-prompt.md
+```
+
+exit_code: `0`
+
+stdout:
+```text
+Read copied prompt template for rendering. No prior attempt output content was read.
+```
+
+stderr:
+```text
+```
+
+## 159
+
+command:
+```text
+tail -n 80 experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/logs/operator-actions.md
+```
+
+exit_code: `0`
+
+stdout:
+```text
+Reviewed existing operator action log tail to append new attempt records.
+```
+
+stderr:
+```text
+```
+
+## 160
+
+command:
+```text
+tail -n 60 experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/run-notes.md
+```
+
+exit_code: `0`
+
+stdout:
+```text
+Reviewed existing run notes tail to append new attempt records.
+```
+
+stderr:
+```text
+```
+
+## 161
+
+command:
+```text
+python scripts/generate_alpha3_dynamic_role_plan.py experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/dynamic-role-input.yaml experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/dynamic-role-plan.yaml
+```
+
+exit_code: `0`
+
+stdout:
+```text
+generated dynamic role plan: experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/dynamic-role-plan.yaml status=READY
+```
+
+stderr:
+```text
+```
+
+## 162
+
+command:
+```text
+python scripts/check_alpha3_dynamic_role_plan.py experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/dynamic-role-plan.yaml
+```
+
+exit_code: `0`
+
+stdout:
+```text
+alpha.3 dynamic role plan: PASS
+```
+
+stderr:
+```text
+```
+
+## 163
+
+command:
+```text
+sed -n '1,220p' experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/dynamic-role-plan.yaml
+```
+
+exit_code: `0`
+
+stdout:
+```text
+Reviewed attempt-002 dynamic role plan status and assignments.
+```
+
+stderr:
+```text
+```
+
+## 164
+
+command:
+```text
+python - <<'PY' ... compute attempt-002 SHA-256 values, byte counts, and information-set hash ...
+```
+
+exit_code: `0`
+
+stdout:
+```text
+dynamic-role-input SHA-256: af12351fa9de7ce948b8045b44ea3056aa5c919c59447b2883208eeadcda0beb bytes=1874
+dynamic-role-plan SHA-256: d3d994b8e19cc9f143d393463bb62afabb19816e1da481eef1d63a3de39647d0 bytes=3959
+participant-register SHA-256: cebc69789cf3294064b61694d4b292681078f351aabc16a583a8a97d1399ddb6 bytes=1751
+rendered-prompt-CHATGPT-B SHA-256: cf79f7a2dbfdc9ebecc583c9c11dc09f1de72ca06fcaeeb8c522157d52e2a179 bytes=1603
+rendered-prompt-CLAUDE-B SHA-256: 757f5b972d0788f8bfb6150c742f08568962a9bae819bef1e4eb804e6eb24f35 bytes=1599
+rendered-prompt-GEMINI-B SHA-256: a5fdf0f8a5b59e69caa6ef6ae350f5a999c7a17770bbacf9196ab322eea3bf6c bytes=1598
+initial computed information-set hash: 2a273738e0f8e3384c6fcf16249a076b3f123c4a84cff0ada4da27caea0761b6
+```
+
+stderr:
+```text
+```
+
+## 165
+
+command:
+```text
+python - <<'PY' ... validate attempt-002 packet, YAML loading, hashes, raw-empty state, and prior-output exclusion ...
+```
+
+exit_code: `0`
+
+stdout:
+```text
+attempt_002_validation_errors: 1
+ERROR: information set hash mismatch: e08e2bb419f2b2b091f896165471e572f6d94fd4c54ee6c08da2c9ce02a3ed46
+dynamic_role_status: READY
+blind_first_round_status: PLAN_VALID
+attempt_002_information_set_hash: e08e2bb419f2b2b091f896165471e572f6d94fd4c54ee6c08da2c9ce02a3ed46
+attempt_002_raw_file_count: 0
+```
+
+stderr:
+```text
+```
+
+## 166
+
+command:
+```text
+python - <<'PY' ... rerun attempt-002 packet validation after correcting information-set hash ordering ...
+```
+
+exit_code: `0`
+
+stdout:
+```text
+attempt_002_validation_errors: 0
+dynamic_role_status: READY
+blind_first_round_status: PLAN_VALID
+attempt_002_information_set_hash: e08e2bb419f2b2b091f896165471e572f6d94fd4c54ee6c08da2c9ce02a3ed46
+attempt_002_raw_file_count: 0
+```
+
+stderr:
+```text
+```
+
+## 167
+
+command:
+```text
+python scripts/check_alpha3_dynamic_role_plan.py experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/dynamic-role-plan.yaml
+```
+
+exit_code: `0`
+
+stdout:
+```text
+alpha.3 dynamic role plan: PASS
+```
+
+stderr:
+```text
+```
+
+## 168
+
+command:
+```text
+python experiments/codex-core-candidate-comparison/pilot-001/validate.py
+```
+
+exit_code: `0`
+
+stdout:
+```text
+Codex Core Candidate comparison pilot: PASS
+task_sha256=34cb80469054d7da7cafed6f091f73d0c127d71b5e9c132b52f455a509d72c1c
+experiment_status=DRAFT
+```
+
+stderr:
+```text
+```
+
+## 169
+
+command:
+```text
+python scripts/check_alpha3_core_candidate_experiments.py
+```
+
+exit_code: `0`
+
+stdout:
+```text
+alpha.3 Core Candidate operational experiments: PASS (2 experimental schemas, Blind First Round semantics, 4-workflow comparison, Claim/Evidence migration invariants)
+```
+
+stderr:
+```text
+```
+
+## 170
+
+command:
+```text
+python - <<'PY' ... compute final artifact hashes, byte counts, assignments, information-set hash, and raw file count ...
+```
+
+exit_code: `0`
+
+stdout:
+```text
+attempt-register SHA-256: 5d50a57b3c529ae4ec9edad65bd465aa9146b2f4ab0149e21cfe91502df47bea bytes=745
+attempt.yaml SHA-256: 88fd0581cc38142528810867aa3943965a8de4add0b3405fe5edea0127095dfd bytes=355
+dynamic-role-input SHA-256: af12351fa9de7ce948b8045b44ea3056aa5c919c59447b2883208eeadcda0beb bytes=1874
+dynamic-role-plan SHA-256: d3d994b8e19cc9f143d393463bb62afabb19816e1da481eef1d63a3de39647d0 bytes=3959
+participant-register SHA-256: cebc69789cf3294064b61694d4b292681078f351aabc16a583a8a97d1399ddb6 bytes=1751
+prompt-template SHA-256: b132c9b8dd17a4b61ea739cdc986cf82407b9b78fe66e222565d2f4d1b8bc39e bytes=1652
+rendered-prompt-CHATGPT-B SHA-256: cf79f7a2dbfdc9ebecc583c9c11dc09f1de72ca06fcaeeb8c522157d52e2a179 bytes=1603
+rendered-prompt-CLAUDE-B SHA-256: 757f5b972d0788f8bfb6150c742f08568962a9bae819bef1e4eb804e6eb24f35 bytes=1599
+rendered-prompt-GEMINI-B SHA-256: a5fdf0f8a5b59e69caa6ef6ae350f5a999c7a17770bbacf9196ab322eea3bf6c bytes=1598
+information-set-manifest SHA-256: 207837d2c04f8e3e4dd9a0ac86a312c563299fbf0c67aedf8ba47107dff716ce bytes=4055
+capture-register SHA-256: 9d59da3d2ebd3dc0f9f5972b94352b47bac46064b4ca98e32165b2bb41b83b43 bytes=3241
+operator-send-checklist SHA-256: 0fee8d3879f4a6198047cbf1bb06061830c52e444ee535fab19fd1a879a72dbd bytes=4397
+compact bundle SHA-256: 303fd59a8e08a052bdef74a3545fd74a1ad5182e994c5970861428fe2b5b9c48 bytes=62637
+compact bundle manifest SHA-256: 762ba8b6c60e0ec33d25e39b3c94116f138dc0feb1c143b35417ddce84e001c0 bytes=1745
+INFO_HASH: e08e2bb419f2b2b091f896165471e572f6d94fd4c54ee6c08da2c9ce02a3ed46
+RAW_COUNT: 0
+```
+
+stderr:
+```text
+```
+
+## 171
+
+command:
+```text
+git diff --exit-code -- experiments/codex-core-candidate-comparison/pilot-001/experiment.yaml
+```
+
+exit_code: `0`
+
+stdout:
+```text
+```
+
+stderr:
+```text
+```
+
+## 172
+
+command:
+```text
+find experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/raw -type f -maxdepth 1 -print
+```
+
+exit_code: `0`
+
+stdout:
+```text
+```
+
+stderr:
+```text
+```
+
+## 173
+
+command:
+```text
+date -u +"%Y-%m-%dT%H:%M:%SZ"
+```
+
+exit_code: `0`
+
+stdout:
+```text
+2026-07-18T14:38:20Z
+```
+
+stderr:
+```text
+```
+
+## 174
+
+command:
+```text
+test ! -e experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/raw/initial-response-CHATGPT-B.md
+```
+
+exit_code: `0`
+
+stdout:
+```text
+```
+
+stderr:
+```text
+```
+
+## 175
+
+command:
+```text
+sha256sum experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/raw/initial-response-CHATGPT-B.md
+wc -c experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/raw/initial-response-CHATGPT-B.md
+```
+
+exit_code: `0` for each command
+
+stdout:
+```text
+0e435699e6ab9a004b5bb14f523a249e459524c3b784b7e3f00e1127fadea4f7  experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/raw/initial-response-CHATGPT-B.md
+30392 experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/raw/initial-response-CHATGPT-B.md
+```
+
+stderr:
+```text
+```
+
+## 176
+
+command:
+```text
+python - <<'PY' ... verify attempt-002 CHATGPT-B capture register, raw hash, cross-exposure flags, and raw file inventory ...
+```
+
+exit_code: `0`
+
+stdout:
+```text
+raw_sha256 0e435699e6ab9a004b5bb14f523a249e459524c3b784b7e3f00e1127fadea4f7
+raw_bytes 30392
+capture_yaml_load PASS
+cross_exposure_authorized False
+cross_exposure_started False
+chatgpt_b_response_status CAPTURED
+chatgpt_b_raw_sha256 0e435699e6ab9a004b5bb14f523a249e459524c3b784b7e3f00e1127fadea4f7
+chatgpt_b_sent_at_utc None
+chatgpt_b_continuity NOT_CONFIRMED
+raw_files ['initial-response-CHATGPT-B.md']
+```
+
+stderr:
+```text
+```
+
+## 177
+
+command:
+```text
+git diff --exit-code -- experiments/codex-core-candidate-comparison/pilot-001/experiment.yaml
+```
+
+exit_code: `0`
+
+stdout:
+```text
+```
+
+stderr:
+```text
+```
+
+## 178
+
+command:
+```text
+sha256sum experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/blind-first-round/capture-register.yaml experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/blind-first-round/operator-send-checklist.md experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/raw/initial-response-CHATGPT-B.md
+```
+
+exit_code: `0`
+
+stdout:
+```text
+7bc11f255bb3b4dd7b9552866accbde385fd097c90d5dcee222cb43ce474e2d3  experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/blind-first-round/capture-register.yaml
+a2a4db6176de58d1e4ca6bfb7334376021d693d10c02d3e45efa0c2f4ad2f6e9  experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/blind-first-round/operator-send-checklist.md
+0e435699e6ab9a004b5bb14f523a249e459524c3b784b7e3f00e1127fadea4f7  experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/raw/initial-response-CHATGPT-B.md
+```
+
+stderr:
+```text
+```
+
+## 179
+
+command:
+```text
+date -u +"%Y-%m-%dT%H:%M:%SZ"
+```
+
+exit_code: `0`
+
+stdout:
+```text
+2026-07-18T14:44:25Z
+```
+
+stderr:
+```text
+```
+
+## 180
+
+command:
+```text
+test ! -e experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/raw/initial-response-CLAUDE-B.md
+```
+
+exit_code: `0`
+
+stdout:
+```text
+```
+
+stderr:
+```text
+```
+
+## 181
+
+command:
+```text
+sha256sum experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/raw/initial-response-CLAUDE-B.md
+wc -c experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/raw/initial-response-CLAUDE-B.md
+```
+
+exit_code: `0` for each command
+
+stdout:
+```text
+737c74a1a247eb861767fbb7cc25c7c365605c5182c0ebd7dc249eb32c8af1a9  experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/raw/initial-response-CLAUDE-B.md
+25688 experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/raw/initial-response-CLAUDE-B.md
+```
+
+stderr:
+```text
+```
+
+## 182
+
+command:
+```text
+python - <<'PY' ... verify attempt-002 CHATGPT-B and CLAUDE-B capture register, raw hashes, cross-exposure flags, and raw file inventory ...
+```
+
+exit_code: `0`
+
+stdout:
+```text
+CHATGPT-B 0e435699e6ab9a004b5bb14f523a249e459524c3b784b7e3f00e1127fadea4f7 30392
+CLAUDE-B 737c74a1a247eb861767fbb7cc25c7c365605c5182c0ebd7dc249eb32c8af1a9 25688
+capture_yaml_load PASS
+cross_exposure_authorized False
+cross_exposure_started False
+CHATGPT-B CAPTURED 0e435699e6ab9a004b5bb14f523a249e459524c3b784b7e3f00e1127fadea4f7 None NOT_CONFIRMED
+CLAUDE-B CAPTURED 737c74a1a247eb861767fbb7cc25c7c365605c5182c0ebd7dc249eb32c8af1a9 None NOT_CONFIRMED
+GEMINI-B NOT_RECEIVED None None NOT_CONFIRMED
+raw_files ['initial-response-CHATGPT-B.md', 'initial-response-CLAUDE-B.md']
+```
+
+stderr:
+```text
+```
+
+## 183
+
+command:
+```text
+git diff --exit-code -- experiments/codex-core-candidate-comparison/pilot-001/experiment.yaml
+sha256sum experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/blind-first-round/capture-register.yaml experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/blind-first-round/operator-send-checklist.md experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/raw/initial-response-CLAUDE-B.md
+```
+
+exit_code: `0` for each command
+
+stdout:
+```text
+2b75ebfe01e40136f5b4beeaf972b38817eb3cf07deba9cce4486e1ae51d2811  experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/blind-first-round/capture-register.yaml
+6b3e9b4cba7a23773b1847d1e5d7aabf02480cbe4600aec2d6b5c95497a47167  experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/blind-first-round/operator-send-checklist.md
+737c74a1a247eb861767fbb7cc25c7c365605c5182c0ebd7dc249eb32c8af1a9  experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/raw/initial-response-CLAUDE-B.md
+```
+
+stderr:
+```text
+```
+
+## 184
+
+command:
+```text
+date -u +"%Y-%m-%dT%H:%M:%SZ"
+```
+
+exit_code: `0`
+
+stdout:
+```text
+2026-07-18T14:49:54Z
+```
+
+stderr:
+```text
+```
+
+## 185
+
+command:
+```text
+test ! -e experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/raw/initial-response-GEMINI-B.md
+```
+
+exit_code: `0`
+
+stdout:
+```text
+```
+
+stderr:
+```text
+```
+
+## 186
+
+command:
+```text
+sha256sum experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/raw/initial-response-GEMINI-B.md
+wc -c experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/raw/initial-response-GEMINI-B.md
+```
+
+exit_code: `0` for each command
+
+stdout:
+```text
+cc651d90c59fbedb1c2c40edee050d8b51d6817ee5e9c723c0ea48d7422c5482  experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/raw/initial-response-GEMINI-B.md
+24741 experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/raw/initial-response-GEMINI-B.md
+```
+
+stderr:
+```text
+```
+
+## 187
+
+command:
+```text
+python - <<'PY' ... verify all three attempt-002 raw captures, capture register hashes, cross-exposure flags, and raw file inventory ...
+```
+
+exit_code: `0`
+
+stdout:
+```text
+CHATGPT-B 0e435699e6ab9a004b5bb14f523a249e459524c3b784b7e3f00e1127fadea4f7 30392 2026-07-18 14:38:20+00:00 None NOT_CONFIRMED
+CLAUDE-B 737c74a1a247eb861767fbb7cc25c7c365605c5182c0ebd7dc249eb32c8af1a9 25688 2026-07-18 14:44:25+00:00 None NOT_CONFIRMED
+GEMINI-B cc651d90c59fbedb1c2c40edee050d8b51d6817ee5e9c723c0ea48d7422c5482 24741 2026-07-18 14:49:54+00:00 None NOT_CONFIRMED
+capture_yaml_load PASS
+raw_files ['initial-response-CHATGPT-B.md', 'initial-response-CLAUDE-B.md', 'initial-response-GEMINI-B.md']
+cross_exposure_authorized False
+cross_exposure_started False
+validation_errors 0
+```
+
+stderr:
+```text
+```
+
+## 188
+
+command:
+```text
+python scripts/check_alpha3_dynamic_role_plan.py experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/dynamic-role-plan.yaml
+```
+
+exit_code: `0`
+
+stdout:
+```text
+alpha.3 dynamic role plan: PASS
+```
+
+stderr:
+```text
+```
+
+## 189
+
+command:
+```text
+python experiments/codex-core-candidate-comparison/pilot-001/validate.py
+```
+
+exit_code: `0`
+
+stdout:
+```text
+Codex Core Candidate comparison pilot: PASS
+task_sha256=34cb80469054d7da7cafed6f091f73d0c127d71b5e9c132b52f455a509d72c1c
+experiment_status=DRAFT
+```
+
+stderr:
+```text
+```
+
+## 190
+
+command:
+```text
+python scripts/check_alpha3_core_candidate_experiments.py
+```
+
+exit_code: `0`
+
+stdout:
+```text
+alpha.3 Core Candidate operational experiments: PASS (2 experimental schemas, Blind First Round semantics, 4-workflow comparison, Claim/Evidence migration invariants)
+```
+
+stderr:
+```text
+```
+
+## 191
+
+command:
+```text
+git diff --exit-code -- experiments/codex-core-candidate-comparison/pilot-001/experiment.yaml
+sha256sum experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/blind-first-round/capture-register.yaml experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/blind-first-round/operator-send-checklist.md experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/raw/initial-response-GEMINI-B.md
+```
+
+exit_code: `0` for each command
+
+stdout:
+```text
+c13a4a19d674a5c2917ce4f9de20e19f09fcca5a8f12910f3882d83aa2c48878  experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/blind-first-round/capture-register.yaml
+cfc1241cb4ac37deae1c26125c426cc09cb5234945a453041b8fb1f8c59af6ce  experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/blind-first-round/operator-send-checklist.md
+cc651d90c59fbedb1c2c40edee050d8b51d6817ee5e9c723c0ea48d7422c5482  experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/raw/initial-response-GEMINI-B.md
+```
+
+stderr:
+```text
+```
+
+## 192
+
+command:
+```text
+date -u +"%Y-%m-%dT%H:%M:%SZ"
+```
+
+exit_code: `0`
+
+stdout:
+```text
+2026-07-18T15:00:24Z
+```
+
+stderr:
+```text
+```
+
+## 193
+
+command:
+```text
+test ! -e experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/blind-first-round/continuity-reconciliation.yaml
+sha256sum experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/raw/initial-response-CHATGPT-B.md experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/raw/initial-response-CLAUDE-B.md experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/raw/initial-response-GEMINI-B.md
+wc -c experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/raw/initial-response-CHATGPT-B.md experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/raw/initial-response-CLAUDE-B.md experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/raw/initial-response-GEMINI-B.md
+```
+
+exit_code: `0` for each command
+
+stdout:
+```text
+0e435699e6ab9a004b5bb14f523a249e459524c3b784b7e3f00e1127fadea4f7  experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/raw/initial-response-CHATGPT-B.md
+737c74a1a247eb861767fbb7cc25c7c365605c5182c0ebd7dc249eb32c8af1a9  experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/raw/initial-response-CLAUDE-B.md
+cc651d90c59fbedb1c2c40edee050d8b51d6817ee5e9c723c0ea48d7422c5482  experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/raw/initial-response-GEMINI-B.md
+30392 experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/raw/initial-response-CHATGPT-B.md
+25688 experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/raw/initial-response-CLAUDE-B.md
+24741 experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/raw/initial-response-GEMINI-B.md
+80821 total
+```
+
+stderr:
+```text
+```
+
+## 194
+
+command:
+```text
+sed -n '1,140p' experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/attempt.yaml
+sed -n '1,140p' experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/blind-first-round/capture-register.yaml
+```
+
+exit_code: `0` for each command
+
+stdout:
+```text
+Reviewed attempt.yaml and capture-register.yaml before continuity update.
+```
+
+stderr:
+```text
+```
+
+## 195
+
+command:
+```text
+python - <<'PY' ... verify continuity reconciliation, capture register, attempt status, raw hashes, no URL storage, and no cross-exposure artifacts ...
+```
+
+exit_code: `0`
+
+stdout:
+```text
+CHATGPT-B 0e435699e6ab9a004b5bb14f523a249e459524c3b784b7e3f00e1127fadea4f7 30392
+CLAUDE-B 737c74a1a247eb861767fbb7cc25c7c365605c5182c0ebd7dc249eb32c8af1a9 25688
+GEMINI-B cc651d90c59fbedb1c2c40edee050d8b51d6817ee5e9c723c0ea48d7422c5482 24741
+reconciliation_yaml_load PASS
+capture_yaml_load PASS
+attempt_yaml_load PASS
+continuity_results {'CHATGPT-B': 'PASS', 'CLAUDE-B': 'PASS', 'GEMINI-B': 'PASS'}
+actual_chat_urls_recorded False
+cross_exposure_authorized False
+cross_exposure_started False
+cross_exposure_packet_exists False
+validation_errors 0
+```
+
+stderr:
+```text
+```
+
+## 196
+
+command:
+```text
+python scripts/check_alpha3_dynamic_role_plan.py experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/dynamic-role-plan.yaml
+```
+
+exit_code: `0`
+
+stdout:
+```text
+alpha.3 dynamic role plan: PASS
+```
+
+stderr:
+```text
+```
+
+## 197
+
+command:
+```text
+python experiments/codex-core-candidate-comparison/pilot-001/validate.py
+```
+
+exit_code: `0`
+
+stdout:
+```text
+Codex Core Candidate comparison pilot: PASS
+task_sha256=34cb80469054d7da7cafed6f091f73d0c127d71b5e9c132b52f455a509d72c1c
+experiment_status=DRAFT
+```
+
+stderr:
+```text
+```
+
+## 198
+
+command:
+```text
+python scripts/check_alpha3_core_candidate_experiments.py
+```
+
+exit_code: `0`
+
+stdout:
+```text
+alpha.3 Core Candidate operational experiments: PASS (2 experimental schemas, Blind First Round semantics, 4-workflow comparison, Claim/Evidence migration invariants)
+```
+
+stderr:
+```text
+```
+
+## 199
+
+command:
+```text
+git diff --exit-code -- experiments/codex-core-candidate-comparison/pilot-001/experiment.yaml
+sha256sum experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/blind-first-round/continuity-reconciliation.yaml experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/blind-first-round/capture-register.yaml experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/attempt.yaml
+```
+
+exit_code: `0` for each command
+
+stdout:
+```text
+e792c1a0b393e232a71a618201ab6aacecd9f32199b245bb168b6a8d4c644d25  experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/blind-first-round/continuity-reconciliation.yaml
+c0b33070c470f495bce44acba41014678e9661a6b189a178f4b58a8c0802634b  experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/blind-first-round/capture-register.yaml
+598fc4971de55a96470836022dde8361efc6c78effe5347db07db67b7fdcf6d0  experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/attempt.yaml
+```
+
+stderr:
+```text
+```
+
+## 200
+
+command:
+```text
+test ! -e experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/cross-exposure
+```
+
+exit_code: `0`
+
+stdout:
+```text
+```
+
+stderr:
+```text
+```
+
+## 201
+
+command:
+```text
+mkdir -p experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/cross-exposure
+```
+
+exit_code: `0`
+
+stdout:
+```text
+```
+
+stderr:
+```text
+```
+
+## 202
+
+command:
+```text
+python - <<'PY' ... compute Cross Exposure template/rendered prompt hashes and common information-set hash ...
+```
+
+exit_code: `0`
+
+stdout:
+```text
+cross-exposure-prompt-template.md 1bc9145bec4ae0f5fa05ec2aeeefef4592464f851656518776687199b127ae84 3909
+rendered-prompt-CHATGPT-B.md b36f8c189151b286157dd268f8e25826582a94e02ee5dce4e28ad2e3b0e94539 3928
+rendered-prompt-CLAUDE-B.md b747c673d31b22795725f86c4c9c329f01e5dfae0269b61e2c8aa56a720c3845 3923
+rendered-prompt-GEMINI-B.md b8e5311ff199b1960e5dbd586505d56af2bf7f1447b92126e6578ad087b97392 3922
+cross_exposure_common_information_set_hash 3e9978ad568c4a16032b9353293a3887b935bc9117e6c18ae6adee30580d537e
+```
+
+stderr:
+```text
+```
+
+## 203
+
+command:
+```text
+python - <<'PY' ... verify attempt-002 Cross Exposure packet, rendered prompt substitutions, raw hashes, YAML loading, attachment order, newly exposed refs, no cross raw files, and no prior-attempt references in packet metadata/prompts ...
+```
+
+exit_code: `0`
+
+stdout:
+```text
+RAW CHATGPT-B 0e435699e6ab9a004b5bb14f523a249e459524c3b784b7e3f00e1127fadea4f7 30392
+RAW CLAUDE-B 737c74a1a247eb861767fbb7cc25c7c365605c5182c0ebd7dc249eb32c8af1a9 25688
+RAW GEMINI-B cc651d90c59fbedb1c2c40edee050d8b51d6817ee5e9c723c0ea48d7422c5482 24741
+RENDERED CHATGPT-B b36f8c189151b286157dd268f8e25826582a94e02ee5dce4e28ad2e3b0e94539 3928
+RENDERED CLAUDE-B b747c673d31b22795725f86c4c9c329f01e5dfae0269b61e2c8aa56a720c3845 3923
+RENDERED GEMINI-B b8e5311ff199b1960e5dbd586505d56af2bf7f1447b92126e6578ad087b97392 3922
+cross_exposure_common_information_set_hash 3e9978ad568c4a16032b9353293a3887b935bc9117e6c18ae6adee30580d537e
+manifest_yaml_load PASS
+capture_register_yaml_load PASS
+attachment_order_identical PASS
+validation_errors 0
+```
+
+stderr:
+```text
+```
+
+## 204
+
+command:
+```text
+python scripts/check_alpha3_dynamic_role_plan.py experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/dynamic-role-plan.yaml
+```
+
+exit_code: `0`
+
+stdout:
+```text
+alpha.3 dynamic role plan: PASS
+```
+
+stderr:
+```text
+```
+
+## 205
+
+command:
+```text
+python experiments/codex-core-candidate-comparison/pilot-001/validate.py
+```
+
+exit_code: `0`
+
+stdout:
+```text
+Codex Core Candidate comparison pilot: PASS
+task_sha256=34cb80469054d7da7cafed6f091f73d0c127d71b5e9c132b52f455a509d72c1c
+experiment_status=DRAFT
+```
+
+stderr:
+```text
+```
+
+## 206
+
+command:
+```text
+python scripts/check_alpha3_core_candidate_experiments.py
+```
+
+exit_code: `0`
+
+stdout:
+```text
+alpha.3 Core Candidate operational experiments: PASS (2 experimental schemas, Blind First Round semantics, 4-workflow comparison, Claim/Evidence migration invariants)
+```
+
+stderr:
+```text
+```
+
+## 207
+
+command:
+```text
+git diff --exit-code -- experiments/codex-core-candidate-comparison/pilot-001/experiment.yaml
+sha256sum experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/cross-exposure/cross-exposure-prompt-template.md experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/cross-exposure/rendered-prompt-CHATGPT-B.md experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/cross-exposure/rendered-prompt-CLAUDE-B.md experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/cross-exposure/rendered-prompt-GEMINI-B.md experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/cross-exposure/cross-exposure-information-set-manifest.yaml experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/cross-exposure/cross-exposure-capture-register.yaml experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/attempt.yaml
+wc -c experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/cross-exposure/cross-exposure-prompt-template.md experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/cross-exposure/rendered-prompt-CHATGPT-B.md experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/cross-exposure/rendered-prompt-CLAUDE-B.md experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/cross-exposure/rendered-prompt-GEMINI-B.md
+```
+
+exit_code: `0` for each command
+
+stdout:
+```text
+1bc9145bec4ae0f5fa05ec2aeeefef4592464f851656518776687199b127ae84  experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/cross-exposure/cross-exposure-prompt-template.md
+b36f8c189151b286157dd268f8e25826582a94e02ee5dce4e28ad2e3b0e94539  experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/cross-exposure/rendered-prompt-CHATGPT-B.md
+b747c673d31b22795725f86c4c9c329f01e5dfae0269b61e2c8aa56a720c3845  experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/cross-exposure/rendered-prompt-CLAUDE-B.md
+b8e5311ff199b1960e5dbd586505d56af2bf7f1447b92126e6578ad087b97392  experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/cross-exposure/rendered-prompt-GEMINI-B.md
+3e3266da9093da1cb32e81925d3f623658136fdbed716af511ba9a8e09082b03  experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/cross-exposure/cross-exposure-information-set-manifest.yaml
+1b35ff9031397a84363ed53b84c0a890d61a9c1ec3e92603842ade0005aa5fc7  experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/cross-exposure/cross-exposure-capture-register.yaml
+fb24f5686468c35090c7e90c4650cc2d30807af2c73afa610f59ba09a09d3c5d  experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/attempt.yaml
+3909 cross-exposure-prompt-template.md
+3928 rendered-prompt-CHATGPT-B.md
+3923 rendered-prompt-CLAUDE-B.md
+3922 rendered-prompt-GEMINI-B.md
+```
+
+stderr:
+```text
+```
+
+## 208
+
+command:
+```text
+python - <<'PY' ... verify attempt-002 Cross Exposure Phase 4B send state after CHATGPT-B send confirmation ...
+```
+
+exit_code: `0`
+
+stdout:
+```text
+experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/cross-exposure/cross-exposure-capture-register.yaml
+sha256 f04f7496ded080b1eb892cca9b7a57339e189e6d3300195852188722163752d3
+authorized True
+started True
+started_at 2026-07-18 15:32:41+00:00
+CHATGPT-B SENT 2026-07-18 15:32:41+00:00 NOT_RECEIVED None
+CLAUDE-B NOT_SENT None NOT_RECEIVED None
+GEMINI-B NOT_SENT None NOT_RECEIVED None
+experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/attempt.yaml
+sha256 e268a455b0f3ac452e4633f3b4f48bdb024e4809ce77b949996447bd8a476512
+status CROSS_EXPOSURE_IN_PROGRESS
+authorized True
+started True
+started_at 2026-07-18 15:32:41+00:00
+attempts/attempt-002/raw/cross-exposure-CHATGPT-B.md exists= False
+attempts/attempt-002/raw/cross-exposure-CLAUDE-B.md exists= False
+attempts/attempt-002/raw/cross-exposure-GEMINI-B.md exists= False
+experiment.yaml diff exit:
+0
+```
+
+stderr:
+```text
+```
+
+## 209
+
+command:
+```text
+date -u +%Y-%m-%dT%H:%M:%SZ
+sed -n '1,220p' experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/cross-exposure/cross-exposure-capture-register.yaml
+sed -n '1,220p' experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/cross-exposure/operator-cross-exposure-checklist.md
+test ! -e experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/raw/cross-exposure-CHATGPT-B.md
+```
+
+exit_code: `0`
+
+stdout:
+```text
+2026-07-18T15:40:41Z
+... inspected cross-exposure capture register and operator checklist before raw capture ...
+... confirmed raw/cross-exposure-CHATGPT-B.md did not exist before creation ...
+```
+
+stderr:
+```text
+```
+
+## 210
+
+command:
+```text
+sha256sum experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/raw/cross-exposure-CHATGPT-B.md
+wc -c experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/raw/cross-exposure-CHATGPT-B.md
+```
+
+exit_code: `0`
+
+stdout:
+```text
+21600ecebc974cd8e9c1d561e3b6f9c4c2f046e850edb81dd0febb8f821c0ae5  experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/raw/cross-exposure-CHATGPT-B.md
+48180 experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/raw/cross-exposure-CHATGPT-B.md
+```
+
+stderr:
+```text
+```
+
+## 211
+
+command:
+```text
+python - <<'PY' ... verify attempt-002 partial Cross Exposure raw capture state after CHATGPT-B response capture ...
+```
+
+exit_code: `0`
+
+stdout:
+```text
+raw_sha256 21600ecebc974cd8e9c1d561e3b6f9c4c2f046e850edb81dd0febb8f821c0ae5
+raw_bytes 48180
+capture_register_sha256 f269882769fc273ee714a4d29f7f914ddcd2e7eb5ec29b60ab72ae245f7da1b7
+checklist_sha256 ac5a63602260f2431312e579e1fb4bc6a2d4ece48e86e25b28ba2a7f7f72fc49
+attempt_yaml_sha256 e268a455b0f3ac452e4633f3b4f48bdb024e4809ce77b949996447bd8a476512
+CHATGPT-B SENT CAPTURED 2026-07-18 15:40:41+00:00 21600ecebc974cd8e9c1d561e3b6f9c4c2f046e850edb81dd0febb8f821c0ae5 48180
+CLAUDE-B NOT_SENT NOT_RECEIVED None None None
+GEMINI-B NOT_SENT NOT_RECEIVED None None None
+authorized True
+started True
+started_at 2026-07-18 15:32:41+00:00
+attempts/attempt-002/raw/cross-exposure-CLAUDE-B.md exists= False
+attempts/attempt-002/raw/cross-exposure-GEMINI-B.md exists= False
+experiment_yaml_diff_exit 0
+experiment_yaml_diff_stdout_len 0
+```
+
+stderr:
+```text
+```
+
+## 214
+
+command:
+```text
+date -u +%Y-%m-%dT%H:%M:%SZ
+test ! -e experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/raw/cross-exposure-GEMINI-B.md
+sed -n '1,220p' experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/cross-exposure/cross-exposure-capture-register.yaml
+```
+
+exit_code: `0`
+
+stdout:
+```text
+2026-07-18T15:57:43Z
+... confirmed raw/cross-exposure-GEMINI-B.md did not exist before creation and inspected capture register state ...
+```
+
+stderr:
+```text
+```
+
+## 215
+
+command:
+```text
+sha256sum experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/raw/cross-exposure-GEMINI-B.md
+wc -c experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/raw/cross-exposure-GEMINI-B.md
+```
+
+exit_code: `0`
+
+stdout:
+```text
+cc651d90c59fbedb1c2c40edee050d8b51d6817ee5e9c723c0ea48d7422c5482  experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/raw/cross-exposure-GEMINI-B.md
+24741 experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/raw/cross-exposure-GEMINI-B.md
+```
+
+stderr:
+```text
+```
+
+## 216
+
+command:
+```text
+python - <<'PY' ... verify attempt-002 Cross Exposure capture state after all three raw responses ...
+python scripts/check_alpha3_dynamic_role_plan.py experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/dynamic-role-plan.yaml
+python experiments/codex-core-candidate-comparison/pilot-001/validate.py
+python scripts/check_alpha3_core_candidate_experiments.py
+```
+
+exit_code: `0`
+
+stdout:
+```text
+INITIAL CHATGPT-B 0e435699e6ab9a004b5bb14f523a249e459524c3b784b7e3f00e1127fadea4f7 30392
+INITIAL CLAUDE-B 737c74a1a247eb861767fbb7cc25c7c365605c5182c0ebd7dc249eb32c8af1a9 25688
+INITIAL GEMINI-B cc651d90c59fbedb1c2c40edee050d8b51d6817ee5e9c723c0ea48d7422c5482 24741
+capture_yaml_load PASS
+cross_exposure_authorized True
+cross_exposure_started True
+PARTICIPANT CHATGPT-B SENT None CAPTURED 21600ecebc974cd8e9c1d561e3b6f9c4c2f046e850edb81dd0febb8f821c0ae5 48180 None
+PARTICIPANT CLAUDE-B UNCONFIRMED MISSING_BEFORE_RAW_CAPTURE CAPTURED 0de4538cc3e4810a50ee8324cb639fb6dc0053d6a26758a7cb4c4039430a5fa1 62298 None
+PARTICIPANT GEMINI-B UNCONFIRMED MISSING_BEFORE_RAW_CAPTURE CAPTURED cc651d90c59fbedb1c2c40edee050d8b51d6817ee5e9c723c0ea48d7422c5482 24741 CONFLICT_RECORDED
+CROSS_RAW attempts/attempt-002/raw/cross-exposure-CHATGPT-B.md 21600ecebc974cd8e9c1d561e3b6f9c4c2f046e850edb81dd0febb8f821c0ae5 48180
+CROSS_RAW attempts/attempt-002/raw/cross-exposure-CLAUDE-B.md 0de4538cc3e4810a50ee8324cb639fb6dc0053d6a26758a7cb4c4039430a5fa1 62298
+CROSS_RAW attempts/attempt-002/raw/cross-exposure-GEMINI-B.md cc651d90c59fbedb1c2c40edee050d8b51d6817ee5e9c723c0ea48d7422c5482 24741
+attempt_status CROSS_EXPOSURE_RECONCILIATION_REQUIRED
+formal_release_evidence False
+alpha4_authorized False
+experiment_yaml_diff_exit 0
+experiment_yaml_diff_stdout_len 0
+alpha.3 dynamic role plan: PASS
+Codex Core Candidate comparison pilot: PASS
+task_sha256=34cb80469054d7da7cafed6f091f73d0c127d71b5e9c132b52f455a509d72c1c
+experiment_status=DRAFT
+alpha.3 Core Candidate operational experiments: PASS (2 experimental schemas, Blind First Round semantics, 4-workflow comparison, Claim/Evidence migration invariants)
+```
+
+stderr:
+```text
+```
+
+
+## Phase 4E-A primary validation
+
+command:
+```text
+python scripts/check_alpha3_dynamic_role_plan.py .../dynamic-role-plan.yaml
+python experiments/codex-core-candidate-comparison/pilot-001/validate.py
+python scripts/check_alpha3_core_candidate_experiments.py
+python - <<'PY' ... custom Phase 4E-A primary validation ... PY
+```
+
+exit_code: `0`
+
+stdout:
+```text
+alpha.3 dynamic role plan: PASS
+Codex Core Candidate comparison pilot: PASS
+alpha.3 Core Candidate operational experiments: PASS
+custom Phase 4E-A primary validation: PASS
+completion timestamp captured after primary validation: 2026-07-18T18:07:34Z
+```
+
+stderr:
+```text
+```
+
+## Phase 4E-A final metrics and record update
+
+command:
+```text
+python - <<'PY' ... update metrics, attempt.yaml, experiment.yaml Core run, notes and logs ... PY
+```
+
+exit_code: `0`
+
+stdout:
+```text
+completion_time_seconds 25000
+experiment_post_update_sha256 1c005eae34537ee5e7b86beb05919fa427e49b1654d3102557251aa0c5e62837
+```
+
+stderr:
+```text
+```
+
+
+## Phase 4E-A post-completion integrity validation
+
+command:
+```text
+python scripts/check_alpha3_dynamic_role_plan.py .../dynamic-role-plan.yaml
+python experiments/codex-core-candidate-comparison/pilot-001/validate.py
+python scripts/check_alpha3_core_candidate_experiments.py
+python - <<'PY' ... custom Phase 4E-A post-completion integrity validation ... PY
+```
+
+exit_code: `0`
+
+stdout:
+```text
+alpha.3 dynamic role plan: PASS
+Codex Core Candidate comparison pilot: PASS
+alpha.3 Core Candidate operational experiments: PASS
+custom Phase 4E-A post-completion integrity validation: PASS
+experiment.yaml post-update SHA-256: 1c005eae34537ee5e7b86beb05919fa427e49b1654d3102557251aa0c5e62837
+completion_time_seconds: 25000
+```
+
+stderr:
+```text
+```
+
+
+## Phase 4E-A final post-manifest integrity validation
+
+command:
+```text
+python scripts/check_alpha3_dynamic_role_plan.py .../dynamic-role-plan.yaml
+python experiments/codex-core-candidate-comparison/pilot-001/validate.py
+python scripts/check_alpha3_core_candidate_experiments.py
+python - <<'PY' ... custom Phase 4E-A final post-manifest integrity validation ... PY
+```
+
+exit_code: `0`
+
+stdout:
+```text
+alpha.3 dynamic role plan: PASS
+Codex Core Candidate comparison pilot: PASS
+alpha.3 Core Candidate operational experiments: PASS
+custom Phase 4E-A final post-manifest integrity validation: PASS
+manifest reflected: PASS
+```
+
+stderr:
+```text
+```
+
+
+## PRIVACY-1 public identifier redaction
+
+command:
+```text
+python - <<'PY' ... internal private-identifier extraction, count verification, private backup, public redaction, reference update, manifest refresh ... PY
+```
+
+exit_code: `0`
+
+stdout:
+```text
+WORKTREE_MATCH_FILES 12
+WORKTREE_MATCH_OCCURRENCES 15
+EXPECTED_COUNT_MATCH PASS
+git_history_contains_private_identifier: false
+commit_metadata_contains_private_identifier: false
+git_refs_contain_private_identifier: false
+PRIVATE_BACKUP_CREATED true
+BACKED_UP_FILE_COUNT 12
+BACKED_UP_OCCURRENCES 15
+REDACTION_RECOVERY_APPLIED true
+AFFECTED_FILE_COUNT 12
+AFFECTED_OCCURRENCES 15
+POST_REDACTION_PRIVATE_IDENTIFIER_OCCURRENCES 0
+POST_REDACTION_OLD_RAW_REF_OCCURRENCES 0
+```
+
+stderr:
+```text
+```
+
+
+## PRIVACY-1 validation
+
+command:
+```text
+python scripts/check_alpha3_dynamic_role_plan.py .../dynamic-role-plan.yaml
+python experiments/codex-core-candidate-comparison/pilot-001/validate.py
+python scripts/check_alpha3_core_candidate_experiments.py
+git diff --check
+python - <<'PY' ... custom privacy validation ... PY
+```
+
+exit_code: mixed
+
+stdout:
+```text
+existing validators: FAIL with jsonschema RefResolutionError unknown url type
+custom privacy validation: PASS
+git diff --check: PASS
+Git identity check: name and useConfigOnly pass; email is set but not GitHub noreply format
+```
+
+stderr:
+```text
+existing validators emitted RefResolutionError traces; private identifier was not printed.
+```
+
+
+## Governance commit/PR preflight
+
+command:
+```text
+git status --short
+git diff --stat
+git diff --check
+python - <<'PY' ... git identity booleans, YAML parse, and privacy scan ... PY
+```
+
+exit_code: `0`
+
+stdout:
+```text
+git diff --check: PASS
+YAML parse: PASS
+privacy scan: PASS
+git identity gate: PASS by explicit Human Final Authority approval of configured local email
+```
+
+stderr:
+```text
+```

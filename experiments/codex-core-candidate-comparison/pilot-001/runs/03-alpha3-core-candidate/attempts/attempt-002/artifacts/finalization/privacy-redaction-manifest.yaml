@@ -1,0 +1,79 @@
+manifest_version: MADP-PRIVACY-REDACTION-MANIFEST-v1
+experiment_id: EXP-CODEX-PILOT-001
+attempt_id: CORE-ATTEMPT-002
+workflow: ALPHA3_CORE_CANDIDATE
+status: PUBLICATION_COPY_REDACTED
+redaction:
+  classification: PERSONAL_IDENTIFIER
+  public_replacement_identifier: HFA-001
+  official_record_identifier: Eruhitsuji
+  original_value_recorded_in_public_manifest: false
+  identifier_mapping_published: false
+  private_original_preserved_outside_repository: true
+  semantic_decision_content_changed: false
+affected_files:
+- path: experiments/codex-core-candidate-comparison/pilot-001/experiment.yaml
+  pre_redaction_sha256: 1c005eae34537ee5e7b86beb05919fa427e49b1654d3102557251aa0c5e62837
+  post_redaction_sha256: 70eff442041d4a78850cd49e4a40f4eecffc402ab0963e54537d0a474e478d4b
+  post_redaction_bytes: 9455
+  replacement_count: 1
+- path: experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/run-notes.md
+  pre_redaction_sha256: 788cb4afc5f0d13bd47f4feb4227ffb3e233d45367c1b285b70a6af7b90307cd
+  post_redaction_sha256: 30c8f249ae190c7cb0640af2d393d1ac569a4a3c5d9ec9d76bdb5aac08a78908
+  post_redaction_bytes: 43412
+  replacement_count: 1
+- path: experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/run-notes.md
+  pre_redaction_sha256: 1aee98b480f68fb06f82a10b479531e5ba443f576adea478833a3349313db8a4
+  post_redaction_sha256: c4e037921d49bde308601409b42744137e2330be4bc11af5df4f83eec7cc5ee1
+  post_redaction_bytes: 24424
+  replacement_count: 2
+- path: experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/finalization/conformance-deviation-register.yaml
+  pre_redaction_sha256: 10aed096f3c9b810eb24c643e0865b42a9ce6b46e83542909638c039a02aec03
+  post_redaction_sha256: ee0de5be4322f413b9943eaf66374c072546ac9799eb4959bb4cfce0cab0ee3b
+  post_redaction_bytes: 5053
+  replacement_count: 1
+- path: experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/finalization/core-conformance-evaluation.yaml
+  pre_redaction_sha256: 5357c619476d1b94a9fc9ee10c306a13e8b2f7e6bf3c90348a7d1b27d23f333f
+  post_redaction_sha256: 6d34cfa9b36e78128551c261e0c3aecade316375ea87c7bc48a42e550e0d6241
+  post_redaction_bytes: 10611
+  replacement_count: 1
+- path: experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/finalization/experiment-update-validation.md
+  pre_redaction_sha256: 23740a229170a323aa41ff779fcc3a41e02a83843651298a890ead24f98731b0
+  post_redaction_sha256: 01ac4d6d4853fac2bde4adcd0c8f25ee3379016dae58404ea8903a7401720178
+  post_redaction_bytes: 1848
+  replacement_count: 1
+- path: experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/finalization/human-authority-identifier-reconciliation.yaml
+  pre_redaction_sha256: 3a583f9ebe6a36c9dec474f3c3e32cb986fece965404653e3a6dfcaf0747826b
+  post_redaction_sha256: 37436eb13cad97f61f25323217e8fc3febd429180f61b035c2e7119a6b05d1de
+  post_redaction_bytes: 2663
+  replacement_count: 1
+- path: experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/finalization/run-finalization-manifest.yaml
+  pre_redaction_sha256: 0d1d373339bc2de6aa1fd2b37af83947c0a54a5e4cf7ed85cc23d8882cf68d9d
+  post_redaction_sha256: f1da1d3e84f3669a6c4a377b8c5e643aa3f3c524d1dc509e486d48688f8d8d73
+  post_redaction_bytes: 4505
+  replacement_count: 1
+- path: experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/structured-comparison/human-decision-record.yaml
+  pre_redaction_sha256: 5b6003857068142c1a28082ce359ee5c5891cbbb742b196b42397d04d00e7382
+  post_redaction_sha256: f245e16c3e63894401b98ccaa20d356f7bd3d995869043cdcd10a7b533c63d24
+  post_redaction_bytes: 10100
+  replacement_count: 1
+- path: experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/artifacts/structured-comparison/human-final-authority-input-public-redacted.md
+  pre_redaction_sha256: PRIVATE_ORIGINAL_HASH_NOT_PUBLISHED
+  post_redaction_sha256: db41d5eecf9153d4cf4294a96da7df433c7414e3022cc0bf868ae2eb811c80f2
+  post_redaction_bytes: 6721
+  replacement_count: 1
+  pre_redaction_hash_published: false
+- path: experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/attempts/attempt-002/logs/operator-actions.md
+  pre_redaction_sha256: 322e0a88ac3c4635d981c8f6fce265fb3b974e4b095a1daf222accee4cdcea7d
+  post_redaction_sha256: 78e1662b2fc1b9cff6abb8f52fd1639e4814c835abe5d7566dde5cb4d90fad0d
+  post_redaction_bytes: 25859
+  replacement_count: 2
+- path: experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/logs/operator-actions.md
+  pre_redaction_sha256: 1cec5414e5c0319f27fac7a999f37c5262e29fbacd75ae4a90225f19e3d7bda0
+  post_redaction_sha256: f234b02417922af2b4c7612e2a89a53e1e92b4b32593098bf7efb4fafde24a5f
+  post_redaction_bytes: 36039
+  replacement_count: 2
+post_redaction_scan:
+  exact_private_identifier_occurrences: 0
+  old_raw_input_path_references: 0
+  private_original_hash_occurrences: 0

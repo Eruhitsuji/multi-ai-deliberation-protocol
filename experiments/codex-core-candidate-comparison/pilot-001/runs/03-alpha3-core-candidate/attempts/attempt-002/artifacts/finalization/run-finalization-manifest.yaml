@@ -1,0 +1,106 @@
+manifest_version: MADP-CORE-RUN-FINALIZATION-MANIFEST-v1
+experiment_id: EXP-CODEX-PILOT-001
+workflow: ALPHA3_CORE_CANDIDATE
+canonical_attempt: CORE-ATTEMPT-002
+tested_commit: 2a29ddfebe4d9664d3a4043a01d8728fa525d049
+human_final_authority:
+  identifier: Eruhitsuji
+  decision_ref: artifacts/structured-comparison/human-decision-record.yaml
+  public_redacted_input_identifier: HFA-001
+  official_record_identifier: Eruhitsuji
+  same_human_authority: true
+  identifier_reconciliation_ref: artifacts/finalization/human-authority-identifier-reconciliation.yaml
+  privacy_redaction_ref: artifacts/finalization/privacy-redaction-manifest.yaml
+  selected_option_id: OPTION-A
+blind_first_round:
+  status: VALID
+  convergence_classification: MIXED
+core_conformance:
+  evaluation_ref: artifacts/finalization/core-conformance-evaluation.yaml
+  final_classification: DEGRADED
+metrics:
+  ref: artifacts/finalization/metrics-finalization.yaml
+  finalized: true
+  completion_time_seconds: 25000
+  cumulative_human_actions: 33
+  attempt_local_human_actions: 21
+  privacy_redaction_human_action:
+    cumulative: 34
+    attempt_local: 22
+privacy_redaction:
+  public_replacement_identifier: HFA-001
+  private_original_published: false
+  identifier_mapping_published: false
+  public_exact_private_identifier_occurrences: 0
+  old_raw_input_path_references: 0
+  private_original_hash_occurrences: 0
+validation:
+  existing_validators: FAIL_REF_RESOLUTION_ERROR
+  custom_privacy_validation: PASS
+  git_diff_check: PASS
+experiment_record:
+  reflected: true
+  post_redaction_sha256: 70eff442041d4a78850cd49e4a40f4eecffc402ab0963e54537d0a474e478d4b
+  post_redaction_bytes: 9455
+boundaries:
+  pilot_completed: false
+  repository_modification_authorized: false
+  release_authorized: false
+  formal_release_evidence: false
+  a3_rel_001_completed: false
+  a3_rel_005_completed: false
+  alpha4_authorized: false
+artifact_inventory:
+- path: artifacts/finalization/core-conformance-evaluation.yaml
+  sha256: 6d34cfa9b36e78128551c261e0c3aecade316375ea87c7bc48a42e550e0d6241
+  bytes: 10611
+- path: artifacts/finalization/conformance-deviation-register.yaml
+  sha256: ee0de5be4322f413b9943eaf66374c072546ac9799eb4959bb4cfce0cab0ee3b
+  bytes: 5053
+- path: artifacts/finalization/metrics-finalization.yaml
+  sha256: 28ff5c1d3b132343923fba642c03b199fd90b61901f3812ecac94ad6dab13ddb
+  bytes: 1612
+- path: artifacts/finalization/experiment-update-plan.yaml
+  sha256: 0102d074df2f4bd5387621f411e36a075c5aee39037872adb904b2cfb05b680e
+  bytes: 979
+- path: artifacts/finalization/experiment-update-validation.md
+  sha256: 188e99765b08fecd39b7512cfd4b2a94e19c76344105eab5be62a4410dcce9ed
+  bytes: 2352
+- path: artifacts/finalization/human-authority-identifier-reconciliation.yaml
+  sha256: 37436eb13cad97f61f25323217e8fc3febd429180f61b035c2e7119a6b05d1de
+  bytes: 2663
+- path: artifacts/finalization/privacy-redaction-manifest.yaml
+  sha256: 7be489dfc81eb03dc698951a1ea23e1bdbb5b8bbaf4385050ae083a5b47e2cc6
+  bytes: 5228
+- path: artifacts/structured-comparison/human-final-authority-input-public-redacted.md
+  sha256: db41d5eecf9153d4cf4294a96da7df433c7414e3022cc0bf868ae2eb811c80f2
+  bytes: 6721
+- path: artifacts/structured-comparison/human-decision-record.yaml
+  sha256: f245e16c3e63894401b98ccaa20d356f7bd3d995869043cdcd10a7b533c63d24
+  bytes: 10100
+- path: artifacts/structured-comparison/human-decision-record-draft.yaml
+  sha256: 7be2223c2249b358ad3fa4eeda8d9d49b35844028cda6e336bf5d4f713c26f5d
+  bytes: 1804
+- path: attempt.yaml
+  sha256: b13795bd6cab7012ed7921c5024968cc34417ff6a423f4edef604c37523e2053
+  bytes: 1699
+- path: run-notes.md
+  sha256: c4e037921d49bde308601409b42744137e2330be4bc11af5df4f83eec7cc5ee1
+  bytes: 24424
+- path: logs/operator-actions.md
+  sha256: 78e1662b2fc1b9cff6abb8f52fd1639e4814c835abe5d7566dde5cb4d90fad0d
+  bytes: 25859
+- path: logs/commands.log
+  sha256: 890baf4be1d1a9321ef767f3d55cdb66bba4245f24c038ae3d686e4bb2f28dd3
+  bytes: 48031
+- path: experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/run-notes.md
+  sha256: 30c8f249ae190c7cb0640af2d393d1ac569a4a3c5d9ec9d76bdb5aac08a78908
+  bytes: 43412
+- path: experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/logs/operator-actions.md
+  sha256: f234b02417922af2b4c7612e2a89a53e1e92b4b32593098bf7efb4fafde24a5f
+  bytes: 36039
+- path: experiments/codex-core-candidate-comparison/pilot-001/runs/03-alpha3-core-candidate/logs/commands.log
+  sha256: 654ec1dcf6f448bc6bcc8ecfaa379fd9ce45262b8963684b2c3ae5cdbd3e856e
+  bytes: 136716
+self_hash_recording: Manifest SHA-256 is recorded in the PRIVACY-1 final report, not
+  embedded in this self-referential manifest.

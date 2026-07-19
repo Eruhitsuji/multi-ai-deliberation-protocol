@@ -1,0 +1,95 @@
+register_version: MADP-CORE-CONFORMANCE-DEVIATION-REGISTER-v1
+experiment_id: EXP-CODEX-PILOT-001
+attempt_id: CORE-ATTEMPT-002
+workflow: ALPHA3_CORE_CANDIDATE
+deviations:
+- deviation_id: DEV-001
+  topic: ATTEMPT_RESTART
+  facts:
+  - attempt-001 was aborted before Cross Exposure.
+  - attempt-001 evidence was preserved.
+  - attempt-002 reran from Blind First Round with new participant IDs and chat context
+    IDs.
+  - attempt-001 output was not included in the attempt-002 participant information
+    set.
+  source_refs:
+  - attempts/attempt-002/attempt.yaml#L2-L5
+  - artifacts/attempt-register.yaml#L5-L13
+  - attempts/attempt-002/artifacts/blind-first-round/information-set-manifest.yaml#L5-L15
+  procedure_impact: Workflow burden and provenance include one aborted prior attempt.
+  evidence_integrity_impact: Attempt-001 evidence is preserved and not reused as attempt-002
+    participant evidence.
+  decision_reconstruction_impact: Decision reconstruction uses attempt-002 as canonical
+    and retains attempt-001 as provenance.
+  blind_first_round_eligibility_impact: NONE_FOR_ATTEMPT_002
+  remediated: true
+  residual_limitation: Attempt-level restart remains part of workflow provenance and
+    completion time.
+- deviation_id: DEV-002
+  topic: RETROSPECTIVE_CROSS_EXPOSURE_SEND_ATTESTATION
+  affected_participants:
+  - CLAUDE-B
+  - GEMINI-B
+  facts:
+  - Realtime send confirmation was not recorded before raw receipt for CLAUDE-B and
+    GEMINI-B.
+  - Retrospective human attestation reconciled the send fact.
+  - exact sent_at_utc is null.
+  - send_time_status is UNKNOWN.
+  source_refs:
+  - attempts/attempt-002/artifacts/cross-exposure/cross-exposure-reconciliation.yaml#L16-L45
+  - attempts/attempt-002/artifacts/cross-exposure/cross-exposure-capture-register.yaml#L55-L126
+  procedure_impact: Cross Exposure send timing is not fully realtime for two participants.
+  evidence_integrity_impact: Send fact is preserved through retrospective human attestation;
+    exact send time is unknown and not inferred.
+  decision_reconstruction_impact: Decision reconstruction remains possible but depends
+    on reconciliation records for send provenance.
+  blind_first_round_eligibility_impact: NONE
+  remediated: true
+  residual_limitation: Exact Cross Exposure sent_at_utc remains null for affected
+    participants.
+- deviation_id: DEV-003
+  topic: GEMINI_CROSS_EXPOSURE_RAW_SUBMISSION_MISMATCH
+  facts:
+  - The first saved Gemini Cross Exposure raw was byte-identical to the initial response.
+  - The original file is preserved as noncanonical evidence.
+  - The same existing chat UI contained a different Cross Exposure response.
+  - The canonical response was saved and hashed as retrospective UI recapture.
+  - The canonical response was used for semantic analysis.
+  - The noncanonical duplicate was excluded from semantic analysis.
+  source_refs:
+  - attempts/attempt-002/artifacts/cross-exposure/cross-exposure-reconciliation.yaml#L47-L84
+  - attempts/attempt-002/artifacts/structured-comparison/source-inventory.yaml#L80-L101
+  - attempts/attempt-002/artifacts/structured-comparison/validation-report.md#L31-L39
+  procedure_impact: The initial Gemini Cross Exposure submission required retrospective
+    UI recapture.
+  evidence_integrity_impact: Both noncanonical duplicate and canonical UI recapture
+    are preserved with hashes and roles separated.
+  decision_reconstruction_impact: Decision reconstruction remains possible but requires
+    the reconciliation file and source inventory.
+  blind_first_round_eligibility_impact: NONE
+  remediated: true
+  residual_limitation: Gemini Cross Exposure canonical evidence depends on retrospective
+    UI recapture.
+- deviation_id: DEV-004
+  topic: HUMAN_FINAL_AUTHORITY_IDENTIFIER_PROVENANCE_MISMATCH
+  facts:
+  - preserved public-redacted decision input uses a pseudonymous identifier
+  - final decision record uses the official repository identifier
+  - Human Final Authority explicitly confirmed both identify the same authority
+  - private unredacted evidence is preserved outside the public repository
+  source_refs:
+  - artifacts/structured-comparison/human-final-authority-input-public-redacted.md#L1-L130
+  - artifacts/structured-comparison/human-decision-record.yaml#L191-L191
+  - artifacts/finalization/human-authority-identifier-reconciliation.yaml#L1-L90
+  procedure_impact: The public-redacted decision input and structured final record
+    do not contain identical authority identifiers.
+  evidence_integrity_impact: The private identifier is redacted from public artifacts;
+    discrepancy provenance is preserved through a public pseudonym and private original
+    backup outside the repository.
+  decision_reconstruction_impact: Decision content remains reconstructable; authority-name
+    provenance requires the reconciliation artifact.
+  blind_first_round_eligibility_impact: NONE
+  remediated: true
+  residual_limitation: The official identifier depends on reconciled provenance; the
+    public copy uses a pseudonymous identifier and private original is not published.
