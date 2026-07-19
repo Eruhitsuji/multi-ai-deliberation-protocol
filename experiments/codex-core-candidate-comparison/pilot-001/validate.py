@@ -6,6 +6,7 @@ import hashlib
 import sys
 import yaml
 from jsonschema import Draft202012Validator
+from referencing import Registry, Resource
 
 PILOT_DIR = Path(__file__).resolve().parent
 ROOT = PILOT_DIR.parents[2]
@@ -26,6 +27,14 @@ def sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def validator_for(schema):
+    schema_id = schema.get("$id")
+    if not isinstance(schema_id, str) or not schema_id:
+        raise ValueError("comparison schema must define a non-empty $id")
+    registry = Registry().with_resource(schema_id, Resource.from_contents(schema))
+    return Draft202012Validator(schema, registry=registry)
+
+
 def main() -> int:
     problems: list[str] = []
 
@@ -33,7 +42,7 @@ def main() -> int:
     Draft202012Validator.check_schema(schema)
     experiment = load_yaml(EXPERIMENT_PATH)
 
-    validator = Draft202012Validator(schema)
+    validator = validator_for(schema)
     schema_errors = sorted(validator.iter_errors(experiment), key=lambda error: list(error.path))
     problems.extend(
         f"SCHEMA:{'/'.join(map(str, error.path)) or '<root>'}:{error.message}"
