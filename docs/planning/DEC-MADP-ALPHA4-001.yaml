@@ -1,0 +1,84 @@
+decision_record_version: MADP-PLANNING-DECISION-v1
+decision_id: DEC-MADP-ALPHA4-001
+status: ACCEPTED
+authority: HUMAN_FINAL_AUTHORITY
+recorded_at_utc: UNKNOWN
+parent_decision_ref: docs/planning/DEC-MADP-RAPID-PRERELEASE-001.yaml
+basis:
+  kind: HUMAN_DIRECTION_AFTER_PR_17_MERGE
+  source_pr: 17
+  source_merge_commit: f7fc84675321c0f55619301642f4d52f601f30d3
+  derived_from_terminated_comparison_experiment: false
+decision:
+  target_version: MADP-v0.3.0-alpha.4
+  theme: Practical Core Integration and Fix-Forward Delivery
+  development_model: RELEASE_EARLY_FIX_FORWARD
+  primary_user_scope: SINGLE_PRIMARY_USER
+  implementation_authorized: true
+  prerelease_authorized: true
+  stable_release_authorized: false
+  formal_release_evidence: false
+objectives:
+  - Promote the useful Core Candidate interaction rules into a versioned alpha.4 implementation path without claiming four-workflow superiority.
+  - Keep development usable through GitHub branches, pull requests, and Actions without requiring a local checkout.
+  - Reduce operator burden by preferring short, reviewable increments over long comparison or field-trial workflows.
+  - Preserve Human Final Authority and explicit external-action authorization.
+implementation_directions:
+  - id: A4-DIR-WORKFLOW-MACROS
+    statement: Integrate the eight human-facing Workflow Macros as a versioned, non-atomic interaction layer that expands into recorded canonical operations and explicit gates.
+  - id: A4-DIR-CLAIM-EVIDENCE
+    statement: Add claim kind and verification status as separate, additive concepts while preserving legacy FACT records until migration and compatibility checks exist.
+  - id: A4-DIR-BLIND-AND-DISSENT
+    statement: Preserve Blind First Round procedure reporting, participant correlation disclosure, material dissent, and human disposition without treating agreement as evidence.
+  - id: A4-DIR-DISTRIBUTION
+    statement: Reuse the compact bundle and dynamic role planner as deterministic advisory distribution tools; they do not prove model ingestion or grant authority.
+  - id: A4-DIR-COMPATIBILITY
+    statement: Keep the alpha.3 canonical command namespace stable during the kickoff increment; command additions or breaking schema changes require a later explicit implementation record.
+  - id: A4-DIR-GITHUB-FIRST
+    statement: GitHub-hosted editing, validation, review, and artifact generation are first-class for alpha.4 development; a local environment is optional.
+increments:
+  - id: A4-INC-001
+    name: KICKOFF_BASELINE
+    goal: Establish planning, status, draft release notes, and automated consistency checks.
+    exit_conditions:
+      - kickoff artifacts parse successfully
+      - privacy and authority boundaries pass automated checks
+      - required GitHub Actions pass
+  - id: A4-INC-002
+    name: CORE_USABILITY_INTEGRATION
+    goal: Implement the selected additive protocol, schema, registry, bootstrap, and migration changes.
+    exit_conditions:
+      - normative artifacts and fixtures are versioned for alpha.4
+      - compatibility tests cover preserved alpha.3 behavior
+      - generated distribution artifacts are reproducible
+  - id: A4-INC-003
+    name: PRERELEASE_PREPARATION
+    goal: Prepare the first alpha.4 prerelease for separate publication approval.
+    exit_conditions:
+      - generated distribution artifact is available
+      - release notes contain known limitations
+      - rollback target is documented
+      - required GitHub Actions pass
+prerelease_hard_gates:
+  - no_private_or_sensitive_information
+  - no_private_identifier_mapping
+  - yaml_and_required_artifacts_parseable
+  - required_github_actions_ci_pass
+  - generated_distribution_artifact_available
+  - release_notes_include_known_limitations
+  - rollback_or_previous_version_available
+non_goals:
+  - complete or resume the terminated four-workflow comparison pilot
+  - claim comparative superiority from the single completed Core Candidate run
+  - complete A3-REL-001 or A3-REL-005
+  - recognize formal release evidence
+  - authorize a stable release
+  - remove or reinterpret legacy FACT records without migration evidence
+  - grant AI systems approval, merge, release, or external-execution authority
+authorization_boundary:
+  kickoff_branch_and_pr_authorized: true
+  kickoff_merge_authorized: false
+  tag_authorized: false
+  github_release_authorized: false
+  pages_publication_authorized: false
+  stable_release_authorized: false

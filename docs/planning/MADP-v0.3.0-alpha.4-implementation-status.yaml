@@ -1,0 +1,80 @@
+status_version: 1
+protocol_version: MADP-v0.3.0-alpha.4
+implementation_status: KICKOFF_BASELINE_READY
+integration_status: IMPLEMENTATION_BRANCH
+base_version: MADP-v0.3.0-alpha.3
+base_main_commit: f7fc84675321c0f55619301642f4d52f601f30d3
+branch: feature/v0.3.0-alpha.4-kickoff
+decision_ref: docs/planning/DEC-MADP-ALPHA4-001.yaml
+rapid_prerelease_policy_ref: docs/planning/DEC-MADP-RAPID-PRERELEASE-001.yaml
+theme: Practical Core Integration and Fix-Forward Delivery
+content_ready: false
+release_ready: false
+tagged: false
+published: false
+stable_release_authorized: false
+formal_release_evidence: false
+published_rollback_target:
+  version: MADP-v0.3.0-alpha.2
+  tag: MADP-v0.3.0-alpha.2
+work_packages:
+  kickoff_baseline:
+    status: IMPLEMENTED_IN_BRANCH
+    outputs:
+      - docs/planning/DEC-MADP-ALPHA4-001.yaml
+      - docs/planning/MADP-v0.3.0-alpha.4-implementation-status.yaml
+      - README-v0.3.0-alpha.4.md
+      - docs/releases/MADP-v0.3.0-alpha.4.md
+      - scripts/check_alpha4_kickoff.py
+      - .github/workflows/validate-alpha4-kickoff.yml
+  core_usability_integration:
+    status: NOT_STARTED
+    planned_scope:
+      - versioned non-atomic Workflow Macro layer
+      - additive Claim and Evidence semantics
+      - Blind First Round and participant correlation reporting
+      - dissent status and human disposition separation
+      - compatibility-preserving migration fixtures
+  distribution_and_prerelease:
+    status: NOT_STARTED
+    planned_scope:
+      - deterministic alpha.4 distribution artifact
+      - reproducibility and integrity validation
+      - release notes and known limitations
+      - separate tag and GitHub Release approval
+compatibility_policy:
+  alpha3_command_namespace_preserved_during_kickoff: true
+  breaking_schema_change_in_kickoff: false
+  legacy_fact_records_preserved: true
+  alpha3_artifacts_remain_historical_and_unchanged: true
+authority_policy:
+  human_final_authority_required: true
+  agreement_is_evidence: false
+  ai_merge_authority: false
+  ai_release_authority: false
+  external_actions_require_separate_authorization: true
+development_environment:
+  github_hosted_workflow_first_class: true
+  local_checkout_required: false
+  required_validation_environment: GITHUB_ACTIONS
+required_checks:
+  - id: A4-CHECK-KICKOFF
+    command: python scripts/check_alpha4_kickoff.py
+  - id: REPOSITORY-VALIDATE
+    command: existing repository Validate workflow
+prerelease_hard_gates:
+  privacy: IN_PROGRESS
+  required_files_parseable: IN_PROGRESS
+  required_github_actions_ci: IN_PROGRESS
+  generated_distribution_artifact: NOT_STARTED
+  release_notes_known_limitations: IMPLEMENTED_AS_DRAFT
+  rollback_or_previous_version: SATISFIED_BY_ALPHA2_TAG
+known_limitations:
+  - Alpha.4 protocol, schemas, registries, bootstraps, and generated distribution are not implemented by the kickoff increment.
+  - The four-workflow comparison was terminated after one completed workflow and does not establish comparative superiority.
+  - The retained Core Candidate run is DEGRADED and remains a single-case study.
+  - Formal release evidence and stable release authorization are absent.
+  - Tagging, GitHub Release creation, and Pages publication require separate approval.
+next_action:
+  id: A4-INC-002
+  description: Implement the first additive Core usability slice with schemas, fixtures, compatibility tests, and generated distribution inputs.
