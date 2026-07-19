@@ -28,6 +28,7 @@ on:
 
 permissions:
   contents: read
+  statuses: write
 
 jobs:
   validate-alpha4-publication-handoff:
@@ -128,3 +129,34 @@ jobs:
           path: .artifacts/first/
           if-no-files-found: error
           retention-days: 30
+
+      - name: Publish exact-main handoff commit status
+        if: always() && github.event_name == 'push' && github.ref_name == 'main'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          JOB_STATUS: ${{ job.status }}
+        run: |
+          case "$JOB_STATUS" in
+            success)
+              state=success
+              description='MERGED_MAIN publication handoff validated'
+              ;;
+            failure)
+              state=failure
+              description='MERGED_MAIN publication handoff validation failed'
+              ;;
+            cancelled)
+              state=error
+              description='MERGED_MAIN publication handoff validation cancelled'
+              ;;
+            *)
+              state=error
+              description='MERGED_MAIN publication handoff validation incomplete'
+              ;;
+          esac
+          gh api --method POST \
+            "repos/$GITHUB_REPOSITORY/statuses/$GITHUB_SHA" \
+            -f state="$state" \
+            -f context='madp/alpha4-publication-handoff' \
+            -f description="$description" \
+            -f target_url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"

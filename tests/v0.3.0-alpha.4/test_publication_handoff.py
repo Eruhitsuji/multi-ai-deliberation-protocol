@@ -42,12 +42,40 @@ def problems_for(
     )
 
 
+def verify_status_bridge() -> None:
+    workflow_path = ROOT / ".github/workflows/validate-alpha4-publication-handoff.yml"
+    workflow = workflow_path.read_text(encoding="utf-8")
+    required_markers = (
+        "contents: read",
+        "statuses: write",
+        "Publish exact-main handoff commit status",
+        "if: always() && github.event_name == 'push' && github.ref_name == 'main'",
+        "context='madp/alpha4-publication-handoff'",
+        '"repos/$GITHUB_REPOSITORY/statuses/$GITHUB_SHA"',
+        'target_url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"',
+    )
+    for marker in required_markers:
+        require(marker in workflow, f"publication handoff status bridge missing: {marker}")
+    forbidden_markers = (
+        "contents: write",
+        "releases: write",
+        "pages: write",
+        "deployments: write",
+        "git tag",
+        "gh release create",
+    )
+    for marker in forbidden_markers:
+        require(marker not in workflow, f"publication handoff workflow grants forbidden capability: {marker}")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--repository", required=True)
     parser.add_argument("--source-commit", required=True)
     parser.add_argument("--branch-name", required=True)
     args = parser.parse_args()
+
+    verify_status_bridge()
 
     # PR-head fixtures must never use the protected main branch name. When this
     # regression suite runs from a push to main, use a deterministic synthetic
