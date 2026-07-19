@@ -6,7 +6,7 @@ integration_status_scope: ALPHA3_HARDENED_BASELINE
 hardening_integration_status: MERGED_TO_MAIN
 hardening_pr: 11
 hardening_merge_commit: 78f8a8be3455bd97076600e88c6427b10d015025
-evaluation_status: COMPARISON_EXPERIMENT_TERMINATED_BY_HFA
+evaluation_status: FIELD_TRIAL_IN_PROGRESS
 content_ready: true
 release_ready: false
 tagged: false
@@ -209,11 +209,11 @@ rapid_prerelease_policy:
   - completion_of_four-workflow-comparison
   - A3-REL-001_completion
   - A3-REL-005_completion
-  - multi-participant-formal-field-trial
+  - multi-participant-formal-field_trial
   - complete-usability-signoff
   - complete-local-validator-matrix
   - zero-known-noncritical-defects
-  - formal_release_evidence
+  - formal-release-evidence
 known_local_issues:
 - issue: JSONSCHEMA_REF_RESOLUTION_ERROR
   investigation_status: DEFERRED
