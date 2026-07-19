@@ -1,0 +1,41 @@
+decision_id: DEC-MADP-ALPHA4-007
+status: ACCEPTED
+decision_date: 2026-07-19
+authority: HUMAN_FINAL_AUTHORITY
+parent_decision_ref: docs/planning/DEC-MADP-ALPHA4-006.yaml
+decision:
+  operation: PUBLISH_MADP_V0_3_0_ALPHA_4_PRERELEASE
+  exact_target_commit: 3333c66b8b9873581af3f621615a7e1f7fc20e0a
+  tag: MADP-v0.3.0-alpha.4
+  github_release_mode: PRERELEASE
+  tag_creation_authorized: true
+  github_prerelease_publication_authorized: true
+  use_release_notes_from: docs/releases/MADP-v0.3.0-alpha.4.md
+  pages_publication_authorized: false
+  stable_release_authorized: false
+  formal_release_evidence: false
+  latest_stable_designation_authorized: false
+  rollback_target_change_authorized: false
+verified_assets:
+  - file: MADP-v0.3.0-alpha.4-prerelease-candidate.zip
+    sha256: 1b8fdfba72aec2df1cd1c413855e6ff16b07eddde13c67342239e361136f53c0
+  - file: MADP-v0.3.0-alpha.4-prerelease-candidate.manifest.yaml
+    sha256: fa9c7077ced6fc9a78eff41cbe24e2a8a010fe01f0edd066d0f516f78796b3bf
+  - file: MADP-v0.3.0-alpha.4-prerelease-integrity-audit.yaml
+    sha256: be82f390a9e49a65b56996a51686c39c7d4d49e8a93dd09c10fd8a013ae27aa6
+  - file: MADP-v0.3.0-alpha.4-prerelease-candidate.zip.sha256
+    sha256: fe11e9fdb70ad220390d29dfb6f70e3fe06ceb2264faa13d95b4213a2ae7bd74
+  - file: MADP-v0.3.0-alpha.4-release-candidate.receipt.yaml
+    sha256: 8949075f1252927e367ca6868fb171632fd5039e4a3499cd26bc0285d16a1be2
+release_notes_sha256: 05d0776afd27404ec69bac98baf53aabc20dbf5e7cae08dde091b696937c71ec
+rollback_target:
+  version: MADP-v0.3.0-alpha.2
+  tag: MADP-v0.3.0-alpha.2
+execution_constraints:
+  - create a lightweight tag only at the exact authorized commit
+  - publish as GitHub Prerelease, never as stable or latest stable
+  - attach exactly the five verified assets listed above
+  - regenerate and verify assets before publication
+  - re-download and verify release assets before making the release public
+  - do not publish Pages
+  - fail closed on any tag, digest, release-mode, or asset mismatch

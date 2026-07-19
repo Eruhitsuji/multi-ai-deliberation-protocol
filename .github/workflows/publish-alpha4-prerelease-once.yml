@@ -1,0 +1,272 @@
+name: Publish MADP v0.3.0-alpha.4 prerelease once
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/publish-alpha4-prerelease-once.yml'
+      - 'docs/planning/DEC-MADP-ALPHA4-007.yaml'
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-alpha4-prerelease-once.yml'
+      - 'docs/planning/DEC-MADP-ALPHA4-007.yaml'
+
+permissions:
+  contents: read
+
+env:
+  TARGET_COMMIT: 3333c66b8b9873581af3f621615a7e1f7fc20e0a
+  TARGET_TAG: MADP-v0.3.0-alpha.4
+  RELEASE_TITLE: MADP v0.3.0-alpha.4
+  REPOSITORY_NAME: ${{ github.repository }}
+  TARGET_DIR: /tmp/madp-alpha4-target
+  ASSET_DIR: /tmp/madp-alpha4-assets
+
+jobs:
+  validate-publication-plan:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out publication authorization
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Install validation dependencies
+        run: python -m pip install --disable-pip-version-check pyyaml jsonschema
+
+      - name: Validate authorization record
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import yaml
+
+          decision = yaml.safe_load(
+              Path('docs/planning/DEC-MADP-ALPHA4-007.yaml').read_text(encoding='utf-8')
+          )
+          expected = {
+              'exact_target_commit': '3333c66b8b9873581af3f621615a7e1f7fc20e0a',
+              'tag': 'MADP-v0.3.0-alpha.4',
+              'github_release_mode': 'PRERELEASE',
+              'tag_creation_authorized': True,
+              'github_prerelease_publication_authorized': True,
+              'pages_publication_authorized': False,
+              'stable_release_authorized': False,
+              'formal_release_evidence': False,
+              'latest_stable_designation_authorized': False,
+              'rollback_target_change_authorized': False,
+          }
+          assert decision['status'] == 'ACCEPTED'
+          assert decision['authority'] == 'HUMAN_FINAL_AUTHORITY'
+          for key, value in expected.items():
+              assert decision['decision'][key] == value, (key, decision['decision'][key])
+          assert decision['rollback_target'] == {
+              'version': 'MADP-v0.3.0-alpha.2',
+              'tag': 'MADP-v0.3.0-alpha.2',
+          }
+          assert len(decision['verified_assets']) == 5
+          print('Publication authorization record: PASS')
+          PY
+
+      - name: Regenerate exact-target assets
+        run: |
+          rm -rf "$TARGET_DIR" "$ASSET_DIR"
+          git worktree add --detach "$TARGET_DIR" "$TARGET_COMMIT"
+          python "$TARGET_DIR/scripts/generate_alpha4_publication_handoff.py" "$ASSET_DIR" \
+            --repository "$REPOSITORY_NAME" \
+            --source-commit "$TARGET_COMMIT" \
+            --source-ref-kind MERGED_MAIN \
+            --branch-name main \
+            --target-tag "$TARGET_TAG"
+          python "$TARGET_DIR/scripts/check_alpha4_publication_handoff.py" "$ASSET_DIR" \
+            --repository "$REPOSITORY_NAME" \
+            --source-commit "$TARGET_COMMIT" \
+            --source-ref-kind MERGED_MAIN \
+            --branch-name main \
+            --target-tag "$TARGET_TAG"
+
+      - name: Verify exact asset and release-note digests
+        run: |
+          cd "$ASSET_DIR"
+          cat > expected.sha256 <<'EOF'
+          1b8fdfba72aec2df1cd1c413855e6ff16b07eddde13c67342239e361136f53c0  MADP-v0.3.0-alpha.4-prerelease-candidate.zip
+          fa9c7077ced6fc9a78eff41cbe24e2a8a010fe01f0edd066d0f516f78796b3bf  MADP-v0.3.0-alpha.4-prerelease-candidate.manifest.yaml
+          be82f390a9e49a65b56996a51686c39c7d4d49e8a93dd09c10fd8a013ae27aa6  MADP-v0.3.0-alpha.4-prerelease-integrity-audit.yaml
+          fe11e9fdb70ad220390d29dfb6f70e3fe06ceb2264faa13d95b4213a2ae7bd74  MADP-v0.3.0-alpha.4-prerelease-candidate.zip.sha256
+          8949075f1252927e367ca6868fb171632fd5039e4a3499cd26bc0285d16a1be2  MADP-v0.3.0-alpha.4-release-candidate.receipt.yaml
+          EOF
+          sha256sum --check expected.sha256
+          test "$(sha256sum "$TARGET_DIR/docs/releases/MADP-v0.3.0-alpha.4.md" | cut -d' ' -f1)" = \
+            '05d0776afd27404ec69bac98baf53aabc20dbf5e7cae08dde091b696937c71ec'
+
+      - name: Verify target, rollback, and existing publication state
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git cat-file -e "$TARGET_COMMIT^{commit}"
+          test "$(git rev-parse "$TARGET_COMMIT")" = "$TARGET_COMMIT"
+
+          rollback_sha="$(git ls-remote --tags origin 'refs/tags/MADP-v0.3.0-alpha.2' | awk '{print $1}')"
+          test -n "$rollback_sha"
+
+          target_sha="$(git ls-remote --tags origin "refs/tags/$TARGET_TAG" | awk '{print $1}')"
+          if [ -n "$target_sha" ]; then
+            test "$target_sha" = "$TARGET_COMMIT"
+          fi
+
+          if gh release view "$TARGET_TAG" --repo "$REPOSITORY_NAME" \
+              --json tagName,isDraft,isPrerelease >/tmp/existing-release.json 2>/dev/null; then
+            test "$(jq -r .tagName /tmp/existing-release.json)" = "$TARGET_TAG"
+            test "$(jq -r .isPrerelease /tmp/existing-release.json)" = 'true'
+          fi
+
+  publish-prerelease:
+    if: github.event_name == 'push' && github.ref_name == 'main'
+    needs: validate-publication-plan
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+      statuses: write
+    steps:
+      - name: Check out publication executor
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Install validation dependencies
+        run: python -m pip install --disable-pip-version-check pyyaml jsonschema
+
+      - name: Prepare and verify authorized assets
+        run: |
+          rm -rf "$TARGET_DIR" "$ASSET_DIR"
+          git worktree add --detach "$TARGET_DIR" "$TARGET_COMMIT"
+          python "$TARGET_DIR/scripts/generate_alpha4_publication_handoff.py" "$ASSET_DIR" \
+            --repository "$REPOSITORY_NAME" \
+            --source-commit "$TARGET_COMMIT" \
+            --source-ref-kind MERGED_MAIN \
+            --branch-name main \
+            --target-tag "$TARGET_TAG"
+          python "$TARGET_DIR/scripts/check_alpha4_publication_handoff.py" "$ASSET_DIR" \
+            --repository "$REPOSITORY_NAME" \
+            --source-commit "$TARGET_COMMIT" \
+            --source-ref-kind MERGED_MAIN \
+            --branch-name main \
+            --target-tag "$TARGET_TAG"
+          cd "$ASSET_DIR"
+          cat > expected.sha256 <<'EOF'
+          1b8fdfba72aec2df1cd1c413855e6ff16b07eddde13c67342239e361136f53c0  MADP-v0.3.0-alpha.4-prerelease-candidate.zip
+          fa9c7077ced6fc9a78eff41cbe24e2a8a010fe01f0edd066d0f516f78796b3bf  MADP-v0.3.0-alpha.4-prerelease-candidate.manifest.yaml
+          be82f390a9e49a65b56996a51686c39c7d4d49e8a93dd09c10fd8a013ae27aa6  MADP-v0.3.0-alpha.4-prerelease-integrity-audit.yaml
+          fe11e9fdb70ad220390d29dfb6f70e3fe06ceb2264faa13d95b4213a2ae7bd74  MADP-v0.3.0-alpha.4-prerelease-candidate.zip.sha256
+          8949075f1252927e367ca6868fb171632fd5039e4a3499cd26bc0285d16a1be2  MADP-v0.3.0-alpha.4-release-candidate.receipt.yaml
+          EOF
+          sha256sum --check expected.sha256
+          test "$(sha256sum "$TARGET_DIR/docs/releases/MADP-v0.3.0-alpha.4.md" | cut -d' ' -f1)" = \
+            '05d0776afd27404ec69bac98baf53aabc20dbf5e7cae08dde091b696937c71ec'
+
+      - name: Create or verify exact tag
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          remote_sha="$(git ls-remote --tags origin "refs/tags/$TARGET_TAG" | awk '{print $1}')"
+          if [ -z "$remote_sha" ]; then
+            git tag "$TARGET_TAG" "$TARGET_COMMIT"
+            git push origin "refs/tags/$TARGET_TAG"
+          else
+            test "$remote_sha" = "$TARGET_COMMIT"
+          fi
+          test "$(git ls-remote --tags origin "refs/tags/$TARGET_TAG" | awk '{print $1}')" = "$TARGET_COMMIT"
+
+      - name: Create draft prerelease and upload authorized assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          latest_before="$(gh api "repos/$REPOSITORY_NAME/releases/latest" --jq .tag_name 2>/dev/null || true)"
+          rollback_before="$(git ls-remote --tags origin 'refs/tags/MADP-v0.3.0-alpha.2' | awk '{print $1}')"
+          test -n "$rollback_before"
+
+          if ! gh release view "$TARGET_TAG" --repo "$REPOSITORY_NAME" >/dev/null 2>&1; then
+            gh release create "$TARGET_TAG" \
+              --repo "$REPOSITORY_NAME" \
+              --verify-tag \
+              --draft \
+              --prerelease \
+              --title "$RELEASE_TITLE" \
+              --notes-file "$TARGET_DIR/docs/releases/MADP-v0.3.0-alpha.4.md"
+          fi
+
+          gh release upload "$TARGET_TAG" \
+            "$ASSET_DIR/MADP-v0.3.0-alpha.4-prerelease-candidate.zip" \
+            "$ASSET_DIR/MADP-v0.3.0-alpha.4-prerelease-candidate.manifest.yaml" \
+            "$ASSET_DIR/MADP-v0.3.0-alpha.4-prerelease-integrity-audit.yaml" \
+            "$ASSET_DIR/MADP-v0.3.0-alpha.4-prerelease-candidate.zip.sha256" \
+            "$ASSET_DIR/MADP-v0.3.0-alpha.4-release-candidate.receipt.yaml" \
+            --repo "$REPOSITORY_NAME" \
+            --clobber
+
+          rm -rf /tmp/madp-alpha4-release-download
+          mkdir -p /tmp/madp-alpha4-release-download
+          gh release download "$TARGET_TAG" \
+            --repo "$REPOSITORY_NAME" \
+            --dir /tmp/madp-alpha4-release-download
+
+          cd /tmp/madp-alpha4-release-download
+          test "$(find . -maxdepth 1 -type f -printf '%f\n' | sort | tr '\n' ' ')" = \
+            'MADP-v0.3.0-alpha.4-prerelease-candidate.manifest.yaml MADP-v0.3.0-alpha.4-prerelease-candidate.zip MADP-v0.3.0-alpha.4-prerelease-candidate.zip.sha256 MADP-v0.3.0-alpha.4-prerelease-integrity-audit.yaml MADP-v0.3.0-alpha.4-release-candidate.receipt.yaml '
+          cp "$ASSET_DIR/expected.sha256" .
+          sha256sum --check expected.sha256
+
+          release_id="$(gh api "repos/$REPOSITORY_NAME/releases" \
+            --paginate \
+            --jq ".[] | select(.tag_name == \"$TARGET_TAG\") | .id" | head -n1)"
+          test -n "$release_id"
+          gh api --method PATCH "repos/$REPOSITORY_NAME/releases/$release_id" \
+            -F draft=false \
+            -F prerelease=true \
+            -f make_latest=false >/tmp/published-release.json
+
+          test "$(jq -r .tag_name /tmp/published-release.json)" = "$TARGET_TAG"
+          test "$(jq -r .name /tmp/published-release.json)" = "$RELEASE_TITLE"
+          test "$(jq -r .draft /tmp/published-release.json)" = 'false'
+          test "$(jq -r .prerelease /tmp/published-release.json)" = 'true'
+
+          latest_after="$(gh api "repos/$REPOSITORY_NAME/releases/latest" --jq .tag_name 2>/dev/null || true)"
+          rollback_after="$(git ls-remote --tags origin 'refs/tags/MADP-v0.3.0-alpha.2' | awk '{print $1}')"
+          test "$latest_after" = "$latest_before"
+          test "$rollback_after" = "$rollback_before"
+
+      - name: Publish prerelease execution status
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          JOB_STATUS: ${{ job.status }}
+        run: |
+          case "$JOB_STATUS" in
+            success)
+              state=success
+              description='MADP v0.3.0-alpha.4 prerelease published'
+              ;;
+            failure)
+              state=failure
+              description='MADP v0.3.0-alpha.4 prerelease publication failed'
+              ;;
+            *)
+              state=error
+              description='MADP v0.3.0-alpha.4 prerelease publication incomplete'
+              ;;
+          esac
+          gh api --method POST \
+            "repos/$GITHUB_REPOSITORY/statuses/$GITHUB_SHA" \
+            -f state="$state" \
+            -f context='madp/alpha4-prerelease-publication' \
+            -f description="$description" \
+            -f target_url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
