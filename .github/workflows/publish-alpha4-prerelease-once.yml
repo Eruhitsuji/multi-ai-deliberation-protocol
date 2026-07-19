@@ -194,30 +194,76 @@ jobs:
           rollback_before="$(git ls-remote --tags origin 'refs/tags/MADP-v0.3.0-alpha.2' | awk '{print $1}')"
           test -n "$rollback_before"
 
-          if ! gh release view "$TARGET_TAG" --repo "$REPOSITORY_NAME" >/dev/null 2>&1; then
-            gh release create "$TARGET_TAG" \
-              --repo "$REPOSITORY_NAME" \
-              --verify-tag \
-              --draft \
-              --prerelease \
-              --title "$RELEASE_TITLE" \
-              --notes-file "$TARGET_DIR/docs/releases/MADP-v0.3.0-alpha.4.md"
+          release_id="$(gh api "repos/$REPOSITORY_NAME/releases" \
+            --paginate \
+            --jq ".[] | select(.tag_name == \"$TARGET_TAG\") | .id" | head -n1)"
+
+          if [ -z "$release_id" ]; then
+            python - <<'PY' >/tmp/create-release.json
+          import json
+          from pathlib import Path
+          print(json.dumps({
+              'tag_name': 'MADP-v0.3.0-alpha.4',
+              'target_commitish': '3333c66b8b9873581af3f621615a7e1f7fc20e0a',
+              'name': 'MADP v0.3.0-alpha.4',
+              'body': Path('/tmp/madp-alpha4-target/docs/releases/MADP-v0.3.0-alpha.4.md').read_text(encoding='utf-8'),
+              'draft': True,
+              'prerelease': True,
+              'make_latest': 'false',
+          }))
+          PY
+            release_id="$(gh api --method POST "repos/$REPOSITORY_NAME/releases" \
+              --input /tmp/create-release.json --jq .id)"
+          fi
+          test -n "$release_id"
+
+          release_json="$(gh api "repos/$REPOSITORY_NAME/releases/$release_id")"
+          test "$(jq -r .tag_name <<<"$release_json")" = "$TARGET_TAG"
+          test "$(jq -r .prerelease <<<"$release_json")" = 'true'
+          if [ "$(jq -r .draft <<<"$release_json")" = 'false' ]; then
+            echo 'Release is already public; verifying exact prerelease state and assets.'
           fi
 
-          gh release upload "$TARGET_TAG" \
-            "$ASSET_DIR/MADP-v0.3.0-alpha.4-prerelease-candidate.zip" \
-            "$ASSET_DIR/MADP-v0.3.0-alpha.4-prerelease-candidate.manifest.yaml" \
-            "$ASSET_DIR/MADP-v0.3.0-alpha.4-prerelease-integrity-audit.yaml" \
-            "$ASSET_DIR/MADP-v0.3.0-alpha.4-prerelease-candidate.zip.sha256" \
-            "$ASSET_DIR/MADP-v0.3.0-alpha.4-release-candidate.receipt.yaml" \
-            --repo "$REPOSITORY_NAME" \
-            --clobber
-
+          upload_root="https://uploads.github.com/repos/$REPOSITORY_NAME/releases/$release_id/assets"
           rm -rf /tmp/madp-alpha4-release-download
           mkdir -p /tmp/madp-alpha4-release-download
-          gh release download "$TARGET_TAG" \
-            --repo "$REPOSITORY_NAME" \
-            --dir /tmp/madp-alpha4-release-download
+
+          for name in \
+            MADP-v0.3.0-alpha.4-prerelease-candidate.zip \
+            MADP-v0.3.0-alpha.4-prerelease-candidate.manifest.yaml \
+            MADP-v0.3.0-alpha.4-prerelease-integrity-audit.yaml \
+            MADP-v0.3.0-alpha.4-prerelease-candidate.zip.sha256 \
+            MADP-v0.3.0-alpha.4-release-candidate.receipt.yaml
+          do
+            existing_id="$(gh api "repos/$REPOSITORY_NAME/releases/$release_id/assets" \
+              --paginate \
+              --jq ".[] | select(.name == \"$name\") | .id" | head -n1)"
+            if [ -n "$existing_id" ]; then
+              gh api --method DELETE "repos/$REPOSITORY_NAME/releases/assets/$existing_id"
+            fi
+
+            curl --fail-with-body --silent --show-error --location \
+              --request POST \
+              --header "Authorization: Bearer $GH_TOKEN" \
+              --header 'X-GitHub-Api-Version: 2022-11-28' \
+              --header 'Content-Type: application/octet-stream' \
+              --data-binary "@$ASSET_DIR/$name" \
+              "$upload_root?name=$name" >/tmp/uploaded-asset.json
+            test "$(jq -r .name /tmp/uploaded-asset.json)" = "$name"
+          done
+
+          asset_count="$(gh api "repos/$REPOSITORY_NAME/releases/$release_id/assets" --paginate --jq '.[].name' | wc -l)"
+          test "$asset_count" -eq 5
+
+          while IFS=$'\t' read -r asset_id name; do
+            curl --fail-with-body --silent --show-error --location \
+              --header "Authorization: Bearer $GH_TOKEN" \
+              --header 'Accept: application/octet-stream' \
+              --header 'X-GitHub-Api-Version: 2022-11-28' \
+              "https://api.github.com/repos/$REPOSITORY_NAME/releases/assets/$asset_id" \
+              --output "/tmp/madp-alpha4-release-download/$name"
+          done < <(gh api "repos/$REPOSITORY_NAME/releases/$release_id/assets" \
+            --paginate --jq '.[] | [.id, .name] | @tsv')
 
           cd /tmp/madp-alpha4-release-download
           test "$(find . -maxdepth 1 -type f -printf '%f\n' | sort | tr '\n' ' ')" = \
@@ -225,10 +271,6 @@ jobs:
           cp "$ASSET_DIR/expected.sha256" .
           sha256sum --check expected.sha256
 
-          release_id="$(gh api "repos/$REPOSITORY_NAME/releases" \
-            --paginate \
-            --jq ".[] | select(.tag_name == \"$TARGET_TAG\") | .id" | head -n1)"
-          test -n "$release_id"
           gh api --method PATCH "repos/$REPOSITORY_NAME/releases/$release_id" \
             -F draft=false \
             -F prerelease=true \
